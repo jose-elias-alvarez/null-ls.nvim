@@ -147,16 +147,6 @@ describe("helpers", function()
         end)
 
         describe("wrapper", function()
-            before_each(function()
-                stub(helpers, "json_output_wrapper")
-                stub(helpers, "line_output_wrapper")
-            end)
-
-            after_each(function()
-                helpers._json_output_wrapper:revert()
-                helpers._line_output_wrapper:revert()
-            end)
-
             it(
                 "should set params.output and call on_output with params and done",
                 function()
@@ -219,10 +209,9 @@ describe("helpers", function()
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
-                wrapper(nil, "output")
+                wrapper(nil, vim.fn.json_encode({key = "val"}))
 
-                assert.stub(helpers._json_output_wrapper).was_called()
-                assert.stub(on_output).was_not_called()
+                assert.stub(on_output).was_called_with({output = {key = "val"}})
             end)
 
             it("should call line_output_wrapper and return if format == line",
@@ -235,8 +224,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(helpers._line_output_wrapper).was_called()
-                assert.stub(on_output).was_not_called()
+                assert.stub(on_output).was_called_with("output",
+                                                       {output = "output"})
             end)
         end)
     end)
