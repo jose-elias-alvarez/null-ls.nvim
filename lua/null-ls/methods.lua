@@ -1,6 +1,9 @@
 local methods = {
     CODE_ACTION = "textDocument/codeAction",
-    DIAGNOSTICS = "textDocument/publishDiagnostics"
+    DIAGNOSTICS = "textDocument/publishDiagnostics",
+    INITIALIZE = "initialize",
+    SHUTDOWN = "shutdown",
+    EXECUTE_COMMAND = "workspace/executeCommand"
 }
 
 function methods:exists(method)

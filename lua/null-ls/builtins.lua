@@ -1,4 +1,7 @@
 local helpers = require("null-ls.helpers")
+local u = require("null-ls.utils")
+
+local api = vim.api
 
 local M = {}
 M.write_good = helpers.create_diagnostic_generator(
@@ -33,5 +36,41 @@ M.write_good = helpers.create_diagnostic_generator(
             }
         end
     })
+
+-- you (probably) don't want to use this - it's here for testing
+M.toggle_line_comment = {
+    fn = function(params)
+        local bufnr = api.nvim_get_current_buf()
+        local commentstring = api.nvim_buf_get_option(bufnr, "commentstring")
+        local raw_commentstring = u.string.replace(commentstring, "%s", "")
+        local line = params.content[params.row]
+
+        local has_comment = string.find(line, raw_commentstring, nil, true)
+        if has_comment then
+            return {
+                {
+                    title = "Uncomment line",
+                    action = function()
+                        api.nvim_buf_set_lines(bufnr, params.row - 1,
+                                               params.row, false, {
+                            u.string.replace(line, raw_commentstring, "")
+                        })
+                    end
+                }
+            }
+        end
+
+        return {
+            {
+                title = "Comment line",
+                action = function()
+                    api.nvim_buf_set_lines(bufnr, params.row - 1, params.row,
+                                           false,
+                                           {string.format(commentstring, line)})
+                end
+            }
+        }
+    end
+}
 
 return M

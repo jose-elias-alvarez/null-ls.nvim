@@ -1,14 +1,13 @@
 local a = require("plenary.async_lib")
 
-local loop = require("null-ls.loop")
 local u = require("null-ls.utils")
+local s = require("null-ls.state")
+local loop = require("null-ls.loop")
 local handlers = require("null-ls.handlers")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
 
 local api = vim.api
-
-local _attached = {}
 
 local M = {}
 
@@ -37,10 +36,10 @@ local get_diagnostics = a.async_void(function(bufnr)
     handlers.diagnostics({diagnostics = diagnostics, uri = params.uri})
 end)
 
-M.attach = function()
-    local bufnr = api.nvim_get_current_buf()
+M.attach = function(bufnr)
+    if not bufnr then bufnr = api.nvim_get_current_buf() end
     local bufname = api.nvim_buf_get_name(bufnr)
-    if _attached[bufname] then return end
+    if s.is_attached(bufname) then return end
 
     local callback = vim.schedule_wrap(function() get_diagnostics(bufnr) end)
     -- immediately get buffer diagnostics
@@ -50,14 +49,11 @@ M.attach = function()
         on_lines = function() timer.restart(250) end,
         on_detach = function()
             timer.stop()
-            _attached[bufname] = nil
+            s.detach(bufname)
         end
     })
-    _attached[bufname] = true
+    s.attach(bufname)
 end
-
-M._get_attached = function() return _attached end
-M._reset = function() _attached = {} end
 
 if _G._TEST then
     M._postprocess = postprocess

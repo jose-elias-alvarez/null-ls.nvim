@@ -1,22 +1,33 @@
 local handlers = require("null-ls.handlers")
-local diagnostics = require("null-ls.diagnostics")
 local methods = require("null-ls.methods")
 local helpers = require("null-ls.helpers")
 local sources = require("null-ls.sources")
-
-local lsp = vim.lsp
+local builtins = require("null-ls.builtins")
+local server = require("null-ls.server")
+local client = require("null-ls.client")
+local s = require("null-ls.state")
 
 local M = {}
 
 M.register = sources.register
-M.attach = diagnostics.attach
 M.methods = methods
 M.helpers = helpers
+M.builtins = builtins
+M.server = server
+M.attach = client.attach
 
-M.setup = function()
-    diagnostics.attach()
-    lsp.buf_request = handlers.buf_request
-    lsp.buf.execute_command = handlers.execute_command
+M.setup = function() handlers.setup() end
+
+vim.api.nvim_exec([[
+augroup NullLsAttach
+    autocmd!
+    autocmd BufEnter * lua require'null-ls'.attach()
+augroup END
+]], false)
+
+M.reset = function()
+    handlers.reset()
+    s.stop_client()
 end
 
 return M

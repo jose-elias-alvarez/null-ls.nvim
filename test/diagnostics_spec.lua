@@ -3,6 +3,7 @@ local spy = require("luassert.spy")
 local stub = require("luassert.stub")
 local loop = require("null-ls.loop")
 
+local s = require("null-ls.state")
 local u = require("null-ls.utils")
 local handlers = require("null-ls.handlers")
 local methods = require("null-ls.methods")
@@ -27,6 +28,8 @@ describe("diagnostics", function()
         stub(handlers, "diagnostics")
         stub(sources, "run_generators")
 
+        before_each(function() vim.cmd("e mock-file") end)
+
         after_each(function()
             vim.schedule_wrap:clear()
             api.nvim_buf_attach:clear()
@@ -36,17 +39,18 @@ describe("diagnostics", function()
             handlers.diagnostics:clear()
             sources.run_generators:clear()
 
-            diagnostics._reset()
+            s.detach_all()
+            vim.cmd("bufdo! bwipeout!")
         end)
 
         local callback = function() print("I am a callback") end
 
-        it("should set attached[bufname] to true", function()
+        it("should attach buffer", function()
             vim.schedule_wrap.returns(callback)
 
             diagnostics.attach()
 
-            assert.equals(diagnostics._get_attached()[get_bufname()], true)
+            assert.equals(s.is_attached(get_bufname()), true)
         end)
 
         it("should create timer with args and callback", function()
@@ -90,8 +94,7 @@ describe("diagnostics", function()
         end)
 
         describe("on_detach", function()
-            it("should call timer.stop and remove bufname from attached",
-               function()
+            it("should call timer.stop and detach buffer", function()
                 local stop = spy.new()
                 loop.timer.returns({stop = stop})
 
@@ -100,7 +103,7 @@ describe("diagnostics", function()
                 opts.on_detach()
 
                 assert.spy(stop).was_called()
-                assert.equals(diagnostics._get_attached()[get_bufname()], nil)
+                assert.equals(s.is_attached(get_bufname()), nil)
             end)
         end)
     end)
