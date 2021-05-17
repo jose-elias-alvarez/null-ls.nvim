@@ -1,74 +1,200 @@
 local stub = require("luassert.stub")
 
-local s = require("null-ls.state")
+local diagnostics = require("null-ls.diagnostics")
+local code_actions = require("null-ls.code-actions")
 local methods = require("null-ls.methods")
 
 local lsp = vim.lsp
 
-describe("overrides", function()
-    stub(lsp.handlers, methods.DIAGNOSTICS)
-    stub(s, "get")
+describe("handlers", function()
+    local handlers = require("null-ls.handlers")
 
-    after_each(function()
-        lsp.handlers[methods.DIAGNOSTICS]:clear()
+    describe("setup and reset", function()
+        before_each(function() handlers.setup() end)
+        after_each(function() handlers.reset() end)
 
-        s.get:clear()
-        -- lsp.buf_request:clear()
-        -- lsp.buf.execute_command:clear()
-        -- lsp.util.apply_workspace_edit:clear()
+        it("should replace lsp handlers with overrides on setup", function()
+            assert.equals(lsp.buf_request, handlers.buf_request)
+            assert.equals(lsp.buf_request_all, handlers.buf_request_all)
+        end)
+
+        it("should set lsp handlers back to originals on reset", function()
+            handlers.reset()
+
+            assert.equals(lsp.buf_request, handlers.originals.buf_request)
+            assert.equals(lsp.buf_request_all,
+                          handlers.originals.buf_request_all)
+        end)
     end)
 
-    local handlers = require("null-ls.handlers")
-    -- describe("buf_request", function()
-    --     local mock_bufnr = 1
-    --     local mock_params = {param = "something important"}
-    --     local mock_handler = stub.new()
+    describe("buf_request", function()
+        stub(lsp, "buf_get_clients")
+        local mock_handler = stub.new()
+        local buf_request = stub.new()
 
-    --     -- it(
-    --     --     "should call buf_request_original with code action handler when method matches",
-    --     --     function()
-    --     --         handlers.buf_request(mock_bufnr, methods.CODE_ACTION,
-    --     --                              mock_params, mock_handler)
+        before_each(function()
+            handlers.originals.buf_request = buf_request
+        end)
 
-    --     --         assert.stub(lsp.buf_request).was_called()
-    --     --         local refs = lsp.buf_request.calls[1].refs
-    --     --         assert.equals(refs[1], mock_bufnr)
-    --     --         assert.equals(refs[2], methods.CODE_ACTION)
-    --     --         assert.equals(refs[3], mock_params)
-    --     --         assert.is_not.equals(refs[4], mock_handler)
-    --     --     end)
+        after_each(function()
+            handlers.reset()
+            lsp.buf_get_clients:clear()
+            mock_handler:clear()
+            buf_request:clear()
+        end)
 
-    --     -- it(
-    --     --     "should call buf_request_original with original handler when method does not match",
-    --     --     function()
-    --     --         local other_method = "otherMethod"
-    --     --         handlers.buf_request(mock_bufnr, other_method, mock_params,
-    --     --                              mock_handler)
+        it("should call original buf_request method with arguments", function()
+            handlers.buf_request(1, "mockMethod", {}, mock_handler)
 
-    --     --         assert.stub(lsp.buf_request).was_called()
-    --     --         local refs = lsp.buf_request.calls[1].refs
-    --     --         assert.equals(refs[1], mock_bufnr)
-    --     --         assert.equals(refs[2], other_method)
-    --     --         assert.equals(refs[3], mock_params)
-    --     --         assert.equals(refs[4], mock_handler)
-    --     --     end)
-    -- end)
+            assert.stub(buf_request).was_called_with(1, "mockMethod", {},
+                                                     mock_handler)
+        end)
 
-    describe("diagnostics", function()
-        it("should call diagnostics handler with params and state client id",
+        it(
+            "should pass original handler when method matches but skip flag is set",
+            function()
+                handlers.buf_request(1, methods.lsp.CODE_ACTION,
+                                     {_null_ls_skip = true}, mock_handler)
+
+                assert.equals(buf_request.calls[1].refs[4], mock_handler)
+            end)
+
+        it(
+            "should pass wrapped handler when method matches and skip flag is not set",
+            function()
+                handlers.buf_request(1, methods.lsp.CODE_ACTION, {},
+                                     mock_handler)
+
+                assert.is_not.equals(buf_request.calls[1].refs[4], mock_handler)
+            end)
+
+        describe("wrapped handler", function()
+            local mock_clients = {
+                {resolved_capabilities = {code_action = true}},
+                {resolved_capabilities = {code_action = true}}
+            }
+
+            local wrapped
+            before_each(function()
+                lsp.buf_get_clients.returns(mock_clients)
+
+                handlers.buf_request(1, methods.lsp.CODE_ACTION, {},
+                                     mock_handler)
+                wrapped = buf_request.calls[1].refs[4]
+            end)
+
+            it("should call handler after completed > expected", function()
+                wrapped()
+                assert.stub(mock_handler).was_not_called()
+
+                wrapped()
+                assert.stub(mock_handler).was_called()
+            end)
+        end)
+    end)
+
+    describe("buf_request_all", function()
+        local mock_callback = stub.new()
+        local buf_request_all = stub.new()
+
+        before_each(function()
+            handlers.originals.buf_request_all = buf_request_all
+        end)
+
+        after_each(function()
+            handlers.reset()
+            mock_callback:clear()
+            buf_request_all:clear()
+        end)
+
+        it("should set flag on params and pass arguments to original method",
            function()
-            local mock_params = {uri = "mock URI"}
-            local mock_id = 5
-            s.get.returns({client_id = mock_id})
+            handlers.buf_request_all(1, "mockMethod", {}, mock_callback)
 
-            handlers.diagnostics(mock_params)
+            assert.stub(buf_request_all).was_called_with(1, "mockMethod", {
+                _null_ls_skip = true
+            }, mock_callback)
+        end)
+    end)
 
-            assert.stub(lsp.handlers[methods.DIAGNOSTICS]).was_called_with(nil,
-                                                                           nil,
-                                                                           mock_params,
-                                                                           mock_id,
-                                                                           nil,
-                                                                           {})
+    describe("setup_client", function()
+        stub(diagnostics, "handler")
+        stub(code_actions, "handler")
+        local mock_request = stub.new()
+        local mock_handler = stub.new()
+
+        local mock_client
+        before_each(function()
+            mock_client = {request = mock_request}
+            handlers.setup_client(mock_client)
+        end)
+        after_each(function()
+            diagnostics.handler:clear()
+            mock_request:clear()
+            mock_handler:clear()
+        end)
+
+        describe("notify", function()
+            it("should return true", function()
+                local response = mock_client.notify("mockMethod", {})
+
+                assert.equals(response, true)
+            end)
+
+            it("should call diagnostics handler if method is DID_OPEN",
+               function()
+                mock_client.notify(methods.lsp.DID_OPEN, {})
+
+                assert.stub(diagnostics.handler).was_called_with(
+                    {method = methods.lsp.DID_OPEN})
+            end)
+
+            it("should call diagnostics handler if method is DID_CHANGE",
+               function()
+                mock_client.notify(methods.lsp.DID_CHANGE, {})
+
+                assert.stub(diagnostics.handler).was_called_with(
+                    {method = methods.lsp.DID_CHANGE})
+            end)
+
+            it("should not call diagnostics handler if method does not match",
+               function()
+                mock_client.notify("mockMethod", {})
+
+                assert.stub(diagnostics.handler).was_not_called()
+            end)
+        end)
+
+        describe("request", function()
+            it("should return false if _null_ls_handled flag is set", function()
+                local response = mock_client.request("mockMethod",
+                                                     {_null_ls_handled = true},
+                                                     mock_handler, 1)
+
+                assert.equals(response, false)
+            end)
+
+            it(
+                "should call original request handler if handled flag is not set",
+                function()
+                    mock_request.returns(true)
+                    local response = mock_client.request("mockMethod", {},
+                                                         mock_handler, 1)
+
+                    assert.stub(mock_request).was_called_with("mockMethod", {
+                        method = "mockMethod"
+                    }, mock_handler, 1)
+                    assert.equals(response, true)
+                end)
+
+            it("should pass params to code actions handler", function()
+                mock_client.request("mockMethod", {}, mock_handler, 1)
+
+                assert.stub(code_actions.handler).was_called_with("mockMethod",
+                                                                  {
+                    method = "mockMethod"
+                }, mock_handler, 1)
+            end)
         end)
     end)
 end)

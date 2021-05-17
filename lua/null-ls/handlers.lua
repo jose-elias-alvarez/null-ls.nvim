@@ -1,10 +1,9 @@
-local s = require("null-ls.state")
 local methods = require("null-ls.methods")
 local code_actions = require("null-ls.code-actions")
+local diagnostics = require("null-ls.diagnostics")
 
 local lsp = vim.lsp
 local handlers = lsp.handlers
-local diagnostics_handler = handlers[methods.DIAGNOSTICS]
 
 local originals = {
     buf_request = lsp.buf_request,
@@ -12,7 +11,7 @@ local originals = {
     buf = {execute_command = lsp.buf.execute_command}
 }
 
-local capabilities_map = {[methods.CODE_ACTION] = "code_action"}
+local capabilities_map = {[methods.lsp.CODE_ACTION] = "code_action"}
 
 local has_capability = function(client, method)
     return client.resolved_capabilities[capabilities_map[method]]
@@ -20,7 +19,10 @@ end
 
 local get_expected_client_count = function(bufnr, method)
     local expected = 0
-    for _, client in pairs(lsp.buf_get_clients(bufnr)) do
+    local clients = lsp.buf_get_clients(bufnr)
+    if not clients then return expected end
+
+    for _, client in pairs(clients) do
         if has_capability(client, method) then expected = expected + 1 end
     end
     return expected
@@ -48,10 +50,11 @@ local handle_all_factory = function(handler, method, bufnr)
 end
 
 local should_wrap = function(method, params)
-    return method == methods.CODE_ACTION and not params._null_ls_skip
+    return method == methods.lsp.CODE_ACTION and not params._null_ls_skip
 end
 
 local M = {}
+M.originals = originals
 
 M.setup = function()
     lsp.buf_request = M.buf_request
@@ -75,7 +78,7 @@ M.buf_request = function(bufnr, method, params, original_handler)
 end
 
 -- buf_request_all already wraps its handler,
--- so we use a flag to make sure we skip it
+-- so we set a flag to make sure we skip it
 M.buf_request_all = function(bufnr, method, params, callback)
     if not params then params = {} end
     params._null_ls_skip = true
@@ -85,18 +88,28 @@ end
 
 M.setup_client = function(client)
     local original_request = client.request
+
+    client.notify = function(method, params)
+        if method == methods.lsp.DID_OPEN or method == methods.lsp.DID_CHANGE then
+            params.method = method
+            diagnostics.handler(params)
+        end
+
+        -- no need to send notifications to server,
+        -- but we return true to indicate that the notification was received
+        return true
+    end
+
     client.request = function(method, params, handler, bufnr)
+        params.method = method
         code_actions.handler(method, params, handler, bufnr)
 
         -- handled requests should return false to avoid cancellation attempts
         if params._null_ls_handled then return false end
 
+        -- call original handler to pass non-handled requests through to server
         return original_request(method, params, handler, bufnr)
     end
-end
-
-M.diagnostics = function(params)
-    diagnostics_handler(nil, nil, params, s.get().client_id, nil, {})
 end
 
 return M

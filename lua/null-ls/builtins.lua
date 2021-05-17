@@ -18,12 +18,14 @@ M.write_good = helpers.create_diagnostic_generator(
 
             local col, end_col
             local issue = string.match(line, "%b\"\"")
-            if issue then
+            local issue_line = params.content[tonumber(row)]
+            if issue and issue_line then
                 local issue_start, issue_end =
-                    string.find(params.content[tonumber(row)],
-                                string.match(issue, "([^\"]+)"))
-                col = tonumber(issue_start) - 1
-                end_col = issue_end
+                    string.find(issue_line, string.match(issue, "([^\"]+)"))
+                if issue_start and issue_end then
+                    col = tonumber(issue_start) - 1
+                    end_col = issue_end
+                end
             end
 
             return {
@@ -37,7 +39,7 @@ M.write_good = helpers.create_diagnostic_generator(
         end
     })
 
--- you (probably) don't want to use this - it's here for testing
+-- you probably don't want to use this - it's here for testing
 M.toggle_line_comment = {
     fn = function(params)
         local bufnr = api.nvim_get_current_buf()

@@ -2,81 +2,139 @@ local stub = require("luassert.stub")
 local a = require("plenary.async_lib")
 
 local s = require("null-ls.state")
+local u = require("null-ls.utils")
+local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
 local code_actions = require("null-ls.code-actions")
 
 describe("code_actions", function()
     stub(a, "await")
+    stub(s, "clear_actions")
+    stub(s, "push_action")
+    stub(s, "get")
+    stub(s, "run_action")
 
-    after_each(function() a.await:clear() end)
+    before_each(function() s.get.returns({client_id = 99}) end)
 
-    -- describe("handler", function()
-    --     local callback = stub.new()
-    --     stub(s, "push_action")
-    --     stub(s, "clear_actions")
-    --     stub(sources, "run_generators")
+    after_each(function()
+        a.await:clear()
+        s.clear_actions:clear()
+        s.push_action:clear()
+        s.get:clear()
+        s.run_action:clear()
+    end)
 
-    --     local actions
-    --     before_each(function()
-    --         actions = {
-    --             {
-    --                 title = "Mock action",
-    --                 action = function()
-    --                     print("I am a mock action")
-    --                 end
-    --             }
-    --         }
-    --     end)
+    describe("handler", function()
+        local handler = stub.new()
+        stub(sources, "run_generators")
+        stub(u, "make_params")
 
-    --     after_each(function()
-    --         s.push_action:clear()
-    --         s.clear_actions:clear()
-    --         sources.run_generators:clear()
-    --         callback:clear()
-    --     end)
+        after_each(function()
+            sources.run_generators:clear()
+            u.make_params:clear()
+            handler:clear()
+        end)
 
-    --     it("should call clear_actions on run", function()
-    --         code_actions.handler({}, callback)
+        describe("method == CODE_ACTION", function()
+            local method = methods.lsp.CODE_ACTION
 
-    --         assert.stub(s.clear_actions).was_called()
-    --     end)
+            it(
+                "should call make_params with original params and internal method",
+                function()
+                    code_actions.handler(method, {}, handler, 1)
 
-    --     it("should call run_generators and pass actions to callback", function()
-    --         a.await.returns(actions)
+                    assert.stub(u.make_params).was_called_with({bufnr = 1},
+                                                               methods.internal
+                                                                   .CODE_ACTION)
+                end)
 
-    --         code_actions.handler({}, callback)
+            it("should set handled flag on params", function()
+                local params = {}
 
-    --         assert.stub(sources.run_generators).was_called()
-    --         assert.spy(callback).was_called_with(actions)
-    --     end)
+                code_actions.handler(method, params, handler, 1)
 
-    --     describe("postprocess", function()
-    --         local postprocess
-    --         before_each(function()
-    --             code_actions.handler({}, callback)
-    --             postprocess = sources.run_generators.calls[1].refs[2]
-    --         end)
+                assert.equals(params._null_ls_handled, true)
+            end)
 
-    --         it("should call push_action with preprocessed action", function()
-    --             local action = actions[1]
+            it("should call handler with arguments", function()
+                a.await.returns("actions")
 
-    --             postprocess(action)
+                code_actions.handler(method, {}, handler, 1)
 
-    --             local preprocessed = s.push_action.calls[1].vals[1]
-    --             assert.equals(preprocessed.title, "Mock action")
-    --             assert.equals(preprocessed.command, nil)
-    --             assert.truthy(preprocessed.action)
-    --         end)
+                assert.stub(handler).was_called_with(nil, method, "actions", 99,
+                                                     1)
+            end)
 
-    --         it("should assign action.command and set action to nil", function()
-    --             local action = actions[1]
+            describe("get_actions", function()
+                it("should clear state actions", function()
+                    code_actions.handler(method, {}, handler, 1)
 
-    --             postprocess(action)
+                    assert.stub(s.clear_actions).was_called()
+                end)
+            end)
 
-    --             assert.equals(action.command, code_actions.NULL_LS_CODE_ACTION)
-    --             assert.equals(action.action, nil)
-    --         end)
-    --     end)
+            describe("postprocess", function()
+                local postprocess, action
+                before_each(function()
+                    action = {
+                        title = "Mock action",
+                        action = function()
+                            print("I am an action")
+                        end
+                    }
+                    code_actions.handler(method, {}, handler, 1)
+                    postprocess = sources.run_generators.calls[1].refs[2]
+                end)
 
-    -- end)
+                it("should push action into state", function()
+                    postprocess(action)
+
+                    assert.equals(s.push_action.calls[1].refs[1].title,
+                                  "Mock action")
+                end)
+
+                it("should set action command and delete function", function()
+                    assert.truthy(action.action)
+                    postprocess(action)
+
+                    assert.equals(action.command, methods.internal.CODE_ACTION)
+                    assert.equals(action.action, nil)
+                end)
+            end)
+        end)
+    end)
+
+    describe("method == EXECUTE_COMMAND", function()
+        local method = methods.lsp.EXECUTE_COMMAND
+        local handler = stub.new()
+
+        it("should set handled flag on params", function()
+            local params = {
+                command = methods.internal.CODE_ACTION,
+                title = "Mock action"
+            }
+
+            code_actions.handler(method, params, handler, 1)
+
+            assert.equals(params._null_ls_handled, true)
+        end)
+
+        it("should run action when command matches", function()
+            code_actions.handler(method, {
+                command = methods.internal.CODE_ACTION,
+                title = "Mock action"
+            }, handler, 1)
+
+            assert.stub(s.run_action).was_called_with("Mock action")
+        end)
+
+        it("should not run action when command does not match", function()
+            code_actions.handler(method, {
+                command = "someOtherCommand",
+                title = "Mock action"
+            }, handler, 1)
+
+            assert.stub(s.run_action).was_not_called()
+        end)
+    end)
 end)

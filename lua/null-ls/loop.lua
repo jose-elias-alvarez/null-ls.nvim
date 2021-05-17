@@ -74,21 +74,6 @@ M.spawn = function(cmd, args, opts)
     if input then stdin:write(input, function() stdin:close() end) end
 end
 
-M.timer = function(timeout, interval, should_start, callback)
-    if not interval then interval = 0 end
-
-    local timer = uv.new_timer()
-    local start = function() timer:start(timeout, interval, callback) end
-    local stop = function() timer:stop() end
-    local restart = function(new_timeout, new_interval)
-        timer:stop()
-        timer:start(new_timeout or timeout, new_interval or interval, callback)
-    end
-
-    if should_start then timer:start(timeout, interval, callback) end
-    return {_timer = timer, start = start, stop = stop, restart = restart}
-end
-
 if _G._TEST then M._parse_args = parse_args end
 
 return M

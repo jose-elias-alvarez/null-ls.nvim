@@ -1,13 +1,18 @@
-local methods = {
-    CODE_ACTION = "textDocument/codeAction",
-    DIAGNOSTICS = "textDocument/publishDiagnostics",
+local M = {}
+M.lsp = {
     INITIALIZE = "initialize",
     SHUTDOWN = "shutdown",
-    EXECUTE_COMMAND = "workspace/executeCommand"
+    CODE_ACTION = "textDocument/codeAction",
+    EXECUTE_COMMAND = "workspace/executeCommand",
+    PUBLISH_DIAGNOSTICS = "textDocument/publishDiagnostics",
+    DID_CHANGE = "textDocument/didChange",
+    DID_OPEN = "textDocument/didOpen",
+    DID_CLOSE = "textDocument/didClose"
 }
 
-function methods:exists(method)
-    return vim.tbl_contains(vim.tbl_values(self), method)
-end
+M.internal = {
+    CODE_ACTION = "NULL_LS_CODE_ACTION",
+    DIAGNOSTICS = "NULL_LS_DIAGNOSTICS"
+}
 
-return methods
+return M

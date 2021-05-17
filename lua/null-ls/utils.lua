@@ -1,6 +1,23 @@
+local methods = require("null-ls.methods")
 local api = vim.api
 
 local M = {}
+
+local get_content_from_params = function(params)
+    -- diagnostic notifications will send full buffer content on open and change
+    -- so we can avoid unnecessary api calls
+    if params.method == methods.lsp.DID_OPEN and params.textDocument and
+        params.textDocument.text then
+        return vim.split(params.textDocument.text, "\n")
+    end
+    if params.method == methods.lsp.DID_CHANGE and params.contentChanges and
+        params.contentChanges[1] and params.contentChanges[1].text then
+        return vim.split(params.contentChanges[1].text, "\n")
+    end
+
+    -- for other methods, fall back to manually getting content
+    return M.buf.content(params.bufnr)
+end
 
 M.echo = function(hlgroup, message)
     api.nvim_echo({{"null-ls: " .. message, hlgroup}}, true, {})
@@ -10,19 +27,26 @@ M.filetype_matches = function(handler, ft)
     return not handler.filetypes or vim.tbl_contains(handler.filetypes, ft)
 end
 
-M.make_params = function(method, bufnr)
-    if not bufnr then bufnr = api.nvim_get_current_buf() end
+M.make_params = function(original_params, method)
+    local bufnr = original_params.bufnr
+    local lsp_method = original_params.method
+    local uri = original_params.textDocument and
+                    original_params.textDocument.uri or
+                    vim.uri_from_bufnr(bufnr)
 
     local pos = api.nvim_win_get_cursor(0)
+    local content = get_content_from_params(original_params)
+
     return {
+        content = content,
+        lsp_method = lsp_method,
         method = method,
         row = pos[1],
         col = pos[2],
         bufnr = bufnr,
+        uri = uri,
         bufname = api.nvim_buf_get_name(bufnr),
-        uri = vim.uri_from_bufnr(bufnr),
-        content = M.buf.content(bufnr),
-        ft = vim.bo.filetype
+        ft = api.nvim_buf_get_option(bufnr, "filetype")
     }
 end
 

@@ -1,235 +1,209 @@
-local a = require("plenary.async_lib")
-local spy = require("luassert.spy")
+local mock = require("luassert.mock")
 local stub = require("luassert.stub")
-local loop = require("null-ls.loop")
+local a = require("plenary.async_lib")
 
-local s = require("null-ls.state")
 local u = require("null-ls.utils")
-local handlers = require("null-ls.handlers")
+local s = require("null-ls.state")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
 
-local api = vim.api
-
-local get_bufname = function()
-    return api.nvim_buf_get_name(api.nvim_get_current_buf())
-end
+local lsp = mock(vim.lsp, "true")
 
 describe("diagnostics", function()
-    _G._TEST = true
     local diagnostics = require("null-ls.diagnostics")
 
-    describe("attach", function()
-        stub(vim, "schedule_wrap")
-        stub(api, "nvim_buf_attach")
-        stub(loop, "timer")
+    describe("handler", function()
+        stub(vim, "uri_to_bufnr")
+        stub(vim.fn, "buflisted")
         stub(a, "await")
         stub(u, "make_params")
-        stub(handlers, "diagnostics")
         stub(sources, "run_generators")
 
-        before_each(function() vim.cmd("e mock-file") end)
+        local mock_bufnr, mock_client_id = 99, 999
+        local mock_params
+        before_each(function()
+            s.set_client_id(mock_client_id)
+            mock_params = {textDocument = {uri = "file:///mock-file"}}
+        end)
 
         after_each(function()
-            vim.schedule_wrap:clear()
-            api.nvim_buf_attach:clear()
-            loop.timer:clear()
+            vim.uri_to_bufnr:clear()
+            vim.fn.buflisted:clear()
+            lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
             a.await:clear()
-            u.make_params:clear()
-            handlers.diagnostics:clear()
             sources.run_generators:clear()
+            u.make_params:clear()
 
-            s.detach_all()
-            vim.cmd("bufdo! bwipeout!")
+            s.reset()
         end)
 
-        local callback = function() print("I am a callback") end
+        it("should return immediately if params don't contain uri", function()
+            diagnostics.handler({})
 
-        it("should attach buffer", function()
-            vim.schedule_wrap.returns(callback)
-
-            diagnostics.attach()
-
-            assert.equals(s.is_attached(get_bufname()), true)
+            assert.stub(vim.uri_to_bufnr).was_not_called()
         end)
 
-        it("should create timer with args and callback", function()
-            vim.schedule_wrap.returns(callback)
+        it("should return if buffer is not listed", function()
+            vim.fn.buflisted.returns(0)
 
-            diagnostics.attach()
+            diagnostics.handler(mock_params)
 
-            assert.stub(loop.timer).was_called_with(0, nil, true, callback)
+            assert.stub(vim.uri_to_bufnr).was_called_with(
+                mock_params.textDocument.uri)
+            assert.stub(u.make_params).was_not_called()
         end)
 
-        it("should call nvim_buf_attach with args", function()
-            diagnostics.attach()
+        it("should call make_params with params and method", function()
+            vim.fn.buflisted.returns(1)
+            vim.uri_to_bufnr.returns(mock_bufnr)
+            u.make_params.returns({})
 
-            local args = api.nvim_buf_attach.calls[1].refs
+            diagnostics.handler(mock_params)
 
-            assert.equals(args[1], api.nvim_get_current_buf())
-            assert.equals(args[2], false)
-            assert.truthy(args[3].on_lines)
-            assert.truthy(args[3].on_detach)
+            assert.stub(u.make_params).was_called_with(
+                {bufnr = mock_bufnr, textDocument = mock_params.textDocument},
+                methods.internal.DIAGNOSTICS)
         end)
 
-        it("should not attach again if buffer is already attachd", function()
-            diagnostics.attach()
-
-            diagnostics.attach()
-
-            assert.stub(api.nvim_buf_attach).was_called(1)
-        end)
-
-        describe("on_lines", function()
-            it("should call timer.restart with debounce time", function()
-                local restart = spy.new()
-                loop.timer.returns({restart = restart})
-
-                diagnostics.attach()
-                local opts = api.nvim_buf_attach.calls[1].refs[3]
-                opts.on_lines()
-
-                assert.spy(restart).was_called_with(250)
-            end)
-        end)
-
-        describe("on_detach", function()
-            it("should call timer.stop and detach buffer", function()
-                local stop = spy.new()
-                loop.timer.returns({stop = stop})
-
-                diagnostics.attach()
-                local opts = api.nvim_buf_attach.calls[1].refs[3]
-                opts.on_detach()
-
-                assert.spy(stop).was_called()
-                assert.equals(s.is_attached(get_bufname()), nil)
-            end)
-        end)
-    end)
-
-    describe("postprocess", function()
-        it("should convert range when all positions are defined", function()
-            local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = 6, line = 1},
-                start = {character = 5, line = 0}
-            })
-        end)
-
-        it("should convert range when row is missing", function()
-            local diagnostic = {row = nil, col = 5, end_row = 2, end_col = 6}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = 6, line = 1},
-                start = {character = 5, line = 0}
-            })
-        end)
-
-        it("should convert range when col is missing", function()
-            local diagnostic = {row = 1, col = nil, end_row = 2, end_col = 6}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = 6, line = 1},
-                start = {character = 0, line = 0}
-            })
-        end)
-
-        it("should convert range when end_row is missing", function()
-            local diagnostic = {row = 1, col = 5, end_row = nil, end_col = 6}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = 6, line = 0},
-                start = {character = 5, line = 0}
-            })
-        end)
-
-        it("should convert range when end_col is missing", function()
-            local diagnostic = {row = 1, col = 5, end_row = 2, end_col = nil}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = -1, line = 1},
-                start = {character = 5, line = 0}
-            })
-        end)
-
-        it("should convert range when all positions are missing", function()
-            local diagnostic = {
-                row = nil,
-                col = nil,
-                end_row = nil,
-                end_col = nil
-            }
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.same(diagnostic.range, {
-                ["end"] = {character = -1, line = 0},
-                start = {character = 0, line = 0}
-            })
-        end)
-
-        it("should keep diagnostic source when defined", function()
-            local diagnostic = {
-                row = 1,
-                col = 5,
-                end_row = 2,
-                end_col = 6,
-                source = "mock-source"
-            }
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.equals(diagnostic.source, "mock-source")
-        end)
-
-        it("should set default source when undefined", function()
-            local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
-
-            diagnostics._postprocess(diagnostic)
-
-            assert.equals(diagnostic.source, "null-ls")
-        end)
-    end)
-
-    describe("get_diagnostics", function()
-        local bufnr = 5
-        local mock_params = {uri = "mock URI"}
-        before_each(function() u.make_params.returns(mock_params) end)
-
-        it("should call make_params with method and bufnr", function()
-            diagnostics._get_diagnostics(bufnr)
-
-            assert.stub(u.make_params).was_called_with(methods.DIAGNOSTICS,
-                                                       bufnr)
-        end)
-
-        it("should call run_generators with params and postprocess", function()
-            diagnostics._get_diagnostics(bufnr)
-
-            assert.stub(sources.run_generators).was_called_with(mock_params,
-                                                                diagnostics._postprocess)
-        end)
-
-        it("should call handlers.diagnostics with diagnostics and uri",
+        it("should send results of diagnostic generators to lsp handler",
            function()
+            vim.fn.buflisted.returns(1)
+            vim.uri_to_bufnr.returns(mock_bufnr)
+            u.make_params.returns({uri = mock_params.textDocument.uri})
             a.await.returns("diagnostics")
 
-            diagnostics._get_diagnostics(bufnr)
+            diagnostics.handler(mock_params)
 
-            assert.stub(handlers.diagnostics).was_called_with(
-                {diagnostics = "diagnostics", uri = mock_params.uri})
+            assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS])
+                .was_called_with(nil, nil, {
+                diagnostics = "diagnostics",
+                uri = mock_params.textDocument.uri
+            }, mock_client_id, nil, {})
+        end)
+
+        describe("postprocess", function()
+            local postprocess
+            before_each(function()
+                vim.fn.buflisted.returns(1)
+                vim.uri_to_bufnr.returns(mock_bufnr)
+                u.make_params.returns({uri = mock_params.textDocument.uri})
+
+                diagnostics.handler(mock_params)
+                postprocess = sources.run_generators.calls[1].refs[2]
+            end)
+
+            it("should convert range when all positions are defined", function()
+                local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = 6, line = 1},
+                    start = {character = 5, line = 0}
+                })
+            end)
+
+            it("should convert range when row is missing", function()
+                local diagnostic = {
+                    row = nil,
+                    col = 5,
+                    end_row = 2,
+                    end_col = 6
+                }
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = 6, line = 1},
+                    start = {character = 5, line = 0}
+                })
+            end)
+
+            it("should convert range when col is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = nil,
+                    end_row = 2,
+                    end_col = 6
+                }
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = 6, line = 1},
+                    start = {character = 0, line = 0}
+                })
+            end)
+
+            it("should convert range when end_row is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = nil,
+                    end_col = 6
+                }
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = 6, line = 0},
+                    start = {character = 5, line = 0}
+                })
+            end)
+
+            it("should convert range when end_col is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = 2,
+                    end_col = nil
+                }
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = -1, line = 1},
+                    start = {character = 5, line = 0}
+                })
+            end)
+
+            it("should convert range when all positions are missing", function()
+                local diagnostic = {
+                    row = nil,
+                    col = nil,
+                    end_row = nil,
+                    end_col = nil
+                }
+
+                postprocess(diagnostic)
+
+                assert.same(diagnostic.range, {
+                    ["end"] = {character = -1, line = 0},
+                    start = {character = 0, line = 0}
+                })
+            end)
+
+            it("should keep diagnostic source when defined", function()
+                local diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = 2,
+                    end_col = 6,
+                    source = "mock-source"
+                }
+
+                postprocess(diagnostic)
+
+                assert.equals(diagnostic.source, "mock-source")
+            end)
+
+            it("should set default source when undefined", function()
+                local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
+
+                postprocess(diagnostic)
+
+                assert.equals(diagnostic.source, "null-ls")
+            end)
         end)
     end)
 end)

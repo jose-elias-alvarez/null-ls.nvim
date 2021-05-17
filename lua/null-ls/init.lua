@@ -10,7 +10,7 @@ local s = require("null-ls.state")
 local M = {}
 
 M.register = sources.register
-M.methods = methods
+M.methods = methods.internal
 M.helpers = helpers
 M.builtins = builtins
 M.server = server
@@ -18,12 +18,13 @@ M.attach = client.attach
 
 M.setup = function() handlers.setup() end
 
+-- TODO: move (currently breaking e2e tests)
 vim.api.nvim_exec([[
-augroup NullLsAttach
-    autocmd!
-    autocmd BufEnter * lua require'null-ls'.attach()
-augroup END
-]], false)
+    augroup NullLsAttach
+        autocmd!
+        autocmd BufEnter * lua require'null-ls'.attach()
+    augroup END
+    ]], false)
 
 M.reset = function()
     handlers.reset()

@@ -1,6 +1,5 @@
 local a = require("plenary.async_lib")
 local u = require("null-ls.utils")
-local methods = require("null-ls.methods")
 
 local validate = vim.validate
 
@@ -12,7 +11,7 @@ M.get_generators = function(method)
     return method and _generators[method] or _generators
 end
 
-M.register = function(sources, force)
+M.register = function(sources)
     for _, source in ipairs(sources) do
         local method, generators, filetypes = source.method, source.generators,
                                               source.filetypes
@@ -22,14 +21,10 @@ M.register = function(sources, force)
             filetypes = {filetypes, "table", true}
         })
 
-        if not methods:exists(method) and not force then
-            u.echo("WarningMsg", "method " .. method .. " is not supported")
-        else
-            if not _generators[method] then _generators[method] = {} end
-            for _, generator in ipairs(generators) do
-                if filetypes then generator.filetypes = filetypes end
-                table.insert(_generators[method], generator)
-            end
+        if not _generators[method] then _generators[method] = {} end
+        for _, generator in ipairs(generators) do
+            if filetypes then generator.filetypes = filetypes end
+            table.insert(_generators[method], generator)
         end
     end
 end

@@ -8,8 +8,8 @@ local sources = require("null-ls.sources")
 
 local uv = vim.loop
 
-local register = function(method, generators, force)
-    sources.register({{method = method, generators = generators}}, force)
+local register = function(method, generators)
+    sources.register({{method = method, generators = generators}})
 end
 
 local assert_length = function(tbl, length)
@@ -97,17 +97,6 @@ describe("sources", function()
             assert_length(all_generators[method], 0)
             assert_length(all_generators[other_method],
                           vim.tbl_count(mock_generators))
-        end)
-
-        it("should echo warning on unsupported method", function()
-            stub(u, "echo")
-            local unsupported_method = "workspace/thisWillNotWork"
-
-            register(unsupported_method, mock_generators)
-
-            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match(
-                                                    "not supported"))
-            assert.equals(sources.get_generators()[unsupported_method], nil)
         end)
     end)
 

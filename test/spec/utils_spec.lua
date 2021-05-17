@@ -1,5 +1,8 @@
-local test_utils = require("test.utils")
 local stub = require("luassert.stub")
+
+local methods = require("null-ls.methods")
+
+local test_utils = require("test.utils")
 
 describe("utils", function()
     local u = require("null-ls.utils")
@@ -49,23 +52,65 @@ describe("utils", function()
     end)
 
     describe("make_params", function()
+        local mock_method = "mockMethod"
         after_each(function() vim.cmd("bufdo! bwipeout!") end)
 
-        it("should return params", function()
+        it("should return params from minimal original params", function()
             test_utils.edit_test_file("test-file.lua")
 
-            local params = u.make_params("mockMethod")
+            local params = u.make_params(
+                               {
+                    bufnr = vim.api.nvim_get_current_buf(),
+                    method = methods.lsp.CODE_ACTION
+                }, mock_method)
 
             assert.equals(params.bufname,
                           test_utils.test_dir .. "/files/test-file.lua")
             assert.equals(params.uri, "file://" .. test_utils.test_dir ..
                               "/files/test-file.lua")
+            assert.equals(params.lsp_method, methods.lsp.CODE_ACTION)
             assert.equals(params.bufnr, 1)
             assert.equals(params.col, 0)
             assert.equals(params.row, 1)
             assert.equals(params.ft, "lua")
-            assert.equals(params.method, "mockMethod")
+            assert.equals(params.method, mock_method)
             assert.same(params.content, {"print(\"I am a test file!\")", "\n"})
+        end)
+
+        it("should get uri from original params", function()
+            test_utils.edit_test_file("test-file.lua")
+
+            local mock_uri = "file:///mock-file"
+            local params = u.make_params({textDocument = {uri = mock_uri}},
+                                         "mockMethod")
+
+            assert.equals(params.uri, mock_uri)
+        end)
+
+        it("should get content from params on DID_OPEN", function()
+            test_utils.edit_test_file("test-file.lua")
+
+            local mock_content = "I am some other content"
+            local params = u.make_params(
+                               {
+                    method = methods.lsp.DID_OPEN,
+                    textDocument = {text = mock_content}
+                }, "mockMethod")
+
+            assert.same(params.content, {mock_content})
+        end)
+
+        it("should get content from params on DID_CHANGE", function()
+            test_utils.edit_test_file("test-file.lua")
+
+            local mock_content = "I am some other content"
+            local params = u.make_params(
+                               {
+                    method = methods.lsp.DID_CHANGE,
+                    contentChanges = {{text = mock_content}}
+                }, "mockMethod")
+
+            assert.same(params.content, {mock_content})
         end)
     end)
 

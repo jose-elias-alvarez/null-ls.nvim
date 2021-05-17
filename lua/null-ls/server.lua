@@ -10,7 +10,11 @@ local format_rpc_message = function(encoded)
     })
 end
 
-local capabilities = {codeActionProvider = true, executeCommandProvider = true}
+local capabilities = {
+    codeActionProvider = true,
+    executeCommandProvider = true,
+    textDocumentSync = {change = 1, openClose = true}
+}
 
 return function()
     local lsp_id
@@ -35,25 +39,29 @@ return function()
             end
 
             local method, id = decoded.method, decoded.id
-            lsp_id = id and id
+            lsp_id = id
 
-            if method == methods.INITIALIZE then
+            if method == methods.lsp.INITIALIZE then
                 send({result = {capabilities = capabilities}})
                 return
             end
 
-            if method == methods.SHUTDOWN then
+            if method == methods.lsp.SHUTDOWN then
                 send({result = nil})
                 vim.cmd("noa qa!")
             end
 
-            -- these should be caught by client.request and never reach the server,
+            -- these should be caught by the client and never reach the server,
             -- but since the server declares these capabilities, they're here as fallbacks
-            if method == methods.EXECUTE_COMMAND then
+            if method == methods.lsp.EXECUTE_COMMAND then
                 send({result = nil})
             end
 
-            if method == methods.CODE_ACTION then
+            if method == methods.lsp.CODE_ACTION then
+                send({result = nil})
+            end
+
+            if method == methods.lsp.DID_CHANGE then
                 send({result = nil})
             end
         end

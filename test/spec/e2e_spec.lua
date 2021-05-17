@@ -1,9 +1,7 @@
-local s = require("null-ls.state")
 local sources = require("null-ls.sources")
 local builtins = require("null-ls.builtins")
 local methods = require("null-ls.methods")
 local main = require("null-ls")
-local NULL_LS_CODE_ACTION = require("null-ls.code-actions").NULL_LS_CODE_ACTION
 
 local tu = require("test.utils")
 
@@ -28,7 +26,7 @@ describe("e2e", function()
         before_each(function()
             sources.register({
                 {
-                    method = methods.CODE_ACTION,
+                    method = methods.internal.CODE_ACTION,
                     generators = {builtins.toggle_line_comment}
                 }
             })
@@ -39,13 +37,14 @@ describe("e2e", function()
 
         it("should get null-ls code action", function()
             local actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
-                                                 methods.CODE_ACTION)
+                                                 methods.lsp.CODE_ACTION)
 
+            assert.truthy(actions)
             assert.equals(vim.tbl_count(actions), 1)
 
             local null_ls_action = actions[1].result[1]
             assert.equals(null_ls_action.title, "Comment line")
-            assert.equals(null_ls_action.command, NULL_LS_CODE_ACTION)
+            assert.equals(null_ls_action.command, methods.internal.CODE_ACTION)
         end)
     end)
 
@@ -53,17 +52,13 @@ describe("e2e", function()
         before_each(function()
             sources.register({
                 {
-                    method = methods.DIAGNOSTICS,
+                    method = methods.internal.DIAGNOSTICS,
                     generators = {builtins.write_good}
                 }
             })
             tu.edit_test_file("test-file.md")
 
             wait_for_lsp_client()
-        end)
-
-        it("should correctly attach to buffer", function()
-            assert.equals(s.is_attached(tu.test_file_path("test-file.md")), true)
         end)
 
         it("should get buffer diagnostics on attach", function()
@@ -86,15 +81,6 @@ describe("e2e", function()
             wait_for_lsp_client()
 
             assert.equals(vim.tbl_count(lsp.diagnostic.get()), 0)
-        end)
-
-        it("should correctly detach from buffer on close", function()
-            assert.equals(s.is_attached(tu.test_file_path("test-file.md")), true)
-
-            vim.cmd("bufdo! bwipeout!")
-
-            assert.equals(s.is_attached(tu.test_file_path("test-file.md")), nil)
-            assert.equals(vim.tbl_count(s.get().attached), 0)
         end)
     end)
 end)
