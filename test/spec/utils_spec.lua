@@ -73,23 +73,44 @@ describe("utils", function()
         after_each(function() vim.cmd("bufdo! bwipeout!") end)
 
         describe("content", function()
-            it("should get buffer content as table", function()
+            before_each(function()
                 test_utils.edit_test_file("test-file.lua")
+                vim.api.nvim_buf_set_option(vim.api.nvim_get_current_buf(),
+                                            "eol", true)
+            end)
 
+            it("should get buffer content as table", function()
                 local content = u.buf.content()
 
                 assert.equals(type(content), "table")
                 assert.same(content, {"print(\"I am a test file!\")", "\n"})
             end)
 
-            it("should get buffer content as string", function()
-                test_utils.edit_test_file("test-file.lua")
+            it("should not add final newline to table when eol option is false",
+               function()
+                vim.api.nvim_buf_set_option(vim.api.nvim_get_current_buf(),
+                                            "eol", false)
+                local content = u.buf.content()
 
+                assert.same(content, {"print(\"I am a test file!\")"})
+            end)
+
+            it("should get buffer content as string", function()
                 local content = u.buf.content(nil, true)
 
                 assert.equals(type(content), "string")
                 assert.equals(content, "print(\"I am a test file!\")\n")
             end)
+
+            it(
+                "should not add final newline to string when eol option is false",
+                function()
+                    vim.api.nvim_buf_set_option(vim.api.nvim_get_current_buf(),
+                                                "eol", false)
+                    local content = u.buf.content(nil, true)
+
+                    assert.equals(content, "print(\"I am a test file!\")")
+                end)
         end)
     end)
 

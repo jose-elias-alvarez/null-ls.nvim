@@ -29,11 +29,15 @@ end
 M.buf = {
     content = function(bufnr, to_string)
         if not bufnr then bufnr = api.nvim_get_current_buf() end
+        local eol = api.nvim_buf_get_option(bufnr, "eol")
 
         local split = api.nvim_buf_get_lines(bufnr, 0, -1, false)
-        if to_string then return table.concat(split, "\n") .. "\n" end
+        if to_string then
+            local text = table.concat(split, "\n")
+            return eol and text .. "\n" or text
+        end
 
-        table.insert(split, "\n")
+        if eol then table.insert(split, "\n") end
         return split
     end
 }
