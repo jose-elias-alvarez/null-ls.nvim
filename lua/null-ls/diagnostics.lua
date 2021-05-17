@@ -38,6 +38,8 @@ end)
 
 M.attach = function(bufnr)
     if not bufnr then bufnr = api.nvim_get_current_buf() end
+    if vim.fn.buflisted(bufnr) == 0 then return end
+
     local bufname = api.nvim_buf_get_name(bufnr)
     if s.is_attached(bufname) then return end
 
