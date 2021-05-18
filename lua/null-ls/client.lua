@@ -12,7 +12,7 @@ M.attach = function()
         local client_id = lsp.start_client(
                               {
                 cmd = {
-                    "nvim", "--headless", "--noplugin", "-c",
+                    "nvim", "--headless", "-u", "NONE", "-c",
                     "lua require'null-ls'.server()"
                 },
                 root_dir = vim.fn.getcwd(),
