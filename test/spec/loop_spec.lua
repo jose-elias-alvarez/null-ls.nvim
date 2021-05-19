@@ -226,7 +226,7 @@ describe("loop", function()
                     mock_handler(...)
                 end})
 
-                local callback = uv.spawn.calls[1].refs[3]
+                local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
 
                 assert.stub(mock_handle_is_closing).was_called()
@@ -243,7 +243,7 @@ describe("loop", function()
                     mock_handler(...)
                 end})
 
-                local callback = uv.spawn.calls[1].refs[3]
+                local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
 
                 assert.stub(mock_handle_is_closing).was_called()
@@ -260,7 +260,7 @@ describe("loop", function()
                     mock_handler(...)
                 end})
 
-                local callback = uv.spawn.calls[1].refs[3]
+                local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
 
                 assert.stub(mock_stdout_read_stop).was_called()
@@ -276,7 +276,7 @@ describe("loop", function()
                     mock_handler(...)
                 end})
 
-                local callback = uv.spawn.calls[1].refs[3]
+                local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
 
                 assert.stub(mock_stderr_read_stop).was_called()

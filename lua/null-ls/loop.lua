@@ -58,7 +58,8 @@ M.spawn = function(cmd, args, opts)
     local stdio = {stdin, stdout, stderr}
 
     local handle
-    handle = uv.spawn(cmd, {args = parse_args(args), stdio = stdio}, function()
+    handle = uv.spawn(cmd, {args = parse_args(args), stdio = stdio},
+                      vim.schedule_wrap(function()
         stdout:read_stop()
         stderr:read_stop()
 
@@ -66,7 +67,7 @@ M.spawn = function(cmd, args, opts)
         close_handle(stdout)
         close_handle(stderr)
         close_handle(handle)
-    end)
+    end))
 
     uv.read_start(stdout, handle_stdout)
     uv.read_start(stderr, handle_stderr)
