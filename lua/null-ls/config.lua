@@ -1,3 +1,5 @@
+local autocommands = require("null-ls.autocommands")
+
 local validate = vim.validate
 
 local defaults = {
@@ -33,6 +35,10 @@ local register_source = function(source)
         generator.filetypes = filetypes
         table.insert(config.generators[method], generator)
     end
+
+    -- plugins that register sources after BufEnter may need to call try_attach() again,
+    -- after filetypes have been registered
+    autocommands.trigger(autocommands.names.REGISTERED)
 end
 
 local register_sources = function(sources)

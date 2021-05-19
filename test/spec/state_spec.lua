@@ -88,6 +88,16 @@ describe("state", function()
                     mock_bufnr, mock_client_id)
             end)
 
+            it(
+                "should not call buf_attach_client again if buffer is already attached",
+                function()
+                    s.attach(mock_bufnr)
+
+                    s.attach(mock_bufnr)
+
+                    assert.stub(vim.lsp.buf_attach_client).was_called(1)
+                end)
+
             it("should save bufnr in state.attached under uri", function()
                 s.attach(mock_bufnr)
 

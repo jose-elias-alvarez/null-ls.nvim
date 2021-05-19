@@ -1,5 +1,7 @@
 local stub = require("luassert.stub")
 
+local autocommands = require("null-ls.autocommands")
+
 describe("config", function()
     local c = require("null-ls.config")
 
@@ -33,6 +35,9 @@ describe("config", function()
     end)
 
     describe("register_source", function()
+        stub(autocommands, "trigger")
+        after_each(function() autocommands.trigger:clear() end)
+
         it("should register source generators and filetypes", function()
             c.register_source(mock_source)
 
@@ -54,6 +59,12 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get().filetypes), 2)
         end)
 
+        it("should call autocommands trigger method", function()
+            c.register_source(mock_source)
+
+            assert.stub(autocommands.trigger).was_called_with(
+                autocommands.names.REGISTERED)
+        end)
     end)
 
     describe("register_sources", function()

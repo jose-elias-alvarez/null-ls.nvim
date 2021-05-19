@@ -26,8 +26,11 @@ M.stop_client = function()
 end
 
 M.attach = function(bufnr)
+    local uri = vim.uri_from_bufnr(bufnr)
+    if state.attached[uri] then return end
+
     lsp.buf_attach_client(bufnr, state.client_id)
-    state.attached[vim.uri_from_bufnr(bufnr)] = bufnr
+    state.attached[uri] = bufnr
 end
 
 M.detach = function(uri) state.attached[uri] = nil end
