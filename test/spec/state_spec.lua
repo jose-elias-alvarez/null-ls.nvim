@@ -43,43 +43,69 @@ describe("state", function()
         end)
     end)
 
-    describe("set_client_id", function()
-        it("should set state client_id", function()
-            s.set_client_id(mock_client_id)
+    describe("client", function()
+        describe("stop_client", function()
+            stub(vim.lsp, "stop_client")
 
-            assert.equals(s.get().client_id, mock_client_id)
+            before_each(function()
+                s.set({client_id = mock_client_id})
+            end)
+            after_each(function() vim.lsp.stop_client:clear() end)
+
+            it("should call stop_client with state client_id", function()
+                s.stop_client()
+
+                assert.stub(vim.lsp.stop_client).was_called_with(mock_client_id)
+            end)
+
+            it("should reset state", function()
+                s.stop_client()
+
+                assert.equals(s.get().client_id, nil)
+            end)
+        end)
+
+        describe("attach", function()
+            stub(vim.lsp, "buf_attach_client")
+            stub(vim, "uri_from_bufnr")
+
+            local mock_bufnr, mock_uri = 75, "file:///mock-file.lua"
+            before_each(function()
+                s.set({client_id = mock_client_id})
+                vim.uri_from_bufnr.returns(mock_uri)
+            end)
+
+            after_each(function()
+                vim.lsp.buf_attach_client:clear()
+                vim.uri_from_bufnr:clear()
+            end)
+
+            it("should call buf_attach_client with bufnr and client_id",
+               function()
+                s.attach(mock_bufnr)
+
+                assert.stub(vim.lsp.buf_attach_client).was_called_with(
+                    mock_bufnr, mock_client_id)
+            end)
+
+            it("should save bufnr in state.attached under uri", function()
+                s.attach(mock_bufnr)
+
+                assert.equals(s.get().attached[mock_uri], mock_bufnr)
+            end)
         end)
     end)
 
-    describe("stop_client", function()
-        stub(vim.lsp, "stop_client")
-
-        before_each(function() s.set({client_id = mock_client_id}) end)
-        after_each(function() vim.lsp.stop_client:clear() end)
-
-        it("should call stop_client with state client_id", function()
-            s.stop_client()
-
-            assert.stub(vim.lsp.stop_client).was_called_with(mock_client_id)
-        end)
-
-        it("should reset state", function()
-            s.stop_client()
-
-            assert.equals(s.get().client_id, nil)
-        end)
-    end)
-
-    describe("push_action", function()
-        it("should assign actions to state.actions[title]", function()
-            s.push_action(mock_action)
+    describe("register_action", function()
+        it("should register action under state.actions[title]", function()
+            s.register_action(mock_action)
 
             assert.equals(s.get().actions[mock_action.title], mock_action.action)
         end)
     end)
 
     describe("run_action", function()
-        before_each(function() s.push_action(mock_action) end)
+        before_each(function() s.register_action(mock_action) end)
 
         it("should run action matching title", function()
             s.run_action(mock_action.title)
@@ -90,7 +116,7 @@ describe("state", function()
 
     describe("clear_actions", function()
         it("should clear state actions", function()
-            s.push_action(mock_action)
+            s.register_action(mock_action)
 
             s.clear_actions()
 

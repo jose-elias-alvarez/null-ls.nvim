@@ -1,5 +1,11 @@
-local initial_state = {client_id = nil, actions = {}}
-local state = initial_state
+local initial_state = {
+    client_id = nil,
+    on_attach = nil,
+    initialized = nil,
+    actions = {},
+    attached = {}
+}
+local state = vim.deepcopy(initial_state)
 
 local M = {}
 
@@ -14,15 +20,21 @@ M.set =
 M.reset = reset
 
 -- client
-M.set_client_id = function(client_id) state.client_id = client_id end
-
 M.stop_client = function()
     lsp.stop_client(state.client_id)
     reset()
 end
 
+M.attach = function(bufnr)
+    lsp.buf_attach_client(bufnr, state.client_id)
+    state.attached[vim.uri_from_bufnr(bufnr)] = bufnr
+end
+
+M.detach = function(uri) state.attached[uri] = nil end
+
 -- actions
-M.push_action = function(action) state.actions[action.title] = action.action end
+M.register_action =
+    function(action) state.actions[action.title] = action.action end
 
 M.run_action = function(title)
     local action = state.actions[title]

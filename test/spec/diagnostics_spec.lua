@@ -5,7 +5,7 @@ local a = require("plenary.async_lib")
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
 local methods = require("null-ls.methods")
-local sources = require("null-ls.sources")
+local generators = require("null-ls.generators")
 
 local lsp = mock(vim.lsp, "true")
 
@@ -13,51 +13,41 @@ describe("diagnostics", function()
     local diagnostics = require("null-ls.diagnostics")
 
     describe("handler", function()
-        stub(vim, "uri_to_bufnr")
-        stub(vim.fn, "buflisted")
         stub(a, "await")
+        stub(s, "detach")
         stub(u, "make_params")
-        stub(sources, "run_generators")
+        stub(generators, "run")
 
         local mock_bufnr, mock_client_id = 99, 999
         local mock_params
         before_each(function()
-            s.set_client_id(mock_client_id)
+            s.set({client_id = mock_client_id})
             mock_params = {textDocument = {uri = "file:///mock-file"}}
         end)
 
         after_each(function()
-            vim.uri_to_bufnr:clear()
-            vim.fn.buflisted:clear()
             lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
             a.await:clear()
-            sources.run_generators:clear()
+            s.detach:clear()
+
+            generators.run:clear()
             u.make_params:clear()
 
             s.reset()
         end)
 
-        it("should return immediately if params don't contain uri", function()
-            diagnostics.handler({})
-
-            assert.stub(vim.uri_to_bufnr).was_not_called()
-        end)
-
-        it("should return if buffer is not listed", function()
-            vim.fn.buflisted.returns(0)
+        it("should call detach with uri and return if method == DID_CLOSE",
+           function()
+            mock_params.method = methods.lsp.DID_CLOSE
 
             diagnostics.handler(mock_params)
 
-            assert.stub(vim.uri_to_bufnr).was_called_with(
-                mock_params.textDocument.uri)
+            assert.stub(s.detach).was_called_with(mock_params.textDocument.uri)
             assert.stub(u.make_params).was_not_called()
         end)
 
         it("should call make_params with params and method", function()
-            vim.fn.buflisted.returns(1)
-            vim.uri_to_bufnr.returns(mock_bufnr)
-            u.make_params.returns({})
-
+            s.set({attached = {[mock_params.textDocument.uri] = mock_bufnr}})
             diagnostics.handler(mock_params)
 
             assert.stub(u.make_params).was_called_with(
@@ -67,8 +57,6 @@ describe("diagnostics", function()
 
         it("should send results of diagnostic generators to lsp handler",
            function()
-            vim.fn.buflisted.returns(1)
-            vim.uri_to_bufnr.returns(mock_bufnr)
             u.make_params.returns({uri = mock_params.textDocument.uri})
             a.await.returns("diagnostics")
 
@@ -84,12 +72,10 @@ describe("diagnostics", function()
         describe("postprocess", function()
             local postprocess
             before_each(function()
-                vim.fn.buflisted.returns(1)
-                vim.uri_to_bufnr.returns(mock_bufnr)
                 u.make_params.returns({uri = mock_params.textDocument.uri})
 
                 diagnostics.handler(mock_params)
-                postprocess = sources.run_generators.calls[1].refs[2]
+                postprocess = generators.run.calls[1].refs[2]
             end)
 
             it("should convert range when all positions are defined", function()

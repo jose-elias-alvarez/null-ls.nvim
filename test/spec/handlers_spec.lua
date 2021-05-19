@@ -9,21 +9,12 @@ local lsp = vim.lsp
 describe("handlers", function()
     local handlers = require("null-ls.handlers")
 
-    describe("setup and reset", function()
-        before_each(function() handlers.setup() end)
-        after_each(function() handlers.reset() end)
-
+    describe("setup", function()
         it("should replace lsp handlers with overrides on setup", function()
+            handlers.setup()
+
             assert.equals(lsp.buf_request, handlers.buf_request)
             assert.equals(lsp.buf_request_all, handlers.buf_request_all)
-        end)
-
-        it("should set lsp handlers back to originals on reset", function()
-            handlers.reset()
-
-            assert.equals(lsp.buf_request, handlers.originals.buf_request)
-            assert.equals(lsp.buf_request_all,
-                          handlers.originals.buf_request_all)
         end)
     end)
 
@@ -31,13 +22,9 @@ describe("handlers", function()
         stub(lsp, "buf_get_clients")
         local mock_handler = stub.new()
         local buf_request = stub.new()
-
-        before_each(function()
-            handlers.originals.buf_request = buf_request
-        end)
+        handlers.originals.buf_request = buf_request
 
         after_each(function()
-            handlers.reset()
             lsp.buf_get_clients:clear()
             mock_handler:clear()
             buf_request:clear()
@@ -96,13 +83,9 @@ describe("handlers", function()
     describe("buf_request_all", function()
         local mock_callback = stub.new()
         local buf_request_all = stub.new()
-
-        before_each(function()
-            handlers.originals.buf_request_all = buf_request_all
-        end)
+        handlers.originals.buf_request_all = buf_request_all
 
         after_each(function()
-            handlers.reset()
             mock_callback:clear()
             buf_request_all:clear()
         end)
@@ -135,33 +118,17 @@ describe("handlers", function()
         end)
 
         describe("notify", function()
-            it("should return true", function()
-                local response = mock_client.notify("mockMethod", {})
-
-                assert.equals(response, true)
-            end)
-
-            it("should call diagnostics handler if method is DID_OPEN",
-               function()
+            it("should call diagnostics handler with params", function()
                 mock_client.notify(methods.lsp.DID_OPEN, {})
 
                 assert.stub(diagnostics.handler).was_called_with(
                     {method = methods.lsp.DID_OPEN})
             end)
 
-            it("should call diagnostics handler if method is DID_CHANGE",
-               function()
-                mock_client.notify(methods.lsp.DID_CHANGE, {})
+            it("should return true", function()
+                local response = mock_client.notify("mockMethod", {})
 
-                assert.stub(diagnostics.handler).was_called_with(
-                    {method = methods.lsp.DID_CHANGE})
-            end)
-
-            it("should not call diagnostics handler if method does not match",
-               function()
-                mock_client.notify("mockMethod", {})
-
-                assert.stub(diagnostics.handler).was_not_called()
+                assert.equals(response, true)
             end)
         end)
 

@@ -61,11 +61,6 @@ M.setup = function()
     lsp.buf_request_all = M.buf_request_all
 end
 
-M.reset = function()
-    lsp.buf_request = originals.buf_request
-    lsp.buf_request_all = originals.buf_request_all
-end
-
 M.buf_request = function(bufnr, method, params, original_handler)
     original_handler = original_handler or handlers[method]
     local handler = original_handler
@@ -90,10 +85,8 @@ M.setup_client = function(client)
     local original_request = client.request
 
     client.notify = function(method, params)
-        if method == methods.lsp.DID_OPEN or method == methods.lsp.DID_CHANGE then
-            params.method = method
-            diagnostics.handler(params)
-        end
+        params.method = method
+        diagnostics.handler(params)
 
         -- no need to send notifications to server,
         -- but we return true to indicate that the notification was received

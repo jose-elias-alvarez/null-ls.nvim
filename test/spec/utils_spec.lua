@@ -66,8 +66,6 @@ describe("utils", function()
 
             assert.equals(params.bufname,
                           test_utils.test_dir .. "/files/test-file.lua")
-            assert.equals(params.uri, "file://" .. test_utils.test_dir ..
-                              "/files/test-file.lua")
             assert.equals(params.lsp_method, methods.lsp.CODE_ACTION)
             assert.equals(params.bufnr, 1)
             assert.equals(params.col, 0)
@@ -75,16 +73,6 @@ describe("utils", function()
             assert.equals(params.ft, "lua")
             assert.equals(params.method, mock_method)
             assert.same(params.content, {"print(\"I am a test file!\")", "\n"})
-        end)
-
-        it("should get uri from original params", function()
-            test_utils.edit_test_file("test-file.lua")
-
-            local mock_uri = "file:///mock-file"
-            local params = u.make_params({textDocument = {uri = mock_uri}},
-                                         "mockMethod")
-
-            assert.equals(params.uri, mock_uri)
         end)
 
         it("should get content from params on DID_OPEN", function()

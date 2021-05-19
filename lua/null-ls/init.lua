@@ -1,34 +1,27 @@
 local handlers = require("null-ls.handlers")
+local autocommands = require("null-ls.autocommands")
 local methods = require("null-ls.methods")
 local helpers = require("null-ls.helpers")
-local sources = require("null-ls.sources")
 local builtins = require("null-ls.builtins")
 local server = require("null-ls.server")
 local client = require("null-ls.client")
-local s = require("null-ls.state")
+local config = require("null-ls.config")
 
 local M = {}
 
-M.register = sources.register
+M.register_source = config.register_source
+M.register_sources = config.register_sources
 M.methods = methods.internal
 M.helpers = helpers
 M.builtins = builtins
-M.server = server
-M.attach = client.attach
+M.start_server = server.start
+M.try_attach = client.try_attach
 
-M.setup = function() handlers.setup() end
+M.setup = function(user_config)
+    config.setup(user_config or {})
 
--- TODO: move (currently breaking e2e tests)
-vim.api.nvim_exec([[
-    augroup NullLsAttach
-        autocmd!
-        autocmd BufEnter * lua require'null-ls'.attach()
-    augroup END
-    ]], false)
-
-M.reset = function()
-    handlers.reset()
-    s.stop_client()
+    autocommands.setup()
+    handlers.setup()
 end
 
 return M

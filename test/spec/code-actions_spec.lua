@@ -3,14 +3,14 @@ local a = require("plenary.async_lib")
 
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
+local generators = require("null-ls.generators")
 local methods = require("null-ls.methods")
-local sources = require("null-ls.sources")
 local code_actions = require("null-ls.code-actions")
 
 describe("code_actions", function()
     stub(a, "await")
     stub(s, "clear_actions")
-    stub(s, "push_action")
+    stub(s, "register_action")
     stub(s, "get")
     stub(s, "run_action")
 
@@ -19,18 +19,18 @@ describe("code_actions", function()
     after_each(function()
         a.await:clear()
         s.clear_actions:clear()
-        s.push_action:clear()
+        s.register_action:clear()
         s.get:clear()
         s.run_action:clear()
     end)
 
     describe("handler", function()
         local handler = stub.new()
-        stub(sources, "run_generators")
+        stub(generators, "run")
         stub(u, "make_params")
 
         after_each(function()
-            sources.run_generators:clear()
+            generators.run:clear()
             u.make_params:clear()
             handler:clear()
         end)
@@ -83,13 +83,13 @@ describe("code_actions", function()
                         end
                     }
                     code_actions.handler(method, {}, handler, 1)
-                    postprocess = sources.run_generators.calls[1].refs[2]
+                    postprocess = generators.run.calls[1].refs[2]
                 end)
 
-                it("should push action into state", function()
+                it("should register action in state", function()
                     postprocess(action)
 
-                    assert.equals(s.push_action.calls[1].refs[1].title,
+                    assert.equals(s.register_action.calls[1].refs[1].title,
                                   "Mock action")
                 end)
 

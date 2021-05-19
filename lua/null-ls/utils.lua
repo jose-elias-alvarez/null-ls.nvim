@@ -23,17 +23,13 @@ M.echo = function(hlgroup, message)
     api.nvim_echo({{"null-ls: " .. message, hlgroup}}, true, {})
 end
 
-M.filetype_matches = function(handler, ft)
-    return not handler.filetypes or vim.tbl_contains(handler.filetypes, ft)
+M.filetype_matches = function(generator, ft)
+    return not generator.filetypes or vim.tbl_contains(generator.filetypes, ft)
 end
 
 M.make_params = function(original_params, method)
     local bufnr = original_params.bufnr
     local lsp_method = original_params.method
-    local uri = original_params.textDocument and
-                    original_params.textDocument.uri or
-                    vim.uri_from_bufnr(bufnr)
-
     local pos = api.nvim_win_get_cursor(0)
     local content = get_content_from_params(original_params)
 
@@ -44,7 +40,6 @@ M.make_params = function(original_params, method)
         row = pos[1],
         col = pos[2],
         bufnr = bufnr,
-        uri = uri,
         bufname = api.nvim_buf_get_name(bufnr),
         ft = api.nvim_buf_get_option(bufnr, "filetype")
     }

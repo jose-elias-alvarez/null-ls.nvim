@@ -1,45 +1,12 @@
 local a = require("plenary.async_lib")
+
+local c = require("null-ls.config")
 local u = require("null-ls.utils")
-
-local validate = vim.validate
-
-local _generators = {}
 
 local M = {}
 
-M.get_generators = function(method)
-    return method and _generators[method] or _generators
-end
-
-M.register = function(sources)
-    for _, source in ipairs(sources) do
-        local method, generators, filetypes = source.method, source.generators,
-                                              source.filetypes
-        validate({
-            method = {method, "string"},
-            generators = {generators, "table"},
-            filetypes = {filetypes, "table", true}
-        })
-
-        if not _generators[method] then _generators[method] = {} end
-        for _, generator in ipairs(generators) do
-            if filetypes then generator.filetypes = filetypes end
-            table.insert(_generators[method], generator)
-        end
-    end
-end
-
-M.reset = function(method)
-    if method then
-        _generators[method] = {}
-        return
-    end
-
-    _generators = {}
-end
-
-M.run_generators = a.async(function(params, postprocess)
-    local generators = M.get_generators(params.method)
+M.run = a.async(function(params, postprocess)
+    local generators = c.generators(params.method)
     if not generators then return {} end
 
     local futures, all_results = {}, {}

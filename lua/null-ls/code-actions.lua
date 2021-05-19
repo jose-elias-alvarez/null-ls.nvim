@@ -3,12 +3,12 @@ local a = require("plenary.async_lib")
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
-local sources = require("null-ls.sources")
+local generators = require("null-ls.generators")
 
 local M = {}
 
 local postprocess = function(action)
-    s.push_action(action)
+    s.register_action(action)
 
     action.command = methods.internal.CODE_ACTION
     action.action = nil
@@ -17,7 +17,7 @@ end
 local get_actions = a.async_void(function(params, callback)
     s.clear_actions()
 
-    local actions = a.await(sources.run_generators(params, postprocess))
+    local actions = a.await(generators.run(params, postprocess))
     callback(actions)
 end)
 
