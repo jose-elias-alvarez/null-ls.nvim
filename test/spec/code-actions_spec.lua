@@ -38,6 +38,15 @@ describe("code_actions", function()
         describe("method == CODE_ACTION", function()
             local method = methods.lsp.CODE_ACTION
 
+            it("should call handler and return if null_ls_ignore flag is set",
+               function()
+                code_actions.handler(method, {_null_ls_ignore = true}, handler,
+                                     1)
+
+                assert.stub(handler).was_called_with(nil, method, {}, 99, 1)
+                assert.stub(u.make_params).was_not_called()
+            end)
+
             it(
                 "should call make_params with original params and internal method",
                 function()

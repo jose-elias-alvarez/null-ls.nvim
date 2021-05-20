@@ -23,6 +23,11 @@ end)
 
 M.handler = function(method, original_params, handler, bufnr)
     if method == methods.lsp.CODE_ACTION then
+        if original_params._null_ls_ignore then
+            handler(nil, method, {}, s.get().client_id, bufnr)
+            return
+        end
+
         original_params.bufnr = bufnr
         local params = u.make_params(original_params,
                                      methods.internal.CODE_ACTION)
