@@ -41,6 +41,13 @@ local line_output_wrapper = function(params, done, on_output)
     done(all_results)
 end
 
+local formats = {
+    raw = "raw", -- receive error_output and output directly
+    none = nil, -- same as raw but will not send error output
+    line = "line", -- call handler once per line of output
+    json = "json" -- send processed json output to handler
+}
+
 M.generator_factory = function(opts)
     return {
         fn = function(params, done)
@@ -50,7 +57,16 @@ M.generator_factory = function(opts)
 
             validate({
                 command = {command, "string"},
-                on_output = {on_output, "function"}
+                args = {args, "table", true},
+                on_output = {on_output, "function"},
+                format = {
+                    format, function(a)
+                        return not a or
+                                   vim.tbl_contains(vim.tbl_values(formats), a)
+                    end, "raw, line, or json"
+                },
+                to_stderr = {to_stderr, "boolean", true},
+                to_stdin = {to_stdin, "boolean", true}
             })
 
             local wrapper = function(error_output, output)
@@ -59,18 +75,20 @@ M.generator_factory = function(opts)
                     error_output = nil
                 end
 
-                if error_output and format ~= "raw" then
+                if error_output and format ~= formats.raw then
                     error("error in generator output: " .. error_output)
                 end
 
                 params.output = output
-                if format == "raw" then params.err = error_output end
+                if format == formats.raw then
+                    params.err = error_output
+                end
 
-                if format == "json" then
+                if format == formats.json then
                     json_output_wrapper(params, done, on_output)
                     return
                 end
-                if format == "line" then
+                if format == formats.line then
                     line_output_wrapper(params, done, on_output)
                     return
                 end
