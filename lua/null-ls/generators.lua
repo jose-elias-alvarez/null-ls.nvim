@@ -11,7 +11,7 @@ M.run = a.async(function(params, postprocess)
 
     local futures, all_results = {}, {}
     for _, generator in ipairs(generators) do
-        if u.filetype_matches(generator, params.ft) then
+        if u.filetype_matches(generator.filetypes, params.ft) then
             table.insert(futures, a.future(
                              function()
                     local ok, results

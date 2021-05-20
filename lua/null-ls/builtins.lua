@@ -49,7 +49,7 @@ M.markdown = {write_good = write_good}
 -- testing
 local toggle_line_comment = {
     method = methods.internal.CODE_ACTION,
-    filetypes = {"lua"},
+    filetypes = {"*"},
     generator = {
         fn = function(params)
             local bufnr = api.nvim_get_current_buf()

@@ -6,6 +6,7 @@ local builtins = require("null-ls.builtins")
 local server = require("null-ls.server")
 local client = require("null-ls.client")
 local config = require("null-ls.config")
+local s = require("null-ls.state")
 
 local M = {}
 
@@ -15,6 +16,11 @@ M.generator = helpers.generator_factory
 M.builtins = builtins
 M.start_server = server.start
 M.try_attach = client.try_attach
+M._shutdown = function(timeout)
+    s.stop_client()
+    vim.wait(timeout or 5000,
+             function() return s.get().initialized == false end, 10)
+end
 
 M.setup = function(user_config)
     config.setup(user_config or {})

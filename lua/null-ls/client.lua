@@ -43,7 +43,8 @@ M.try_attach = function()
 
     -- the event that triggers this function must fire after the buffer's filetype has been set
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
-    if not vim.tbl_contains(c.get().filetypes, ft) then return end
+    if not (vim.tbl_contains(c.get().filetypes, ft) or
+        vim.tbl_contains(c.get().filetypes, "*")) then return end
 
     if not s.get().client_id then start_client() end
 
