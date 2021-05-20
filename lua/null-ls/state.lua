@@ -10,7 +10,6 @@ local state = vim.deepcopy(initial_state)
 local M = {}
 
 local lsp = vim.lsp
-local validate = vim.validate
 
 local reset = function() state = vim.deepcopy(initial_state) end
 
@@ -41,7 +40,7 @@ M.register_action =
 
 M.run_action = function(title)
     local action = state.actions[title]
-    validate({action = {action, "function"}})
+    if not action then return end
 
     action()
 end

@@ -30,12 +30,6 @@ local M = {}
 M.spawn = function(cmd, args, opts)
     local handler, input, bufnr = opts.handler, opts.input, opts.bufnr
 
-    validate({
-        handler = {handler, "function"},
-        input = {input, "string", true},
-        bufnr = {bufnr, "number", true}
-    })
-
     local output, error_output = "", ""
     local handle_stdout = vim.schedule_wrap(
                               function(err, chunk)
