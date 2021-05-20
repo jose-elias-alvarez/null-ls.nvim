@@ -112,7 +112,7 @@ describe("helpers", function()
                 local generator = helpers.create_diagnostic_generator(
                                       generator_args)
 
-                generator.fn()
+                generator.fn({})
 
                 assert.stub(loop.spawn).was_called()
                 assert.equals(loop.spawn.calls[1].refs[1], command)
@@ -125,7 +125,7 @@ describe("helpers", function()
                 local generator = helpers.create_diagnostic_generator(
                                       generator_args)
 
-                generator.fn()
+                generator.fn({})
 
                 assert.same(loop.spawn.calls[1].refs[2], {})
             end)

@@ -8,8 +8,8 @@ local close_handle = function(handle)
     if handle and not handle:is_closing() then handle:close() end
 end
 
-local parse_args = function(args)
-    local bufnr = api.nvim_get_current_buf()
+local parse_args = function(args, bufnr)
+    bufnr = bufnr or api.nvim_get_current_buf()
     local parsed = {}
     for _, arg in pairs(args) do
         if string.find(arg, "$FILENAME") then
@@ -28,9 +28,13 @@ end
 local M = {}
 
 M.spawn = function(cmd, args, opts)
-    local handler, input = opts.handler, opts.input
+    local handler, input, bufnr = opts.handler, opts.input, opts.bufnr
 
-    validate({handler = {handler, "function"}, input = {input, "string", true}})
+    validate({
+        handler = {handler, "function"},
+        input = {input, "string", true},
+        bufnr = {bufnr, "number", true}
+    })
 
     local output, error_output = "", ""
     local handle_stdout = vim.schedule_wrap(
@@ -58,7 +62,7 @@ M.spawn = function(cmd, args, opts)
     local stdio = {stdin, stdout, stderr}
 
     local handle
-    handle = uv.spawn(cmd, {args = parse_args(args), stdio = stdio},
+    handle = uv.spawn(cmd, {args = parse_args(args, bufnr), stdio = stdio},
                       vim.schedule_wrap(function()
         stdout:read_stop()
         stderr:read_stop()

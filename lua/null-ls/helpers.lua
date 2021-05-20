@@ -72,7 +72,8 @@ M.create_diagnostic_generator = function(opts)
 
             loop.spawn(command, args or {}, {
                 input = to_stdin and u.buf.content(params.bufnr, true) or nil,
-                handler = wrapper
+                handler = wrapper,
+                bufnr = params.bufnr
             })
         end,
         filetypes = opts.filetypes,
