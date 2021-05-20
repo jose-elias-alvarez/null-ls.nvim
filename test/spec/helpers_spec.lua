@@ -73,7 +73,7 @@ describe("helpers", function()
         end)
     end)
 
-    describe("create_diagnostic_generator", function()
+    describe("generator_factory", function()
         stub(loop, "spawn")
 
         local command = "cat"
@@ -93,24 +93,21 @@ describe("helpers", function()
         end)
 
         it("should set async to true", function()
-            local generator =
-                helpers.create_diagnostic_generator(generator_args)
+            local generator = helpers.generator_factory(generator_args)
 
             assert.equals(generator.async, true)
         end)
 
         it("should pass filetypes to generator", function()
             generator_args.filetypes = {"lua"}
-            local generator =
-                helpers.create_diagnostic_generator(generator_args)
+            local generator = helpers.generator_factory(generator_args)
 
             assert.same(generator.filetypes, {"lua"})
         end)
 
         describe("fn", function()
             it("should call loop.spawn with command and args", function()
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
 
                 generator.fn({})
 
@@ -122,8 +119,7 @@ describe("helpers", function()
             it("should call loop.spawn with default args (empty table)",
                function()
                 generator_args.args = nil
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
 
                 generator.fn({})
 
@@ -136,8 +132,7 @@ describe("helpers", function()
                     test_utils.edit_test_file("test-file.lua")
                     local params = {bufnr = vim.api.nvim_get_current_buf()}
                     generator_args.to_stdin = true
-                    local generator = helpers.create_diagnostic_generator(
-                                          generator_args)
+                    local generator = helpers.generator_factory(generator_args)
 
                     generator.fn(params)
 
@@ -150,8 +145,7 @@ describe("helpers", function()
             it(
                 "should set params.output and call on_output with params and done",
                 function()
-                    local generator = helpers.create_diagnostic_generator(
-                                          generator_args)
+                    local generator = helpers.generator_factory(generator_args)
                     generator.fn({}, done)
 
                     local wrapper = loop.spawn.calls[1].refs[3].handler
@@ -165,8 +159,7 @@ describe("helpers", function()
                 "should set output to error_output and error_output to nil if to_stderr = true",
                 function()
                     generator_args.to_stderr = true
-                    local generator = helpers.create_diagnostic_generator(
-                                          generator_args)
+                    local generator = helpers.generator_factory(generator_args)
                     generator.fn({}, done)
 
                     local wrapper = loop.spawn.calls[1].refs[3].handler
@@ -178,8 +171,7 @@ describe("helpers", function()
 
             it("should throw error if error_output exists and format ~= raw",
                function()
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
@@ -190,8 +182,7 @@ describe("helpers", function()
 
             it("should set params.err if format == raw", function()
                 generator_args.format = "raw"
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
@@ -204,8 +195,7 @@ describe("helpers", function()
             it("should call json_output_wrapper and return if format == json",
                function()
                 generator_args.format = "json"
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
@@ -217,8 +207,7 @@ describe("helpers", function()
             it("should call line_output_wrapper and return if format == line",
                function()
                 generator_args.format = "line"
-                local generator = helpers.create_diagnostic_generator(
-                                      generator_args)
+                local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler

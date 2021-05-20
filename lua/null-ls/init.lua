@@ -9,10 +9,9 @@ local config = require("null-ls.config")
 
 local M = {}
 
-M.register_source = config.register_source
-M.register_sources = config.register_sources
+M.register = config.register
 M.methods = methods.internal
-M.helpers = helpers
+M.generator = helpers.generator_factory
 M.builtins = builtins
 M.start_server = server.start
 M.try_attach = client.try_attach

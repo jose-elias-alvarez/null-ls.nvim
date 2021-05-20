@@ -25,7 +25,7 @@ describe("integration", function()
     describe("code actions", function()
         local actions, null_ls_action
         before_each(function()
-            c.register_source(builtins._test.toggle_line_comment)
+            c.register(builtins._test.toggle_line_comment)
 
             tu.edit_test_file("test-file.lua")
             lsp_wait()
@@ -68,7 +68,7 @@ describe("integration", function()
         end)
 
         it("should combine actions from multiple sources", function()
-            c.register_source(builtins._test.mock_code_action)
+            c.register(builtins._test.mock_code_action)
 
             actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
                                            methods.lsp.CODE_ACTION)
@@ -79,7 +79,7 @@ describe("integration", function()
 
     describe("diagnostics", function()
         before_each(function()
-            c.register_source(builtins.markdown.write_good)
+            c.register(builtins.markdown.write_good)
 
             tu.edit_test_file("test-file.md")
             lsp_wait()
@@ -110,7 +110,7 @@ describe("integration", function()
         it("should combine diagnostics from multiple sources", function()
             vim.cmd("bufdo! bwipeout!")
 
-            c.register_source(builtins._test.mock_diagnostics)
+            c.register(builtins._test.mock_diagnostics)
             tu.edit_test_file("test-file.md")
             lsp_wait()
 

@@ -8,10 +8,10 @@ local c = require("null-ls.config")
 
 local uv = vim.loop
 
-local register = function(method, new_generators, filetypes)
-    c.register_source({
+local register = function(method, generator, filetypes)
+    c.register({
         method = method,
-        generators = new_generators,
+        generator = generator,
         filetypes = filetypes or {"lua"}
     })
 end
@@ -53,7 +53,7 @@ describe("generators", function()
 
         it("should immediately return when method has no registered generators",
            function()
-            register(method, {mock_sync_generator})
+            register(method, mock_sync_generator)
 
             local results = a.await(
                                 generators.run({method = "someRandomMethod"}))
@@ -63,7 +63,7 @@ describe("generators", function()
         end)
 
         it("should get result from sync generator", function()
-            register(method, {mock_sync_generator})
+            register(method, mock_sync_generator)
 
             local results = a.await(generators.run(mock_params))
 
@@ -72,7 +72,7 @@ describe("generators", function()
         end)
 
         it("should get result from async generator", function()
-            register(method, {mock_async_generator})
+            register(method, mock_async_generator)
 
             local results = a.await(generators.run(mock_params))
 
@@ -81,7 +81,7 @@ describe("generators", function()
         end)
 
         it("should not get result when filetype does not match", function()
-            register(method, {mock_filetype_generator}, {"txt"})
+            register(method, mock_filetype_generator, {"txt"})
 
             local results = a.await(generators.run(mock_params))
 
@@ -91,7 +91,7 @@ describe("generators", function()
         it("should echo error message when generator throws an error",
            function()
             stub(u, "echo")
-            register(method, {mock_error_generator})
+            register(method, mock_error_generator)
 
             local results = a.await(generators.run(mock_params))
 
@@ -101,7 +101,7 @@ describe("generators", function()
         end)
 
         it("should run postprocess on result", function()
-            register(method, {mock_sync_generator})
+            register(method, mock_sync_generator)
             local postprocess = function(result)
                 result.param = "mockParam"
             end

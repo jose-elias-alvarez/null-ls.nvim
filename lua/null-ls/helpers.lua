@@ -33,7 +33,7 @@ local line_output_wrapper = function(params, done, on_output)
     done(all_results)
 end
 
-M.create_diagnostic_generator = function(opts)
+M.generator_factory = function(opts)
     return {
         fn = function(params, done)
             local command, args, on_output, format, to_stderr, to_stdin =
@@ -52,7 +52,7 @@ M.create_diagnostic_generator = function(opts)
                 end
 
                 if error_output and format ~= "raw" then
-                    error("error in diagnostic generator: " .. error_output)
+                    error("error in generator output: " .. error_output)
                 end
 
                 params.output = output
