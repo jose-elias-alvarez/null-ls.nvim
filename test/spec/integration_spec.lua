@@ -2,7 +2,6 @@ local builtins = require("null-ls.builtins")
 local methods = require("null-ls.methods")
 local main = require("null-ls")
 
-local s = require("null-ls.state")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 local tu = require("test.utils")
@@ -119,6 +118,4 @@ describe("integration", function()
     end)
 end)
 
--- wait for on_exit callback to prevent orphan processes
-s.stop_client()
-vim.wait(5000, function() return s.get().initialized == false end, 10)
+main._shutdown()

@@ -23,8 +23,9 @@ M.echo = function(hlgroup, message)
     api.nvim_echo({{"null-ls: " .. message, hlgroup}}, true, {})
 end
 
-M.filetype_matches = function(generator, ft)
-    return not generator.filetypes or vim.tbl_contains(generator.filetypes, ft)
+M.filetype_matches = function(filetypes, ft)
+    if not filetypes then return true end
+    return vim.tbl_contains(filetypes, "*") or vim.tbl_contains(filetypes, ft)
 end
 
 M.make_params = function(original_params, method)
