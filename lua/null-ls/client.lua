@@ -1,5 +1,7 @@
 local s = require("null-ls.state")
+local u = require("null-ls.utils")
 local c = require("null-ls.config")
+local methods = require("null-ls.methods")
 local handlers = require("null-ls.handlers")
 
 local lsp = vim.lsp
@@ -8,7 +10,7 @@ local api = vim.api
 local on_init = function(client)
     handlers.setup_client(client)
 
-    s.set({initialized = true})
+    s.set({initialized = true, client = client})
 end
 
 -- set false (as opposed to nil) to allow waiting for client exit
@@ -30,25 +32,45 @@ local start_client = function()
         flags = {debounce_text_changes = c.get().debounce}
     })
 
+    -- this completes before the client is initialized
+    -- and signals that start_client should not be called again
     s.set({client_id = client_id})
+end
+
+local try_attach = function(bufnr, ft, uri)
+    bufnr = bufnr or api.nvim_get_current_buf()
+    if vim.fn.buflisted(bufnr) == 0 then return end
+
+    -- the event that triggers this function must fire after the buffer's filetype has been set
+    ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
+    if ft == "" then return end
+    if not u.filetype_matches(c.get().filetypes, ft) then return end
+
+    if not s.get().client_id then start_client() end
+
+    s.attach(bufnr, uri)
 end
 
 local M = {}
 
 M.start = start_client
 
-M.try_attach = function()
+M.try_attach = try_attach
+
+-- triggered after dynamically registering sources
+M.attach_or_refresh = function()
     local bufnr = api.nvim_get_current_buf()
-    if vim.fn.buflisted(bufnr) == 0 then return end
-
-    -- the event that triggers this function must fire after the buffer's filetype has been set
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
-    if not (vim.tbl_contains(c.get().filetypes, ft) or
-        vim.tbl_contains(c.get().filetypes, "*")) then return end
+    if ft == "" then return end
 
-    if not s.get().client_id then start_client() end
+    local uri = vim.uri_from_bufnr(bufnr)
+    -- notify client to get diagnostics from new sources
+    if s.get().attached[uri] then
+        s.notify_client(methods.lsp.DID_CHANGE, {textDocument = {uri = uri}})
+        return
+    end
 
-    s.attach(bufnr)
+    try_attach(bufnr, ft, uri)
 end
 
 return M

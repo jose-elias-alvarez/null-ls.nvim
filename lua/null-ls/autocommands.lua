@@ -28,8 +28,7 @@ M.setup = function()
     -- but the buffer's filetype isn't yet set, so we can't use it
     register("BufEnter", "try_attach()")
 
-    -- register a User autocmd to trigger try_attach()
-    register("User", "try_attach()", names.REGISTERED)
+    register("User", "attach_or_refresh()", names.REGISTERED)
 end
 
 M.trigger = function(name) vim.cmd("doautocmd User " .. name) end

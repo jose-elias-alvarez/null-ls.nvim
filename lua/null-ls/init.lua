@@ -16,6 +16,8 @@ M.generator = helpers.generator_factory
 M.builtins = builtins
 M.start_server = server.start
 M.try_attach = client.try_attach
+M.attach_or_refresh = client.attach_or_refresh
+
 M._shutdown = function(timeout)
     s.stop_client()
     vim.wait(timeout or 5000,

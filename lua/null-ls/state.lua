@@ -1,5 +1,6 @@
 local initial_state = {
     client_id = nil,
+    client = nil,
     on_attach = nil,
     initialized = nil,
     actions = {},
@@ -19,13 +20,18 @@ M.set =
 M.reset = reset
 
 -- client
+M.notify_client = function(method, params)
+    if not state.client then return end
+    state.client.notify(method, params)
+end
+
 M.stop_client = function()
     lsp.stop_client(state.client_id)
     reset()
 end
 
-M.attach = function(bufnr)
-    local uri = vim.uri_from_bufnr(bufnr)
+M.attach = function(bufnr, uri)
+    uri = uri or vim.uri_from_bufnr(bufnr)
     if state.attached[uri] then return end
 
     lsp.buf_attach_client(bufnr, state.client_id)

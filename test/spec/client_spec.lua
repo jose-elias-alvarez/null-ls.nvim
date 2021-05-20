@@ -1,33 +1,48 @@
 local stub = require("luassert.stub")
 
 local c = require("null-ls.config")
+local u = require("null-ls.utils")
 local s = require("null-ls.state")
+local methods = require("null-ls.methods")
 local handlers = require("null-ls.handlers")
 
 local lsp = vim.lsp
 
 describe("client", function()
     stub(vim.fn, "buflisted")
-    stub(vim, "tbl_contains")
+    stub(vim, "uri_from_bufnr")
+    stub(vim.api, "nvim_buf_get_option")
+    stub(vim.api, "nvim_get_current_buf")
     stub(lsp, "start_client")
     stub(lsp, "buf_attach_client")
     stub(handlers, "setup_client")
     stub(s, "attach")
+    stub(u, "filetype_matches")
 
     local client = require("null-ls.client")
 
     local mock_client_id = 1234
+    local mock_uri = "file:///mock-file.lua"
+    local mock_bufnr = 5
     before_each(function()
         vim.fn.buflisted.returns(1)
-        vim.tbl_contains.returns(true)
+        vim.api.nvim_buf_get_option.returns("lua")
         lsp.start_client.returns(mock_client_id)
+        vim.uri_from_bufnr.returns(mock_uri)
+        vim.api.nvim_get_current_buf.returns(mock_bufnr)
+
+        u.filetype_matches.returns(true)
     end)
 
     after_each(function()
         vim.fn.buflisted:clear()
+        vim.api.nvim_buf_get_option:clear()
+        vim.api.nvim_get_current_buf:clear()
+        vim.uri_from_bufnr:clear()
         lsp.start_client:clear()
         lsp.buf_attach_client:clear()
         s.attach:clear()
+        u.filetype_matches:clear()
         handlers.setup_client:clear()
 
         c.reset()
@@ -43,9 +58,16 @@ describe("client", function()
             assert.stub(lsp.start_client).was_not_called()
         end)
 
-        it("should return when config does not contain current filetype",
-           function()
-            vim.tbl_contains.returns(false)
+        it("should return when no filetype", function()
+            vim.api.nvim_buf_get_option.returns("")
+
+            client.try_attach()
+
+            assert.stub(lsp.start_client).was_not_called()
+        end)
+
+        it("should return when filetype doesn't match", function()
+            u.filetype_matches.returns(false)
 
             client.try_attach()
 
@@ -81,11 +103,44 @@ describe("client", function()
             assert.equals(s.get().client_id, mock_client_id)
         end)
 
-        it("should attach current buffer by bufnr", function()
-            client.try_attach()
+        it("should pass bufnr and uri to attach", function()
+            client.try_attach(mock_bufnr, "lua", mock_uri)
 
-            assert.stub(s.attach)
-                .was_called_with(vim.api.nvim_get_current_buf())
+            assert.stub(s.attach).was_called_with(mock_bufnr, mock_uri)
+        end)
+    end)
+
+    describe("attach_or_refresh", function()
+        stub(s, "notify_client")
+
+        after_each(function() s.notify_client:clear() end)
+
+        it("should return if filetype is empty", function()
+            vim.api.nvim_buf_get_option.returns("")
+
+            client.attach_or_refresh()
+
+            assert.stub(s.notify_client).was_not_called()
+        end)
+
+        it("should call notify_client if attached and return", function()
+            s.set({attached = {[mock_uri] = true}})
+
+            client.attach_or_refresh()
+
+            assert.stub(s.notify_client).was_called_with(methods.lsp.DID_CHANGE,
+                                                         {
+                textDocument = {uri = mock_uri}
+            })
+            assert.stub(s.attach).was_not_called()
+        end)
+
+        it("should call try_attach with bufnr, ft, and uri if not attached",
+           function()
+            client.attach_or_refresh()
+
+            assert.stub(s.notify_client).was_not_called()
+            assert.stub(s.attach).was_called_with(mock_bufnr, mock_uri)
         end)
     end)
 

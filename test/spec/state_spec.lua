@@ -44,6 +44,34 @@ describe("state", function()
     end)
 
     describe("client", function()
+        describe("notify_client", function()
+            local notify = stub.new()
+            local mock_params = {key = "val"}
+
+            local mock_client
+            before_each(function()
+                mock_client = {notify = notify}
+                s.set({client = mock_client})
+            end)
+
+            after_each(function() notify:clear() end)
+
+            it("should return immediately if client does not exist", function()
+                s.reset()
+
+                s.notify_client("mockMethod", mock_params)
+
+                assert.stub(notify).was_not_called()
+            end)
+
+            it("should should call client.notify with method and params",
+               function()
+                s.notify_client("mockMethod", mock_params)
+
+                assert.stub(notify).was_called_with("mockMethod", mock_params)
+            end)
+        end)
+
         describe("stop_client", function()
             stub(vim.lsp, "stop_client")
 
