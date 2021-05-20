@@ -93,13 +93,13 @@ describe("config", function()
             c.register({
                 name = "my-mock-source",
                 filetypes = {"txt"},
-                sources = {mock_source, mock_source}
+                sources = {mock_source}
             })
 
             c.register({
                 name = "my-mock-source",
                 filetypes = {"txt"},
-                sources = {mock_source, mock_source}
+                sources = {mock_source}
             })
 
             assert.stub(autocommands.trigger).was_called(1)

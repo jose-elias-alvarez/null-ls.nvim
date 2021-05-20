@@ -12,6 +12,16 @@ local defaults = {
 
 local config = vim.deepcopy(defaults)
 
+-- allow plugins to call register multiple times without duplicating sources
+local check_if_registered = function(name)
+    if not name then return false end
+
+    if vim.tbl_contains(config.names, name) then return true end
+
+    table.insert(config.names, name)
+    return false
+end
+
 local register_filetypes = function(filetypes)
     for _, filetype in pairs(filetypes) do
         if not vim.tbl_contains(config.filetypes, filetype) then
@@ -20,14 +30,8 @@ local register_filetypes = function(filetypes)
     end
 end
 
-local register_source = function(source, filetypes, name)
-    -- allow plugins to call register multiple times without duplicating sources
-    if name then
-        if vim.tbl_contains(config.names, name) then return end
-        table.insert(config.names, name)
-    end
-
-    local method, generator = source.method, source.generator
+local register_source = function(source, filetypes)
+    local method, generator, name = source.method, source.generator, source.name
     filetypes = filetypes or source.filetypes
 
     validate({
@@ -36,6 +40,9 @@ local register_source = function(source, filetypes, name)
         filetypes = {filetypes, "table"},
         name = {name, "string", true}
     })
+
+    local registered = check_if_registered(name)
+    if registered then return end
 
     local fn, async = generator.fn, generator.async
     validate({fn = {fn, "function"}, async = {async, "boolean", true}})
@@ -67,11 +74,12 @@ local register = function(to_register)
     -- register multiple sources with shared configuration
     local sources, filetypes, name = to_register.sources, to_register.filetypes,
                                      to_register.name
-    validate({sources = {sources, "table"}})
+    validate({sources = {sources, "table"}, name = {name, "string", true}})
 
-    for _, source in pairs(sources) do
-        register_source(source, filetypes, name)
-    end
+    local registered = check_if_registered(name)
+    if registered then return end
+
+    for _, source in pairs(sources) do register_source(source, filetypes) end
 end
 
 local M = {}
