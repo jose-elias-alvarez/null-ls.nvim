@@ -207,6 +207,11 @@ spawning and transforming the output of command-line processes into an
 LSP-friendly format. Please see [builtins.lua](lua/null-ls/builtins.lua) for an
 example using [write-good](https://github.com/btford/write-good).
 
+You can also see [this ESLint
+integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/main/lua/nvim-lsp-ts-utils/integrations.lua)
+from another one of my plugins for a more elaborate example of parsing and
+returning CLI JSON output using `generator`.
+
 ## FAQ
 
 ### How does it work?
