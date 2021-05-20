@@ -5,6 +5,14 @@ local validate = vim.validate
 
 local M = {}
 
+local get_content = function(params)
+    -- when possible, get content from params
+    if params.content then return table.concat(params.content, "\n") end
+
+    -- otherwise, get content directly
+    return u.buf.content(params.bufnr, true)
+end
+
 local json_output_wrapper = function(params, done, on_output)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
     if not ok then error("failed to decode json: " .. decoded) end
@@ -71,7 +79,7 @@ M.generator_factory = function(opts)
             end
 
             loop.spawn(command, args or {}, {
-                input = to_stdin and u.buf.content(params.bufnr, true) or nil,
+                input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
                 bufnr = params.bufnr
             })
