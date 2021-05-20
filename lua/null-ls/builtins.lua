@@ -42,7 +42,6 @@ local write_good = {
                 }
             end
         })
-
 }
 
 M.markdown = {write_good = write_good}

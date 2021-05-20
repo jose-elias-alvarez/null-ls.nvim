@@ -26,7 +26,7 @@ local get_expected_client_count = function(bufnr, method)
     return expected
 end
 
--- many code action implementations (including the built-in vim.lsp.buf.code_action)
+-- many code action implementations (including the vim.lsp.buf.code_action)
 -- use buf_request + a handler callback, which will be called once for each server
 -- that returns code action results
 --

@@ -22,7 +22,7 @@ local start_client = function()
             "nvim", "--headless", "-u", "NONE", "-c",
             "lua require'null-ls'.start_server()"
         },
-        root_dir = vim.fn.getcwd(),
+        root_dir = vim.fn.getcwd(), -- not relevant yet, but required
         on_init = on_init,
         on_exit = on_exit,
         on_attach = c.get().on_attach,
@@ -41,6 +41,7 @@ M.try_attach = function()
     local bufnr = api.nvim_get_current_buf()
     if vim.fn.buflisted(bufnr) == 0 then return end
 
+    -- the event that triggers this function must fire after the buffer's filetype has been set
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
     if not vim.tbl_contains(c.get().filetypes, ft) then return end
 
