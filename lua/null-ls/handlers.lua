@@ -95,11 +95,18 @@ M.setup_client = function(client)
         params.method = method
         code_actions.handler(method, params, handler, bufnr)
 
-        -- handled requests should return false to avoid cancellation attempts
-        if params._null_ls_handled then return false end
+        -- return long request id to prevent overlapping with an actual client
+        if params._null_ls_handled then
+            return true, methods.internal._REQUEST_ID
+        end
 
         -- call original handler to pass non-handled requests through to server
         return original_request(method, params, handler, bufnr)
+    end
+
+    -- null-ls can't (currently) cancel requests, so return true if id matches
+    client.cancel_request = function(request_id)
+        if request_id == methods.internal._REQUEST_ID then return true end
     end
 end
 

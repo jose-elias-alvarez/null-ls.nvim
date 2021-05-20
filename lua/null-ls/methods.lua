@@ -12,7 +12,8 @@ M.lsp = {
 
 M.internal = {
     CODE_ACTION = "NULL_LS_CODE_ACTION",
-    DIAGNOSTICS = "NULL_LS_DIAGNOSTICS"
+    DIAGNOSTICS = "NULL_LS_DIAGNOSTICS",
+    _REQUEST_ID = 712345
 }
 
 return M

@@ -133,13 +133,17 @@ describe("handlers", function()
         end)
 
         describe("request", function()
-            it("should return false if _null_ls_handled flag is set", function()
-                local response = mock_client.request("mockMethod",
-                                                     {_null_ls_handled = true},
-                                                     mock_handler, 1)
+            it(
+                "should return true and request_id if _null_ls_handled flag is set",
+                function()
+                    local response, request_id =
+                        mock_client.request("mockMethod",
+                                            {_null_ls_handled = true},
+                                            mock_handler, 1)
 
-                assert.equals(response, false)
-            end)
+                    assert.equals(response, true)
+                    assert.equals(request_id, methods.internal._REQUEST_ID)
+                end)
 
             it(
                 "should call original request handler if handled flag is not set",
@@ -161,6 +165,21 @@ describe("handlers", function()
                                                                   {
                     method = "mockMethod"
                 }, mock_handler, 1)
+            end)
+        end)
+
+        describe("cancel_request", function()
+            it("should return true if request_id matches", function()
+                local response = mock_client.cancel_request(
+                                     methods.internal._REQUEST_ID)
+
+                assert.equals(response, true)
+            end)
+
+            it("should return nil if request_id does not match", function()
+                local response = mock_client.cancel_request(1111)
+
+                assert.equals(response, nil)
             end)
         end)
     end)
