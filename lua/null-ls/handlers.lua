@@ -11,10 +11,8 @@ local originals = {
     buf = {execute_command = lsp.buf.execute_command}
 }
 
-local capabilities_map = {[methods.lsp.CODE_ACTION] = "code_action"}
-
 local has_capability = function(client, method)
-    return client.resolved_capabilities[capabilities_map[method]]
+    return client.resolved_capabilities[lsp._request_name_to_capability[method]]
 end
 
 local get_expected_client_count = function(bufnr, method)
@@ -88,7 +86,7 @@ M.setup_client = function(client)
         params.method = method
         diagnostics.handler(params)
 
-        -- no need to send notifications to server,
+        -- no need to actually send notifications to server,
         -- but we return true to indicate that the notification was received
         return true
     end
