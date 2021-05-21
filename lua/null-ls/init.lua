@@ -19,11 +19,7 @@ M.start_server = server.start
 M.try_attach = client.try_attach
 M.attach_or_refresh = client.attach_or_refresh
 
-M._shutdown = function(timeout)
-    s.stop_client()
-    vim.wait(timeout or 5000,
-             function() return s.get().initialized == false end, 10)
-end
+M.shutdown = s.shutdown_client
 
 M.setup = function(user_config)
     config.setup(user_config or {})

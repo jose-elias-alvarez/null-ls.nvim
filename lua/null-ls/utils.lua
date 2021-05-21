@@ -1,5 +1,7 @@
 local methods = require("null-ls.methods")
+
 local api = vim.api
+local json = {decode = vim.fn.json_decode, encode = vim.fn.json_encode}
 
 local M = {}
 
@@ -80,6 +82,25 @@ M.string = {
 
         local number = tonumber(str)
         return offset and number + offset or number
+    end
+}
+
+M.rpc = {
+    decode = function(encoded)
+        local data = ""
+        for i, chunk in ipairs(encoded) do
+            -- skip header
+            if i > 2 then data = data .. chunk end
+        end
+
+        local ok, decoded = pcall(json.decode, data)
+        return ok and decoded or nil
+    end,
+    format = function(data)
+        local encoded = json.encode(data)
+        return table.concat({
+            "Content-Length: ", tostring(#encoded), "\r\n\r\n", encoded
+        })
     end
 }
 

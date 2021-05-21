@@ -24,10 +24,7 @@ local register = function(trigger, fn, ft)
 end
 
 M.setup = function()
-    -- BufReadPost is simpler and doesn't fire repeatedly,
-    -- but the buffer's filetype isn't yet set, so we can't use it
-    register("BufEnter", "try_attach()")
-
+    register("BufEnter,FocusGained", "try_attach()")
     register("User", "attach_or_refresh()", names.REGISTERED)
 end
 

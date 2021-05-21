@@ -285,4 +285,94 @@ describe("loop", function()
             end)
         end)
     end)
+
+    describe("timer", function()
+        stub(vim, "schedule_wrap")
+        local mock_timer = {}
+        local start = stub.new()
+        local stop = stub.new()
+        function mock_timer:start(...) start(...) end
+        function mock_timer:stop() stop() end
+
+        local timeout = 10
+        local interval = 5
+        local callback_spy = stub.new()
+        local callback = function() callback_spy() end
+
+        before_each(function()
+            uv.new_timer.returns(mock_timer)
+            vim.schedule_wrap.returns("wrapped")
+        end)
+        after_each(function()
+            vim.schedule_wrap:clear()
+            callback_spy:clear()
+            start:clear()
+            stop:clear()
+        end)
+
+        it("should return object with methods and original timer", function()
+            local timer = loop.timer(timeout, interval, false, callback)
+
+            assert.truthy(timer.start)
+            assert.truthy(timer.stop)
+            assert.truthy(timer.restart)
+            assert.equals(timer._timer, mock_timer)
+        end)
+
+        it("should pass callback to schedule_wrap", function()
+            loop.timer(timeout, interval, false, callback)
+
+            vim.schedule_wrap.calls[1].refs[1]()
+
+            assert.stub(callback_spy).was_called()
+        end)
+
+        it("should call uv timer start method on start", function()
+            local timer = loop.timer(timeout, interval, false, callback)
+
+            timer.start()
+
+            assert.stub(start).was_called_with(timeout, interval, "wrapped")
+        end)
+
+        it("should default interval to 0 when nil", function()
+            local timer = loop.timer(timeout, nil, false, callback)
+
+            timer.start()
+
+            assert.stub(start).was_called_with(timeout, 0, "wrapped")
+        end)
+
+        it("should start timer when should_start = true", function()
+            loop.timer(timeout, nil, true, callback)
+
+            assert.stub(start).was_called_with(timeout, 0, "wrapped")
+        end)
+
+        describe("restart", function()
+            it(
+                "should restart timer with original interval and wrapped callback",
+                function()
+                    local timer = loop.timer(timeout, interval, false, callback)
+
+                    timer.restart()
+
+                    assert.stub(stop).was_called()
+                    assert.stub(start).was_called_with(timeout, interval,
+                                                       "wrapped")
+                end)
+
+            it("should restart timer with new timeout and interval", function()
+                local timer = loop.timer(timeout, interval, false, callback)
+                local new_timeout = 100
+                local new_interval = 99
+
+                timer.restart(new_timeout, new_interval)
+
+                assert.stub(stop).was_called()
+                assert.stub(start).was_called_with(new_timeout, new_interval,
+                                                   "wrapped")
+            end)
+        end)
+    end)
 end)

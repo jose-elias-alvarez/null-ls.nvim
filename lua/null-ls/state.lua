@@ -1,8 +1,12 @@
+local c = require("null-ls.config")
+local methods = require("null-ls.methods")
+local loop = require("null-ls.loop")
+
 local initial_state = {
     client_id = nil,
     client = nil,
     on_attach = nil,
-    initialized = nil,
+    keep_alive_timer = nil,
     actions = {},
     attached = {}
 }
@@ -20,13 +24,30 @@ M.set =
 M.reset = reset
 
 -- client
-M.notify_client = function(method, params)
+local notify_client = function(method, params)
     if not state.client then return end
     state.client.notify(method, params)
 end
+M.notify_client = notify_client
 
-M.stop_client = function()
+M.initialize = function(client)
+    state.client = client
+
+    local interval = c.get().keep_alive_interval
+    state.keep_alive_timer = loop.timer(0, interval, true, function()
+        notify_client(methods.internal._NOTIFICATION, {timeout = interval})
+    end)
+end
+
+M.shutdown_client = function(timeout)
+    if not state.client then return end
+    if state.keep_alive_timer then state.keep_alive_timer.stop() end
+
     lsp.stop_client(state.client_id)
+    vim.wait(timeout or 5000, function()
+        return state.client == nil or state.client.is_stopped() == true
+    end, 10)
+
     reset()
 end
 

@@ -39,10 +39,12 @@ M.handler = function(method, original_params, handler, bufnr)
         original_params._null_ls_handled = true
     end
 
-    if method == methods.lsp.EXECUTE_COMMAND and original_params.command ==
-        methods.internal.CODE_ACTION then
-        s.run_action(original_params.title)
+    if method == methods.lsp.EXECUTE_COMMAND then
+        if original_params.command == methods.internal.CODE_ACTION then
+            s.run_action(original_params.title)
+        end
 
+        -- always make sure that requests are handled to avoid reaching the server
         original_params._null_ls_handled = true
     end
 end

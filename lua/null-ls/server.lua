@@ -1,74 +1,67 @@
+local loop = require("null-ls.loop")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
-local rpc_error = vim.lsp.rpc.rpc_response_error
 local fn = vim.fn
-local json = {decode = vim.fn.json_decode, encode = vim.fn.json_encode}
-
--- not good enough for general use, but works for nvim client messages
-local decode_rpc_data = function(encoded)
-    local data = ""
-    for i, chunk in ipairs(encoded) do
-        -- skip header
-        if i > 2 then data = data .. chunk end
-    end
-
-    local ok, decoded = pcall(json.decode, data)
-    return ok and decoded or nil
-end
-
--- borrowed from nvim lsp/rpc.lua
-local format_rpc_message = function(encoded)
-    return table.concat({
-        "Content-Length: ", tostring(#encoded), "\r\n\r\n", encoded
-    })
-end
 
 local capabilities = {
     codeActionProvider = true,
     executeCommandProvider = true,
+    documentFormattingProvider = true,
     textDocumentSync = {
-        change = 1, -- force the LSP client to send the full text on didOpen and didChange
+        change = 1, -- prompt LSP client to send full document text on didOpen and didChange
         openClose = true
     }
 }
+
+local default_shutdown_timeout = 30000 -- 30 seconds
 
 local M = {}
 M.capabilities = capabilities
 
 M.start = function()
-    local lsp_id
-    local on_stdin = function(chan_id, encoded)
-        local send = function(response)
-            response.id = lsp_id
-            fn.chansend(chan_id, format_rpc_message(json.encode(response)))
-        end
+    -- start timer to shutdown server after inactivity
+    local timer
+    local shutdown = function()
+        if timer then timer.stop() end
+        vim.cmd("noautocmd qa!")
+    end
+    timer = loop.timer(default_shutdown_timeout, nil, true, shutdown)
 
-        local decoded = decode_rpc_data(encoded)
+    local on_stdin = function(chan_id, encoded)
+        local decoded = u.rpc.decode(encoded)
         if not decoded then
-            -- this only shows up in LSP debug logs and needs improvement
-            send({error = rpc_error(-32700)})
+            -- TODO: figure out error handling
             return
         end
 
-        local method, id = decoded.method, decoded.id
-        lsp_id = id
+        local method, id, params = decoded.method, decoded.id, decoded.params
+        local send_response = function(response)
+            response.id = id
+            fn.chansend(chan_id, u.rpc.format(response))
+        end
+
+        local send_nil_response = function()
+            send_response({result = vim.NIL})
+        end
 
         if method == methods.lsp.INITIALIZE then
-            send({result = {capabilities = capabilities}})
-            return
+            send_response({result = {capabilities = capabilities}})
+        end
+
+        if method == methods.internal._NOTIFICATION then
+            -- restart timer on notification, slightly lengthened to account for gap
+            timer.restart(params.timeout + 500)
         end
 
         if method == methods.lsp.SHUTDOWN then
-            send({result = nil})
-            vim.cmd("noa qa!")
-            return
+            send_nil_response()
+            shutdown()
         end
 
-        -- these should be caught by the client and never reach the server,
-        -- but since the server declares these capabilities, they're here as fallbacks
-        if method == methods.lsp.EXECUTE_COMMAND then send({result = {}}) end
-        if method == methods.lsp.CODE_ACTION then send({result = {}}) end
-        if method == methods.lsp.DID_CHANGE then send({result = {}}) end
+        if method == methods.lsp.EXECUTE_COMMAND then send_nil_response() end
+        if method == methods.lsp.CODE_ACTION then send_nil_response() end
+        if method == methods.lsp.DID_CHANGE then send_nil_response() end
     end
 
     fn.stdioopen({on_stdin = on_stdin})

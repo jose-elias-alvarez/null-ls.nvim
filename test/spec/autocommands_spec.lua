@@ -9,6 +9,8 @@ local clear_augroup = function(name)
     vim.cmd("augroup! " .. name)
 end
 
+local assert_exists = function(name) assert.equals(vim.fn.exists(name), 1) end
+
 describe("autocommands", function()
     local autocommands = require("null-ls.autocommands")
     after_each(function() clear_augroup(autocommands.names.GROUP) end)
@@ -17,21 +19,20 @@ describe("autocommands", function()
         it("should create plugin augroup", function()
             autocommands.setup()
 
-            assert.equals(vim.fn.exists("#" .. autocommands.names.GROUP), 1)
+            assert_exists("#" .. autocommands.names.GROUP)
         end)
 
-        it("should register BufEnter autocommand", function()
+        it("should register try_attach() autocommand", function()
             autocommands.setup()
 
-            assert.equals(vim.fn.exists("#" .. autocommands.names.GROUP ..
-                                            "#BufEnter"), 1)
+            assert_exists("#" .. autocommands.names.GROUP .. "#BufEnter")
+            assert_exists("#" .. autocommands.names.GROUP .. "#FocusGained")
         end)
 
-        it("should register User autocommand", function()
+        it("should register attach_or_refresh() autocommand", function()
             autocommands.setup()
 
-            assert.equals(vim.fn.exists("#" .. autocommands.names.GROUP ..
-                                            "#User"), 1)
+            assert_exists("#" .. autocommands.names.GROUP .. "#User")
         end)
     end)
 

@@ -89,7 +89,7 @@ describe("utils", function()
             assert.equals(params.row, 1)
             assert.equals(params.ft, "lua")
             assert.equals(params.method, mock_method)
-            assert.same(params.content, {"print(\"I am a test file!\")", "\n"})
+            assert.same(params.content, {"print(\"I am a test file!\")", ""})
         end)
 
         it("should get content from params on DID_OPEN", function()
@@ -133,7 +133,7 @@ describe("utils", function()
                 local content = u.buf.content()
 
                 assert.equals(type(content), "table")
-                assert.same(content, {"print(\"I am a test file!\")", "\n"})
+                assert.same(content, {"print(\"I am a test file!\")", ""})
             end)
 
             it("should not add final newline to table when eol option is false",
@@ -248,6 +248,39 @@ describe("utils", function()
                 local num = u.string.to_number_safe(str, default, offset)
 
                 assert.equals(num, 12)
+            end)
+        end)
+    end)
+
+    describe("rpc", function()
+        describe("decode", function()
+            it("should return decoded data minus header", function()
+                local data = vim.fn.json_encode({key = "val"})
+                local encoded = {"Content-Length: 50", "", data}
+
+                local decoded = u.rpc.decode(encoded)
+
+                assert.same(decoded, vim.fn.json_decode(data))
+            end)
+
+            it("should return nil if decode fails", function()
+                local data = "NOT JSON"
+                local encoded = {"Content-Length: 50", "", data}
+
+                local decoded = u.rpc.decode(encoded)
+
+                assert.equals(decoded, nil)
+            end)
+        end)
+
+        describe("format", function()
+            it("should return encoded data plus header", function()
+                local data = {key = "val"}
+
+                local formatted = u.rpc.format(data)
+
+                assert.equals(formatted,
+                              "Content-Length: 14\r\n\r\n{\"key\": \"val\"}")
             end)
         end)
     end)

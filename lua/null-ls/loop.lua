@@ -2,7 +2,6 @@ local u = require("null-ls.utils")
 
 local api = vim.api
 local uv = vim.loop
-local validate = vim.validate
 
 local close_handle = function(handle)
     if handle and not handle:is_closing() then handle:close() end
@@ -71,6 +70,22 @@ M.spawn = function(cmd, args, opts)
     uv.read_start(stderr, handle_stderr)
 
     if input then stdin:write(input, function() stdin:close() end) end
+end
+
+M.timer = function(timeout, interval, should_start, callback)
+    if not interval then interval = 0 end
+
+    local timer = uv.new_timer()
+    local wrapped = vim.schedule_wrap(callback)
+    local start = function() timer:start(timeout, interval, wrapped) end
+    local stop = function() timer:stop() end
+    local restart = function(new_timeout, new_interval)
+        timer:stop()
+        timer:start(new_timeout or timeout, new_interval or interval, wrapped)
+    end
+
+    if should_start then timer:start(timeout, interval, wrapped) end
+    return {_timer = timer, start = start, stop = stop, restart = restart}
 end
 
 if _G._TEST then M._parse_args = parse_args end

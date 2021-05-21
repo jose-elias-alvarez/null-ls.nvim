@@ -17,6 +17,7 @@ describe("client", function()
     stub(lsp, "buf_attach_client")
     stub(handlers, "setup_client")
     stub(s, "attach")
+    stub(s, "initialize")
     stub(u, "filetype_matches")
 
     local client = require("null-ls.client")
@@ -42,6 +43,7 @@ describe("client", function()
         lsp.start_client:clear()
         lsp.buf_attach_client:clear()
         s.attach:clear()
+        s.initialize:clear()
         u.filetype_matches:clear()
         handlers.setup_client:clear()
 
@@ -161,10 +163,10 @@ describe("client", function()
                 assert.stub(handlers.setup_client).was_called_with(mock_client)
             end)
 
-            it("should set initialized to true", function()
+            it("should call state initialize with client", function()
                 on_init(mock_client)
 
-                assert.equals(s.get().initialized, true)
+                assert.stub(s.initialize).was_called_with(mock_client)
             end)
         end)
 
@@ -175,10 +177,12 @@ describe("client", function()
                 on_exit = lsp.start_client.calls[1].refs[1].on_exit
             end)
 
-            it("should set initialized to false", function()
+            it("should reset state", function()
+                s.set({client = "client"})
+
                 on_exit(mock_client)
 
-                assert.equals(s.get().initialized, false)
+                assert.equals(s.get().client, nil)
             end)
         end)
 

@@ -1,5 +1,8 @@
 local stub = require("luassert.stub")
 
+local loop = require("null-ls.loop")
+local methods = require("null-ls.methods")
+local c = require("null-ls.config")
 local s = require("null-ls.state")
 
 describe("state", function()
@@ -54,7 +57,10 @@ describe("state", function()
                 s.set({client = mock_client})
             end)
 
-            after_each(function() notify:clear() end)
+            after_each(function()
+                notify:clear()
+                s.reset()
+            end)
 
             it("should return immediately if client does not exist", function()
                 s.reset()
@@ -72,24 +78,140 @@ describe("state", function()
             end)
         end)
 
-        describe("stop_client", function()
+        describe("initialize", function()
+            stub(loop, "timer")
+
+            local notify = stub.new()
+            local mock_client
+            before_each(function() mock_client = {notify = notify} end)
+            after_each(function()
+                loop.timer:clear()
+                s.reset()
+            end)
+
+            it("should assign client to state", function()
+                s.initialize(mock_client)
+
+                assert.equals(s.get().client, mock_client)
+            end)
+
+            it("should create timer and assign to state", function()
+                loop.timer.returns("timer")
+
+                s.initialize(mock_client)
+
+                assert.equals(s.get().keep_alive_timer, "timer")
+            end)
+
+            describe("timer", function()
+                it("should create timer with correct args", function()
+                    s.initialize(mock_client)
+
+                    assert.equals(loop.timer.calls[1].refs[1], 0)
+                    assert.equals(loop.timer.calls[1].refs[2],
+                                  c.get().keep_alive_interval)
+                    assert.equals(loop.timer.calls[1].refs[3], true)
+                    assert.truthy(loop.timer.calls[1].refs[4])
+                end)
+
+                it("should call notify_client on timer callback", function()
+                    s.initialize(mock_client)
+
+                    local callback = loop.timer.calls[1].refs[4]
+                    callback()
+
+                    assert.stub(notify).was_called_with(
+                        methods.internal._NOTIFICATION,
+                        {timeout = c.get().keep_alive_interval})
+                end)
+            end)
+        end)
+
+        describe("shutdown_client", function()
             stub(vim.lsp, "stop_client")
+            stub(vim, "wait")
+            local is_stopped = stub.new()
+            local mock_client
 
             before_each(function()
-                s.set({client_id = mock_client_id})
+                mock_client = {is_stopped = is_stopped}
+                s.set({client_id = mock_client_id, client = mock_client})
             end)
-            after_each(function() vim.lsp.stop_client:clear() end)
+            after_each(function()
+                vim.lsp.stop_client:clear()
+                vim.wait:clear()
+                is_stopped:clear()
+                s.reset()
+            end)
+
+            it("should return if state client is nil", function()
+                s.reset()
+
+                s.shutdown_client()
+
+                assert.stub(vim.lsp.stop_client).was_not_called()
+            end)
 
             it("should call stop_client with state client_id", function()
-                s.stop_client()
+                s.shutdown_client()
 
                 assert.stub(vim.lsp.stop_client).was_called_with(mock_client_id)
             end)
 
             it("should reset state", function()
-                s.stop_client()
+                s.shutdown_client()
 
                 assert.equals(s.get().client_id, nil)
+            end)
+
+            describe("wait", function()
+                it("should call vim.wait with default timeout and interval",
+                   function()
+                    s.shutdown_client()
+
+                    assert.equals(vim.wait.calls[1].refs[1], 5000)
+                    assert.equals(vim.wait.calls[1].refs[3], 10)
+                end)
+
+                it("should call vim.wait with specified timeout", function()
+                    s.shutdown_client(1000)
+
+                    assert.equals(vim.wait.calls[1].refs[1], 1000)
+                end)
+
+                describe("callback", function()
+                    it("should return true if client is nil", function()
+                        s.shutdown_client()
+
+                        local callback = vim.wait.calls[1].refs[2]
+
+                        assert.equals(callback(), true)
+                    end)
+
+                    it(
+                        "should return true if client is_stopped method returns true",
+                        function()
+                            is_stopped.returns(true)
+                            s.shutdown_client()
+
+                            local callback = vim.wait.calls[1].refs[2]
+                            s.set({client = mock_client})
+
+                            assert.equals(callback(), true)
+                            assert.stub(is_stopped).was_called()
+                        end)
+
+                    it("should return false otherwise", function()
+                        is_stopped.returns(false)
+                        s.shutdown_client()
+
+                        local callback = vim.wait.calls[1].refs[2]
+                        s.set({client = mock_client})
+
+                        assert.equals(callback(), false)
+                        assert.stub(is_stopped).was_called()
+                    end)
+                end)
             end)
         end)
 

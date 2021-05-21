@@ -82,10 +82,15 @@ M.buf_request_all = function(bufnr, method, params, callback)
 end
 
 M.setup_client = function(client)
-    local original_request = client.request
+    local original_request, original_notify = client.request, client.notify
 
     client.notify = function(method, params)
         params = params or {}
+
+        if method == methods.internal._NOTIFICATION then
+            original_notify(method, params)
+            return true
+        end
 
         params.method = method
         diagnostics.handler(params)

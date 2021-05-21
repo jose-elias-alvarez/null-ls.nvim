@@ -1,20 +1,19 @@
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
+
 local methods = require("null-ls.methods")
 local handlers = require("null-ls.handlers")
 
 local lsp = vim.lsp
 local api = vim.api
 
-local on_init = function(client)
+local function on_init(client)
     handlers.setup_client(client)
-
-    s.set({initialized = true, client = client})
+    s.initialize(client)
 end
 
--- set false (as opposed to nil) to allow waiting for client exit
-local on_exit = function() s.set({initialized = false}) end
+local on_exit = function() s.reset() end
 
 local start_client = function()
     s.reset()

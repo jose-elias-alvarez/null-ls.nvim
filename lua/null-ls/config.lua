@@ -4,6 +4,7 @@ local validate = vim.validate
 
 local defaults = {
     debounce = 250,
+    keep_alive_interval = 60000, -- 60 seconds
     on_attach = nil,
     generators = {},
     filetypes = {},
@@ -34,15 +35,14 @@ local register_source = function(source, filetypes)
     local method, generator, name = source.method, source.generator, source.name
     filetypes = filetypes or source.filetypes
 
+    if check_if_registered(name) then return end
+
     validate({
         method = {method, "string"},
         generator = {generator, "table"},
         filetypes = {filetypes, "table"},
         name = {name, "string", true}
     })
-
-    local registered = check_if_registered(name)
-    if registered then return end
 
     local fn, async = generator.fn, generator.async
     validate({fn = {fn, "function"}, async = {async, "boolean", true}})
@@ -74,10 +74,9 @@ local register = function(to_register)
     -- register multiple sources with shared configuration
     local sources, filetypes, name = to_register.sources, to_register.filetypes,
                                      to_register.name
-    validate({sources = {sources, "table"}, name = {name, "string", true}})
+    if check_if_registered(name) then return end
 
-    local registered = check_if_registered(name)
-    if registered then return end
+    validate({sources = {sources, "table"}, name = {name, "string", true}})
 
     for _, source in pairs(sources) do register_source(source, filetypes) end
 end

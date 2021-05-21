@@ -118,4 +118,4 @@ describe("integration", function()
     end)
 end)
 
-main._shutdown()
+main.shutdown()
