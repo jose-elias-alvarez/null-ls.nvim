@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local loop = require("null-ls.loop")
+local methods = require("null-ls.methods")
 
 local validate = vim.validate
 
@@ -51,9 +52,10 @@ local formats = {
 M.generator_factory = function(opts)
     return {
         fn = function(params, done)
-            local command, args, on_output, format, to_stderr, to_stdin =
-                opts.command, opts.args, opts.on_output, opts.format,
-                opts.to_stderr, opts.to_stdin
+            local command, args, on_output, format, to_stderr, to_stdin,
+                  ignore_errors = opts.command, opts.args, opts.on_output,
+                                  opts.format, opts.to_stderr, opts.to_stdin,
+                                  opts.ignore_errors
 
             validate({
                 command = {command, "string"},
@@ -66,7 +68,8 @@ M.generator_factory = function(opts)
                     end, "raw, line, or json"
                 },
                 to_stderr = {to_stderr, "boolean", true},
-                to_stdin = {to_stdin, "boolean", true}
+                to_stdin = {to_stdin, "boolean", true},
+                ignore_errors = {ignore_errors, "boolean", true}
             })
 
             local wrapper = function(error_output, output)
@@ -76,7 +79,10 @@ M.generator_factory = function(opts)
                 end
 
                 if error_output and format ~= formats.raw then
-                    error("error in generator output: " .. error_output)
+                    if not ignore_errors then
+                        error("error in generator output: " .. error_output)
+                    end
+                    return
                 end
 
                 params.output = output
@@ -104,6 +110,30 @@ M.generator_factory = function(opts)
         end,
         filetypes = opts.filetypes,
         async = true
+    }
+end
+
+M.formatter_factory = function(opts)
+    opts.ignore_errors = true
+    opts.on_output = function(params, done)
+        local output = params.output
+        if not output then return done() end
+
+        return done({
+            {
+                row = 0,
+                col = 0,
+                end_row = vim.tbl_count(params.content),
+                end_col = -1,
+                text = output
+            }
+        })
+    end
+
+    return {
+        method = methods.internal.FORMATTING,
+        generator = M.generator_factory(opts),
+        filetypes = opts.filetypes
     }
 end
 

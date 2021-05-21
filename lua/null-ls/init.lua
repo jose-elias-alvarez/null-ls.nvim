@@ -13,6 +13,7 @@ local M = {}
 M.register = config.register
 M.methods = methods.internal
 M.generator = helpers.generator_factory
+M.formatter = helpers.formatter_factory
 M.builtins = builtins
 M.start_server = server.start
 M.try_attach = client.try_attach

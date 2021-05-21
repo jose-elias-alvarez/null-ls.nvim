@@ -57,7 +57,7 @@ M.buf = {
             return eol and text .. "\n" or text
         end
 
-        if eol then table.insert(split, "\n") end
+        if eol then table.insert(split, "") end
         return split
     end
 }

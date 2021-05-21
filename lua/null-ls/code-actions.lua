@@ -14,10 +14,13 @@ local postprocess = function(action)
     action.action = nil
 end
 
-local get_actions = a.async_void(function(params, callback)
+local inject_actions = a.async_void(function(params, callback)
     s.clear_actions()
 
-    local actions = a.await(generators.run(params, postprocess))
+    local actions = a.await(generators.run(
+                                u.make_params(params,
+                                              methods.internal.CODE_ACTION),
+                                postprocess))
     callback(actions)
 end)
 
@@ -29,12 +32,10 @@ M.handler = function(method, original_params, handler, bufnr)
         end
 
         original_params.bufnr = bufnr
-        local params = u.make_params(original_params,
-                                     methods.internal.CODE_ACTION)
-
-        get_actions(params, function(actions)
+        inject_actions(original_params, function(actions)
             handler(nil, method, actions, s.get().client_id, bufnr)
         end)
+
         original_params._null_ls_handled = true
     end
 

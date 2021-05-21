@@ -1,8 +1,10 @@
 local methods = require("null-ls.methods")
 local code_actions = require("null-ls.code-actions")
+local formatting = require("null-ls.formatting")
 local diagnostics = require("null-ls.diagnostics")
 
 local lsp = vim.lsp
+local api = vim.api
 local handlers = lsp.handlers
 
 local originals = {
@@ -83,6 +85,8 @@ M.setup_client = function(client)
     local original_request = client.request
 
     client.notify = function(method, params)
+        params = params or {}
+
         params.method = method
         diagnostics.handler(params)
 
@@ -92,8 +96,13 @@ M.setup_client = function(client)
     end
 
     client.request = function(method, params, handler, bufnr)
+        bufnr = bufnr or api.nvim_get_current_buf()
+        handler = handler or lsp.handlers[method]
+        params = params or {}
+
         params.method = method
         code_actions.handler(method, params, handler, bufnr)
+        formatting.handler(method, params, handler, bufnr)
 
         -- return long request id to prevent overlapping with an actual client
         if params._null_ls_handled then
