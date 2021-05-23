@@ -38,13 +38,13 @@ describe("code_actions", function()
         describe("method == CODE_ACTION", function()
             local method = methods.lsp.CODE_ACTION
 
-            it("should call handler and return if null_ls_ignore flag is set",
+            it("should return immediately if null_ls_ignore flag is set",
                function()
-                code_actions.handler(method, {_null_ls_ignore = true}, handler,
-                                     1)
+                local params = {_null_ls_ignore = true}
+                code_actions.handler(method, params, handler, 1)
 
-                assert.stub(handler).was_called_with(nil, method, {}, 99, 1)
                 assert.stub(u.make_params).was_not_called()
+                assert.equals(params._null_ls_handled, nil)
             end)
 
             it(
@@ -138,12 +138,11 @@ describe("code_actions", function()
         end)
 
         it("should not run action when command does not match", function()
-            code_actions.handler(method, {
-                command = "someOtherCommand",
-                title = "Mock action"
-            }, handler, 1)
+            local params = {command = "someOtherCommand", title = "Mock action"}
+            code_actions.handler(method, params, handler, 1)
 
             assert.stub(s.run_action).was_not_called()
+            assert.equals(params._null_ls_handled, nil)
         end)
     end)
 end)

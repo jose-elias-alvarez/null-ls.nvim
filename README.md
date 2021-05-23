@@ -51,7 +51,7 @@ null_ls.setup {
     -- define sources at setup (optional)
     sources = {my_sources},
     -- change debounce interval (optional),
-    debounce = 250 -- (ms)
+    debounce = 250 -- ms
 }
 
 -- register sources dynamically (optional)

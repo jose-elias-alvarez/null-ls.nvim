@@ -26,25 +26,22 @@ end)
 
 M.handler = function(method, original_params, handler, bufnr)
     if method == methods.lsp.CODE_ACTION then
-        if original_params._null_ls_ignore then
-            handler(nil, method, {}, s.get().client_id, bufnr)
-            return
-        end
+        if original_params._null_ls_ignore then return end
 
         original_params.bufnr = bufnr
-        inject_actions(original_params, function(actions)
+        inject_actions(u.make_params(original_params,
+                                     methods.internal.CODE_ACTION),
+                       function(actions)
             handler(nil, method, actions, s.get().client_id, bufnr)
         end)
 
         original_params._null_ls_handled = true
     end
 
-    if method == methods.lsp.EXECUTE_COMMAND then
-        if original_params.command == methods.internal.CODE_ACTION then
-            s.run_action(original_params.title)
-        end
+    if method == methods.lsp.EXECUTE_COMMAND and original_params.command ==
+        methods.internal.CODE_ACTION then
+        s.run_action(original_params.title)
 
-        -- always make sure that requests are handled to avoid reaching the server
         original_params._null_ls_handled = true
     end
 end
