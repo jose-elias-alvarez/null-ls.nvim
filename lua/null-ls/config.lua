@@ -4,7 +4,8 @@ local validate = vim.validate
 
 local defaults = {
     debounce = 250,
-    keep_alive_interval = 60000, -- 60 seconds
+    keep_alive_interval = 60000, -- 60 seconds,
+    save_after_format = true,
     on_attach = nil,
     generators = {},
     filetypes = {},
@@ -97,18 +98,22 @@ M.generators = function(method)
 end
 
 M.setup = function(user_config)
-    local on_attach, debounce, user_sources = user_config.on_attach,
-                                              user_config.debounce,
-                                              user_config.sources
+    local on_attach, debounce, user_sources, save_after_format =
+        user_config.on_attach, user_config.debounce, user_config.sources,
+        user_config.save_after_format
 
     validate({
         on_attach = {on_attach, "function", true},
         debounce = {debounce, "number", true},
-        sources = {user_sources, "table", true}
+        sources = {user_sources, "table", true},
+        save_after_format = {save_after_format, "boolean", true}
     })
 
     if on_attach then config.on_attach = on_attach end
     if debounce then config.debounce = debounce end
+    if save_after_format ~= nil then
+        config.save_after_format = save_after_format
+    end
     if user_sources then register(user_sources) end
 end
 
