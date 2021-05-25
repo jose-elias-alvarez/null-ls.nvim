@@ -30,13 +30,13 @@ local apply_edits = a.async_void(function(params)
                               postprocess))
 
     local bufnr = params.bufnr
-    if not api.nvim_buf_get_option(bufnr, "modified") then
-        -- default handler doesn't accept bufnr, so call util directly
-        lsp.util.apply_text_edits(edits, bufnr)
+    if api.nvim_buf_get_option(bufnr, "modified") then return end
 
-        if c.get().save_after_format and bufnr == api.nvim_get_current_buf() then
-            vim.cmd("silent noautocmd :update")
-        end
+    -- default handler doesn't accept bufnr, so call util directly
+    lsp.util.apply_text_edits(edits, bufnr)
+
+    if c.get().save_after_format and bufnr == api.nvim_get_current_buf() then
+        vim.cmd("silent noautocmd :update")
     end
 end)
 
