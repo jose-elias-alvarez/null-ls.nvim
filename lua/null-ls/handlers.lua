@@ -9,8 +9,7 @@ local handlers = lsp.handlers
 
 local originals = {
     buf_request = lsp.buf_request,
-    buf_request_all = lsp.buf_request_all,
-    buf = {execute_command = lsp.buf.execute_command}
+    buf_request_all = lsp.buf_request_all
 }
 
 local has_capability = function(client, method)
