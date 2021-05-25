@@ -15,12 +15,13 @@ local defaults = {
 local config = vim.deepcopy(defaults)
 
 -- allow plugins to call register multiple times without duplicating sources
-local check_if_registered = function(name)
+local is_registered = function(name, insert)
     if not name then return false end
 
     if vim.tbl_contains(config.names, name) then return true end
 
-    table.insert(config.names, name)
+    if insert then table.insert(config.names, name) end
+
     return false
 end
 
@@ -36,7 +37,7 @@ local register_source = function(source, filetypes)
     local method, generator, name = source.method, source.generator, source.name
     filetypes = filetypes or source.filetypes
 
-    if check_if_registered(name) then return end
+    if is_registered(name, true) then return end
 
     validate({
         method = {method, "string"},
@@ -75,7 +76,7 @@ local register = function(to_register)
     -- register multiple sources with shared configuration
     local sources, filetypes, name = to_register.sources, to_register.filetypes,
                                      to_register.name
-    if check_if_registered(name) then return end
+    if is_registered(name, true) then return end
 
     validate({sources = {sources, "table"}, name = {name, "string", true}})
 
@@ -87,6 +88,8 @@ local M = {}
 M.get = function() return config end
 
 M.reset = function() config = vim.deepcopy(defaults) end
+
+M.is_registered = is_registered
 
 M.register = register
 

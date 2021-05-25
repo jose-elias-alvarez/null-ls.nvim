@@ -11,6 +11,7 @@ local s = require("null-ls.state")
 local M = {}
 
 M.register = config.register
+M.is_registered = config.is_registered
 M.methods = methods.internal
 M.generator = helpers.generator_factory
 M.formatter = helpers.formatter_factory
