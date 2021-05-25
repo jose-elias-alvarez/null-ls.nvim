@@ -15,7 +15,7 @@ local lsp_wait = function() vim.wait(400) end
 
 main.setup()
 
-describe("integration", function()
+describe("e2e", function()
     after_each(function()
         vim.cmd("bufdo! bwipeout!")
         c.reset_sources()
@@ -78,7 +78,7 @@ describe("integration", function()
 
     describe("diagnostics", function()
         before_each(function()
-            c.register(builtins.markdown.write_good)
+            c.register(builtins.diagnostics.write_good)
 
             tu.edit_test_file("test-file.md")
             lsp_wait()

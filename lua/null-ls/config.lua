@@ -101,21 +101,27 @@ M.generators = function(method)
 end
 
 M.setup = function(user_config)
-    local on_attach, debounce, user_sources, save_after_format =
-        user_config.on_attach, user_config.debounce, user_config.sources,
-        user_config.save_after_format
+    local on_attach, debounce, user_sources, save_after_format,
+          keep_alive_interval = user_config.on_attach, user_config.debounce,
+                                user_config.sources,
+                                user_config.save_after_format,
+                                user_config.keep_alive_interval
 
     validate({
         on_attach = {on_attach, "function", true},
         debounce = {debounce, "number", true},
         sources = {user_sources, "table", true},
-        save_after_format = {save_after_format, "boolean", true}
+        save_after_format = {save_after_format, "boolean", true},
+        keep_alive_interval = {keep_alive_interval, "number", true}
     })
 
     if on_attach then config.on_attach = on_attach end
     if debounce then config.debounce = debounce end
     if save_after_format ~= nil then
         config.save_after_format = save_after_format
+    end
+    if keep_alive_interval then
+        config.keep_alive_interval = keep_alive_interval
     end
     if user_sources then register(user_sources) end
 end
