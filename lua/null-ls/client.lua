@@ -38,7 +38,9 @@ end
 
 local try_attach = function(bufnr, ft, uri)
     bufnr = bufnr or api.nvim_get_current_buf()
-    if vim.fn.buflisted(bufnr) == 0 then return end
+    if not api.nvim_buf_is_loaded(bufnr) or vim.fn.buflisted(bufnr) == 0 then
+        return
+    end
 
     -- the event that triggers this function must fire after the buffer's filetype has been set
     ft = ft or api.nvim_buf_get_option(bufnr, "filetype")

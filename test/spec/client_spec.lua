@@ -11,6 +11,7 @@ local lsp = vim.lsp
 describe("client", function()
     stub(vim.fn, "buflisted")
     stub(vim, "uri_from_bufnr")
+    stub(vim.api, "nvim_buf_is_loaded")
     stub(vim.api, "nvim_buf_get_option")
     stub(vim.api, "nvim_get_current_buf")
     stub(lsp, "start_client")
@@ -28,6 +29,7 @@ describe("client", function()
     before_each(function()
         vim.fn.buflisted.returns(1)
         vim.api.nvim_buf_get_option.returns("lua")
+        vim.api.nvim_buf_is_loaded.returns(true)
         lsp.start_client.returns(mock_client_id)
         vim.uri_from_bufnr.returns(mock_uri)
         vim.api.nvim_get_current_buf.returns(mock_bufnr)
@@ -52,6 +54,14 @@ describe("client", function()
     end)
 
     describe("try_attach", function()
+        it("should return when buffer is not loaded", function()
+            vim.api.nvim_buf_is_loaded.returns(false)
+
+            client.try_attach()
+
+            assert.stub(lsp.start_client).was_not_called()
+        end)
+
         it("should return when buffer is not listed", function()
             vim.fn.buflisted.returns(0)
 
