@@ -20,8 +20,8 @@ required for general-purpose language servers like
 [efm-langserver](https://github.com/mattn/efm-langserver) and
 [diagnostic-languageserver](https://github.com/iamcco/diagnostic-languageserver).
 null-ls makes it straightforward to transform command-line output into a format
-that Neovim's LSP client can handle, using Lua and without any extra executables or
-overhead.
+that Neovim's LSP client can handle, using Lua and without any extra executables
+or overhead.
 
 ## Status
 
@@ -62,7 +62,7 @@ null_ls.register {other_sources}
 
 ## Examples
 
-### Code actions
+### Code actions (synchronous)
 
 The following example demonstrates a (naive) filetype-independent source that
 provides a code action to comment the current line using `commentstring`.
@@ -105,7 +105,7 @@ local comment_line = {
 null_ls.register(comment_line)
 ```
 
-### Diagnostics
+### Diagnostics (synchronous)
 
 The following example demonstrates a diagnostic source that will show instances
 of the word `really` in the current text as LSP warnings.
