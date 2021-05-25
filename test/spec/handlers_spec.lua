@@ -2,6 +2,7 @@ local stub = require("luassert.stub")
 
 local diagnostics = require("null-ls.diagnostics")
 local code_actions = require("null-ls.code-actions")
+local formatting = require("null-ls.formatting")
 local methods = require("null-ls.methods")
 
 local lsp = vim.lsp
@@ -103,6 +104,7 @@ describe("handlers", function()
     describe("setup_client", function()
         stub(diagnostics, "handler")
         stub(code_actions, "handler")
+        stub(formatting, "handler")
         local mock_request = stub.new()
         local mock_handler = stub.new()
 
@@ -112,7 +114,9 @@ describe("handlers", function()
             handlers.setup_client(mock_client)
         end)
         after_each(function()
+            code_actions.handler:clear()
             diagnostics.handler:clear()
+            formatting.handler:clear()
             mock_request:clear()
             mock_handler:clear()
         end)
@@ -158,11 +162,19 @@ describe("handlers", function()
                     assert.equals(response, true)
                 end)
 
-            it("should pass params to code actions handler", function()
+            it("should pass args to code actions handler", function()
                 mock_client.request("mockMethod", {}, mock_handler, 1)
 
                 assert.stub(code_actions.handler).was_called_with("mockMethod",
                                                                   {
+                    method = "mockMethod"
+                }, mock_handler, 1)
+            end)
+
+            it("should pass args to formatting handler", function()
+                mock_client.request("mockMethod", {}, mock_handler, 1)
+
+                assert.stub(formatting.handler).was_called_with("mockMethod", {
                     method = "mockMethod"
                 }, mock_handler, 1)
             end)

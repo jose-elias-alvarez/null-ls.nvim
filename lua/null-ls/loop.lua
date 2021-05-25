@@ -27,17 +27,30 @@ end
 local M = {}
 
 M.spawn = function(cmd, args, opts)
-    local handler, input, bufnr = opts.handler, opts.input, opts.bufnr
+    local handler, input, bufnr, check_exit_code = opts.handler, opts.input,
+                                                   opts.bufnr,
+                                                   opts.check_exit_code
 
-    local output, error_output = "", ""
+    local output, error_output, exit_ok = "", "", _G._TEST and true or nil
     local handle_stdout = vim.schedule_wrap(
                               function(err, chunk)
             if err then error("stdout error: " .. err) end
 
             if chunk then output = output .. chunk end
             if not chunk then
+                -- wait for handler callback to check exit code
+                vim.wait(500, function() return exit_ok ~= nil end, 10)
+
+                -- convert empty strings to make nil checks easier
                 if output == "" then output = nil end
                 if error_output == "" then error_output = nil end
+
+                -- if exit code is not ok and program did not output to stderr,
+                -- assign output to error_output, so handler can process it as an error
+                if not exit_ok and not error_output then
+                    error_output = output
+                    output = nil
+                end
 
                 handler(error_output, output)
             end
@@ -56,7 +69,9 @@ M.spawn = function(cmd, args, opts)
 
     local handle
     handle = uv.spawn(cmd, {args = parse_args(args, bufnr), stdio = stdio},
-                      vim.schedule_wrap(function()
+                      vim.schedule_wrap(function(code)
+        exit_ok = check_exit_code and check_exit_code(code) or code == 0
+
         stdout:read_stop()
         stderr:read_stop()
 
@@ -73,7 +88,7 @@ M.spawn = function(cmd, args, opts)
 end
 
 M.timer = function(timeout, interval, should_start, callback)
-    if not interval then interval = 0 end
+    interval = interval or 0
 
     local timer = uv.new_timer()
     local wrapped = vim.schedule_wrap(callback)

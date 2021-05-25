@@ -43,6 +43,7 @@ describe("loop", function()
         local mock_cmd = "cat"
         local mock_args = {"-n"}
         local mock_handler = stub.new()
+        local check_exit_code = stub.new()
 
         local mock_handle = {}
         local mock_handle_is_closing = stub.new()
@@ -59,7 +60,14 @@ describe("loop", function()
         local mock_stderr_is_closing = stub.new()
         local mock_stderr_close = stub.new()
 
+        local mock_opts
         before_each(function()
+            check_exit_code.returns(true)
+            mock_opts = {
+                handler = function(...) mock_handler(...) end,
+                check_exit_code = check_exit_code
+            }
+
             function mock_stdin:write(...) mock_stdin_write(...) end
             function mock_stdin:close() mock_stdin_close() end
             function mock_handle:is_closing()
@@ -98,8 +106,7 @@ describe("loop", function()
         end)
 
         it("should call uv.spawn with cmd and args", function()
-            loop.spawn(mock_cmd, mock_args,
-                       {handler = function(...) mock_handler(...) end})
+            loop.spawn(mock_cmd, mock_args, mock_opts)
 
             assert.stub(uv.spawn).was_called()
             assert.equals(uv.spawn.calls[1].refs[1], mock_cmd)
@@ -107,8 +114,7 @@ describe("loop", function()
         end)
 
         it("should call uv.read_start twice", function()
-            loop.spawn(mock_cmd, mock_args,
-                       {handler = function(...) mock_handler(...) end})
+            loop.spawn(mock_cmd, mock_args, mock_opts)
 
             assert.stub(uv.read_start).was_called(2)
         end)
@@ -117,11 +123,9 @@ describe("loop", function()
             it("should call stdin:write when input is given", function()
                 uv.new_pipe.returns(mock_stdin)
                 local mock_input = "I have content"
+                mock_opts.input = mock_input
 
-                loop.spawn(mock_cmd, mock_args, {
-                    handler = function(...) mock_handler(...) end,
-                    input = mock_input
-                })
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 assert.stub(mock_stdin_write).was_called()
                 assert.equals(mock_stdin_write.calls[1].refs[1], mock_input)
@@ -130,10 +134,8 @@ describe("loop", function()
             it("should call stdin:close in callback", function()
                 uv.new_pipe.returns(mock_stdin)
                 local mock_input = "I have content"
-                loop.spawn(mock_cmd, mock_args, {
-                    handler = function(...) mock_handler(...) end,
-                    input = mock_input
-                })
+                mock_opts.input = mock_input
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local callback = mock_stdin_write.calls[1].refs[2]
                 callback()
@@ -145,10 +147,7 @@ describe("loop", function()
         describe("handle_stdout", function()
             local handle_stdout
             before_each(function()
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
                 handle_stdout = vim.schedule_wrap.calls[1].refs[1]
             end)
 
@@ -192,10 +191,7 @@ describe("loop", function()
         describe("handle_stderr", function()
             local handle_stderr
             before_each(function()
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
                 handle_stderr = uv.read_start.calls[2].refs[2]
             end)
 
@@ -217,14 +213,68 @@ describe("loop", function()
             end)
         end)
 
+        describe("exit code", function()
+            stub(vim, "wait")
+
+            before_each(function()
+                uv.new_pipe.returns(mock_stdout)
+                uv.spawn.returns(mock_handle)
+            end)
+            after_each(function()
+                vim.wait:clear()
+                check_exit_code:clear()
+            end)
+
+            it("should check that code is 0 when check_exit_code is nil",
+               function()
+                mock_opts.check_exit_code = nil
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+                local callback = vim.schedule_wrap.calls[2].refs[1]
+                local handle_stdout = vim.schedule_wrap.calls[1].refs[1]
+
+                callback(0)
+                handle_stdout(nil, nil)
+                local done = vim.wait.calls[1].refs[2]
+
+                assert.stub(check_exit_code).was_not_called()
+                assert.equals(done(), true)
+            end)
+
+            it("should check exit code with check_exit_code callback",
+               function()
+                check_exit_code.returns(false)
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+                local callback = vim.schedule_wrap.calls[2].refs[1]
+                local handle_stdout = vim.schedule_wrap.calls[1].refs[1]
+
+                callback(255)
+                handle_stdout(nil, nil)
+                local done = vim.wait.calls[1].refs[2]
+
+                assert.stub(check_exit_code).was_called_with(255)
+                assert.equals(done(), true)
+            end)
+
+            it("should swap output and error_output if exit_ok is false",
+               function()
+                check_exit_code.returns(false)
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+                local callback = vim.schedule_wrap.calls[2].refs[1]
+                local handle_stdout = vim.schedule_wrap.calls[1].refs[1]
+
+                callback(255)
+                handle_stdout(nil, "bad")
+                handle_stdout(nil, nil)
+
+                assert.stub(mock_handler).was_called_with("bad", nil)
+            end)
+        end)
+
         describe("spawn callback", function()
             it("should call close_handle on spawn handle", function()
                 uv.new_pipe.returns(mock_stdout)
                 uv.spawn.returns(mock_handle)
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
@@ -238,10 +288,7 @@ describe("loop", function()
                 uv.new_pipe.returns(mock_stdout)
                 uv.spawn.returns(mock_handle)
                 mock_handle_is_closing.returns(true)
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
@@ -250,15 +297,10 @@ describe("loop", function()
                 assert.stub(mock_handle_close).was_not_called()
             end)
 
-            -- as far as I know there's no way to stack return values with luassert,
-            -- but I'd be thrilled to be proven wrong!
             it("should call read_stop and close_handle on stdout handle",
                function()
                 uv.new_pipe.returns(mock_stdout)
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()
@@ -271,10 +313,7 @@ describe("loop", function()
             it("should call read_stop and close_handle on stderr handle",
                function()
                 uv.new_pipe.returns(mock_stderr)
-                loop.spawn(mock_cmd, mock_args,
-                           {handler = function(...)
-                    mock_handler(...)
-                end})
+                loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local callback = vim.schedule_wrap.calls[2].refs[1]
                 callback()

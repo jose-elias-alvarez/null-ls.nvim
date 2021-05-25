@@ -53,9 +53,12 @@ M.generator_factory = function(opts)
     return {
         fn = function(params, done)
             local command, args, on_output, format, to_stderr, to_stdin,
-                  ignore_errors = opts.command, opts.args, opts.on_output,
-                                  opts.format, opts.to_stderr, opts.to_stdin,
-                                  opts.ignore_errors
+                  ignore_errors, check_exit_code = opts.command, opts.args,
+                                                   opts.on_output, opts.format,
+                                                   opts.to_stderr,
+                                                   opts.to_stdin,
+                                                   opts.ignore_errors,
+                                                   opts.check_exit_code
 
             validate({
                 command = {command, "string"},
@@ -69,7 +72,8 @@ M.generator_factory = function(opts)
                 },
                 to_stderr = {to_stderr, "boolean", true},
                 to_stdin = {to_stdin, "boolean", true},
-                ignore_errors = {ignore_errors, "boolean", true}
+                ignore_errors = {ignore_errors, "boolean", true},
+                check_exit_code = {check_exit_code, "function", true}
             })
 
             local wrapper = function(error_output, output)
@@ -105,7 +109,8 @@ M.generator_factory = function(opts)
             loop.spawn(command, args or {}, {
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
-                bufnr = params.bufnr
+                bufnr = params.bufnr,
+                check_exit_code = check_exit_code
             })
         end,
         filetypes = opts.filetypes,
@@ -130,11 +135,7 @@ M.formatter_factory = function(opts)
         })
     end
 
-    return {
-        method = methods.internal.FORMATTING,
-        generator = M.generator_factory(opts),
-        filetypes = opts.filetypes
-    }
+    return M.generator_factory(opts)
 end
 
 if _G._TEST then

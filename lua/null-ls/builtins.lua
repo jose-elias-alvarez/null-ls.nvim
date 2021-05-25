@@ -14,6 +14,9 @@ local write_good = {
             args = {"--text=$TEXT", "--parse"},
             format = "line",
             filetypes = {"markdown"},
+            check_exit_code = function(code)
+                return code == 0 or code == 255
+            end,
             on_output = function(line, params)
                 local pos = vim.split(string.match(line, "%d+:%d+"), ":")
                 local row = pos[1]
