@@ -70,6 +70,8 @@ describe("code_actions", function()
 
                 code_actions.handler(method, {}, handler, 1)
 
+                -- wait for schedule_wrap
+                vim.wait(0)
                 assert.stub(handler).was_called_with(nil, method, "actions", 99,
                                                      1)
             end)
