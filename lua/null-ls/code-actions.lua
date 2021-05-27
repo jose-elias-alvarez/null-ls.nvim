@@ -5,6 +5,8 @@ local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
+local schedule = vim.schedule_wrap
+
 local M = {}
 
 local postprocess = function(action)
@@ -31,9 +33,9 @@ M.handler = function(method, original_params, handler, bufnr)
         original_params.bufnr = bufnr
         inject_actions(u.make_params(original_params,
                                      methods.internal.CODE_ACTION),
-                       function(actions)
+                       schedule(function(actions)
             handler(nil, method, actions, s.get().client_id, bufnr)
-        end)
+        end))
 
         original_params._null_ls_handled = true
     end

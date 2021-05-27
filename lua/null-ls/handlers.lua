@@ -108,7 +108,7 @@ M.setup_client = function(client)
         code_actions.handler(method, params, handler, bufnr)
         formatting.handler(method, params, handler, bufnr)
 
-        -- return long request id to prevent overlapping with an actual client
+        -- return long request id to (hopefully) prevent overlapping with actual client
         if params._null_ls_handled then
             return true, methods.internal._REQUEST_ID
         end
