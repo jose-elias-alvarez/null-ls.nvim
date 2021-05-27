@@ -272,7 +272,8 @@ it within Neovim.
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
-Run `make test` in the root of the project to run the suite.
+Run `make test` in the root of the project to run the suite or
+`FILE=filename_spec.lua make test-file` to test an individual file.
 
 ## TODO
 
