@@ -1,6 +1,5 @@
 local u = require("null-ls.utils")
 local loop = require("null-ls.loop")
-local methods = require("null-ls.methods")
 
 local validate = vim.validate
 
@@ -17,6 +16,7 @@ end
 local json_output_wrapper = function(params, done, on_output)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
     if not ok then error("failed to decode json: " .. decoded) end
+    if decoded == vim.NIL then decoded = nil end
 
     params.output = decoded
     done(on_output(params))
