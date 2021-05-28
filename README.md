@@ -54,7 +54,7 @@ null_ls.setup {
     save_after_formatting = true,
     debounce = 250,
     keep_alive_interval = 60000,
-    default_timeout = 1000
+    default_timeout = 5000
 }
 
 -- register sources dynamically
