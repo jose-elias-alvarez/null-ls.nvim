@@ -42,7 +42,7 @@ describe("config", function()
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-            assert.equals(vim.tbl_count(c.get().filetypes), 2)
+            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
         it("should register additional generators for same method", function()
@@ -53,7 +53,7 @@ describe("config", function()
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get().filetypes), 2)
+            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
         it("should call autocommands trigger method after registration",
@@ -71,7 +71,7 @@ describe("config", function()
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get().filetypes), 2)
+            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
         it("should register multiple sources with shared configuration",
@@ -85,7 +85,7 @@ describe("config", function()
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get().filetypes), 1)
+            assert.equals(vim.tbl_count(c.get()._filetypes), 1)
         end)
 
         it("should only register sources once when name is specified",
@@ -107,7 +107,7 @@ describe("config", function()
     end)
 
     describe("reset_sources", function()
-        it("should reset sources", function()
+        it("should reset sources only", function()
             c.setup({debounce = 500, sources = {mock_source}})
 
             c.reset_sources()
@@ -135,7 +135,32 @@ describe("config", function()
     end)
 
     describe("setup", function()
-        it("should set on_attach", function()
+        it("should set simple config value", function()
+            local debounce = 999
+
+            c.setup({debounce = debounce})
+
+            assert.equals(c.get().debounce, debounce)
+        end)
+
+        it("should only setup config once", function()
+            c.setup({debounce = 999})
+
+            c.setup({debounce = 1})
+
+            assert.equals(c.get().debounce, 999)
+        end)
+
+        it("should throw if simple config type does not match", function()
+            local debounce = "999"
+
+            local ok, err = pcall(c.setup, {debounce = debounce})
+
+            assert.equals(ok, false)
+            assert.matches("expected number", err)
+        end)
+
+        it("should set override config value", function()
             local on_attach = stub.new()
             local _on_attach = function() on_attach() end
 
@@ -145,12 +170,22 @@ describe("config", function()
             assert.stub(on_attach).was_called()
         end)
 
-        it("should set debounce", function()
-            local debounce = 999
+        it("should throw if override config type does not match", function()
+            local on_attach = {"my function"}
 
-            c.setup({debounce = debounce})
+            local ok, err = pcall(c.setup, {on_attach = on_attach})
 
-            assert.equals(c.get().debounce, debounce)
+            assert.equals(ok, false)
+            assert.matches("expected function, nil", err)
+        end)
+
+        it("should throw if config value is private", function()
+            local _names = {"my-integration"}
+
+            local ok, err = pcall(c.setup, {_names = _names})
+
+            assert.equals(ok, false)
+            assert.matches("expected nil", err)
         end)
 
         it("should register sources", function()
@@ -160,7 +195,7 @@ describe("config", function()
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-            assert.equals(vim.tbl_count(c.get().filetypes), 2)
+            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
     end)
 end)
