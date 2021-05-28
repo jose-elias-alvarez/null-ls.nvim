@@ -5,7 +5,8 @@ local test_utils = require("test.utils")
 
 describe("helpers", function()
     _G._TEST = true
-    local helpers = require("null-ls.helpers")
+
+    stub(vim, "validate")
 
     local done = stub.new()
     local on_output = stub.new()
@@ -13,8 +14,10 @@ describe("helpers", function()
     after_each(function()
         done:clear()
         on_output:clear()
+        vim.validate:clear()
     end)
 
+    local helpers = require("null-ls.helpers")
     describe("json_output_wrapper", function()
         it("should throw error if json decode fails", function()
             local bad_json = "this is not json"
@@ -88,8 +91,26 @@ describe("helpers", function()
         end)
 
         after_each(function()
-            vim.cmd("bufdo! bwipeout!")
             loop.spawn:clear()
+
+            vim.cmd("bufdo! bwipeout!")
+        end)
+
+        it("should validate opts on first run", function()
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({})
+
+            assert.stub(vim.validate).was_called()
+        end)
+
+        it("should not validate opts on subsequent runs", function()
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({})
+            generator.fn({})
+
+            assert.stub(vim.validate).was_called(1)
         end)
 
         it("should set async to true", function()

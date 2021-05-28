@@ -50,31 +50,34 @@ local formats = {
 }
 
 M.generator_factory = function(opts)
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors,
+          check_exit_code = opts.command, opts.args, opts.on_output,
+                            opts.format, opts.to_stderr, opts.to_stdin,
+                            opts.ignore_errors, opts.check_exit_code
+
+    local _validated
+    local validate_opts = function()
+        validate({
+            command = {command, "string"},
+            args = {args, "table", true},
+            on_output = {on_output, "function"},
+            format = {
+                format, function(a)
+                    return not a or vim.tbl_contains(vim.tbl_values(formats), a)
+                end, "raw, line, or json"
+            },
+            to_stderr = {to_stderr, "boolean", true},
+            to_stdin = {to_stdin, "boolean", true},
+            ignore_errors = {ignore_errors, "boolean", true},
+            check_exit_code = {check_exit_code, "function", true}
+        })
+
+        _validated = true
+    end
+
     return {
         fn = function(params, done)
-            local command, args, on_output, format, to_stderr, to_stdin,
-                  ignore_errors, check_exit_code = opts.command, opts.args,
-                                                   opts.on_output, opts.format,
-                                                   opts.to_stderr,
-                                                   opts.to_stdin,
-                                                   opts.ignore_errors,
-                                                   opts.check_exit_code
-
-            validate({
-                command = {command, "string"},
-                args = {args, "table", true},
-                on_output = {on_output, "function"},
-                format = {
-                    format, function(a)
-                        return not a or
-                                   vim.tbl_contains(vim.tbl_values(formats), a)
-                    end, "raw, line, or json"
-                },
-                to_stderr = {to_stderr, "boolean", true},
-                to_stdin = {to_stdin, "boolean", true},
-                ignore_errors = {ignore_errors, "boolean", true},
-                check_exit_code = {check_exit_code, "function", true}
-            })
+            if not _validated then validate_opts() end
 
             local wrapper = function(error_output, output)
                 if to_stderr then
