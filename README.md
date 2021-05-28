@@ -211,8 +211,8 @@ LSP-friendly format. See the built-in files linked below for examples.
 
 null-ls includes built-in sources, meant to provide out-of-the-box
 functionality. See [the wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Built-ins) for
-details. Contributions to add more built-ins are welcome.
+page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Built-in-sources)
+for details. Contributions to add more built-ins are welcome.
 
 ### Code actions
 
