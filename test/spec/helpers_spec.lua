@@ -1,6 +1,7 @@
 local stub = require("luassert.stub")
 local loop = require("null-ls.loop")
 
+local c = require("null-ls.config")
 local test_utils = require("test.utils")
 
 describe("helpers", function()
@@ -145,6 +146,25 @@ describe("helpers", function()
                 generator.fn({})
 
                 assert.same(loop.spawn.calls[1].refs[2], {})
+            end)
+
+            it("should call loop.spawn with specified timeout", function()
+                generator_args.timeout = 500
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({})
+
+                assert.same(loop.spawn.calls[1].refs[3].timeout, 500)
+            end)
+
+            it("should call loop.spawn with default timeout", function()
+                generator_args.timeout = nil
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({})
+
+                assert.same(loop.spawn.calls[1].refs[3].timeout,
+                            c.get().default_timeout)
             end)
 
             it(

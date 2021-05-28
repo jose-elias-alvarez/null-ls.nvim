@@ -1,4 +1,5 @@
 local u = require("null-ls.utils")
+local c = require("null-ls.config")
 local loop = require("null-ls.loop")
 
 local validate = vim.validate
@@ -51,9 +52,10 @@ local formats = {
 
 M.generator_factory = function(opts)
     local command, args, on_output, format, to_stderr, to_stdin, ignore_errors,
-          check_exit_code = opts.command, opts.args, opts.on_output,
-                            opts.format, opts.to_stderr, opts.to_stdin,
-                            opts.ignore_errors, opts.check_exit_code
+          check_exit_code, timeout = opts.command, opts.args, opts.on_output,
+                                     opts.format, opts.to_stderr, opts.to_stdin,
+                                     opts.ignore_errors, opts.check_exit_code,
+                                     opts.timeout
 
     local _validated
     local validate_opts = function()
@@ -69,7 +71,8 @@ M.generator_factory = function(opts)
             to_stderr = {to_stderr, "boolean", true},
             to_stdin = {to_stdin, "boolean", true},
             ignore_errors = {ignore_errors, "boolean", true},
-            check_exit_code = {check_exit_code, "function", true}
+            check_exit_code = {check_exit_code, "function", true},
+            timeout = {timeout, "number", true}
         })
 
         _validated = true
@@ -113,7 +116,8 @@ M.generator_factory = function(opts)
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
                 bufnr = params.bufnr,
-                check_exit_code = check_exit_code
+                check_exit_code = check_exit_code,
+                timeout = timeout or c.get().default_timeout
             })
         end,
         filetypes = opts.filetypes,

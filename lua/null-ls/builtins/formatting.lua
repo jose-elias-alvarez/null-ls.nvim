@@ -11,7 +11,8 @@ M.lua_format = {
         {
             command = "lua-format",
             args = {"--single-quote-to-double-quote", "-i"},
-            to_stdin = true
+            to_stdin = true,
+            timeout = 2500
         })
 }
 

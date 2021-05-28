@@ -23,7 +23,7 @@ M.start = function()
     -- start timer to shutdown server after inactivity
     local timer
     local shutdown = function()
-        if timer then timer.stop() end
+        if timer then timer.stop(true) end
         vim.cmd("noautocmd qa!")
     end
     timer = loop.timer(default_shutdown_timeout, nil, true, shutdown)

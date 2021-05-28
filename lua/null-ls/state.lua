@@ -41,7 +41,7 @@ end
 
 M.shutdown_client = function(timeout)
     if not state.client then return end
-    if state.keep_alive_timer then state.keep_alive_timer.stop() end
+    if state.keep_alive_timer then state.keep_alive_timer.stop(true) end
 
     lsp.stop_client(state.client_id)
     vim.wait(timeout or 5000, function()

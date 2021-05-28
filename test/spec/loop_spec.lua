@@ -1,12 +1,17 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
+local uv = mock(vim.loop, true)
+
 local test_utils = require("test.utils")
 
 describe("loop", function()
     _G._TEST = true
+
+    stub(vim, "schedule_wrap")
+    after_each(function() vim.schedule_wrap:clear() end)
+
     local loop = require("null-ls.loop")
-    local uv = mock(vim.loop, true)
 
     describe("parse_args", function()
         it("should replace $FILENAME with buffer name", function()
@@ -39,7 +44,6 @@ describe("loop", function()
     end)
 
     describe("spawn", function()
-        stub(vim, "schedule_wrap")
         local mock_cmd = "cat"
         local mock_args = {"-n"}
         local mock_handler = stub.new()
@@ -99,7 +103,6 @@ describe("loop", function()
             mock_stderr_is_closing:clear()
             mock_stderr_close:clear()
 
-            vim.schedule_wrap:clear()
             uv.spawn:clear()
             uv.read_start:clear()
             uv.new_pipe:clear()
@@ -268,9 +271,23 @@ describe("loop", function()
 
                 assert.stub(mock_handler).was_called_with("bad", nil)
             end)
+
+            it("should set exit_ok to false if exit code is TIMEOUT_EXIT_CODE",
+               function()
+                mock_opts.check_exit_code = nil
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+                local callback = vim.schedule_wrap.calls[2].refs[1]
+                local handle_stdout = vim.schedule_wrap.calls[1].refs[1]
+
+                callback(loop._TIMEOUT_EXIT_CODE)
+                handle_stdout(nil, "bad")
+                handle_stdout(nil, nil)
+
+                assert.stub(mock_handler).was_called_with("bad", nil)
+            end)
         end)
 
-        describe("spawn callback", function()
+        describe("close", function()
             it("should call close_handle on spawn handle", function()
                 uv.new_pipe.returns(mock_stdout)
                 uv.spawn.returns(mock_handle)
@@ -323,59 +340,102 @@ describe("loop", function()
                 assert.stub(mock_stderr_close).was_called()
             end)
         end)
+
+        describe("timeout", function()
+            local mock_close = stub.new()
+
+            local timeout = 500
+            local mock_timer = {stop = stub.new()}
+            before_each(function()
+                stub(loop, "timer")
+                loop.timer.returns(mock_timer)
+                vim.schedule_wrap.returns(mock_close)
+
+                mock_opts.timeout = 500
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+            end)
+            after_each(function()
+                mock_timer.stop:clear()
+                mock_close:clear()
+                loop.timer:revert()
+            end)
+
+            it("should create timer when timeout is set", function()
+                assert.stub(loop.timer).was_called()
+                assert.equals(loop.timer.calls[1].refs[1], timeout)
+                assert.equals(loop.timer.calls[1].refs[2], nil)
+                assert.equals(loop.timer.calls[1].refs[3], true)
+            end)
+
+            it("should call close, handler, and timer.stop on timer callback",
+               function()
+                local callback = loop.timer.calls[1].refs[4]
+
+                callback()
+
+                assert.stub(mock_close).was_called()
+                assert.stub(mock_handler).was_called()
+                assert.stub(mock_timer.stop).was_called_with(true)
+            end)
+
+            it("should call timer.stop() in handle_stdout", function()
+                local handle_stdout = vim.schedule_wrap.calls[1].refs[1]
+
+                handle_stdout(nil, nil)
+
+                assert.stub(mock_timer.stop).was_called_with(true)
+            end)
+        end)
     end)
 
     describe("timer", function()
-        stub(vim, "schedule_wrap")
         local mock_timer = {}
         local start = stub.new()
         local stop = stub.new()
+        local close = stub.new()
+        local is_closing = stub.new()
         function mock_timer:start(...) start(...) end
         function mock_timer:stop() stop() end
+        function mock_timer:close() close() end
+        function mock_timer:is_closing() is_closing() end
 
         local timeout = 10
         local interval = 5
-        local callback_spy = stub.new()
-        local callback = function() callback_spy() end
+        local callback = stub.new()
+        local _callback = function() callback() end
 
         before_each(function()
             uv.new_timer.returns(mock_timer)
             vim.schedule_wrap.returns("wrapped")
         end)
         after_each(function()
-            vim.schedule_wrap:clear()
-            callback_spy:clear()
+            callback:clear()
             start:clear()
             stop:clear()
+            close:clear()
+            is_closing:clear()
         end)
 
         it("should return object with methods and original timer", function()
-            local timer = loop.timer(timeout, interval, false, callback)
+            local timer = loop.timer(timeout, interval, false, _callback)
 
             assert.truthy(timer.start)
             assert.truthy(timer.stop)
             assert.truthy(timer.restart)
+            assert.truthy(timer.stop)
             assert.equals(timer._timer, mock_timer)
         end)
 
         it("should pass callback to schedule_wrap", function()
-            loop.timer(timeout, interval, false, callback)
+            loop.timer(timeout, interval, false, _callback)
 
             vim.schedule_wrap.calls[1].refs[1]()
 
-            assert.stub(callback_spy).was_called()
-        end)
-
-        it("should call uv timer start method on start", function()
-            local timer = loop.timer(timeout, interval, false, callback)
-
-            timer.start()
-
-            assert.stub(start).was_called_with(timeout, interval, "wrapped")
+            assert.stub(callback).was_called()
         end)
 
         it("should default interval to 0 when nil", function()
-            local timer = loop.timer(timeout, nil, false, callback)
+            local timer = loop.timer(timeout, nil, false, _callback)
 
             timer.start()
 
@@ -383,34 +443,76 @@ describe("loop", function()
         end)
 
         it("should start timer when should_start = true", function()
-            loop.timer(timeout, nil, true, callback)
+            loop.timer(timeout, nil, true, _callback)
 
             assert.stub(start).was_called_with(timeout, 0, "wrapped")
         end)
 
-        describe("restart", function()
-            it(
-                "should restart timer with original interval and wrapped callback",
-                function()
-                    local timer = loop.timer(timeout, interval, false, callback)
+        describe("methods", function()
+            local timer
+            before_each(function()
+                timer = loop.timer(timeout, interval, false, _callback)
+            end)
 
-                    timer.restart()
+            describe("start", function()
 
-                    assert.stub(stop).was_called()
+                it("should call timer:start method", function()
+                    timer.start()
+
                     assert.stub(start).was_called_with(timeout, interval,
                                                        "wrapped")
                 end)
+            end)
 
-            it("should restart timer with new timeout and interval", function()
-                local timer = loop.timer(timeout, interval, false, callback)
-                local new_timeout = 100
-                local new_interval = 99
+            describe("close", function()
+                it("should call close_handle on timer", function()
+                    timer.close()
 
-                timer.restart(new_timeout, new_interval)
+                    assert.stub(is_closing).was_called()
+                    assert.stub(close).was_called()
+                end)
+            end)
 
-                assert.stub(stop).was_called()
-                assert.stub(start).was_called_with(new_timeout, new_interval,
-                                                   "wrapped")
+            describe("stop", function()
+                it("should call timer:stop method", function()
+                    timer.stop()
+
+                    assert.stub(stop).was_called_()
+                end)
+
+                it("should also call close() when should_close is true",
+                   function()
+                    timer.stop(true)
+
+                    assert.stub(stop).was_called_()
+                    assert.stub(is_closing).was_called()
+                    assert.stub(close).was_called()
+                end)
+            end)
+
+            describe("restart", function()
+                it(
+                    "should restart timer with original interval and wrapped callback",
+                    function()
+
+                        timer.restart()
+
+                        assert.stub(stop).was_called()
+                        assert.stub(start).was_called_with(timeout, interval,
+                                                           "wrapped")
+                    end)
+
+                it("should restart timer with new timeout and interval",
+                   function()
+                    local new_timeout = 100
+                    local new_interval = 99
+
+                    timer.restart(new_timeout, new_interval)
+
+                    assert.stub(stop).was_called()
+                    assert.stub(start).was_called_with(new_timeout,
+                                                       new_interval, "wrapped")
+                end)
             end)
         end)
     end)

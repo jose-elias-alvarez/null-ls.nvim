@@ -50,10 +50,11 @@ null_ls.setup {
     -- define sources at setup
     sources = {my_sources},
 
-    -- options (defaults shown)
+    -- options (defaults shown, numbers in ms)
     save_after_formatting = true,
-    debounce = 250, -- ms
-    keep_alive_interval = 60000 -- ms (60 seconds)
+    debounce = 250,
+    keep_alive_interval = 60000,
+    default_timeout = 1000
 }
 
 -- register sources dynamically

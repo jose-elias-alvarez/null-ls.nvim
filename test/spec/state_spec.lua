@@ -130,17 +130,24 @@ describe("state", function()
         describe("shutdown_client", function()
             stub(vim.lsp, "stop_client")
             stub(vim, "wait")
+            stub(loop, "timer")
             local is_stopped = stub.new()
-            local mock_client
+            local mock_timer = {stop = stub.new()}
 
+            local mock_client
             before_each(function()
                 mock_client = {is_stopped = is_stopped}
+
                 s.set({client_id = mock_client_id, client = mock_client})
             end)
+
             after_each(function()
                 vim.lsp.stop_client:clear()
                 vim.wait:clear()
+
                 is_stopped:clear()
+                mock_timer.stop:clear()
+
                 s.reset()
             end)
 
@@ -156,6 +163,14 @@ describe("state", function()
                 s.shutdown_client()
 
                 assert.stub(vim.lsp.stop_client).was_called_with(mock_client_id)
+            end)
+
+            it("should call stop method on keep_alive_timer", function()
+                s.set({keep_alive_timer = mock_timer})
+
+                s.shutdown_client()
+
+                assert.stub(mock_timer.stop).was_called_with(true)
             end)
 
             it("should reset state", function()

@@ -1,5 +1,6 @@
-local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
+local methods = require("null-ls.methods")
+local helpers = require("null-ls.helpers")
 
 local api = vim.api
 
@@ -60,6 +61,30 @@ M.mock_code_action = {
             }
         end
     },
+    filetypes = {"lua"}
+}
+
+M.slow_code_action = {
+    method = methods.internal.CODE_ACTION,
+    generator = helpers.generator_factory(
+        {
+            command = "bash",
+            args = {"./test/scripts/sleep-and-echo.sh"},
+            format = "raw",
+            timeout = 100,
+            on_output = function(params, done)
+                if not params.output then return done() end
+
+                return done({
+                    {
+                        title = "Slow mock action",
+                        action = function()
+                            print("I took too long!")
+                        end
+                    }
+                })
+            end
+        }),
     filetypes = {"lua"}
 }
 

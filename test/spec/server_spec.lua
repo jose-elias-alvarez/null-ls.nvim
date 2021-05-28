@@ -49,7 +49,7 @@ describe("server", function()
             local callback = loop.timer.calls[1].refs[4]
             callback()
 
-            assert.stub(stop).was_called()
+            assert.stub(stop).was_called_with(true)
             assert.stub(vim.cmd).was_called_with("noautocmd qa!")
         end)
     end)
