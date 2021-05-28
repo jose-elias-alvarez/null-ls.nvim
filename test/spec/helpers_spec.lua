@@ -261,9 +261,12 @@ describe("helpers", function()
     end)
 
     describe("formatter_factory", function()
-        local opts = {key = "val"}
+        local opts
+        before_each(function()
+            stub(helpers, "generator_factory")
+            opts = {key = "val"}
+        end)
 
-        before_each(function() stub(helpers, "generator_factory") end)
         after_each(function()
             helpers.generator_factory:clear()
             helpers.generator_factory:revert()
@@ -276,6 +279,14 @@ describe("helpers", function()
             assert.equals(helpers.generator_factory.calls[1].refs[1]
                               .ignore_errors, true)
             assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
+        end)
+
+        it("should not set ignore_errors when already set", function()
+            opts.ignore_errors = false
+            helpers.formatter_factory(opts)
+
+            assert.equals(helpers.generator_factory.calls[1].refs[1]
+                              .ignore_errors, false)
         end)
 
         describe("on_output", function()

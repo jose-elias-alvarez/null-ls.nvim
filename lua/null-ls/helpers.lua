@@ -126,7 +126,7 @@ M.generator_factory = function(opts)
 end
 
 M.formatter_factory = function(opts)
-    opts.ignore_errors = true
+    if opts.ignore_errors == nil then opts.ignore_errors = true end
     opts.on_output = function(params, done)
         local output = params.output
         if not output then return done() end
