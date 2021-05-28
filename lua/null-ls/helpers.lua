@@ -145,6 +145,34 @@ M.formatter_factory = function(opts)
     return M.generator_factory(opts)
 end
 
+M.make_builtin = function(opts)
+    local method, filetypes, factory, generator_opts = opts.method,
+                                                       opts.filetypes,
+                                                       opts.factory,
+                                                       opts.generator_opts
+
+    local builtin = {
+        method = method,
+        filetypes = filetypes,
+        _opts = generator_opts
+    }
+
+    setmetatable(builtin, {
+        __index = function(tab, key)
+            return key == "generator" and factory(tab._opts) or rawget(tab, key)
+        end
+    })
+
+    builtin.with = function(user_opts)
+        builtin.filetypes = user_opts.filetypes or builtin.filetypes
+        builtin._opts = vim.tbl_extend("force", builtin._opts, user_opts)
+
+        return builtin
+    end
+
+    return builtin
+end
+
 if _G._TEST then
     M._json_output_wrapper = json_output_wrapper
     M._line_output_wrapper = line_output_wrapper

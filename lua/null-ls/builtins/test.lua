@@ -1,6 +1,6 @@
 local u = require("null-ls.utils")
+local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
-local helpers = require("null-ls.helpers")
 
 local api = vim.api
 
@@ -64,29 +64,28 @@ M.mock_code_action = {
     filetypes = {"lua"}
 }
 
-M.slow_code_action = {
+M.slow_code_action = h.make_builtin({
     method = methods.internal.CODE_ACTION,
-    generator = helpers.generator_factory(
-        {
-            command = "bash",
-            args = {"./test/scripts/sleep-and-echo.sh"},
-            format = "raw",
-            timeout = 100,
-            on_output = function(params, done)
-                if not params.output then return done() end
+    filetypes = {"lua"},
+    generator_opts = {
+        command = "bash",
+        args = {"./test/scripts/sleep-and-echo.sh"},
+        timeout = 100,
+        on_output = function(params, done)
+            if not params.output then return done() end
 
-                return done({
-                    {
-                        title = "Slow mock action",
-                        action = function()
-                            print("I took too long!")
-                        end
-                    }
-                })
-            end
-        }),
-    filetypes = {"lua"}
-}
+            return done({
+                {
+                    title = "Slow mock action",
+                    action = function()
+                        print("I took too long!")
+                    end
+                }
+            })
+        end
+    },
+    factory = h.generator_factory
+})
 
 M.mock_diagnostics = {
     method = methods.internal.DIAGNOSTICS,

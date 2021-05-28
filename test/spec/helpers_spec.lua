@@ -259,4 +259,60 @@ describe("helpers", function()
             end)
         end)
     end)
+
+    describe("make_builtin", function()
+        local opts = {
+            method = "mockMethod",
+            filetypes = {"lua"},
+            factory = stub.new(),
+            generator_opts = {key = "val", other_key = "other_val"}
+        }
+        local mock_generator = {fn = function() print("I am a generator") end}
+
+        local builtin
+        before_each(function()
+            opts.factory.returns(mock_generator)
+            builtin = helpers.make_builtin(opts)
+        end)
+
+        after_each(function() opts.factory:clear() end)
+
+        it("should return builtin with assigned opts", function()
+            assert.equals(builtin.method, opts.method)
+            assert.equals(builtin.filetypes, opts.filetypes)
+            assert.equals(builtin._opts, opts.generator_opts)
+        end)
+
+        describe("with", function()
+            it("should override filetypes and return", function()
+                local result = builtin.with({filetypes = {"txt"}})
+
+                assert.same(builtin.filetypes, {"txt"})
+                assert.equals(result, builtin)
+            end)
+
+            it("should override values on opts", function()
+                builtin.with({timeout = 5000})
+
+                assert.equals(builtin._opts.timeout, 5000)
+            end)
+        end)
+
+        describe("index metatable", function()
+            it("should call factory function with opts and return", function()
+                local generator = builtin.generator
+
+                assert.stub(opts.factory).was_called_with(builtin._opts)
+                assert.equals(generator, mock_generator)
+            end)
+
+            it("should call factory function with override opts", function()
+                local result = builtin.with({timeout = 5000})
+
+                local _ = result.generator
+
+                assert.equals(opts.factory.calls[1].refs[1].timeout, 5000)
+            end)
+        end)
+    end)
 end)
