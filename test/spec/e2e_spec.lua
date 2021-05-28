@@ -16,8 +16,9 @@ local lsp_wait = function() vim.wait(400) end
 main.setup()
 
 describe("e2e", function()
+    _G._TEST = true
     after_each(function()
-        vim.cmd("bufdo! bwipeout!")
+        vim.cmd("bufdo! bdelete!")
         c.reset_sources()
     end)
 
@@ -118,13 +119,34 @@ describe("e2e", function()
         end)
 
         it("should combine diagnostics from multiple sources", function()
-            vim.cmd("bufdo! bwipeout!")
+            vim.cmd("bufdo! bdelete!")
 
             c.register(builtins._test.mock_diagnostics)
             tu.edit_test_file("test-file.md")
             lsp_wait()
 
             assert.equals(vim.tbl_count(lsp.diagnostic.get()), 2)
+        end)
+    end)
+
+    describe("formatting", function()
+        local formatted = "import { User } from \"./test-types\";\n"
+
+        before_each(function()
+            c.register(builtins.formatting.prettier)
+
+            tu.edit_test_file("test-file.js")
+            -- make sure file wasn't accidentally saved
+            assert.is_not.equals(u.buf.content(nil, true), formatted)
+
+            lsp_wait()
+        end)
+
+        it("should format file", function()
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), formatted)
         end)
     end)
 end)

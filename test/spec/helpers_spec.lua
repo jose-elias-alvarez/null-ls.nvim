@@ -260,6 +260,62 @@ describe("helpers", function()
         end)
     end)
 
+    describe("formatter_factory", function()
+        local opts = {key = "val"}
+
+        before_each(function() stub(helpers, "generator_factory") end)
+        after_each(function()
+            helpers.generator_factory:clear()
+            helpers.generator_factory:revert()
+        end)
+
+        it("should call generator_factory with enriched opts", function()
+            helpers.formatter_factory(opts)
+
+            assert.stub(helpers.generator_factory).was_called_with(opts)
+            assert.equals(helpers.generator_factory.calls[1].refs[1]
+                              .ignore_errors, true)
+            assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
+        end)
+
+        describe("on_output", function()
+            local formatter_done = stub.new()
+            after_each(function() formatter_done:clear() end)
+
+            it("should call done and return if no output", function()
+                helpers.formatter_factory(opts)
+                local on_formatter_output =
+                    helpers.generator_factory.calls[1].refs[1].on_output
+
+                on_formatter_output({}, formatter_done)
+
+                assert.stub(formatter_done).was_called()
+            end)
+
+            it("should call done with edit object", function()
+                helpers.formatter_factory(opts)
+                local on_formatter_output =
+                    helpers.generator_factory.calls[1].refs[1].on_output
+
+                on_formatter_output({
+                    output = "new text",
+                    content = {"line1", "line"}
+                }, formatter_done)
+
+                assert.stub(formatter_done).was_called_with(
+                    {
+                        {
+                            row = 0,
+                            col = 0,
+                            end_row = 2,
+                            end_col = -1,
+                            text = "new text"
+                        }
+                    })
+            end)
+        end)
+    end)
+
     describe("make_builtin", function()
         local opts = {
             method = "mockMethod",
