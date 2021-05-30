@@ -21,8 +21,8 @@ describe("diagnostics", function()
         local mock_bufnr, mock_client_id = 99, 999
         local mock_params
         before_each(function()
-            s.set({client_id = mock_client_id})
-            mock_params = {textDocument = {uri = "file:///mock-file"}}
+            s.set({ client_id = mock_client_id })
+            mock_params = { textDocument = { uri = "file:///mock-file" } }
         end)
 
         after_each(function()
@@ -36,8 +36,7 @@ describe("diagnostics", function()
             s.reset()
         end)
 
-        it("should call detach with uri and return if method == DID_CLOSE",
-           function()
+        it("should call detach with uri and return if method == DID_CLOSE", function()
             mock_params.method = methods.lsp.DID_CLOSE
 
             diagnostics.handler(mock_params)
@@ -47,45 +46,44 @@ describe("diagnostics", function()
         end)
 
         it("should call make_params with params and method", function()
-            s.set({attached = {[mock_params.textDocument.uri] = mock_bufnr}})
+            s.set({ attached = { [mock_params.textDocument.uri] = mock_bufnr } })
             diagnostics.handler(mock_params)
 
             assert.stub(u.make_params).was_called_with(
-                {bufnr = mock_bufnr, textDocument = mock_params.textDocument},
-                methods.internal.DIAGNOSTICS)
+                { bufnr = mock_bufnr, textDocument = mock_params.textDocument },
+                methods.internal.DIAGNOSTICS
+            )
         end)
 
-        it("should send results of diagnostic generators to lsp handler",
-           function()
-            u.make_params.returns({uri = mock_params.textDocument.uri})
+        it("should send results of diagnostic generators to lsp handler", function()
+            u.make_params.returns({ uri = mock_params.textDocument.uri })
             a.await.returns("diagnostics")
 
             diagnostics.handler(mock_params)
 
-            assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS])
-                .was_called_with(nil, nil, {
+            assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, nil, {
                 diagnostics = "diagnostics",
-                uri = mock_params.textDocument.uri
+                uri = mock_params.textDocument.uri,
             }, mock_client_id, nil, {})
         end)
 
         describe("postprocess", function()
             local postprocess
             before_each(function()
-                u.make_params.returns({uri = mock_params.textDocument.uri})
+                u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
                 postprocess = generators.run.calls[1].refs[2]
             end)
 
             it("should convert range when all positions are defined", function()
-                local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
+                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = 6, line = 1},
-                    start = {character = 5, line = 0}
+                    ["end"] = { character = 6, line = 1 },
+                    start = { character = 5, line = 0 },
                 })
             end)
 
@@ -94,14 +92,14 @@ describe("diagnostics", function()
                     row = nil,
                     col = 5,
                     end_row = 2,
-                    end_col = 6
+                    end_col = 6,
                 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = 6, line = 1},
-                    start = {character = 5, line = 0}
+                    ["end"] = { character = 6, line = 1 },
+                    start = { character = 5, line = 0 },
                 })
             end)
 
@@ -110,14 +108,14 @@ describe("diagnostics", function()
                     row = 1,
                     col = nil,
                     end_row = 2,
-                    end_col = 6
+                    end_col = 6,
                 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = 6, line = 1},
-                    start = {character = 0, line = 0}
+                    ["end"] = { character = 6, line = 1 },
+                    start = { character = 0, line = 0 },
                 })
             end)
 
@@ -126,14 +124,14 @@ describe("diagnostics", function()
                     row = 1,
                     col = 5,
                     end_row = nil,
-                    end_col = 6
+                    end_col = 6,
                 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = 6, line = 0},
-                    start = {character = 5, line = 0}
+                    ["end"] = { character = 6, line = 0 },
+                    start = { character = 5, line = 0 },
                 })
             end)
 
@@ -142,14 +140,14 @@ describe("diagnostics", function()
                     row = 1,
                     col = 5,
                     end_row = 2,
-                    end_col = nil
+                    end_col = nil,
                 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = -1, line = 1},
-                    start = {character = 5, line = 0}
+                    ["end"] = { character = -1, line = 1 },
+                    start = { character = 5, line = 0 },
                 })
             end)
 
@@ -158,14 +156,14 @@ describe("diagnostics", function()
                     row = nil,
                     col = nil,
                     end_row = nil,
-                    end_col = nil
+                    end_col = nil,
                 }
 
                 postprocess(diagnostic)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = {character = -1, line = 0},
-                    start = {character = 0, line = 0}
+                    ["end"] = { character = -1, line = 0 },
+                    start = { character = 0, line = 0 },
                 })
             end)
 
@@ -175,7 +173,7 @@ describe("diagnostics", function()
                     col = 5,
                     end_row = 2,
                     end_col = 6,
-                    source = "mock-source"
+                    source = "mock-source",
                 }
 
                 postprocess(diagnostic)
@@ -184,7 +182,7 @@ describe("diagnostics", function()
             end)
 
             it("should set default source when undefined", function()
-                local diagnostic = {row = 1, col = 5, end_row = 2, end_col = 6}
+                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
                 postprocess(diagnostic)
 

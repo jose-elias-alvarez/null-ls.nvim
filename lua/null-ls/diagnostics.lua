@@ -15,8 +15,8 @@ local convert_range = function(diagnostic)
     local end_char = u.string.to_number_safe(diagnostic.end_col, -1)
 
     return {
-        start = {line = start_line, character = start_char},
-        ["end"] = {line = end_line, character = end_char}
+        start = { line = start_line, character = start_char },
+        ["end"] = { line = end_line, character = end_char },
     }
 end
 
@@ -27,8 +27,7 @@ end
 
 local send_diagnostics = function(diagnostics, uri)
     local lsp_handler = vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]
-    lsp_handler(nil, nil, {diagnostics = diagnostics, uri = uri},
-                s.get().client_id, nil, {})
+    lsp_handler(nil, nil, { diagnostics = diagnostics, uri = uri }, s.get().client_id, nil, {})
 end
 
 M.handler = a.async_void(function(original_params)

@@ -8,12 +8,11 @@ local M = {}
 
 M.toggle_line_comment = {
     method = methods.internal.CODE_ACTION,
-    filetypes = {"*"},
+    filetypes = { "*" },
     generator = {
         fn = function(params)
             local bufnr = api.nvim_get_current_buf()
-            local commentstring =
-                api.nvim_buf_get_option(bufnr, "commentstring")
+            local commentstring = api.nvim_buf_get_option(bufnr, "commentstring")
             local raw_commentstring = u.string.replace(commentstring, "%s", "")
             local line = params.content[params.row]
 
@@ -23,12 +22,11 @@ M.toggle_line_comment = {
                     {
                         title = "Uncomment line",
                         action = function()
-                            api.nvim_buf_set_lines(bufnr, params.row - 1,
-                                                   params.row, false, {
-                                u.string.replace(line, raw_commentstring, "")
+                            api.nvim_buf_set_lines(bufnr, params.row - 1, params.row, false, {
+                                u.string.replace(line, raw_commentstring, ""),
                             })
-                        end
-                    }
+                        end,
+                    },
                 }
             end
 
@@ -36,15 +34,14 @@ M.toggle_line_comment = {
                 {
                     title = "Comment line",
                     action = function()
-                        api.nvim_buf_set_lines(bufnr, params.row - 1,
-                                               params.row, false, {
-                            string.format(commentstring, line)
+                        api.nvim_buf_set_lines(bufnr, params.row - 1, params.row, false, {
+                            string.format(commentstring, line),
                         })
-                    end
-                }
+                    end,
+                },
             }
-        end
-    }
+        end,
+    },
 }
 
 M.mock_code_action = {
@@ -56,35 +53,37 @@ M.mock_code_action = {
                     title = "Mock action",
                     action = function()
                         print("I am a mock action!")
-                    end
-                }
+                    end,
+                },
             }
-        end
+        end,
     },
-    filetypes = {"lua"}
+    filetypes = { "lua" },
 }
 
 M.slow_code_action = h.make_builtin({
     method = methods.internal.CODE_ACTION,
-    filetypes = {"lua"},
+    filetypes = { "lua" },
     generator_opts = {
         command = "bash",
-        args = {"./test/scripts/sleep-and-echo.sh"},
+        args = { "./test/scripts/sleep-and-echo.sh" },
         timeout = 100,
         on_output = function(params, done)
-            if not params.output then return done() end
+            if not params.output then
+                return done()
+            end
 
             return done({
                 {
                     title = "Slow mock action",
                     action = function()
                         print("I took too long!")
-                    end
-                }
+                    end,
+                },
             })
-        end
+        end,
     },
-    factory = h.generator_factory
+    factory = h.generator_factory,
 })
 
 M.mock_diagnostics = {
@@ -97,12 +96,12 @@ M.mock_diagnostics = {
                     row = 1,
                     message = "There is something wrong with this file!",
                     severity = 1,
-                    source = "mock-diagnostics"
-                }
+                    source = "mock-diagnostics",
+                },
             }
-        end
+        end,
     },
-    filetypes = {"markdown"}
+    filetypes = { "markdown" },
 }
 
 return M

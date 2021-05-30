@@ -7,15 +7,19 @@ describe("config", function()
 
     local mock_source = {
         method = "mockMethod",
-        filetypes = {"txt", "markdown"},
-        generator = {fn = function() print("I am a generator") end}
+        filetypes = { "txt", "markdown" },
+        generator = { fn = function()
+            print("I am a generator")
+        end },
     }
 
-    after_each(function() c.reset() end)
+    after_each(function()
+        c.reset()
+    end)
 
     describe("get", function()
         it("should get config", function()
-            c.setup({debounce = 500})
+            c.setup({ debounce = 500 })
 
             assert.equals(c.get().debounce, 500)
         end)
@@ -23,7 +27,7 @@ describe("config", function()
 
     describe("reset", function()
         it("should reset config to defaults", function()
-            c.setup({debounce = 500})
+            c.setup({ debounce = 500 })
 
             c.reset()
 
@@ -33,7 +37,9 @@ describe("config", function()
 
     describe("register", function()
         stub(autocommands, "trigger")
-        after_each(function() autocommands.trigger:clear() end)
+        after_each(function()
+            autocommands.trigger:clear()
+        end)
 
         it("should register single source", function()
             c.register(mock_source)
@@ -56,16 +62,14 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
-        it("should call autocommands trigger method after registration",
-           function()
+        it("should call autocommands trigger method after registration", function()
             c.register(mock_source)
 
-            assert.stub(autocommands.trigger).was_called_with(
-                autocommands.names.REGISTERED)
+            assert.stub(autocommands.trigger).was_called_with(autocommands.names.REGISTERED)
         end)
 
         it("should register multiple sources from simple list", function()
-            c.register({mock_source, mock_source})
+            c.register({ mock_source, mock_source })
 
             local generators = c.generators()
 
@@ -74,11 +78,10 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
-        it("should register multiple sources with shared configuration",
-           function()
+        it("should register multiple sources with shared configuration", function()
             c.register({
-                filetypes = {"txt"}, -- should take precedence over source filetypes
-                sources = {mock_source, mock_source}
+                filetypes = { "txt" }, -- should take precedence over source filetypes
+                sources = { mock_source, mock_source },
             })
 
             local generators = c.generators()
@@ -88,18 +91,17 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._filetypes), 1)
         end)
 
-        it("should only register sources once when name is specified",
-           function()
+        it("should only register sources once when name is specified", function()
             c.register({
                 name = "my-mock-source",
-                filetypes = {"txt"},
-                sources = {mock_source}
+                filetypes = { "txt" },
+                sources = { mock_source },
             })
 
             c.register({
                 name = "my-mock-source",
-                filetypes = {"txt"},
-                sources = {mock_source}
+                filetypes = { "txt" },
+                sources = { mock_source },
             })
 
             assert.stub(autocommands.trigger).was_called(1)
@@ -108,7 +110,7 @@ describe("config", function()
 
     describe("reset_sources", function()
         it("should reset sources only", function()
-            c.setup({debounce = 500, sources = {mock_source}})
+            c.setup({ debounce = 500, sources = { mock_source } })
 
             c.reset_sources()
 
@@ -118,7 +120,9 @@ describe("config", function()
     end)
 
     describe("generators", function()
-        before_each(function() c.register(mock_source) end)
+        before_each(function()
+            c.register(mock_source)
+        end)
 
         it("should get generators matching method", function()
             local generators = c.generators(mock_source.method)
@@ -138,15 +142,15 @@ describe("config", function()
         it("should set simple config value", function()
             local debounce = 999
 
-            c.setup({debounce = debounce})
+            c.setup({ debounce = debounce })
 
             assert.equals(c.get().debounce, debounce)
         end)
 
         it("should only setup config once", function()
-            c.setup({debounce = 999})
+            c.setup({ debounce = 999 })
 
-            c.setup({debounce = 1})
+            c.setup({ debounce = 1 })
 
             assert.equals(c.get().debounce, 999)
         end)
@@ -154,7 +158,7 @@ describe("config", function()
         it("should throw if simple config type does not match", function()
             local debounce = "999"
 
-            local ok, err = pcall(c.setup, {debounce = debounce})
+            local ok, err = pcall(c.setup, { debounce = debounce })
 
             assert.equals(ok, false)
             assert.matches("expected number", err)
@@ -162,34 +166,36 @@ describe("config", function()
 
         it("should set override config value", function()
             local on_attach = stub.new()
-            local _on_attach = function() on_attach() end
+            local _on_attach = function()
+                on_attach()
+            end
 
-            c.setup({on_attach = _on_attach})
+            c.setup({ on_attach = _on_attach })
             c.get().on_attach()
 
             assert.stub(on_attach).was_called()
         end)
 
         it("should throw if override config type does not match", function()
-            local on_attach = {"my function"}
+            local on_attach = { "my function" }
 
-            local ok, err = pcall(c.setup, {on_attach = on_attach})
+            local ok, err = pcall(c.setup, { on_attach = on_attach })
 
             assert.equals(ok, false)
             assert.matches("expected function, nil", err)
         end)
 
         it("should throw if config value is private", function()
-            local _names = {"my-integration"}
+            local _names = { "my-integration" }
 
-            local ok, err = pcall(c.setup, {_names = _names})
+            local ok, err = pcall(c.setup, { _names = _names })
 
             assert.equals(ok, false)
             assert.matches("expected nil", err)
         end)
 
         it("should register sources", function()
-            c.setup({sources = {mock_source}})
+            c.setup({ sources = { mock_source } })
 
             local generators = c.generators()
 

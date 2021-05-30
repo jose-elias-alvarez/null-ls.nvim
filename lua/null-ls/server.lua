@@ -10,8 +10,8 @@ local capabilities = {
     documentFormattingProvider = true,
     textDocumentSync = {
         change = 1, -- prompt LSP client to send full document text on didOpen and didChange
-        openClose = true
-    }
+        openClose = true,
+    },
 }
 
 local default_shutdown_timeout = 30000 -- 30 seconds
@@ -23,7 +23,9 @@ M.start = function()
     -- start timer to shutdown server after inactivity
     local timer
     local shutdown = function()
-        if timer then timer.stop(true) end
+        if timer then
+            timer.stop(true)
+        end
         vim.cmd("noautocmd qa!")
     end
     timer = loop.timer(default_shutdown_timeout, nil, true, shutdown)
@@ -42,11 +44,11 @@ M.start = function()
         end
 
         local send_nil_response = function()
-            send_response({result = vim.NIL})
+            send_response({ result = vim.NIL })
         end
 
         if method == methods.lsp.INITIALIZE then
-            send_response({result = {capabilities = capabilities}})
+            send_response({ result = { capabilities = capabilities } })
         end
 
         if method == methods.internal._NOTIFICATION then
@@ -59,12 +61,18 @@ M.start = function()
             shutdown()
         end
 
-        if method == methods.lsp.EXECUTE_COMMAND then send_nil_response() end
-        if method == methods.lsp.CODE_ACTION then send_nil_response() end
-        if method == methods.lsp.DID_CHANGE then send_nil_response() end
+        if method == methods.lsp.EXECUTE_COMMAND then
+            send_nil_response()
+        end
+        if method == methods.lsp.CODE_ACTION then
+            send_nil_response()
+        end
+        if method == methods.lsp.DID_CHANGE then
+            send_nil_response()
+        end
     end
 
-    fn.stdioopen({on_stdin = on_stdin})
+    fn.stdioopen({ on_stdin = on_stdin })
 end
 
 return M

@@ -11,7 +11,9 @@ local api = vim.api
 
 -- need to wait for most LSP commands to pass through the client
 -- setting this lower reduces testing time but is more likely to cause failures
-local lsp_wait = function() vim.wait(400) end
+local lsp_wait = function()
+    vim.wait(400)
+end
 
 main.setup()
 
@@ -30,8 +32,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.lua")
             lsp_wait()
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
-                                           methods.lsp.CODE_ACTION)
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
             null_ls_action = actions[1].result[1]
         end)
 
@@ -50,28 +51,24 @@ describe("e2e", function()
         it("should apply code action", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
-            assert.equals(u.buf.content(nil, true),
-                          "--print(\"I am a test file!\")\n")
+            assert.equals(u.buf.content(nil, true), '--print("I am a test file!")\n')
         end)
 
         it("should adapt code action based on params", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
-                                           methods.lsp.CODE_ACTION)
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
             null_ls_action = actions[1].result[1]
             assert.equals(null_ls_action.title, "Uncomment line")
 
             vim.lsp.buf.execute_command(null_ls_action)
-            assert.equals(u.buf.content(nil, true),
-                          "print(\"I am a test file!\")\n")
+            assert.equals(u.buf.content(nil, true), 'print("I am a test file!")\n')
         end)
 
         it("should combine actions from multiple sources", function()
             c.register(builtins._test.mock_code_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
-                                           methods.lsp.CODE_ACTION)
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
 
             assert.equals(vim.tbl_count(actions[1].result), 2)
         end)
@@ -81,8 +78,7 @@ describe("e2e", function()
             -- but action timeout is 100 ms
             c.register(builtins._test.slow_code_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(),
-                                           methods.lsp.CODE_ACTION)
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
 
             assert.equals(vim.tbl_count(actions[1].result), 1)
         end)
@@ -101,12 +97,11 @@ describe("e2e", function()
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
             local write_good_diagnostic = buf_diagnostics[1]
-            assert.equals(write_good_diagnostic.message,
-                          "\"really\" can weaken meaning")
+            assert.equals(write_good_diagnostic.message, '"really" can weaken meaning')
             assert.equals(write_good_diagnostic.source, "write-good")
             assert.same(write_good_diagnostic.range, {
-                start = {character = 7, line = 0},
-                ["end"] = {character = 13, line = 0}
+                start = { character = 7, line = 0 },
+                ["end"] = { character = 13, line = 0 },
             })
         end)
 
@@ -130,7 +125,7 @@ describe("e2e", function()
     end)
 
     describe("formatting", function()
-        local formatted = "import { User } from \"./test-types\";\n"
+        local formatted = 'import { User } from "./test-types";\n'
 
         before_each(function()
             c.register(builtins.formatting.prettier)

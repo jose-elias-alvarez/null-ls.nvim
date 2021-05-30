@@ -4,7 +4,7 @@ local match = require("luassert.match")
 local loop = require("null-ls.loop")
 local methods = require("null-ls.methods")
 
-local json = {decode = vim.fn.json_decode, encode = vim.fn.json_encode}
+local json = { decode = vim.fn.json_decode, encode = vim.fn.json_encode }
 
 describe("server", function()
     stub(vim.fn, "stdioopen")
@@ -14,7 +14,7 @@ describe("server", function()
 
     local stop, restart = stub.new(), stub.new()
     before_each(function()
-        loop.timer.returns({stop = stop, restart = restart})
+        loop.timer.returns({ stop = stop, restart = restart })
     end)
     after_each(function()
         vim.fn.stdioopen:clear()
@@ -66,66 +66,58 @@ describe("server", function()
 
         local send_mock_data = function(data)
             local encoded = {
-                {"Content-Length: any"}, {"\r\n\r\n"}, json.encode(data)
+                { "Content-Length: any" },
+                { "\r\n\r\n" },
+                json.encode(data),
             }
             on_stdin(chan_id, encoded)
         end
 
         it("should send id with response", function()
-            send_mock_data({id = id, method = methods.lsp.INITIALIZE})
+            send_mock_data({ id = id, method = methods.lsp.INITIALIZE })
 
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match(
-                                                             tostring(id)))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match(tostring(id)))
         end)
 
         it("should send capabilities if method == INITIALIZE", function()
-            send_mock_data({id = id, method = methods.lsp.INITIALIZE})
+            send_mock_data({ id = id, method = methods.lsp.INITIALIZE })
 
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match(
-                                                             "capabilities"))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match("capabilities"))
         end)
 
-        it("should restart timer with timeout if method == NOTIFICATION",
-           function()
+        it("should restart timer with timeout if method == NOTIFICATION", function()
             send_mock_data({
                 id = id,
                 method = methods.internal._NOTIFICATION,
-                params = {timeout = 500}
+                params = { timeout = 500 },
             })
 
             assert.stub(restart).was_called_with(1000)
         end)
 
-        it("should send nil response and shut down if method == SHUTDOWN",
-           function()
-            send_mock_data({id = id, method = methods.lsp.SHUTDOWN})
+        it("should send nil response and shut down if method == SHUTDOWN", function()
+            send_mock_data({ id = id, method = methods.lsp.SHUTDOWN })
 
             assert.stub(vim.cmd).was_called_with("noautocmd qa!")
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match("null"))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match("null"))
         end)
 
         it("should send nil response if method == EXECUTE_COMMAND", function()
-            send_mock_data({id = id, method = methods.lsp.EXECUTE_COMMAND})
+            send_mock_data({ id = id, method = methods.lsp.EXECUTE_COMMAND })
 
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match("null"))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match("null"))
         end)
 
         it("should send nil response if method == CODE_ACTION", function()
-            send_mock_data({id = id, method = methods.lsp.CODE_ACTION})
+            send_mock_data({ id = id, method = methods.lsp.CODE_ACTION })
 
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match("null"))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match("null"))
         end)
 
         it("should send nil response if method == DID_CHANGE", function()
-            send_mock_data({id = id, method = methods.lsp.DID_CHANGE})
+            send_mock_data({ id = id, method = methods.lsp.DID_CHANGE })
 
-            assert.stub(vim.fn.chansend).was_called_with(chan_id,
-                                                         match.has_match("null"))
+            assert.stub(vim.fn.chansend).was_called_with(chan_id, match.has_match("null"))
         end)
     end)
 end)

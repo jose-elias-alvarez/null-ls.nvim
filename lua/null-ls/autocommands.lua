@@ -1,10 +1,12 @@
 local api = vim.api
 
-local exec = function(...) api.nvim_exec(..., false) end
+local exec = function(...)
+    api.nvim_exec(..., false)
+end
 
 local M = {}
 
-local names = {GROUP = "NullLsAutocommands", REGISTERED = "NullLsRegistered"}
+local names = { GROUP = "NullLsAutocommands", REGISTERED = "NullLsRegistered" }
 M.names = names
 
 local register = function(trigger, fn, ft)
@@ -16,11 +18,17 @@ local register = function(trigger, fn, ft)
         ]], names.GROUP))
     end
 
-    exec(string.format([[
+    exec(string.format(
+        [[
     augroup %s
         autocmd %s %s lua require'null-ls'.%s
     augroup END
-    ]], names.GROUP, trigger, ft or "*", fn))
+    ]],
+        names.GROUP,
+        trigger,
+        ft or "*",
+        fn
+    ))
 end
 
 M.setup = function()
@@ -28,6 +36,8 @@ M.setup = function()
     register("User", "attach_or_refresh()", names.REGISTERED)
 end
 
-M.trigger = function(name) vim.cmd("doautocmd User " .. name) end
+M.trigger = function(name)
+    vim.cmd("doautocmd User " .. name)
+end
 
 return M

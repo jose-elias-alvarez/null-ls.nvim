@@ -7,12 +7,14 @@ local M = {}
 
 M.write_good = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = {"markdown"},
+    filetypes = { "markdown" },
     generator_opts = {
         command = "write-good",
-        args = {"--text=$TEXT", "--parse"},
+        args = { "--text=$TEXT", "--parse" },
         format = "line",
-        check_exit_code = function(code) return code == 0 or code == 255 end,
+        check_exit_code = function(code)
+            return code == 0 or code == 255
+        end,
         on_output = function(line, params)
             local pos = vim.split(string.match(line, "%d+:%d+"), ":")
             local row = pos[1]
@@ -20,11 +22,10 @@ M.write_good = h.make_builtin({
             local message = string.match(line, ":([^:]+)$")
 
             local col, end_col
-            local issue = string.match(line, "%b\"\"")
+            local issue = string.match(line, '%b""')
             local issue_line = params.content[tonumber(row)]
             if issue and issue_line then
-                local issue_start, issue_end =
-                    string.find(issue_line, string.match(issue, "([^\"]+)"))
+                local issue_start, issue_end = string.find(issue_line, string.match(issue, '([^"]+)'))
                 if issue_start and issue_end then
                     col = tonumber(issue_start) - 1
                     end_col = issue_end
@@ -37,23 +38,25 @@ M.write_good = h.make_builtin({
                 end_col = end_col,
                 message = message,
                 severity = 1,
-                source = "write-good"
+                source = "write-good",
             }
-        end
+        end,
     },
-    factory = h.generator_factory
+    factory = h.generator_factory,
 })
 
 M.markdownlint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = {"markdown"},
+    filetypes = { "markdown" },
     generator_opts = {
         command = "markdownlint",
-        args = {"--stdin"},
+        args = { "--stdin" },
         to_stdin = true,
         to_stderr = true,
         format = "line",
-        check_exit_code = function(code) return code <= 1 end,
+        check_exit_code = function(code)
+            return code <= 1
+        end,
         on_output = function(line, params)
             local split = vim.split(line, " ")
             local rule = split[2]
@@ -78,11 +81,11 @@ M.markdownlint = h.make_builtin({
                 end_col = end_col,
                 message = message,
                 severity = 1,
-                source = "markdownlint"
+                source = "markdownlint",
             }
-        end
+        end,
     },
-    factory = h.generator_factory
+    factory = h.generator_factory,
 })
 
 return M

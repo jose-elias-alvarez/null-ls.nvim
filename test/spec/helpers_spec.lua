@@ -24,41 +24,39 @@ describe("helpers", function()
             local bad_json = "this is not json"
 
             assert.has_error(function()
-                helpers._json_output_wrapper({output = bad_json}, done,
-                                             on_output)
+                helpers._json_output_wrapper({ output = bad_json }, done, on_output)
             end)
         end)
 
         it("should set output to decoded json", function()
-            local good_json = vim.fn.json_encode({key = "val"})
+            local good_json = vim.fn.json_encode({ key = "val" })
 
-            helpers._json_output_wrapper({output = good_json}, done, on_output)
+            helpers._json_output_wrapper({ output = good_json }, done, on_output)
 
             local output = on_output.calls[1].refs[1].output
-            assert.same(output, {key = "val"})
+            assert.same(output, { key = "val" })
         end)
 
         it("should call done and on_output with updated params", function()
-            local good_json = vim.fn.json_encode({key = "val"})
+            local good_json = vim.fn.json_encode({ key = "val" })
 
-            helpers._json_output_wrapper({output = good_json}, done, on_output)
+            helpers._json_output_wrapper({ output = good_json }, done, on_output)
 
             assert.stub(done).was_called()
-            assert.stub(on_output).was_called_with({output = {key = "val"}})
+            assert.stub(on_output).was_called_with({ output = { key = "val" } })
         end)
     end)
 
     describe("line_output_wrapper", function()
         it("should immediately call done if output is nil", function()
-            helpers._line_output_wrapper({output = nil}, done, on_output)
+            helpers._line_output_wrapper({ output = nil }, done, on_output)
 
             assert.stub(done).was_called()
             assert.stub(on_output).was_not_called()
         end)
 
         it("should call on_output once for each line", function()
-            helpers._line_output_wrapper({output = "line1\nline2\nline3"}, done,
-                                         on_output)
+            helpers._line_output_wrapper({ output = "line1\nline2\nline3" }, done, on_output)
 
             assert.stub(on_output).was_called(3)
             assert.equals(on_output.calls[1].refs[1], "line1")
@@ -67,13 +65,11 @@ describe("helpers", function()
         end)
 
         it("should call done with all_results", function()
-            on_output.returns({"results"})
+            on_output.returns({ "results" })
 
-            helpers._line_output_wrapper({output = "line1\nline2\nline3"}, done,
-                                         on_output)
+            helpers._line_output_wrapper({ output = "line1\nline2\nline3" }, done, on_output)
 
-            assert.same(done.calls[1].refs[1],
-                        {{"results"}, {"results"}, {"results"}})
+            assert.same(done.calls[1].refs[1], { { "results" }, { "results" }, { "results" } })
         end)
     end)
 
@@ -81,13 +77,15 @@ describe("helpers", function()
         stub(loop, "spawn")
 
         local command = "cat"
-        local args = {"-n"}
+        local args = { "-n" }
         local generator_args
         before_each(function()
             generator_args = {
                 command = command,
                 args = args,
-                on_output = function(...) on_output(...) end
+                on_output = function(...)
+                    on_output(...)
+                end,
             }
         end)
 
@@ -121,10 +119,10 @@ describe("helpers", function()
         end)
 
         it("should pass filetypes to generator", function()
-            generator_args.filetypes = {"lua"}
+            generator_args.filetypes = { "lua" }
             local generator = helpers.generator_factory(generator_args)
 
-            assert.same(generator.filetypes, {"lua"})
+            assert.same(generator.filetypes, { "lua" })
         end)
 
         describe("fn", function()
@@ -138,8 +136,7 @@ describe("helpers", function()
                 assert.same(loop.spawn.calls[1].refs[2], args)
             end)
 
-            it("should call loop.spawn with default args (empty table)",
-               function()
+            it("should call loop.spawn with default args (empty table)", function()
                 generator_args.args = nil
                 local generator = helpers.generator_factory(generator_args)
 
@@ -163,55 +160,45 @@ describe("helpers", function()
 
                 generator.fn({})
 
-                assert.same(loop.spawn.calls[1].refs[3].timeout,
-                            c.get().default_timeout)
+                assert.same(loop.spawn.calls[1].refs[3].timeout, c.get().default_timeout)
             end)
 
-            it(
-                "should call loop.spawn with buffer content as string when to_stdin = true",
-                function()
-                    test_utils.edit_test_file("test-file.lua")
-                    local params = {bufnr = vim.api.nvim_get_current_buf()}
-                    generator_args.to_stdin = true
-                    local generator = helpers.generator_factory(generator_args)
+            it("should call loop.spawn with buffer content as string when to_stdin = true", function()
+                test_utils.edit_test_file("test-file.lua")
+                local params = { bufnr = vim.api.nvim_get_current_buf() }
+                generator_args.to_stdin = true
+                local generator = helpers.generator_factory(generator_args)
 
-                    generator.fn(params)
+                generator.fn(params)
 
-                    local input = loop.spawn.calls[1].refs[3].input
-                    assert.equals(input, "print(\"I am a test file!\")\n")
-                end)
+                local input = loop.spawn.calls[1].refs[3].input
+                assert.equals(input, 'print("I am a test file!")\n')
+            end)
         end)
 
         describe("wrapper", function()
-            it(
-                "should set params.output and call on_output with params and done",
-                function()
-                    local generator = helpers.generator_factory(generator_args)
-                    generator.fn({}, done)
+            it("should set params.output and call on_output with params and done", function()
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-                    local wrapper = loop.spawn.calls[1].refs[3].handler
-                    wrapper(nil, "output")
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper(nil, "output")
 
-                    assert.stub(on_output).was_called_with({output = "output"},
-                                                           done)
-                end)
+                assert.stub(on_output).was_called_with({ output = "output" }, done)
+            end)
 
-            it(
-                "should set output to error_output and error_output to nil if to_stderr = true",
-                function()
-                    generator_args.to_stderr = true
-                    local generator = helpers.generator_factory(generator_args)
-                    generator.fn({}, done)
+            it("should set output to error_output and error_output to nil if to_stderr = true", function()
+                generator_args.to_stderr = true
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-                    local wrapper = loop.spawn.calls[1].refs[3].handler
-                    wrapper("error output", nil)
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper("error output", nil)
 
-                    assert.stub(on_output).was_called_with(
-                        {output = "error output"}, done)
-                end)
+                assert.stub(on_output).was_called_with({ output = "error output" }, done)
+            end)
 
-            it("should throw error if error_output exists and format ~= raw",
-               function()
+            it("should throw error if error_output exists and format ~= raw", function()
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
@@ -229,24 +216,21 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({err = "error output"},
-                                                       done)
+                assert.stub(on_output).was_called_with({ err = "error output" }, done)
             end)
 
-            it("should call json_output_wrapper and return if format == json",
-               function()
+            it("should call json_output_wrapper and return if format == json", function()
                 generator_args.format = "json"
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
-                wrapper(nil, vim.fn.json_encode({key = "val"}))
+                wrapper(nil, vim.fn.json_encode({ key = "val" }))
 
-                assert.stub(on_output).was_called_with({output = {key = "val"}})
+                assert.stub(on_output).was_called_with({ output = { key = "val" } })
             end)
 
-            it("should call line_output_wrapper and return if format == line",
-               function()
+            it("should call line_output_wrapper and return if format == line", function()
                 generator_args.format = "line"
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
@@ -254,8 +238,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(on_output).was_called_with("output",
-                                                       {output = "output"})
+                assert.stub(on_output).was_called_with("output", { output = "output" })
             end)
         end)
     end)
@@ -264,7 +247,7 @@ describe("helpers", function()
         local opts
         before_each(function()
             stub(helpers, "generator_factory")
-            opts = {key = "val"}
+            opts = { key = "val" }
         end)
 
         after_each(function()
@@ -276,8 +259,7 @@ describe("helpers", function()
             helpers.formatter_factory(opts)
 
             assert.stub(helpers.generator_factory).was_called_with(opts)
-            assert.equals(helpers.generator_factory.calls[1].refs[1]
-                              .ignore_errors, true)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_errors, true)
             assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
         end)
 
@@ -285,18 +267,18 @@ describe("helpers", function()
             opts.ignore_errors = false
             helpers.formatter_factory(opts)
 
-            assert.equals(helpers.generator_factory.calls[1].refs[1]
-                              .ignore_errors, false)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_errors, false)
         end)
 
         describe("on_output", function()
             local formatter_done = stub.new()
-            after_each(function() formatter_done:clear() end)
+            after_each(function()
+                formatter_done:clear()
+            end)
 
             it("should call done and return if no output", function()
                 helpers.formatter_factory(opts)
-                local on_formatter_output =
-                    helpers.generator_factory.calls[1].refs[1].on_output
+                local on_formatter_output = helpers.generator_factory.calls[1].refs[1].on_output
 
                 on_formatter_output({}, formatter_done)
 
@@ -305,24 +287,22 @@ describe("helpers", function()
 
             it("should call done with edit object", function()
                 helpers.formatter_factory(opts)
-                local on_formatter_output =
-                    helpers.generator_factory.calls[1].refs[1].on_output
+                local on_formatter_output = helpers.generator_factory.calls[1].refs[1].on_output
 
                 on_formatter_output({
                     output = "new text",
-                    content = {"line1", "line"}
+                    content = { "line1", "line" },
                 }, formatter_done)
 
-                assert.stub(formatter_done).was_called_with(
+                assert.stub(formatter_done).was_called_with({
                     {
-                        {
-                            row = 0,
-                            col = 0,
-                            end_row = 2,
-                            end_col = -1,
-                            text = "new text"
-                        }
-                    })
+                        row = 0,
+                        col = 0,
+                        end_row = 2,
+                        end_col = -1,
+                        text = "new text",
+                    },
+                })
             end)
         end)
     end)
@@ -330,11 +310,13 @@ describe("helpers", function()
     describe("make_builtin", function()
         local opts = {
             method = "mockMethod",
-            filetypes = {"lua"},
+            filetypes = { "lua" },
             factory = stub.new(),
-            generator_opts = {key = "val", other_key = "other_val"}
+            generator_opts = { key = "val", other_key = "other_val" },
         }
-        local mock_generator = {fn = function() print("I am a generator") end}
+        local mock_generator = { fn = function()
+            print("I am a generator")
+        end }
 
         local builtin
         before_each(function()
@@ -342,7 +324,9 @@ describe("helpers", function()
             builtin = helpers.make_builtin(opts)
         end)
 
-        after_each(function() opts.factory:clear() end)
+        after_each(function()
+            opts.factory:clear()
+        end)
 
         it("should return builtin with assigned opts", function()
             assert.equals(builtin.method, opts.method)
@@ -352,14 +336,14 @@ describe("helpers", function()
 
         describe("with", function()
             it("should override filetypes and return", function()
-                local result = builtin.with({filetypes = {"txt"}})
+                local result = builtin.with({ filetypes = { "txt" } })
 
-                assert.same(builtin.filetypes, {"txt"})
+                assert.same(builtin.filetypes, { "txt" })
                 assert.equals(result, builtin)
             end)
 
             it("should override values on opts", function()
-                builtin.with({timeout = 5000})
+                builtin.with({ timeout = 5000 })
 
                 assert.equals(builtin._opts.timeout, 5000)
             end)
@@ -374,7 +358,7 @@ describe("helpers", function()
             end)
 
             it("should call factory function with override opts", function()
-                local result = builtin.with({timeout = 5000})
+                local result = builtin.with({ timeout = 5000 })
 
                 local _ = result.generator
 

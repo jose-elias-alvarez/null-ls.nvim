@@ -21,7 +21,7 @@ describe("formatting", function()
     local mock_bufnr = 65
     local mock_params
     before_each(function()
-        mock_params = {key = "val"}
+        mock_params = { key = "val" }
 
         vim.api.nvim_buf_get_option.returns(nil)
         vim.api.nvim_get_current_buf.returns(nil)
@@ -64,19 +64,16 @@ describe("formatting", function()
 
     describe("apply_edits", function()
         it("should call make_params with params and internal method", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, nil,
-                               mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, nil, mock_bufnr)
 
             assert.same(u.make_params.calls[1].refs[1], mock_params)
-            assert.equals(u.make_params.calls[1].refs[2],
-                          methods.internal.FORMATTING)
+            assert.equals(u.make_params.calls[1].refs[2], methods.internal.FORMATTING)
         end)
 
         it("should return if buffer is modified", function()
             vim.api.nvim_buf_get_option.returns(true)
 
-            formatting.handler(methods.lsp.FORMATTING, mock_params, nil,
-                               mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, nil, mock_bufnr)
 
             assert.stub(vim.lsp.util.apply_text_edits).was_not_called()
         end)
@@ -84,39 +81,34 @@ describe("formatting", function()
         it("should call apply_text_edits with edits", function()
             a.await.returns("edits")
 
-            formatting.handler(methods.lsp.FORMATTING, mock_params, nil,
-                               mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, nil, mock_bufnr)
 
-            assert.stub(vim.lsp.util.apply_text_edits).was_called_with("edits",
-                                                                       mock_bufnr)
+            assert.stub(vim.lsp.util.apply_text_edits).was_called_with("edits", mock_bufnr)
             assert.stub(vim.cmd).was_not_called()
         end)
 
-        it("should save buffer if config option is set and buffer is current",
-           function()
-            c.setup({save_after_format = true})
+        it("should save buffer if config option is set and buffer is current", function()
+            c.setup({ save_after_format = true })
             vim.api.nvim_get_current_buf.returns(mock_bufnr)
 
-            formatting.handler(methods.lsp.FORMATTING, mock_params, nil,
-                               mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, nil, mock_bufnr)
 
             assert.stub(vim.cmd).was_called_with("silent noautocmd :update")
         end)
 
         describe("postprocess", function()
-            local edit = {row = 1, col = 5, text = "something bad"}
+            local edit = { row = 1, col = 5, text = "something bad" }
             local postprocess
             before_each(function()
-                formatting.handler(methods.lsp.FORMATTING, mock_params, nil,
-                                   mock_bufnr)
+                formatting.handler(methods.lsp.FORMATTING, mock_params, nil, mock_bufnr)
                 postprocess = generators.run.calls[1].refs[2]
             end)
 
             it("should convert range", function()
                 postprocess(edit)
 
-                assert.same(edit.range.start, {character = 5, line = 1})
-                assert.same(edit.range["end"], {character = -1, line = 1})
+                assert.same(edit.range.start, { character = 5, line = 1 })
+                assert.same(edit.range["end"], { character = -1, line = 1 })
             end)
 
             it("should assign edit newText", function()

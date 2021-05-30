@@ -14,7 +14,9 @@ describe("code_actions", function()
     stub(s, "get")
     stub(s, "run_action")
 
-    before_each(function() s.get.returns({client_id = 99}) end)
+    before_each(function()
+        s.get.returns({ client_id = 99 })
+    end)
 
     after_each(function()
         a.await:clear()
@@ -38,24 +40,19 @@ describe("code_actions", function()
         describe("method == CODE_ACTION", function()
             local method = methods.lsp.CODE_ACTION
 
-            it("should return immediately if null_ls_ignore flag is set",
-               function()
-                local params = {_null_ls_ignore = true}
+            it("should return immediately if null_ls_ignore flag is set", function()
+                local params = { _null_ls_ignore = true }
                 code_actions.handler(method, params, handler, 1)
 
                 assert.stub(u.make_params).was_not_called()
                 assert.equals(params._null_ls_handled, nil)
             end)
 
-            it(
-                "should call make_params with original params and internal method",
-                function()
-                    code_actions.handler(method, {}, handler, 1)
+            it("should call make_params with original params and internal method", function()
+                code_actions.handler(method, {}, handler, 1)
 
-                    assert.stub(u.make_params).was_called_with({bufnr = 1},
-                                                               methods.internal
-                                                                   .CODE_ACTION)
-                end)
+                assert.stub(u.make_params).was_called_with({ bufnr = 1 }, methods.internal.CODE_ACTION)
+            end)
 
             it("should set handled flag on params", function()
                 local params = {}
@@ -72,8 +69,7 @@ describe("code_actions", function()
 
                 -- wait for schedule_wrap
                 vim.wait(0)
-                assert.stub(handler).was_called_with(nil, method, "actions", 99,
-                                                     1)
+                assert.stub(handler).was_called_with(nil, method, "actions", 99, 1)
             end)
 
             describe("get_actions", function()
@@ -91,7 +87,7 @@ describe("code_actions", function()
                         title = "Mock action",
                         action = function()
                             print("I am an action")
-                        end
+                        end,
                     }
                     code_actions.handler(method, {}, handler, 1)
                     postprocess = generators.run.calls[1].refs[2]
@@ -100,8 +96,7 @@ describe("code_actions", function()
                 it("should register action in state", function()
                     postprocess(action)
 
-                    assert.equals(s.register_action.calls[1].refs[1].title,
-                                  "Mock action")
+                    assert.equals(s.register_action.calls[1].refs[1].title, "Mock action")
                 end)
 
                 it("should set action command and delete function", function()
@@ -122,7 +117,7 @@ describe("code_actions", function()
         it("should set handled flag on params", function()
             local params = {
                 command = methods.internal.CODE_ACTION,
-                title = "Mock action"
+                title = "Mock action",
             }
 
             code_actions.handler(method, params, handler, 1)
@@ -133,14 +128,14 @@ describe("code_actions", function()
         it("should run action when command matches", function()
             code_actions.handler(method, {
                 command = methods.internal.CODE_ACTION,
-                title = "Mock action"
+                title = "Mock action",
             }, handler, 1)
 
             assert.stub(s.run_action).was_called_with("Mock action")
         end)
 
         it("should not run action when command does not match", function()
-            local params = {command = "someOtherCommand", title = "Mock action"}
+            local params = { command = "someOtherCommand", title = "Mock action" }
             code_actions.handler(method, params, handler, 1)
 
             assert.stub(s.run_action).was_not_called()

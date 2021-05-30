@@ -7,13 +7,16 @@ local M = {}
 
 M.run = a.async(function(params, postprocess)
     local generators = c.generators(params.method)
-    if not generators then return {} end
+    if not generators then
+        return {}
+    end
 
     local futures, all_results = {}, {}
     for _, generator in ipairs(generators) do
         if u.filetype_matches(generator.filetypes, params.ft) then
-            table.insert(futures, a.future(
-                             function()
+            table.insert(
+                futures,
+                a.future(function()
                     local ok, results
                     if generator.async then
                         local wrapped = a.wrap(generator.fn, 2)
@@ -24,8 +27,7 @@ M.run = a.async(function(params, postprocess)
                     a.await(a.scheduler())
 
                     if not ok then
-                        u.echo("WarningMsg",
-                               "failed to run generator: " .. results)
+                        u.echo("WarningMsg", "failed to run generator: " .. results)
                     elseif type(results) == "table" then
                         for _, result in ipairs(results) do
                             if postprocess then
@@ -35,7 +37,8 @@ M.run = a.async(function(params, postprocess)
                             table.insert(all_results, result)
                         end
                     end
-                end))
+                end)
+            )
         end
     end
 

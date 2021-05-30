@@ -9,32 +9,33 @@ describe("loop", function()
     _G._TEST = true
 
     stub(vim, "schedule_wrap")
-    after_each(function() vim.schedule_wrap:clear() end)
+    after_each(function()
+        vim.schedule_wrap:clear()
+    end)
 
     local loop = require("null-ls.loop")
 
     describe("parse_args", function()
         it("should replace $FILENAME with buffer name", function()
-            local args = {"--stdin-filename", "$FILENAME"}
+            local args = { "--stdin-filename", "$FILENAME" }
             test_utils.edit_test_file("test-file.lua")
 
             local parsed = loop._parse_args(args)
 
-            assert.equals(parsed[2],
-                          test_utils.test_dir .. "/files/test-file.lua")
+            assert.equals(parsed[2], test_utils.test_dir .. "/files/test-file.lua")
         end)
 
         it("should replace $TEXT with buffer content", function()
-            local args = {"--stdin", "text=$TEXT"}
+            local args = { "--stdin", "text=$TEXT" }
             test_utils.edit_test_file("test-file.lua")
 
             local parsed = loop._parse_args(args)
 
-            assert.equals(parsed[2], "text=print(\"I am a test file!\")\n")
+            assert.equals(parsed[2], 'text=print("I am a test file!")\n')
         end)
 
         it("should return unmodified argument", function()
-            local args = {"--mock-flag", "mock-value"}
+            local args = { "--mock-flag", "mock-value" }
             test_utils.edit_test_file("test-file.lua")
 
             local parsed = loop._parse_args(args)
@@ -45,7 +46,7 @@ describe("loop", function()
 
     describe("spawn", function()
         local mock_cmd = "cat"
-        local mock_args = {"-n"}
+        local mock_args = { "-n" }
         local mock_handler = stub.new()
         local check_exit_code = stub.new()
 
@@ -68,26 +69,42 @@ describe("loop", function()
         before_each(function()
             check_exit_code.returns(true)
             mock_opts = {
-                handler = function(...) mock_handler(...) end,
-                check_exit_code = check_exit_code
+                handler = function(...)
+                    mock_handler(...)
+                end,
+                check_exit_code = check_exit_code,
             }
 
-            function mock_stdin:write(...) mock_stdin_write(...) end
-            function mock_stdin:close() mock_stdin_close() end
+            function mock_stdin:write(...)
+                mock_stdin_write(...)
+            end
+            function mock_stdin:close()
+                mock_stdin_close()
+            end
             function mock_handle:is_closing()
                 return mock_handle_is_closing()
             end
-            function mock_handle:close() mock_handle_close() end
-            function mock_stdout:read_stop() mock_stdout_read_stop() end
+            function mock_handle:close()
+                mock_handle_close()
+            end
+            function mock_stdout:read_stop()
+                mock_stdout_read_stop()
+            end
             function mock_stdout:is_closing()
                 return mock_stdout_is_closing()
             end
-            function mock_stdout:close() mock_stdout_close() end
-            function mock_stderr:read_stop() mock_stderr_read_stop() end
+            function mock_stdout:close()
+                mock_stdout_close()
+            end
+            function mock_stderr:read_stop()
+                mock_stderr_read_stop()
+            end
             function mock_stderr:is_closing()
                 return mock_stderr_is_closing()
             end
-            function mock_stderr:close() mock_stderr_close() end
+            function mock_stderr:close()
+                mock_stderr_close()
+            end
         end)
 
         after_each(function()
@@ -160,17 +177,15 @@ describe("loop", function()
                 end)
             end)
 
-            it(
-                "should append chunks to output and call handler when output is nil",
-                function()
-                    handle_stdout(nil, "chunk1")
-                    handle_stdout(nil, "chunk2")
-                    handle_stdout(nil, nil)
+            it("should append chunks to output and call handler when output is nil", function()
+                handle_stdout(nil, "chunk1")
+                handle_stdout(nil, "chunk2")
+                handle_stdout(nil, nil)
 
-                    local output = mock_handler.calls[1].refs[2]
+                local output = mock_handler.calls[1].refs[2]
 
-                    assert.equals(output, "chunk1chunk2")
-                end)
+                assert.equals(output, "chunk1chunk2")
+            end)
 
             it("should set output to nil if empty string", function()
                 handle_stdout(nil, "")
@@ -228,8 +243,7 @@ describe("loop", function()
                 check_exit_code:clear()
             end)
 
-            it("should check that code is 0 when check_exit_code is nil",
-               function()
+            it("should check that code is 0 when check_exit_code is nil", function()
                 mock_opts.check_exit_code = nil
                 loop.spawn(mock_cmd, mock_args, mock_opts)
                 local callback = vim.schedule_wrap.calls[2].refs[1]
@@ -243,8 +257,7 @@ describe("loop", function()
                 assert.equals(done(), true)
             end)
 
-            it("should check exit code with check_exit_code callback",
-               function()
+            it("should check exit code with check_exit_code callback", function()
                 check_exit_code.returns(false)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
                 local callback = vim.schedule_wrap.calls[2].refs[1]
@@ -258,8 +271,7 @@ describe("loop", function()
                 assert.equals(done(), true)
             end)
 
-            it("should swap output and error_output if exit_ok is false",
-               function()
+            it("should swap output and error_output if exit_ok is false", function()
                 check_exit_code.returns(false)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
                 local callback = vim.schedule_wrap.calls[2].refs[1]
@@ -272,8 +284,7 @@ describe("loop", function()
                 assert.stub(mock_handler).was_called_with("bad", nil)
             end)
 
-            it("should set exit_ok to false if exit code is TIMEOUT_EXIT_CODE",
-               function()
+            it("should set exit_ok to false if exit code is TIMEOUT_EXIT_CODE", function()
                 mock_opts.check_exit_code = nil
                 loop.spawn(mock_cmd, mock_args, mock_opts)
                 local callback = vim.schedule_wrap.calls[2].refs[1]
@@ -300,8 +311,7 @@ describe("loop", function()
                 assert.stub(mock_handle_close).was_called()
             end)
 
-            it("should not call close_handle if is_closing returns true",
-               function()
+            it("should not call close_handle if is_closing returns true", function()
                 uv.new_pipe.returns(mock_stdout)
                 uv.spawn.returns(mock_handle)
                 mock_handle_is_closing.returns(true)
@@ -314,8 +324,7 @@ describe("loop", function()
                 assert.stub(mock_handle_close).was_not_called()
             end)
 
-            it("should call read_stop and close_handle on stdout handle",
-               function()
+            it("should call read_stop and close_handle on stdout handle", function()
                 uv.new_pipe.returns(mock_stdout)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
@@ -327,8 +336,7 @@ describe("loop", function()
                 assert.stub(mock_stdout_close).was_called()
             end)
 
-            it("should call read_stop and close_handle on stderr handle",
-               function()
+            it("should call read_stop and close_handle on stderr handle", function()
                 uv.new_pipe.returns(mock_stderr)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
@@ -345,7 +353,7 @@ describe("loop", function()
             local mock_close = stub.new()
 
             local timeout = 500
-            local mock_timer = {stop = stub.new()}
+            local mock_timer = { stop = stub.new() }
             before_each(function()
                 stub(loop, "timer")
                 loop.timer.returns(mock_timer)
@@ -367,8 +375,7 @@ describe("loop", function()
                 assert.equals(loop.timer.calls[1].refs[3], true)
             end)
 
-            it("should call close, handler, and timer.stop on timer callback",
-               function()
+            it("should call close, handler, and timer.stop on timer callback", function()
                 local callback = loop.timer.calls[1].refs[4]
 
                 callback()
@@ -394,15 +401,25 @@ describe("loop", function()
         local stop = stub.new()
         local close = stub.new()
         local is_closing = stub.new()
-        function mock_timer:start(...) start(...) end
-        function mock_timer:stop() stop() end
-        function mock_timer:close() close() end
-        function mock_timer:is_closing() is_closing() end
+        function mock_timer:start(...)
+            start(...)
+        end
+        function mock_timer:stop()
+            stop()
+        end
+        function mock_timer:close()
+            close()
+        end
+        function mock_timer:is_closing()
+            is_closing()
+        end
 
         local timeout = 10
         local interval = 5
         local callback = stub.new()
-        local _callback = function() callback() end
+        local _callback = function()
+            callback()
+        end
 
         before_each(function()
             uv.new_timer.returns(mock_timer)
@@ -455,12 +472,10 @@ describe("loop", function()
             end)
 
             describe("start", function()
-
                 it("should call timer:start method", function()
                     timer.start()
 
-                    assert.stub(start).was_called_with(timeout, interval,
-                                                       "wrapped")
+                    assert.stub(start).was_called_with(timeout, interval, "wrapped")
                 end)
             end)
 
@@ -480,8 +495,7 @@ describe("loop", function()
                     assert.stub(stop).was_called_()
                 end)
 
-                it("should also call close() when should_close is true",
-                   function()
+                it("should also call close() when should_close is true", function()
                     timer.stop(true)
 
                     assert.stub(stop).was_called_()
@@ -491,27 +505,21 @@ describe("loop", function()
             end)
 
             describe("restart", function()
-                it(
-                    "should restart timer with original interval and wrapped callback",
-                    function()
+                it("should restart timer with original interval and wrapped callback", function()
+                    timer.restart()
 
-                        timer.restart()
+                    assert.stub(stop).was_called()
+                    assert.stub(start).was_called_with(timeout, interval, "wrapped")
+                end)
 
-                        assert.stub(stop).was_called()
-                        assert.stub(start).was_called_with(timeout, interval,
-                                                           "wrapped")
-                    end)
-
-                it("should restart timer with new timeout and interval",
-                   function()
+                it("should restart timer with new timeout and interval", function()
                     local new_timeout = 100
                     local new_interval = 99
 
                     timer.restart(new_timeout, new_interval)
 
                     assert.stub(stop).was_called()
-                    assert.stub(start).was_called_with(new_timeout,
-                                                       new_interval, "wrapped")
+                    assert.stub(start).was_called_with(new_timeout, new_interval, "wrapped")
                 end)
             end)
         end)

@@ -10,22 +10,30 @@ local defaults = {
     _generators = {},
     _filetypes = {},
     _names = {},
-    _setup = false
+    _setup = false,
 }
 
 local type_overrides = {
-    on_attach = {"function", "nil"},
-    sources = {"table", "nil"}
+    on_attach = { "function", "nil" },
+    sources = { "table", "nil" },
 }
 
 local wanted_type = function(k)
-    if vim.startswith(k, "_") then return "nil", true end
+    if vim.startswith(k, "_") then
+        return "nil", true
+    end
 
     local override = type_overrides[k]
-    if type(override) == "string" then return override, true end
+    if type(override) == "string" then
+        return override, true
+    end
     if type(override) == "table" then
-        return function(a) return vim.tbl_contains(override, type(a)) end,
-               table.concat(override, ", ")
+        return function(a)
+            return vim.tbl_contains(override, type(a))
+        end, table.concat(
+            override,
+            ", "
+        )
     end
 
     return type(defaults[k]), true
@@ -35,10 +43,16 @@ local config = vim.deepcopy(defaults)
 
 -- allow plugins to call register multiple times without duplicating sources
 local is_registered = function(name, insert)
-    if not name then return false end
-    if vim.tbl_contains(config._names, name) then return true end
+    if not name then
+        return false
+    end
+    if vim.tbl_contains(config._names, name) then
+        return true
+    end
 
-    if insert then table.insert(config._names, name) end
+    if insert then
+        table.insert(config._names, name)
+    end
     return false
 end
 
@@ -54,19 +68,23 @@ local register_source = function(source, filetypes)
     local method, generator, name = source.method, source.generator, source.name
     filetypes = filetypes or source.filetypes
 
-    if is_registered(name, true) then return end
+    if is_registered(name, true) then
+        return
+    end
 
     validate({
-        method = {method, "string"},
-        generator = {generator, "table"},
-        filetypes = {filetypes, "table"},
-        name = {name, "string", true}
+        method = { method, "string" },
+        generator = { generator, "table" },
+        filetypes = { filetypes, "table" },
+        name = { name, "string", true },
     })
 
     local fn, async = generator.fn, generator.async
-    validate({fn = {fn, "function"}, async = {async, "boolean", true}})
+    validate({ fn = { fn, "function" }, async = { async, "boolean", true } })
 
-    if not config._generators[method] then config._generators[method] = {} end
+    if not config._generators[method] then
+        config._generators[method] = {}
+    end
     register_filetypes(filetypes)
 
     generator.filetypes = filetypes
@@ -86,27 +104,38 @@ local register = function(to_register)
 
     -- register a simple list of sources
     if not to_register.sources then
-        for _, source in pairs(to_register) do register_source(source) end
+        for _, source in pairs(to_register) do
+            register_source(source)
+        end
         return
     end
 
     -- register multiple sources with shared configuration
-    local sources, filetypes, name = to_register.sources, to_register.filetypes,
-                                     to_register.name
-    if is_registered(name, true) then return end
+    local sources, filetypes, name = to_register.sources, to_register.filetypes, to_register.name
+    if is_registered(name, true) then
+        return
+    end
 
-    validate({sources = {sources, "table"}, name = {name, "string", true}})
-    for _, source in pairs(sources) do register_source(source, filetypes) end
+    validate({ sources = { sources, "table" }, name = { name, "string", true } })
+    for _, source in pairs(sources) do
+        register_source(source, filetypes)
+    end
 end
 
 local M = {}
 
-M.get = function() return config end
-M.reset = function() config = vim.deepcopy(defaults) end
+M.get = function()
+    return config
+end
+M.reset = function()
+    config = vim.deepcopy(defaults)
+end
 
 M.is_registered = is_registered
 M.register = register
-M.reset_sources = function() config._generators = {} end
+M.reset_sources = function()
+    config._generators = {}
+end
 
 M.generators = function(method)
     return method and config._generators[method] or config._generators
@@ -118,7 +147,7 @@ local validate_config = function(user_config)
     local get_wanted = function(config_table)
         for k in pairs(config_table) do
             local wanted, optional = wanted_type(k)
-            to_validate[k] = {user_config[k], wanted, optional}
+            to_validate[k] = { user_config[k], wanted, optional }
 
             validated[k] = user_config[k]
         end
@@ -131,12 +160,16 @@ local validate_config = function(user_config)
 end
 
 M.setup = function(user_config)
-    if config._setup then return end
+    if config._setup then
+        return
+    end
 
     local validated = validate_config(user_config)
     config = vim.tbl_extend("force", config, validated)
 
-    if config.sources then register(config.sources) end
+    if config.sources then
+        register(config.sources)
+    end
     config._setup = true
 end
 

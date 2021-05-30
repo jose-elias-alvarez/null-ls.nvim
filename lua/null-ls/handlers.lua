@@ -9,7 +9,7 @@ local handlers = lsp.handlers
 
 local originals = {
     buf_request = lsp.buf_request,
-    buf_request_all = lsp.buf_request_all
+    buf_request_all = lsp.buf_request_all,
 }
 
 local has_capability = function(client, method)
@@ -19,10 +19,14 @@ end
 local get_expected_client_count = function(bufnr, method)
     local expected = 0
     local clients = lsp.buf_get_clients(bufnr)
-    if not clients then return expected end
+    if not clients then
+        return expected
+    end
 
     for _, client in pairs(clients) do
-        if has_capability(client, method) then expected = expected + 1 end
+        if has_capability(client, method) then
+            expected = expected + 1
+        end
     end
     return expected
 end
@@ -74,7 +78,7 @@ end
 -- buf_request_all already wraps its handler,
 -- so we set a flag to make sure we skip it
 M.buf_request_all = function(bufnr, method, params, callback)
-    if not params then params = {} end
+    params = params or {}
     params._null_ls_skip = true
 
     return originals.buf_request_all(bufnr, method, params, callback)
@@ -119,7 +123,9 @@ M.setup_client = function(client)
 
     -- null-ls can't (currently) cancel requests, so return true if id matches
     client.cancel_request = function(request_id)
-        if request_id == methods.internal._REQUEST_ID then return true end
+        if request_id == methods.internal._REQUEST_ID then
+            return true
+        end
     end
 end
 

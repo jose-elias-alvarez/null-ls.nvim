@@ -7,70 +7,83 @@ local M = {}
 
 M.lua_format = h.make_builtin({
     method = FORMATTING,
-    filetypes = {"lua"},
+    filetypes = { "lua" },
     generator_opts = {
         command = "lua-format",
-        args = {"--single-quote-to-double-quote", "-i"},
-        to_stdin = true
+        args = { "-i" },
+        to_stdin = true,
     },
-    factory = h.formatter_factory
+    factory = h.formatter_factory,
 })
 
 M.stylua = h.make_builtin({
     method = FORMATTING,
-    filetypes = {"lua"},
-    generator_opts = {command = "stylua", args = {"-"}, to_stdin = true},
-    factory = h.formatter_factory
+    filetypes = { "lua" },
+    generator_opts = { command = "stylua", args = { "-" }, to_stdin = true },
+    factory = h.formatter_factory,
 })
 
 M.prettier = h.make_builtin({
     method = FORMATTING,
     filetypes = {
-        "javascript", "javascriptreact", "typescript", "typescriptreact", "css",
-        "html", "json", "yaml", "markdown"
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "css",
+        "html",
+        "json",
+        "yaml",
+        "markdown",
     },
     generator_opts = {
         command = "prettier",
-        args = {"--stdin-filepath", "$FILENAME"},
-        to_stdin = true
+        args = { "--stdin-filepath", "$FILENAME" },
+        to_stdin = true,
     },
-    factory = h.formatter_factory
+    factory = h.formatter_factory,
 })
 
 M.prettier_d_slim = h.make_builtin({
     method = FORMATTING,
     filetypes = {
-        "javascript", "javascriptreact", "typescript", "typescriptreact"
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
     },
     generator_opts = {
         command = "prettier_d_slim",
-        args = {"--stdin", "--stdin-filepath", "$FILENAME"},
-        to_stdin = true
+        args = { "--stdin", "--stdin-filepath", "$FILENAME" },
+        to_stdin = true,
     },
-    factory = h.formatter_factory
+    factory = h.formatter_factory,
 })
 
 M.eslint_d = h.make_builtin({
     method = FORMATTING,
     filetypes = {
-        "javascript", "javascriptreact", "typescript", "typescriptreact"
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
     },
     generator_opts = {
         command = "eslint_d",
-        args = {"--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME"},
-        to_stdin = true
+        args = { "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" },
+        to_stdin = true,
     },
-    factory = h.formatter_factory
+    factory = h.formatter_factory,
 })
 
 M.trim_whitespace = h.make_builtin({
     method = FORMATTING,
     generator_opts = {
         command = "awk",
-        args = {"{ sub(/[ \t]+$/, \"\"); print }"},
-        to_stdin = true
+        args = { '{ sub(/[ \t]+$/, ""); print }' },
+        to_stdin = true,
     },
-    factory = h.formatter_factory
+    factory = h.formatter_factory,
 })
 
 return M

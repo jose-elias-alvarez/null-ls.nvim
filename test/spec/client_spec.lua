@@ -93,16 +93,20 @@ describe("client", function()
             local config = lsp.start_client.calls[1].refs[1]
 
             assert.same(config.cmd, {
-                "nvim", "--headless", "-u", "NONE", "-c",
-                "lua require'null-ls'.start_server()"
+                "nvim",
+                "--headless",
+                "-u",
+                "NONE",
+                "-c",
+                "lua require'null-ls'.start_server()",
             })
             assert.equals(config.root_dir, vim.fn.getcwd())
             assert.equals(config.name, "null-ls")
-            assert.same(config.flags, {debounce_text_changes = c.get().debounce})
+            assert.same(config.flags, { debounce_text_changes = c.get().debounce })
         end)
 
         it("should not start client when client_id is already set", function()
-            s.set({client_id = mock_client_id})
+            s.set({ client_id = mock_client_id })
 
             client.try_attach()
 
@@ -125,7 +129,9 @@ describe("client", function()
     describe("attach_or_refresh", function()
         stub(s, "notify_client")
 
-        after_each(function() s.notify_client:clear() end)
+        after_each(function()
+            s.notify_client:clear()
+        end)
 
         it("should return if filetype is empty", function()
             vim.api.nvim_buf_get_option.returns("")
@@ -136,19 +142,17 @@ describe("client", function()
         end)
 
         it("should call notify_client if attached and return", function()
-            s.set({attached = {[mock_uri] = true}})
+            s.set({ attached = { [mock_uri] = true } })
 
             client.attach_or_refresh()
 
-            assert.stub(s.notify_client).was_called_with(methods.lsp.DID_CHANGE,
-                                                         {
-                textDocument = {uri = mock_uri}
+            assert.stub(s.notify_client).was_called_with(methods.lsp.DID_CHANGE, {
+                textDocument = { uri = mock_uri },
             })
             assert.stub(s.attach).was_not_called()
         end)
 
-        it("should call try_attach with bufnr, ft, and uri if not attached",
-           function()
+        it("should call try_attach with bufnr, ft, and uri if not attached", function()
             client.attach_or_refresh()
 
             assert.stub(s.notify_client).was_not_called()
@@ -158,7 +162,9 @@ describe("client", function()
 
     describe("callbacks", function()
         local mock_client
-        before_each(function() mock_client = {id = 99} end)
+        before_each(function()
+            mock_client = { id = 99 }
+        end)
 
         describe("on_init", function()
             local on_init
@@ -188,7 +194,7 @@ describe("client", function()
             end)
 
             it("should reset state", function()
-                s.set({client = "client"})
+                s.set({ client = "client" })
 
                 on_exit(mock_client)
 
@@ -200,8 +206,10 @@ describe("client", function()
             local on_attach, mock_on_attach
             before_each(function()
                 mock_on_attach = stub.new()
-                local _on_attach = function() mock_on_attach() end
-                c.setup({on_attach = _on_attach})
+                local _on_attach = function()
+                    mock_on_attach()
+                end
+                c.setup({ on_attach = _on_attach })
 
                 client.try_attach()
                 on_attach = lsp.start_client.calls[1].refs[1].on_attach
@@ -214,5 +222,4 @@ describe("client", function()
             end)
         end)
     end)
-
 end)

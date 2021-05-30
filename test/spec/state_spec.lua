@@ -11,7 +11,9 @@ describe("state", function()
     local mock_action = {
         title = "Mock action",
         -- need to wrap to pass validation
-        action = function() mock_action_stub() end
+        action = function()
+            mock_action_stub()
+        end,
     }
 
     after_each(function()
@@ -28,7 +30,7 @@ describe("state", function()
         end)
 
         it("should get updated state", function()
-            s.set({mock_key = "mock_val"})
+            s.set({ mock_key = "mock_val" })
 
             assert.equals(s.get().mock_key, "mock_val")
         end)
@@ -36,7 +38,7 @@ describe("state", function()
 
     describe("reset", function()
         it("should reset state to initial state", function()
-            s.set({client_id = mock_client_id})
+            s.set({ client_id = mock_client_id })
 
             s.reset()
             local state = s.get()
@@ -49,12 +51,12 @@ describe("state", function()
     describe("client", function()
         describe("notify_client", function()
             local notify = stub.new()
-            local mock_params = {key = "val"}
+            local mock_params = { key = "val" }
 
             local mock_client
             before_each(function()
-                mock_client = {notify = notify}
-                s.set({client = mock_client})
+                mock_client = { notify = notify }
+                s.set({ client = mock_client })
             end)
 
             after_each(function()
@@ -70,8 +72,7 @@ describe("state", function()
                 assert.stub(notify).was_not_called()
             end)
 
-            it("should should call client.notify with method and params",
-               function()
+            it("should should call client.notify with method and params", function()
                 s.notify_client("mockMethod", mock_params)
 
                 assert.stub(notify).was_called_with("mockMethod", mock_params)
@@ -83,7 +84,9 @@ describe("state", function()
 
             local notify = stub.new()
             local mock_client
-            before_each(function() mock_client = {notify = notify} end)
+            before_each(function()
+                mock_client = { notify = notify }
+            end)
             after_each(function()
                 loop.timer:clear()
                 s.reset()
@@ -108,8 +111,7 @@ describe("state", function()
                     s.initialize(mock_client)
 
                     assert.equals(loop.timer.calls[1].refs[1], 0)
-                    assert.equals(loop.timer.calls[1].refs[2],
-                                  c.get().keep_alive_interval)
+                    assert.equals(loop.timer.calls[1].refs[2], c.get().keep_alive_interval)
                     assert.equals(loop.timer.calls[1].refs[3], true)
                     assert.truthy(loop.timer.calls[1].refs[4])
                 end)
@@ -120,9 +122,9 @@ describe("state", function()
                     local callback = loop.timer.calls[1].refs[4]
                     callback()
 
-                    assert.stub(notify).was_called_with(
-                        methods.internal._NOTIFICATION,
-                        {timeout = c.get().keep_alive_interval})
+                    assert.stub(notify).was_called_with(methods.internal._NOTIFICATION, {
+                        timeout = c.get().keep_alive_interval,
+                    })
                 end)
             end)
         end)
@@ -132,13 +134,13 @@ describe("state", function()
             stub(vim, "wait")
             stub(loop, "timer")
             local is_stopped = stub.new()
-            local mock_timer = {stop = stub.new()}
+            local mock_timer = { stop = stub.new() }
 
             local mock_client
             before_each(function()
-                mock_client = {is_stopped = is_stopped}
+                mock_client = { is_stopped = is_stopped }
 
-                s.set({client_id = mock_client_id, client = mock_client})
+                s.set({ client_id = mock_client_id, client = mock_client })
             end)
 
             after_each(function()
@@ -166,7 +168,7 @@ describe("state", function()
             end)
 
             it("should call stop method on keep_alive_timer", function()
-                s.set({keep_alive_timer = mock_timer})
+                s.set({ keep_alive_timer = mock_timer })
 
                 s.shutdown_client()
 
@@ -180,8 +182,7 @@ describe("state", function()
             end)
 
             describe("wait", function()
-                it("should call vim.wait with default timeout and interval",
-                   function()
+                it("should call vim.wait with default timeout and interval", function()
                     s.shutdown_client()
 
                     assert.equals(vim.wait.calls[1].refs[1], 5000)
@@ -203,25 +204,23 @@ describe("state", function()
                         assert.equals(callback(), true)
                     end)
 
-                    it(
-                        "should return true if client is_stopped method returns true",
-                        function()
-                            is_stopped.returns(true)
-                            s.shutdown_client()
+                    it("should return true if client is_stopped method returns true", function()
+                        is_stopped.returns(true)
+                        s.shutdown_client()
 
-                            local callback = vim.wait.calls[1].refs[2]
-                            s.set({client = mock_client})
+                        local callback = vim.wait.calls[1].refs[2]
+                        s.set({ client = mock_client })
 
-                            assert.equals(callback(), true)
-                            assert.stub(is_stopped).was_called()
-                        end)
+                        assert.equals(callback(), true)
+                        assert.stub(is_stopped).was_called()
+                    end)
 
                     it("should return false otherwise", function()
                         is_stopped.returns(false)
                         s.shutdown_client()
 
                         local callback = vim.wait.calls[1].refs[2]
-                        s.set({client = mock_client})
+                        s.set({ client = mock_client })
 
                         assert.equals(callback(), false)
                         assert.stub(is_stopped).was_called()
@@ -236,7 +235,7 @@ describe("state", function()
 
             local mock_bufnr, mock_uri = 75, "file:///mock-file.lua"
             before_each(function()
-                s.set({client_id = mock_client_id})
+                s.set({ client_id = mock_client_id })
                 vim.uri_from_bufnr.returns(mock_uri)
             end)
 
@@ -245,23 +244,19 @@ describe("state", function()
                 vim.uri_from_bufnr:clear()
             end)
 
-            it("should call buf_attach_client with bufnr and client_id",
-               function()
+            it("should call buf_attach_client with bufnr and client_id", function()
                 s.attach(mock_bufnr)
 
-                assert.stub(vim.lsp.buf_attach_client).was_called_with(
-                    mock_bufnr, mock_client_id)
+                assert.stub(vim.lsp.buf_attach_client).was_called_with(mock_bufnr, mock_client_id)
             end)
 
-            it(
-                "should not call buf_attach_client again if buffer is already attached",
-                function()
-                    s.attach(mock_bufnr)
+            it("should not call buf_attach_client again if buffer is already attached", function()
+                s.attach(mock_bufnr)
 
-                    s.attach(mock_bufnr)
+                s.attach(mock_bufnr)
 
-                    assert.stub(vim.lsp.buf_attach_client).was_called(1)
-                end)
+                assert.stub(vim.lsp.buf_attach_client).was_called(1)
+            end)
 
             it("should save bufnr in state.attached under uri", function()
                 s.attach(mock_bufnr)
@@ -280,7 +275,9 @@ describe("state", function()
     end)
 
     describe("run_action", function()
-        before_each(function() s.register_action(mock_action) end)
+        before_each(function()
+            s.register_action(mock_action)
+        end)
 
         it("should run action matching title", function()
             s.run_action(mock_action.title)
