@@ -16,6 +16,13 @@ M.lua_format = h.make_builtin({
     factory = h.formatter_factory
 })
 
+M.stylua = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {"lua"},
+    generator_opts = {command = "stylua", args = {"-"}, to_stdin = true},
+    factory = h.formatter_factory
+})
+
 M.prettier = h.make_builtin({
     method = FORMATTING,
     filetypes = {
@@ -51,6 +58,16 @@ M.eslint_d = h.make_builtin({
     generator_opts = {
         command = "eslint_d",
         args = {"--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME"},
+        to_stdin = true
+    },
+    factory = h.formatter_factory
+})
+
+M.trim_whitespace = h.make_builtin({
+    method = FORMATTING,
+    generator_opts = {
+        command = "awk",
+        args = {"{ sub(/[ \t]+$/, \"\"); print }"},
         to_stdin = true
     },
     factory = h.formatter_factory
