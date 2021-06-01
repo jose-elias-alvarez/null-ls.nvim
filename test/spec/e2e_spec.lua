@@ -144,6 +144,52 @@ describe("e2e", function()
             assert.equals(u.buf.content(nil, true), formatted)
         end)
     end)
+
+    describe("temp file source", function()
+        before_each(function()
+            api.nvim_exec(
+                [[
+            augroup NullLsTesting
+                autocmd!
+                autocmd BufEnter *.tl set filetype=teal
+            augroup END
+            ]],
+                false
+            )
+            c.register(builtins.diagnostics.teal)
+
+            tu.edit_test_file("test-file.tl")
+            lsp_wait()
+        end)
+        after_each(function()
+            api.nvim_exec(
+                [[
+            augroup NullLsTesting
+                autocmd!
+            augroup END
+            ]],
+                false
+            )
+            vim.cmd("augroup! NullLsTesting")
+        end)
+
+        it("should handle source that uses temp file", function()
+            -- replace - with .., which will mess up the return type
+            api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 52, 0, 53, { ".." })
+            lsp_wait()
+
+            local buf_diagnostics = lsp.diagnostic.get()
+            assert.equals(vim.tbl_count(buf_diagnostics), 1)
+
+            local tl_check_diagnostic = buf_diagnostics[1]
+            assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
+            assert.equals(tl_check_diagnostic.source, "tl check")
+            assert.same(tl_check_diagnostic.range, {
+                start = { character = 52, line = 0 },
+                ["end"] = { character = 54, line = 0 },
+            })
+        end)
+    end)
 end)
 
 main.shutdown()
