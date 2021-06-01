@@ -245,6 +245,20 @@ describe("utils", function()
         end)
     end)
 
+    describe("table", function()
+        describe("replace", function()
+            it("should replace matching list element", function()
+                local list = { "original element", "to be replaced", "don't replace me" }
+
+                local replaced = u.table.replace(list, "to be replaced", "new element")
+
+                assert.equals(replaced[1], "original element")
+                assert.equals(replaced[2], "new element")
+                assert.equals(replaced[3], "don't replace me")
+            end)
+        end)
+    end)
+
     describe("rpc", function()
         describe("decode", function()
             it("should return decoded data minus header", function()

@@ -75,6 +75,7 @@ describe("helpers", function()
 
     describe("generator_factory", function()
         stub(loop, "spawn")
+        stub(loop, "temp_file")
 
         local command = "cat"
         local args = { "-n" }
@@ -91,8 +92,7 @@ describe("helpers", function()
 
         after_each(function()
             loop.spawn:clear()
-
-            vim.cmd("bufdo! bwipeout!")
+            loop.temp_file:clear()
         end)
 
         it("should validate opts on first run", function()
@@ -120,6 +120,7 @@ describe("helpers", function()
 
         it("should pass filetypes to generator", function()
             generator_args.filetypes = { "lua" }
+
             local generator = helpers.generator_factory(generator_args)
 
             assert.same(generator.filetypes, { "lua" })
@@ -167,12 +168,42 @@ describe("helpers", function()
                 test_utils.edit_test_file("test-file.lua")
                 local params = { bufnr = vim.api.nvim_get_current_buf() }
                 generator_args.to_stdin = true
-                local generator = helpers.generator_factory(generator_args)
 
+                local generator = helpers.generator_factory(generator_args)
                 generator.fn(params)
 
                 local input = loop.spawn.calls[1].refs[3].input
                 assert.equals(input, 'print("I am a test file!")\n')
+            end)
+
+            describe("to_temp_file", function()
+                local cleanup = stub.new()
+                before_each(function()
+                    loop.temp_file.returns("temp-path", cleanup)
+
+                    local params = { content = { "buffer content" } }
+                    generator_args.to_temp_file = true
+                    generator_args.args = { "$FILENAME" }
+
+                    local generator = helpers.generator_factory(generator_args)
+                    generator.fn(params)
+                end)
+
+                after_each(function()
+                    cleanup:clear()
+                end)
+
+                it("should call loop.temp_file with content", function()
+                    assert.stub(loop.temp_file).was_called_with("buffer content")
+                end)
+
+                it("should replace $FILENAME arg with temp path", function()
+                    assert.same(loop.spawn.calls[1].refs[2], { "temp-path" })
+                end)
+
+                it("should pass cleanup callback as on_stdout_end", function()
+                    assert.equals(loop.spawn.calls[1].refs[3].on_stdout_end, cleanup)
+                end)
             end)
         end)
 

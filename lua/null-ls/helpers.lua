@@ -57,86 +57,98 @@ local formats = {
 }
 
 M.generator_factory = function(opts)
-	local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout = opts.command,
-		opts.args,
-		opts.on_output,
-		opts.format,
-		opts.to_stderr,
-		opts.to_stdin,
-		opts.ignore_errors,
-		opts.check_exit_code,
-		opts.timeout
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file = opts.command,
+        opts.args,
+        opts.on_output,
+        opts.format,
+        opts.to_stderr,
+        opts.to_stdin,
+        opts.ignore_errors,
+        opts.check_exit_code,
+        opts.timeout,
+        opts.to_temp_file
 
-	local _validated
-	local validate_opts = function()
-		validate({
-			command = { command, "string" },
-			args = { args, "table", true },
-			on_output = { on_output, "function" },
-			format = {
-				format,
-				function(a)
-					return not a or vim.tbl_contains(vim.tbl_values(formats), a)
-				end,
-				"raw, line, or json",
-			},
-			to_stderr = { to_stderr, "boolean", true },
-			to_stdin = { to_stdin, "boolean", true },
-			ignore_errors = { ignore_errors, "boolean", true },
-			check_exit_code = { check_exit_code, "function", true },
-			timeout = { timeout, "number", true },
-		})
+    local _validated
+    local validate_opts = function()
+        validate({
+            command = { command, "string" },
+            args = { args, "table", true },
+            on_output = { on_output, "function" },
+            format = {
+                format,
+                function(a)
+                    return not a or vim.tbl_contains(vim.tbl_values(formats), a)
+                end,
+                "raw, line, or json",
+            },
+            to_stderr = { to_stderr, "boolean", true },
+            to_stdin = { to_stdin, "boolean", true },
+            ignore_errors = { ignore_errors, "boolean", true },
+            check_exit_code = { check_exit_code, "function", true },
+            timeout = { timeout, "number", true },
+            to_temp_file = { to_temp_file, "boolean", true },
+        })
 
-		_validated = true
-	end
+        _validated = true
+    end
 
-	return {
-		fn = function(params, done)
-			if not _validated then
-				validate_opts()
-			end
+    return {
+        fn = function(params, done)
+            if not _validated then
+                validate_opts()
+            end
 
-			local wrapper = function(error_output, output)
-				if to_stderr then
-					output = error_output
-					error_output = nil
-				end
+            local wrapper = function(error_output, output)
+                if to_stderr then
+                    output = error_output
+                    error_output = nil
+                end
 
-				if error_output and format ~= formats.raw then
-					if not ignore_errors then
-						error("error in generator output: " .. error_output)
-					end
-					return
-				end
+                if error_output and format ~= formats.raw then
+                    if not ignore_errors then
+                        error("error in generator output: " .. error_output)
+                    end
+                    return
+                end
 
-				params.output = output
-				if format == formats.raw then
-					params.err = error_output
-				end
+                params.output = output
+                if format == formats.raw then
+                    params.err = error_output
+                end
 
-				if format == formats.json then
-					json_output_wrapper(params, done, on_output)
-					return
-				end
-				if format == formats.line then
-					line_output_wrapper(params, done, on_output)
-					return
-				end
+                if format == formats.json then
+                    json_output_wrapper(params, done, on_output)
+                    return
+                end
+                if format == formats.line then
+                    line_output_wrapper(params, done, on_output)
+                    return
+                end
 
-				on_output(params, done)
-			end
+                on_output(params, done)
+            end
 
-			loop.spawn(command, args or {}, {
-				input = to_stdin and get_content(params) or nil,
-				handler = wrapper,
-				bufnr = params.bufnr,
-				check_exit_code = check_exit_code,
-				timeout = timeout or c.get().default_timeout,
-			})
-		end,
-		filetypes = opts.filetypes,
-		async = true,
-	}
+            local spawn_args = args or {}
+            local spawn_opts = {
+                input = to_stdin and get_content(params) or nil,
+                handler = wrapper,
+                bufnr = params.bufnr,
+                check_exit_code = check_exit_code,
+                timeout = timeout or c.get().default_timeout,
+            }
+
+            if to_temp_file then
+                local temp_path, cleanup = loop.temp_file(get_content(params))
+
+                spawn_args = u.table.replace(args, "$FILENAME", temp_path)
+                spawn_opts.on_stdout_end = cleanup
+            end
+
+            loop.spawn(command, spawn_args, spawn_opts)
+        end,
+        filetypes = opts.filetypes,
+        async = true,
+    }
 end
 
 M.formatter_factory = function(opts)

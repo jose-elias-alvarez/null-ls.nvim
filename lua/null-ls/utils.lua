@@ -104,6 +104,16 @@ M.string = {
     end,
 }
 
+M.table = {
+    replace = function(tbl, original, replacement)
+        local replaced = {}
+        for _, v in ipairs(tbl) do
+            table.insert(replaced, v == original and replacement or v)
+        end
+        return replaced
+    end,
+}
+
 M.rpc = {
     decode = function(encoded)
         local data = ""
