@@ -312,7 +312,11 @@ describe("helpers", function()
             method = "mockMethod",
             filetypes = { "lua" },
             factory = stub.new(),
-            generator_opts = { key = "val", other_key = "other_val" },
+            generator_opts = {
+                key = "val",
+                other_key = "other_val",
+                nested = { nested_key = "nested_val", other_nested = "original_val" },
+            },
         }
         local mock_generator = { fn = function()
             print("I am a generator")
@@ -346,6 +350,13 @@ describe("helpers", function()
                 builtin.with({ timeout = 5000 })
 
                 assert.equals(builtin._opts.timeout, 5000)
+            end)
+
+            it("should override single nested value", function()
+                builtin.with({ nested = { nested_key = "new_val" } })
+
+                assert.equals(builtin._opts.nested.nested_key, "new_val")
+                assert.equals(builtin._opts.nested.other_nested, "original_val")
             end)
         end)
 

@@ -164,23 +164,25 @@ M.formatter_factory = function(opts)
 end
 
 M.make_builtin = function(opts)
-    local method, filetypes, factory, generator_opts = opts.method, opts.filetypes, opts.factory, opts.generator_opts
+    local method, filetypes, factory, generator_opts, generator =
+        opts.method, opts.filetypes, opts.factory, opts.generator_opts, opts.generator
 
     local builtin = {
         method = method,
         filetypes = filetypes,
-        _opts = generator_opts,
+        generator = generator,
+        _opts = generator_opts or {},
     }
 
     setmetatable(builtin, {
         __index = function(tab, key)
-            return key == "generator" and factory(tab._opts) or rawget(tab, key)
+            return (key == "generator" and factory and factory(tab._opts)) or rawget(tab, key)
         end,
     })
 
     builtin.with = function(user_opts)
         builtin.filetypes = user_opts.filetypes or builtin.filetypes
-        builtin._opts = vim.tbl_extend("force", builtin._opts, user_opts)
+        builtin._opts = vim.tbl_deep_extend("force", builtin._opts, user_opts)
 
         return builtin
     end
