@@ -127,6 +127,9 @@ local M = {}
 M.get = function()
     return config
 end
+M._set = function(new_config)
+    config = vim.tbl_extend("force", config, new_config)
+end
 M.reset = function()
     config = vim.deepcopy(defaults)
 end
