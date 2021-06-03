@@ -20,9 +20,23 @@ M.start_server = server.start
 M.try_attach = client.try_attach
 M.attach_or_refresh = client.attach_or_refresh
 
-M.shutdown = s.shutdown_client
+M.shutdown = function()
+    handlers.reset()
+    config.reset()
+    autocommands.reset()
+
+    s.shutdown_client()
+end
+
+M.disable = function()
+    vim.g.null_ls_disable = true
+    M.shutdown()
+end
 
 M.setup = function(user_config)
+    if vim.g.null_ls_disable then
+        return
+    end
     config.setup(user_config or {})
 
     autocommands.setup()

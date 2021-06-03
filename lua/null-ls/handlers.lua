@@ -64,6 +64,11 @@ M.setup = function()
     lsp.buf_request_all = M.buf_request_all
 end
 
+M.reset = function()
+    lsp.buf_request = originals.buf_request
+    lsp.buf_request_all = originals.buf_request_all
+end
+
 M.buf_request = function(bufnr, method, params, original_handler)
     original_handler = original_handler or handlers[method]
     local handler = original_handler

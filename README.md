@@ -61,6 +61,11 @@ null_ls.setup {
 null_ls.register {other_sources}
 ```
 
+You can conditionally block null-ls setup on Neovim startup by setting
+`vim.g.null_ls_disable = true`. Note that if null-ls has already started, it'll
+continue to attach to new buffers. To shut down null-ls and prevent it from
+starting again in the current Neovim instance, run `lua require'null-ls'.disable()`.
+
 ## Examples
 
 ### Code actions (synchronous)

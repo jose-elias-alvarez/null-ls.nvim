@@ -19,6 +19,17 @@ describe("handlers", function()
         end)
     end)
 
+    describe("reset", function()
+        it("should reset lsp handlers", function()
+            handlers.setup()
+
+            handlers.reset()
+
+            assert.equals(lsp.buf_request, handlers.originals.buf_request)
+            assert.equals(lsp.buf_request_all, handlers.originals.buf_request_all)
+        end)
+    end)
+
     describe("buf_request", function()
         stub(lsp, "buf_get_clients")
         local mock_handler = stub.new()

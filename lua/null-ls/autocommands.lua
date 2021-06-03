@@ -36,6 +36,16 @@ M.setup = function()
     register("User", "attach_or_refresh()", names.REGISTERED)
 end
 
+M.reset = function()
+    exec(string.format([[
+    augroup %s
+        autocmd!
+    augroup END
+    ]], names.GROUP))
+
+    vim.cmd("augroup! " .. names.GROUP)
+end
+
 M.trigger = function(name)
     vim.cmd("doautocmd User " .. name)
 end

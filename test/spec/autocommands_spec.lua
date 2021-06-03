@@ -1,22 +1,17 @@
 local stub = require("luassert.stub")
 
-local clear_augroup = function(name)
-    vim.api.nvim_exec(string.format([[
-    augroup %s
-        autocmd!
-    augroup END
-    ]], name), false)
-    vim.cmd("augroup! " .. name)
-end
-
 local assert_exists = function(name)
     assert.equals(vim.fn.exists(name), 1)
+end
+
+local assert_not_exists = function(name)
+    assert.equals(vim.fn.exists(name), 0)
 end
 
 describe("autocommands", function()
     local autocommands = require("null-ls.autocommands")
     after_each(function()
-        clear_augroup(autocommands.names.GROUP)
+        autocommands.reset()
     end)
 
     describe("setup", function()
@@ -52,6 +47,18 @@ describe("autocommands", function()
             autocommands.trigger(mock_name)
 
             assert.stub(vim.cmd).was_called_with("doautocmd User " .. mock_name)
+        end)
+    end)
+
+    describe("reset", function()
+        it("should delete autocommands", function()
+            autocommands.setup()
+
+            autocommands.reset()
+
+            assert_not_exists("#" .. autocommands.names.GROUP .. "#BufEnter")
+            assert_not_exists("#" .. autocommands.names.GROUP .. "#FocusGained")
+            assert_not_exists("#" .. autocommands.names.GROUP .. "#User")
         end)
     end)
 end)
