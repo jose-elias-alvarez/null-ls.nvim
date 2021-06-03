@@ -25,9 +25,34 @@ or overhead.
 
 ## Status
 
-null-ls is in **pre-alpha status**, and breaking changes and bugs are a
-near-certainty. Any and all feedback, criticism, or contributions about the
-plugin's features, code quality, and user experience are greatly appreciated.
+null-ls is in **alpha status**. I'll do my best to avoid breaking changes that
+affect users or integrations, but bugs are inevitable, and the plugin's behavior
+might not yet match user expectations. Please open an issue if something doesn't
+work the way you expect (or doesn't work at all).
+
+Any and all feedback, criticism, or contributions about the plugin's features,
+code quality, and user experience are greatly appreciated.
+
+## Features
+
+null-ls sources are able to hook into the following LSP features:
+
+- Code actions
+
+- Diagnostics
+
+- Formatting
+
+null-ls includes built-in sources for each of these features to provide
+out-of-the-box functionality. See [BUILTINS](doc/BULTINS.md) for instructions on
+how to set up sources and a list of available sources.
+
+Contributions to add more built-ins for any language are always welcome.
+
+null-ls also provides helpers to streamline the process of spawning and
+transforming the output of command-line processes into an LSP-friendly format.
+If you want to create your own source, either for personal use or for a plugin,
+see [HELPERS](doc/HELPERS.md) for details.
 
 ## Setup
 
@@ -35,40 +60,22 @@ Install null-ls using your favorite package manager. The plugin depends on
 [plenary.nvim](https://github.com/nvim-lua/plenary.nvim).
 
 To enable the plugin, you must call `null_ls.setup {}` somewhere in your LSP
-configuration, which will set up the necessary autocommands.
+configuration, which will set up the necessary autocommands. You must then
+register a source, either manually or via an integration.
 
-Note that null-ls will not do anything until you've registered at least one
-source via `setup`, `register`, or a plugin integration. Once you've registered
-a source, it'll activate on buffers with a matching filetype.
+Please see [CONFIG](doc/CONFIG.md) for information about setting up and
+configuring null-ls.
 
-```lua
-local null_ls = require("null-ls")
+## Documentation
 
-null_ls.setup {
-    -- pass in your LSP on_attach callback
-    on_attach = my_on_attach_callback,
-    -- define sources at setup
-    sources = {my_sources},
-
-    -- options (defaults shown, numbers in ms)
-    save_after_formatting = true,
-    debounce = 250,
-    keep_alive_interval = 60000,
-    default_timeout = 5000
-}
-
--- register sources dynamically
-null_ls.register {other_sources}
-```
-
-You can conditionally block null-ls setup on Neovim startup by setting
-`vim.g.null_ls_disable = true`. Note that if null-ls has already started, it'll
-continue to attach to new buffers. To shut down null-ls and prevent it from
-starting again in the current Neovim instance, run `lua require'null-ls'.disable()`.
+The definitive source for information about null-ls is its
+[documentation](doc/MAIN.md), which is still a work in progress but contains
+information about how null-ls works, how to set it up, and how to create
+sources.
 
 ## Examples
 
-### Code actions (synchronous)
+### Code actions
 
 The following example demonstrates a (naive) filetype-independent source that
 provides a code action to comment the current line using `commentstring`.
@@ -111,7 +118,7 @@ local comment_line = {
 null_ls.register(comment_line)
 ```
 
-### Diagnostics (synchronous)
+### Diagnostics
 
 The following example demonstrates a diagnostic source that will show instances
 of the word `really` in the current text as LSP warnings.
@@ -201,49 +208,49 @@ null_ls.register(file_size_comment)
 
 This [ESLint
 integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/develop/lua/nvim-lsp-ts-utils/null-ls.lua)
-from one of my plugins demonstrates a more elaborate example of parsing CLI JSON
-output to generate sources for code actions, diagnostics, and formatting.
-
-## Features
-
-### Helpers
-
-null-ls provides a helper, `null_ls.generator()`, to streamline the process of
-spawning and transforming the output of command-line processes into an
-LSP-friendly format. See the built-in files linked below for examples.
-
-### Built-ins
-
-null-ls includes built-in sources, meant to provide out-of-the-box
-functionality. See [the wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Built-in-sources)
-for details. Contributions to add more built-ins are welcome.
-
-### Code actions
-
-null-ls sources can provide code actions, which Neovim's LSP client will handle
-and show alongside standard LSP code actions, either via the built-in code
-action handler or a custom handler, like
-[telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) or
-[nvim-lspfuzzy](https://github.com/ojroques/nvim-lspfuzzy). The null-ls client
-will then execute injected code actions as Lua functions, avoiding the need
-to format JSON output.
-
-### Diagnostics
-
-null-ls sources can provide diagnostics, which the null-ls client will send to
-Neovim's LSP client and show seamlessly alongside other sources. The null-ls
-client subscribes to LSP file events and refreshes sources on file change after
-a configurable debounce period.
-
-### Formatting
-
-null-ls can provide asynchronous LSP formatting, either with a custom generator
-or by using the `null_ls.formatting()` helper, which wraps around
-`null_ls.generator()`. See [the built-in formatting
-file](lua/null-ls/builtins/formatting.lua) for examples.
+from one of my plugins demonstrates a more elaborate example of parsing JSON
+output from a command to generate sources for code actions, diagnostics, and
+formatting.
 
 ## FAQ
+
+### How do I format files?
+
+null-ls formatters run when you call `vim.lsp.buf.formatting()` or
+`vim.lsp.buf.formatting_sync()`.
+
+If you have other language servers running that can format the current buffer,
+Neovim will prompt you to choose a formatter. You can prevent actual LSP clients
+from providing formatting by adding the following snippet to your LSP
+`on_attach` callback:
+
+```lua
+-- add to the on_attach callback for the server you want to disable
+on_attach = function(client)
+    client.resolved_capabilities.document_formatting = false
+end
+```
+
+### How do I format files on save?
+
+See the following snippet:
+
+```lua
+-- add to a specific server's on_attach,
+-- or to a shared on_attach to enable for all supported filetypes
+on_attach = function(client)
+    if client.resolved_capabilities.document_formatting then
+        u.buf_augroup("LspFormatOnSave", "BufWritePost", "lua vim.lsp.buf.formatting()")
+    end
+end
+```
+
+### Does it work with (other plugin)?
+
+In most cases, yes. null-ls tries to act like an actual LSP server as much as
+possible, so it should work seamlessly with most LSP-related plugins, but it
+makes some compromises when necessary. If you run into problems, please open an
+issue.
 
 ### How does it work?
 
@@ -260,7 +267,11 @@ and send their output back to Neovim's LSP client.
 
 More testing is necessary, but informal metrics show that the performance impact
 of running a (nearly) inactive headless instance of Neovim is minimal compared
-to Node-based general-purpose language servers.
+to the overhead required by a general-purpose language server.
+
+Since null-ls uses pure Lua, minimizes server communication, and removes the
+need to communicate via JSON, in most cases it should (theoretically) run faster
+than similar solutions.
 
 ### Why hijack LSP features for non-LSP functionality? Why not use (other solution)?
 
@@ -283,6 +294,6 @@ Run `make test` in the root of the project to run the suite or
 
 ## TODO
 
-- [ ] Write proper documentation
+- [ ] Continue improving documentation
 - [ ] Add more built-ins
 - [ ] Investigate other potential LSP integrations
