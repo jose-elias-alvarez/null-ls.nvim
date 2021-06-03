@@ -99,8 +99,9 @@ M.generator_factory = function(opts)
             end
 
             local wrapper = function(error_output, output)
-                print("error output: ", error_output)
-                print("output: ", output)
+                local _ = error_output and u.debug_log("error output: " .. error_output)
+                    or u.debug_log("error output: nil")
+                local _ = output and u.debug_log("output: " .. output) or u.debug_log("output: nil")
 
                 if to_stderr then
                     output = error_output
