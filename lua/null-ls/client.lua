@@ -24,8 +24,7 @@ local start_client = function()
         cmd = {
             "nvim",
             "--headless",
-            "-u",
-            "NONE",
+            "--noplugin",
             "-c",
             "lua require'null-ls'.start_server()",
         },
