@@ -11,7 +11,7 @@ local null_ls = require("null-ls")
 null_ls.helpers.generator_factory(my_opts)
 ```
 
-Please see the [built-in files](lua/null-ls/builtins/) for examples of how to
+Please see the [built-in files](../lua/null-ls/builtins/) for examples of how to
 use helpers to create generators.
 
 ## generator_factory
@@ -61,7 +61,7 @@ null-ls will transform the following special arguments before spawning:
 
 A callback function that receives a `params` object, which contains information
 about the current buffer and editor state (see _Generators_ in
-[MAIN](doc/MAIN.md) for details).
+[MAIN](MAIN.md) for details).
 
 Generators created by `generator_factory` have access to an extra parameter,
 `params.output`, which contains the output from the spawned command. The
@@ -77,7 +77,7 @@ Supports the following options:
 
   This format will call `on_output(params, done)`, where `done()` is a callback that
   `on_output` must call with its results (see _Generators_ in
-  [MAIN](doc/MAIN.md) for details).
+  [MAIN](MAIN.md) for details).
 
 - `nil`: same as `raw`, but does not receive error output. Instead, error output
   will cause the generator to throw an error, unless `ignore_errors` is also
@@ -88,7 +88,7 @@ Supports the following options:
 
   `on_output` should return `nil` or an object that matches the structure
   expected for its method, **not** a list of results (see _Generators_ in
-  [MAIN](doc/MAIN.md) for details). The wrapper will automatically call `done`
+  [MAIN](MAIN.md) for details). The wrapper will automatically call `done`
   when once it's done iterating over output lines.
 
 - `"json"`: decodes generator output into JSON, sets `params.output` to the
@@ -148,7 +148,7 @@ but will always override the following two options:
 ### make_builtin
 
 `make_builtin` creates built-in sources, as described in
-[BUILTINS](doc/BUILTINS.md). It optimizes the source to reduce start-up time and
+[BUILTINS](BUILTINS.md). It optimizes the source to reduce start-up time and
 allow the built-in library to continue expanding without affecting users.
 
 `make_builtin` is specifically intended for built-ins included in this plugin.
@@ -172,11 +172,11 @@ null_ls.helpers.make_builtin({
 
 ### method
 
-Defines the source's null-ls method, as described in [MAIN](doc/MAIN.md).
+Defines the source's null-ls method, as described in [MAIN](MAIN.md).
 
 ### filetypes
 
-A list of filetypes for the source, as described in [MAIN](doc/MAIN.md). A
+A list of filetypes for the source, as described in [MAIN](MAIN.md). A
 built-in can opt to leave this as `nil`, meaning that the user will have to
 define filetypes in `with()`.
 

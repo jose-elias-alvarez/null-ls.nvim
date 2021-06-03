@@ -2,19 +2,19 @@
 
 Splits into the following documents:
 
-- [MAIN](doc/MAIN.md) (this document), which describes general concepts and
+- [MAIN](MAIN.md) (this document), which describes general concepts and
   implementation details
 
-- [CONFIG](doc/CONFIG.md), which describes the available configuration
+- [CONFIG](CONFIG.md), which describes the available configuration
   options
 
-- [HELPERS](doc/HELPERS.md), which describes available helpers and how to use
+- [HELPERS](HELPERS.md), which describes available helpers and how to use
   them to make new sources
 
-- [BUILTINS](doc/BUILTINS.md), which describes how to use and make built-in
+- [BUILTINS](BUILTINS.md), which describes how to use and make built-in
   sources
 
-- [TESTING](doc/TESTING.md), which describes best practices for testing null-ls
+- [TESTING](TESTING.md), which describes best practices for testing null-ls
   integrations
 
 ## Sources

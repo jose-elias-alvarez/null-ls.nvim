@@ -28,8 +28,8 @@ any options to set up.
 Note that null-ls will not do anything until you've registered at least one
 source via `setup()`, `register()`, or an integration.
 
-See [BUILTINS](doc/BUILTINS.md) for information about built-in sources or
-[HELPERS](doc/HELPERS.md) to see how to create your own.
+See [BUILTINS](BUILTINS.md) for information about built-in sources or
+[HELPERS](HELPERS.md) to see how to create your own.
 
 ## Options
 
@@ -90,13 +90,13 @@ after formatting, which is consistent with default LSP behavior.
 Sets the amount of time (in milliseconds) after which built-in sources will time
 out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
-[BUILTINS.md](doc/BUILTINS.md)).
+[BUILTINS.md](BUILTINS.md)).
 
 ### sources (list)
 
 Defines a list of sources for null-ls to register. Users can add built-in
-sources (see [BUILTINS.md](doc/BUILTINS.md)) or custom sources (see
-[MAIN.md](doc/MAIN.md)).
+sources (see [BUILTINS.md](BUILTINS.md)) or custom sources (see
+[MAIN.md](MAIN.md)).
 
 If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The

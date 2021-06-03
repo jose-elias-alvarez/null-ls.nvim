@@ -44,7 +44,7 @@ null-ls sources are able to hook into the following LSP features:
 - Formatting
 
 null-ls includes built-in sources for each of these features to provide
-out-of-the-box functionality. See [BUILTINS](doc/BULTINS.md) for instructions on
+out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
 how to set up sources and a list of available sources.
 
 Contributions to add more built-ins for any language are always welcome.
