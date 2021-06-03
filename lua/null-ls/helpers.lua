@@ -99,6 +99,9 @@ M.generator_factory = function(opts)
             end
 
             local wrapper = function(error_output, output)
+                print("error output: ", error_output)
+                print("output: ", output)
+
                 if to_stderr then
                     output = error_output
                     error_output = nil
@@ -144,6 +147,8 @@ M.generator_factory = function(opts)
                 spawn_opts.on_stdout_end = cleanup
             end
 
+            u.debug_log("spawning command " .. command .. " with args:")
+            u.debug_log(spawn_args)
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,

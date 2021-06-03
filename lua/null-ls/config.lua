@@ -7,6 +7,7 @@ local defaults = {
     keep_alive_interval = 60000, -- 60 seconds,
     save_after_format = true,
     default_timeout = 5000,
+    debug = false,
     _generators = {},
     _filetypes = {},
     _names = {},

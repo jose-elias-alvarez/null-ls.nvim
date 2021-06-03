@@ -6,8 +6,11 @@ local u = require("null-ls.utils")
 local M = {}
 
 M.run = a.async(function(params, postprocess)
+    u.debug_log("running generators for method " .. params.method)
+
     local generators = c.generators(params.method)
     if not generators then
+        u.debug_log("no generators registered")
         return {}
     end
 

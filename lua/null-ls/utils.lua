@@ -1,3 +1,4 @@
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
 local api = vim.api
@@ -26,6 +27,18 @@ end
 
 M.echo = function(hlgroup, message)
     api.nvim_echo({ { "null-ls: " .. message, hlgroup } }, true, {})
+end
+
+M.debug_log = function(target, force)
+    if not c.get().debug and not force then
+        return
+    end
+
+    if type(target) == "table" then
+        print(vim.inspect(target))
+    else
+        print(target)
+    end
 end
 
 M.filetype_matches = function(filetypes, ft)
