@@ -11,7 +11,6 @@ local method = methods.lsp.FORMATTING
 
 describe("formatting", function()
     stub(vim.lsp.util, "apply_text_edits")
-    stub(vim.api, "nvim_buf_get_option")
     stub(vim.api, "nvim_get_current_buf")
     stub(vim, "cmd")
     stub(a, "await")
@@ -26,13 +25,11 @@ describe("formatting", function()
         c._set({ save_after_format = false })
         mock_params = { key = "val" }
 
-        vim.api.nvim_buf_get_option.returns(nil)
         vim.api.nvim_get_current_buf.returns(nil)
     end)
 
     after_each(function()
         vim.lsp.util.apply_text_edits:clear()
-        vim.api.nvim_buf_get_option:clear()
         vim.api.nvim_get_current_buf:clear()
         vim.cmd:clear()
         a.await:clear()
@@ -88,15 +85,6 @@ describe("formatting", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             assert.stub(handler).was_called_with(nil, methods.lsp.FORMATTING, {}, mock_client_id, mock_bufnr)
-        end)
-
-        it("should not apply edits if buffer is modified", function()
-            vim.api.nvim_buf_get_option.returns(true)
-
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-
-            assert.stub(vim.lsp.util.apply_text_edits).was_not_called()
-            assert.stub(vim.cmd).was_not_called()
         end)
 
         it("should call apply_text_edits with edits", function()

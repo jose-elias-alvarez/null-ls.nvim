@@ -7,7 +7,6 @@ local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
 local lsp = vim.lsp
-local api = vim.api
 
 local M = {}
 
@@ -29,14 +28,12 @@ local apply_edits = a.async_void(function(params, handler)
     local edits = a.await(generators.run(u.make_params(params, methods.internal.FORMATTING), postprocess))
 
     local bufnr = params.bufnr
-    if not api.nvim_buf_get_option(bufnr, "modified") then
         -- default handler doesn't accept bufnr, so call util directly
         lsp.util.apply_text_edits(edits, bufnr)
 
         if c.get().save_after_format and not _G._TEST then
             vim.cmd(bufnr .. "bufdo silent noautocmd update")
         end
-    end
 
     -- call original handler with empty response so buf.request_sync() doesn't time out
     handler(nil, methods.lsp.FORMATTING, {}, s.get().client_id, bufnr)
