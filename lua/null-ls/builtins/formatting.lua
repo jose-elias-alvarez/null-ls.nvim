@@ -44,6 +44,27 @@ M.prettier = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.prettierd = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "css",
+        "html",
+        "json",
+        "yaml",
+        "markdown",
+    },
+    generator_opts = {
+        command = "prettierd",
+        args = { "$FILENAME" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.prettier_d_slim = h.make_builtin({
     method = FORMATTING,
     filetypes = {

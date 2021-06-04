@@ -102,6 +102,15 @@ local sources = {null_ls.builtins.formatting.prettier_d_slim}
 - Command: `prettier_d_slim`
 - Arguments: ` { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
+#### [prettierd](https://github.com/fsouza/prettierd)
+
+Another "Prettier, but faster" formatter, with better support for non-JavaScript
+filetypes.
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "html", "json", "yaml", "markdown" }`
+- Command: `prettierd`
+- Arguments: `{ "$FILENAME" }`
+
 #### [eslint_d](https://github.com/mantoni/eslint_d.js)
 
 An absurdly fast formatter (and linter). For full integration, check out
