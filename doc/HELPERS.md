@@ -30,7 +30,7 @@ null_ls.helpers.generator_factory({
     command, -- string
     args, -- table (optional)
     on_output, -- function
-    format, -- "raw", "line", or "json" (optional)
+    format, -- "raw", "line", "json", or "json_raw" (optional)
     to_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
     ignore_errors, -- boolean (optional)
@@ -94,6 +94,10 @@ Supports the following options:
 - `"json"`: decodes generator output into JSON, sets `params.output` to the
   resulting JSON object, and calls `on_output(params)`. The wrapper will
   automatically call `done` once `on_output` returns.
+
+- `"json_raw"`: same as `json`, but will not throw on errors, either from
+  `stderr` or from `json_decode`. Instead, it'll pass errors to `on_output` via
+  `params.err`.
 
 ### to_stderr
 

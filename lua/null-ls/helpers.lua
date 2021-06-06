@@ -4,6 +4,14 @@ local loop = require("null-ls.loop")
 
 local validate = vim.validate
 
+local output_formats = {
+    raw = "raw", -- receive error_output and output directly
+    none = nil, -- same as raw but will not send error output
+    line = "line", -- call handler once per line of output
+    json = "json", -- send processed json output to handler
+    json_raw = "json_raw", -- attempt to process json, but send errors to handler
+}
+
 local M = {}
 
 local get_content = function(params)
@@ -16,16 +24,21 @@ local get_content = function(params)
     return u.buf.content(params.bufnr, true)
 end
 
-local json_output_wrapper = function(params, done, on_output)
+local json_output_wrapper = function(params, done, on_output, format)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
-    if not ok then
-        error("failed to decode json: " .. decoded)
-    end
     if decoded == vim.NIL then
         decoded = nil
     end
 
-    params.output = decoded
+    if not ok then
+        if format ~= output_formats.json_raw then
+            error("failed to decode json: " .. decoded)
+        end
+        params.err = decoded
+    else
+        params.output = decoded
+    end
+
     done(on_output(params))
 end
 
@@ -49,13 +62,6 @@ local line_output_wrapper = function(params, done, on_output)
     done(all_results)
 end
 
-local formats = {
-    raw = "raw", -- receive error_output and output directly
-    none = nil, -- same as raw but will not send error output
-    line = "line", -- call handler once per line of output
-    json = "json", -- send processed json output to handler
-}
-
 M.generator_factory = function(opts)
     local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file = opts.command,
         opts.args,
@@ -77,9 +83,9 @@ M.generator_factory = function(opts)
             format = {
                 format,
                 function(a)
-                    return not a or vim.tbl_contains(vim.tbl_values(formats), a)
+                    return not a or vim.tbl_contains(vim.tbl_values(output_formats), a)
                 end,
-                "raw, line, or json",
+                "raw, line, json, or json_raw",
             },
             to_stderr = { to_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
@@ -108,7 +114,7 @@ M.generator_factory = function(opts)
                     error_output = nil
                 end
 
-                if error_output and format ~= formats.raw then
+                if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
                     if not ignore_errors then
                         error("error in generator output: " .. error_output)
                     end
@@ -116,15 +122,16 @@ M.generator_factory = function(opts)
                 end
 
                 params.output = output
-                if format == formats.raw then
+                if format == output_formats.raw or format == output_formats.json_raw then
                     params.err = error_output
                 end
 
-                if format == formats.json then
-                    json_output_wrapper(params, done, on_output)
+                if format == output_formats.json or format == output_formats.json_raw then
+                    json_output_wrapper(params, done, on_output, format)
                     return
                 end
-                if format == formats.line then
+
+                if format == output_formats.line then
                     line_output_wrapper(params, done, on_output)
                     return
                 end

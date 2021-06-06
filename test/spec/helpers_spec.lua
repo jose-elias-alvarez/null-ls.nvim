@@ -20,30 +20,55 @@ describe("helpers", function()
 
     local helpers = require("null-ls.helpers")
     describe("json_output_wrapper", function()
-        it("should throw error if json decode fails", function()
-            local bad_json = "this is not json"
+        describe("format == json", function()
+            local format = "json"
 
-            assert.has_error(function()
-                helpers._json_output_wrapper({ output = bad_json }, done, on_output)
+            it("should throw error if json decode fails", function()
+                local bad_json = "this is not json"
+
+                assert.has_error(function()
+                    helpers._json_output_wrapper({ output = bad_json }, done, on_output, format)
+                end)
+            end)
+
+            it("should set output to decoded json", function()
+                local good_json = vim.fn.json_encode({ key = "val" })
+
+                helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
+
+                local output = on_output.calls[1].refs[1].output
+                assert.same(output, { key = "val" })
+            end)
+
+            it("should set output to nil if json_decode returns vim.NIL", function()
+                local good_json = vim.fn.json_encode(nil)
+
+                helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
+
+                local output = on_output.calls[1].refs[1].output
+                assert.equals(output, nil)
+            end)
+
+            it("should call done and on_output with updated params", function()
+                local good_json = vim.fn.json_encode({ key = "val" })
+
+                helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
+
+                assert.stub(done).was_called()
+                assert.stub(on_output).was_called_with({ output = { key = "val" } })
             end)
         end)
 
-        it("should set output to decoded json", function()
-            local good_json = vim.fn.json_encode({ key = "val" })
+        describe("format == json_raw", function()
+            local format = "json_raw"
 
-            helpers._json_output_wrapper({ output = good_json }, done, on_output)
+            it("should set params.err if json decode fails", function()
+                local bad_json = "this is not json"
 
-            local output = on_output.calls[1].refs[1].output
-            assert.same(output, { key = "val" })
-        end)
+                helpers._json_output_wrapper({ output = bad_json }, done, on_output, format)
 
-        it("should call done and on_output with updated params", function()
-            local good_json = vim.fn.json_encode({ key = "val" })
-
-            helpers._json_output_wrapper({ output = good_json }, done, on_output)
-
-            assert.stub(done).was_called()
-            assert.stub(on_output).was_called_with({ output = { key = "val" } })
+                assert.truthy(on_output.calls[1].refs[1].err)
+            end)
         end)
     end)
 
@@ -250,8 +275,30 @@ describe("helpers", function()
                 assert.stub(on_output).was_called_with({ err = "error output" }, done)
             end)
 
+            it("should set params.err if format == json_raw", function()
+                generator_args.format = "json_raw"
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper("error output", nil)
+
+                assert.stub(on_output).was_called_with({ err = "error output" })
+            end)
+
             it("should call json_output_wrapper and return if format == json", function()
                 generator_args.format = "json"
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper(nil, vim.fn.json_encode({ key = "val" }))
+
+                assert.stub(on_output).was_called_with({ output = { key = "val" } })
+            end)
+
+            it("should call json_output_wrapper and return if format == json_raw", function()
+                generator_args.format = "json_raw"
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
