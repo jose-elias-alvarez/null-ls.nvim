@@ -240,7 +240,7 @@ See the following snippet:
 -- or to a shared on_attach to enable for all supported filetypes
 on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
-        u.buf_augroup("LspFormatOnSave", "BufWritePost", "lua vim.lsp.buf.formatting()")
+        vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
     end
 end
 ```

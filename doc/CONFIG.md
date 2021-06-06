@@ -22,8 +22,8 @@ Once installed, the minimal config required to enable null-ls is as follows:
 require("null-ls").setup {}
 ```
 
-Users can pass options in to the `setup()` function, but null-ls doesn't require
-any options to set up.
+Users can customize settings by passing them into the `setup()` method, but the
+defaults should work for most users.
 
 Note that null-ls will not do anything until you've registered at least one
 source via `setup()`, `register()`, or an integration.
@@ -77,7 +77,7 @@ save with the following snippet:
 -- add to your lspconfig on_attach function
 on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
-        u.buf_augroup("LspFormatOnSave", "BufWritePost", "lua vim.lsp.buf.formatting()")
+        vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
     end
 end
 ```
