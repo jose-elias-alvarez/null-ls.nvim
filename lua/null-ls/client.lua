@@ -7,6 +7,7 @@ local handlers = require("null-ls.handlers")
 
 local lsp = vim.lsp
 local api = vim.api
+local schedule = vim.schedule_wrap
 
 local function on_init(client)
     handlers.setup_client(client)
@@ -41,18 +42,15 @@ local start_client = function()
     s.set({ client_id = client_id })
 end
 
-local try_attach = function(bufnr, ft, uri)
-    bufnr = bufnr or api.nvim_get_current_buf()
+local try_attach = schedule(function()
+    local bufnr = api.nvim_get_current_buf()
     if not api.nvim_buf_is_loaded(bufnr) or vim.fn.buflisted(bufnr) == 0 then
         return
     end
 
     -- the event that triggers this function must fire after the buffer's filetype has been set
-    ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
-    if ft == "" then
-        return
-    end
-    if not u.filetype_matches(c.get().filetypes, ft) then
+    local ft = api.nvim_buf_get_option(bufnr, "filetype")
+    if ft == "" or not u.filetype_matches(c.get().filetypes, ft) then
         return
     end
 
@@ -60,8 +58,8 @@ local try_attach = function(bufnr, ft, uri)
         start_client()
     end
 
-    s.attach(bufnr, uri)
-end
+    s.attach(bufnr)
+end)
 
 local M = {}
 
@@ -70,21 +68,15 @@ M.start = start_client
 M.try_attach = try_attach
 
 -- triggered after dynamically registering sources
-M.attach_or_refresh = function()
-    local bufnr = api.nvim_get_current_buf()
-    local ft = api.nvim_buf_get_option(bufnr, "filetype")
-    if ft == "" then
-        return
-    end
-
-    local uri = vim.uri_from_bufnr(bufnr)
+M.attach_or_refresh = schedule(function()
+    local uri = vim.uri_from_bufnr(api.nvim_get_current_buf())
     -- notify client to get diagnostics from new sources
     if s.get().attached[uri] then
         s.notify_client(methods.lsp.DID_CHANGE, { textDocument = { uri = uri } })
         return
     end
 
-    try_attach(bufnr, ft, uri)
-end
+    try_attach()
+end)
 
 return M

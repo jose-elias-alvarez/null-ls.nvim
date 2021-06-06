@@ -58,6 +58,7 @@ describe("client", function()
             vim.api.nvim_buf_is_loaded.returns(false)
 
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_not_called()
         end)
@@ -66,6 +67,7 @@ describe("client", function()
             vim.fn.buflisted.returns(0)
 
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_not_called()
         end)
@@ -74,6 +76,7 @@ describe("client", function()
             vim.api.nvim_buf_get_option.returns("")
 
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_not_called()
         end)
@@ -82,12 +85,14 @@ describe("client", function()
             u.filetype_matches.returns(false)
 
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_not_called()
         end)
 
         it("should start client with config when client_id is nil", function()
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_called()
             local config = lsp.start_client.calls[1].refs[1]
@@ -95,8 +100,7 @@ describe("client", function()
             assert.same(config.cmd, {
                 "nvim",
                 "--headless",
-                "-u",
-                "NONE",
+                "--noplugin",
                 "-c",
                 "lua require'null-ls'.start_server()",
             })
@@ -107,22 +111,26 @@ describe("client", function()
 
         it("should not start client when client_id is already set", function()
             s.set({ client_id = mock_client_id })
+            vim.api.nvim_get_current_buf.returns(mock_bufnr)
 
             client.try_attach()
+            vim.wait(0)
 
             assert.stub(lsp.start_client).was_not_called()
         end)
 
         it("should set client_id after start", function()
             client.try_attach()
+            vim.wait(0)
 
             assert.equals(s.get().client_id, mock_client_id)
         end)
 
-        it("should pass bufnr and uri to attach", function()
-            client.try_attach(mock_bufnr, "lua", mock_uri)
+        it("should pass bufnr to attach", function()
+            client.try_attach()
+            vim.wait(0)
 
-            assert.stub(s.attach).was_called_with(mock_bufnr, mock_uri)
+            assert.stub(s.attach).was_called_with(mock_bufnr)
         end)
     end)
 
@@ -133,18 +141,11 @@ describe("client", function()
             s.notify_client:clear()
         end)
 
-        it("should return if filetype is empty", function()
-            vim.api.nvim_buf_get_option.returns("")
-
-            client.attach_or_refresh()
-
-            assert.stub(s.notify_client).was_not_called()
-        end)
-
         it("should call notify_client if attached and return", function()
             s.set({ attached = { [mock_uri] = true } })
 
             client.attach_or_refresh()
+            vim.wait(0)
 
             assert.stub(s.notify_client).was_called_with(methods.lsp.DID_CHANGE, {
                 textDocument = { uri = mock_uri },
@@ -152,11 +153,12 @@ describe("client", function()
             assert.stub(s.attach).was_not_called()
         end)
 
-        it("should call try_attach with bufnr, ft, and uri if not attached", function()
+        it("should call try_attach if not attached", function()
             client.attach_or_refresh()
+            vim.wait(0)
 
             assert.stub(s.notify_client).was_not_called()
-            assert.stub(s.attach).was_called_with(mock_bufnr, mock_uri)
+            assert.stub(s.attach).was_called()
         end)
     end)
 
@@ -170,6 +172,8 @@ describe("client", function()
             local on_init
             before_each(function()
                 client.try_attach()
+                vim.wait(0)
+
                 on_init = lsp.start_client.calls[1].refs[1].on_init
             end)
 
@@ -190,6 +194,8 @@ describe("client", function()
             local on_exit
             before_each(function()
                 client.try_attach()
+                vim.wait(0)
+
                 on_exit = lsp.start_client.calls[1].refs[1].on_exit
             end)
 
@@ -212,6 +218,8 @@ describe("client", function()
                 c.setup({ on_attach = _on_attach })
 
                 client.try_attach()
+                vim.wait(0)
+
                 on_attach = lsp.start_client.calls[1].refs[1].on_attach
             end)
 

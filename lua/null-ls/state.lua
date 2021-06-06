@@ -62,8 +62,8 @@ M.shutdown_client = function(timeout)
     reset()
 end
 
-M.attach = function(bufnr, uri)
-    uri = uri or vim.uri_from_bufnr(bufnr)
+M.attach = function(bufnr)
+    local uri = vim.uri_from_bufnr(bufnr)
     if state.attached[uri] then
         return
     end
