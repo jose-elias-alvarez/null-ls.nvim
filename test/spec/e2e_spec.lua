@@ -127,6 +127,7 @@ describe("e2e", function()
     describe("formatting", function()
         local formatted = 'import { User } from "./test-types";\n'
 
+        local bufnr
         before_each(function()
             c.register(builtins.formatting.prettier)
 
@@ -134,6 +135,7 @@ describe("e2e", function()
             -- make sure file wasn't accidentally saved
             assert.is_not.equals(u.buf.content(nil, true), formatted)
 
+            bufnr = api.nvim_get_current_buf()
             lsp_wait()
         end)
 
@@ -142,6 +144,28 @@ describe("e2e", function()
             lsp_wait()
 
             assert.equals(u.buf.content(nil, true), formatted)
+        end)
+
+        it("should keep marks", function()
+            -- set mark at end of line
+            vim.cmd("normal $ma")
+
+            local start_pos
+            for _, mark in pairs(vim.fn.getmarklist(bufnr)) do
+                if mark.mark == "'a" then
+                    start_pos = mark.pos
+                end
+            end
+            assert.truthy(start_pos)
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            for _, mark in pairs(vim.fn.getmarklist(bufnr)) do
+                if mark.mark == "'a" then
+                    assert.same(start_pos, mark.pos)
+                end
+            end
         end)
     end)
 
