@@ -60,7 +60,7 @@ local apply_edits = a.async_void(function(params, handler)
     restore_marks(marks, bufnr)
 
     if c.get().save_after_format and not _G._TEST then
-        vim.cmd(bufnr .. "bufdo silent noautocmd update")
+        vim.cmd(bufnr .. "bufdo! silent noautocmd update")
     end
 
     -- call original handler with empty response so buf.request_sync() doesn't time out

@@ -109,7 +109,7 @@ describe("formatting", function()
 
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
-            assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo silent noautocmd update")
+            assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent noautocmd update")
         end)
 
         describe("postprocess", function()
