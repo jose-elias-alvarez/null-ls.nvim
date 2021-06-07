@@ -10,6 +10,29 @@ local lsp = vim.lsp
 
 local M = {}
 
+local save_marks = function(bufnr)
+    local marks = {}
+    for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+        if m.mark:match("%a") then
+            marks[m.mark] = m.pos
+        end
+    end
+    return marks
+end
+
+local restore_marks = function(marks, bufnr)
+    -- no need to restore marks that still exist
+    for _, m in pairs(vim.fn.getmarklist(bufnr)) do
+        marks[m.mark] = nil
+    end
+    -- restore marks
+    for mark, pos in pairs(marks) do
+        if pos then
+            vim.fn.setpos(mark, pos)
+        end
+    end
+end
+
 local postprocess = function(edit)
     edit.range = {
         start = {
@@ -30,8 +53,11 @@ local apply_edits = a.async_void(function(params, handler)
     u.debug_log(edits)
 
     local bufnr = params.bufnr
+    local marks = save_marks(bufnr)
+
     -- default handler doesn't accept bufnr, so call util directly
     lsp.util.apply_text_edits(edits, bufnr)
+    restore_marks(marks, bufnr)
 
     if c.get().save_after_format and not _G._TEST then
         vim.cmd(bufnr .. "bufdo silent noautocmd update")
