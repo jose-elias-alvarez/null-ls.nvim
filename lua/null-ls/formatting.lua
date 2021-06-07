@@ -7,6 +7,7 @@ local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
 local lsp = vim.lsp
+local api = vim.api
 
 local M = {}
 
@@ -60,7 +61,12 @@ local apply_edits = a.async_void(function(params, handler)
     restore_marks(marks, bufnr)
 
     if c.get().save_after_format and not _G._TEST then
+        local current_bufnr = api.nvim_win_get_buf(0)
         vim.cmd(bufnr .. "bufdo! silent noautocmd update")
+
+        if current_bufnr ~= bufnr then
+            api.nvim_win_set_buf(0, current_bufnr)
+        end
     end
 
     -- call original handler with empty response so buf.request_sync() doesn't time out

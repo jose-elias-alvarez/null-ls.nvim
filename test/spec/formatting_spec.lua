@@ -11,7 +11,8 @@ local method = methods.lsp.FORMATTING
 
 describe("formatting", function()
     stub(vim.lsp.util, "apply_text_edits")
-    stub(vim.api, "nvim_get_current_buf")
+    stub(vim.api, "nvim_win_get_buf")
+    stub(vim.api, "nvim_win_set_buf")
     stub(vim, "cmd")
     stub(a, "await")
 
@@ -24,13 +25,12 @@ describe("formatting", function()
     before_each(function()
         c._set({ save_after_format = false })
         mock_params = { key = "val" }
-
-        vim.api.nvim_get_current_buf.returns(nil)
     end)
 
     after_each(function()
         vim.lsp.util.apply_text_edits:clear()
-        vim.api.nvim_get_current_buf:clear()
+        vim.api.nvim_win_get_buf:clear()
+        vim.api.nvim_win_set_buf:clear()
         vim.cmd:clear()
         a.await:clear()
 
@@ -96,8 +96,6 @@ describe("formatting", function()
         end)
 
         it("should not save buffer if config option is not set", function()
-            vim.api.nvim_get_current_buf.returns(mock_bufnr)
-
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             assert.stub(vim.cmd).was_not_called()
@@ -105,11 +103,20 @@ describe("formatting", function()
 
         it("should save buffer if config option is set", function()
             c.setup({ save_after_format = true })
-            vim.api.nvim_get_current_buf.returns(mock_bufnr)
 
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent noautocmd update")
+        end)
+
+        it("should set window buffer to original buffer if it doesn't match", function()
+            local current_bufnr = mock_bufnr + 1
+            vim.api.nvim_win_get_buf.returns(current_bufnr)
+            c.setup({ save_after_format = true })
+
+            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+
+            assert.stub(vim.api.nvim_win_set_buf).was_called_with(0, current_bufnr)
         end)
 
         describe("postprocess", function()
