@@ -86,6 +86,25 @@ M.slow_code_action = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.cached_code_action = h.make_builtin({
+    method = methods.internal.CODE_ACTION,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "ls",
+        on_output = function(params, done)
+            return done({
+                {
+                    title = params._null_ls_cached and "Cached" or "Not cached",
+                    action = function()
+                    end,
+                },
+            })
+        end,
+        use_cache = true,
+    },
+    factory = h.generator_factory,
+})
+
 M.mock_diagnostics = {
     method = methods.internal.DIAGNOSTICS,
     generator = {

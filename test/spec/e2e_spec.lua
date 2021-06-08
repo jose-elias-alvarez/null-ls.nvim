@@ -214,6 +214,39 @@ describe("e2e", function()
             })
         end)
     end)
+
+    describe("cached generator", function()
+        local actions, null_ls_action
+        before_each(function()
+            c.register(builtins._test.cached_code_action)
+
+            tu.edit_test_file("test-file.lua")
+            lsp_wait()
+
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
+            null_ls_action = actions[1].result[1]
+        end)
+
+        it("should cache results after running action once", function()
+            assert.equals(null_ls_action.title, "Not cached")
+
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
+            null_ls_action = actions[1].result[1]
+
+            assert.equals(null_ls_action.title, "Cached")
+        end)
+
+        it("should reset cache when file is edited", function()
+            assert.equals(null_ls_action.title, "Not cached")
+            api.nvim_buf_set_lines(api.nvim_get_current_buf(), 0, 0, false, { "print('new content')" })
+            lsp_wait()
+
+            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION)
+            null_ls_action = actions[1].result[1]
+
+            assert.equals(null_ls_action.title, "Not cached")
+        end)
+    end)
 end)
 
 main.shutdown()

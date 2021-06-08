@@ -2,6 +2,7 @@ local stub = require("luassert.stub")
 local loop = require("null-ls.loop")
 
 local c = require("null-ls.config")
+local s = require("null-ls.state")
 local test_utils = require("test.utils")
 
 describe("helpers", function()
@@ -101,6 +102,8 @@ describe("helpers", function()
     describe("generator_factory", function()
         stub(loop, "spawn")
         stub(loop, "temp_file")
+        stub(s, "get_cache")
+        stub(s, "set_cache")
 
         local command = "cat"
         local args = { "-n" }
@@ -118,6 +121,8 @@ describe("helpers", function()
         after_each(function()
             loop.spawn:clear()
             loop.temp_file:clear()
+            s.get_cache:clear()
+            s.set_cache:clear()
         end)
 
         it("should validate opts on first run", function()
@@ -230,6 +235,40 @@ describe("helpers", function()
                     assert.equals(loop.spawn.calls[1].refs[3].on_stdout_end, cleanup)
                 end)
             end)
+
+            describe("use_cache", function()
+                it("should call wrapper with cached output and return", function()
+                    s.get_cache.returns("cached")
+                    generator_args.use_cache = true
+
+                    helpers.generator_factory(generator_args).fn({})
+
+                    assert.stub(loop.spawn).was_not_called()
+                    assert.equals(on_output.calls[1].refs[1].output, "cached")
+                    assert.equals(on_output.calls[1].refs[1]._null_ls_cached, true)
+                end)
+
+                it("should pass cached output as error when to_stderr is true", function()
+                    s.get_cache.returns("cached")
+                    generator_args.use_cache = true
+                    generator_args.to_stderr = true
+
+                    helpers.generator_factory(generator_args).fn({})
+
+                    assert.equals(on_output.calls[1].refs[1].output, "cached")
+                    assert.equals(on_output.calls[1].refs[1]._null_ls_cached, true)
+                end)
+
+                it("should call spawn when cache is empty", function()
+                    s.get_cache.returns(nil)
+                    generator_args.use_cache = true
+
+                    local generator = helpers.generator_factory(generator_args)
+                    generator.fn({})
+
+                    assert.stub(loop.spawn).was_called()
+                end)
+            end)
         end)
 
         describe("wrapper", function()
@@ -317,6 +356,17 @@ describe("helpers", function()
                 wrapper(nil, "output")
 
                 assert.stub(on_output).was_called_with("output", { output = "output" })
+            end)
+
+            it("should call set_cache with bufnr, command, and output if use_cache is true", function()
+                local params = { bufnr = 1 }
+                generator_args.use_cache = true
+                helpers.generator_factory(generator_args).fn(params)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper(nil, "output")
+
+                assert.stub(s.set_cache).was_called_with(params.bufnr, generator_args.command, "output")
             end)
         end)
     end)

@@ -2,6 +2,9 @@ local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local loop = require("null-ls.loop")
 
+local api = vim.api
+local lsp = vim.lsp
+
 local initial_state = {
     client_id = nil,
     client = nil,
@@ -9,16 +12,16 @@ local initial_state = {
     keep_alive_timer = nil,
     actions = {},
     attached = {},
+    cache = {},
 }
+
 local state = vim.deepcopy(initial_state)
-
-local M = {}
-
-local lsp = vim.lsp
 
 local reset = function()
     state = vim.deepcopy(initial_state)
 end
+
+local M = {}
 
 M.get = function()
     return state
@@ -92,6 +95,36 @@ end
 
 M.clear_actions = function()
     state.actions = {}
+end
+
+-- cache
+M.set_cache = function(bufnr, cmd, content)
+    if not api.nvim_buf_is_loaded(bufnr) then
+        return
+    end
+
+    local uri = vim.uri_from_bufnr(bufnr)
+    if not state.cache[uri] then
+        state.cache[uri] = {}
+    end
+    state.cache[uri][cmd] = content
+end
+
+M.get_cache = function(bufnr, cmd)
+    if not api.nvim_buf_is_loaded(bufnr) then
+        return
+    end
+
+    local uri = vim.uri_from_bufnr(bufnr)
+    return state.cache[uri] and state.cache[uri][cmd]
+end
+
+M.clear_cache = function(uri)
+    if not state.cache[uri] then
+        return
+    end
+
+    state.cache[uri] = nil
 end
 
 return M

@@ -15,6 +15,7 @@ describe("diagnostics", function()
     describe("handler", function()
         stub(a, "await")
         stub(s, "detach")
+        stub(s, "clear_cache")
         stub(u, "make_params")
         stub(generators, "run")
 
@@ -29,11 +30,18 @@ describe("diagnostics", function()
             lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
             a.await:clear()
             s.detach:clear()
+            s.clear_cache:clear()
 
             generators.run:clear()
             u.make_params:clear()
 
             s.reset()
+        end)
+
+        it("should call clear_cache with uri", function()
+            diagnostics.handler(mock_params)
+
+            assert.stub(s.clear_cache).was_called_with(mock_params.textDocument.uri)
         end)
 
         it("should call detach with uri and return if method == DID_CLOSE", function()

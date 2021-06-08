@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
+local s = require("null-ls.state")
 local loop = require("null-ls.loop")
 
 local validate = vim.validate
@@ -63,7 +64,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file = opts.command,
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache = opts.command,
         opts.args,
         opts.on_output,
         opts.format,
@@ -72,7 +73,8 @@ M.generator_factory = function(opts)
         opts.ignore_errors,
         opts.check_exit_code,
         opts.timeout,
-        opts.to_temp_file
+        opts.to_temp_file,
+        opts.use_cache
 
     local _validated
     local validate_opts = function()
@@ -93,6 +95,7 @@ M.generator_factory = function(opts)
             check_exit_code = { check_exit_code, "function", true },
             timeout = { timeout, "number", true },
             to_temp_file = { to_temp_file, "boolean", true },
+            use_cache = { use_cache, "boolean", true },
         })
 
         _validated = true
@@ -122,6 +125,10 @@ M.generator_factory = function(opts)
                 end
 
                 params.output = output
+                if use_cache then
+                    s.set_cache(params.bufnr, command, output)
+                end
+
                 if format == output_formats.raw or format == output_formats.json_raw then
                     params.err = error_output
                 end
@@ -137,6 +144,16 @@ M.generator_factory = function(opts)
                 end
 
                 on_output(params, done)
+            end
+
+            if use_cache then
+                local cached = s.get_cache(params.bufnr, command)
+                if cached then
+                    params._null_ls_cached = true
+
+                    wrapper(to_stderr and cached, to_stderr and nil or cached)
+                    return
+                end
             end
 
             local spawn_args = args or {}

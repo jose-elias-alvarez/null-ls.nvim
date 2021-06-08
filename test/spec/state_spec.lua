@@ -266,33 +266,120 @@ describe("state", function()
         end)
     end)
 
-    describe("register_action", function()
-        it("should register action under state.actions[title]", function()
-            s.register_action(mock_action)
+    describe("actions", function()
+        describe("register_action", function()
+            it("should register action under state.actions[title]", function()
+                s.register_action(mock_action)
 
-            assert.equals(s.get().actions[mock_action.title], mock_action.action)
+                assert.equals(s.get().actions[mock_action.title], mock_action.action)
+            end)
+        end)
+
+        describe("run_action", function()
+            before_each(function()
+                s.register_action(mock_action)
+            end)
+
+            it("should run action matching title", function()
+                s.run_action(mock_action.title)
+
+                assert.stub(mock_action_stub).was_called()
+            end)
+        end)
+
+        describe("clear_actions", function()
+            it("should clear state actions", function()
+                s.register_action(mock_action)
+
+                s.clear_actions()
+
+                assert.equals(s.get().actions[mock_action.title], nil)
+            end)
         end)
     end)
 
-    describe("run_action", function()
+    describe("cache", function()
+        stub(vim, "uri_from_bufnr")
+        stub(vim.api, "nvim_buf_is_loaded")
+
+        local mock_bufnr, mock_cmd, mock_content = 54, "ls", "test.lua"
+        local mock_uri = "file:///test.lua"
         before_each(function()
-            s.register_action(mock_action)
+            vim.api.nvim_buf_is_loaded.returns(true)
+            vim.uri_from_bufnr.returns(mock_uri)
+        end)
+        after_each(function()
+            vim.api.nvim_buf_is_loaded:clear()
+            vim.uri_from_bufnr:clear()
         end)
 
-        it("should run action matching title", function()
-            s.run_action(mock_action.title)
+        describe("set_cache", function()
+            it("should return if bufnr is not loaded", function()
+                vim.api.nvim_buf_is_loaded.returns(false)
 
-            assert.stub(mock_action_stub).was_called()
+                s.set_cache(mock_bufnr, mock_cmd, mock_content)
+
+                assert.stub(vim.api.nvim_buf_is_loaded).was_called_with(mock_bufnr)
+                assert.stub(vim.uri_from_bufnr).was_not_called()
+            end)
+
+            it("should set state.cache when cache has not been set", function()
+                s.set_cache(mock_bufnr, mock_cmd, mock_content)
+
+                assert.stub(vim.uri_from_bufnr).was_called_with(mock_bufnr)
+                assert.same(s.get().cache[mock_uri], { [mock_cmd] = mock_content })
+            end)
+
+            it("should overwrite state.cache when already set", function()
+                s.set_cache(mock_bufnr, mock_cmd, mock_content)
+
+                s.set_cache(mock_bufnr, mock_cmd, "other-file.lua")
+
+                assert.same(s.get().cache[mock_uri], { [mock_cmd] = "other-file.lua" })
+            end)
         end)
-    end)
 
-    describe("clear_actions", function()
-        it("should clear state actions", function()
-            s.register_action(mock_action)
+        describe("get_cache", function()
+            it("should return if bufnr is not loaded", function()
+                vim.api.nvim_buf_is_loaded.returns(false)
 
-            s.clear_actions()
+                local cached = s.get_cache(mock_bufnr, mock_cmd)
 
-            assert.equals(s.get().actions[mock_action.title], nil)
+                assert.stub(vim.api.nvim_buf_is_loaded).was_called_with(mock_bufnr)
+                assert.stub(vim.uri_from_bufnr).was_not_called()
+                assert.equals(cached, nil)
+            end)
+
+            it("should return nil if cache for uri is not set", function()
+                local cached = s.get_cache(mock_bufnr, mock_cmd)
+
+                assert.stub(vim.uri_from_bufnr).was_called_with(mock_bufnr)
+                assert.equals(cached, nil)
+            end)
+
+            it("should return cached content", function()
+                s.set_cache(mock_bufnr, mock_cmd, mock_content)
+
+                local cached = s.get_cache(mock_bufnr, mock_cmd)
+
+                assert.equals(cached, mock_content)
+            end)
+        end)
+
+        describe("clear_cache", function()
+            it("should do nothing if cache for uri is not set", function()
+                s.clear_cache(mock_uri)
+
+                assert.equals(s.get().cache[mock_uri], nil)
+            end)
+
+            it("should clear cache for uri", function()
+                s.set_cache(mock_bufnr, mock_cmd, mock_content)
+
+                s.clear_cache(mock_uri)
+
+                assert.equals(s.get().cache[mock_uri], nil)
+            end)
         end)
     end)
 end)

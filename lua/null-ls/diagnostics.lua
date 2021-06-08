@@ -32,6 +32,7 @@ end
 
 M.handler = a.async_void(function(original_params)
     local method, uri = original_params.method, original_params.textDocument.uri
+    s.clear_cache(uri)
 
     if method == methods.lsp.DID_CLOSE then
         s.detach(uri)

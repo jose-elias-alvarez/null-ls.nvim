@@ -37,6 +37,7 @@ null_ls.helpers.generator_factory({
     check_exit_code, -- function (optional)
     timeout, -- number (optional)
     to_temp_file, -- boolean (optional)
+    use_cache, -- boolean (optional)
 })
 ```
 
@@ -135,6 +136,19 @@ returns an empty response. If not set, will default to the user's
 Writes the current buffer's content to a temporary file and replaces the special
 argument `$FILENAME` with the path to the temporary file. Useful for formatters
 and linters that don't accept input via `stdin`.
+
+### use_cache
+
+Caches command output on run. When available, the generator will use cached
+output instead of spawning the command, which can increase performance for slow
+commands.
+
+The plugin resets cached output when Neovim's LSP client notifies it of a buffer
+change, meaning that cache validity depends on a user's `debounce` setting.
+Sources that rely on up-to-date buffer content should avoid using this option.
+
+Note that this option effectively does nothing for diagnostics, since the
+handler will always invalidate the buffer's cache before running generators.
 
 ## formatter_factory
 
