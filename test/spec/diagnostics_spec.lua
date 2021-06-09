@@ -38,7 +38,9 @@ describe("diagnostics", function()
             s.reset()
         end)
 
-        it("should call clear_cache with uri", function()
+        it("should call clear_cache with uri when method is DID_CHANGE", function()
+            mock_params.method = methods.lsp.DID_CHANGE
+
             diagnostics.handler(mock_params)
 
             assert.stub(s.clear_cache).was_called_with(mock_params.textDocument.uri)
