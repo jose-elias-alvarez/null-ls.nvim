@@ -107,7 +107,8 @@ M.set_cache = function(bufnr, cmd, content)
     if not state.cache[uri] then
         state.cache[uri] = {}
     end
-    state.cache[uri][cmd] = content
+
+    state.cache[uri][vim.fn.fnamemodify(cmd, ":t")] = content
 end
 
 M.get_cache = function(bufnr, cmd)
@@ -116,7 +117,7 @@ M.get_cache = function(bufnr, cmd)
     end
 
     local uri = vim.uri_from_bufnr(bufnr)
-    return state.cache[uri] and state.cache[uri][cmd]
+    return state.cache[uri] and state.cache[uri][vim.fn.fnamemodify(cmd, ":t")]
 end
 
 M.clear_cache = function(uri)

@@ -330,6 +330,13 @@ describe("state", function()
                 assert.same(s.get().cache[mock_uri], { [mock_cmd] = mock_content })
             end)
 
+            it("should set state.cache from command minus path", function()
+                s.set_cache(mock_bufnr, "/path/to/" .. mock_cmd, mock_content)
+
+                assert.stub(vim.uri_from_bufnr).was_called_with(mock_bufnr)
+                assert.same(s.get().cache[mock_uri], { [mock_cmd] = mock_content })
+            end)
+
             it("should overwrite state.cache when already set", function()
                 s.set_cache(mock_bufnr, mock_cmd, mock_content)
 
@@ -361,6 +368,14 @@ describe("state", function()
                 s.set_cache(mock_bufnr, mock_cmd, mock_content)
 
                 local cached = s.get_cache(mock_bufnr, mock_cmd)
+
+                assert.equals(cached, mock_content)
+            end)
+
+            it("should return cached content minus path", function()
+                s.set_cache(mock_bufnr, "/path/to/" .. mock_cmd, mock_content)
+
+                local cached = s.get_cache(mock_bufnr, "/path/to/" .. mock_cmd)
 
                 assert.equals(cached, mock_content)
             end)
