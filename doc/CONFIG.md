@@ -41,6 +41,7 @@ local defaults = {
     keep_alive_interval = 60000, -- 60 seconds,
     save_after_format = true,
     default_timeout = 5000,
+    nvim_executable = "nvim",
     sources = nil,
     on_attach = nil,
 }
@@ -84,6 +85,10 @@ end
 
 Setting `save_after_format = false` will leave the buffer in a modified state
 after formatting, which is consistent with default LSP behavior.
+
+### nvim_executable (string)
+
+Defines the executable used to start the null-ls server.
 
 ### default_timeout (number)
 

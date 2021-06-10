@@ -8,6 +8,7 @@ local defaults = {
     save_after_format = true,
     default_timeout = 5000,
     debug = false,
+    nvim_executable = "nvim",
     _generators = {},
     _filetypes = {},
     _names = {},

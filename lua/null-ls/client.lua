@@ -23,7 +23,7 @@ local start_client = function()
 
     local client_id = lsp.start_client({
         cmd = {
-            "nvim",
+            c.get().nvim_executable,
             "--headless",
             "--noplugin",
             "-c",
