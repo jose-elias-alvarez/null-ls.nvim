@@ -100,7 +100,10 @@ describe("client", function()
             assert.same(config.cmd, {
                 "nvim",
                 "--headless",
-                "--noplugin",
+                "-u",
+                "NONE",
+                "-c",
+                "set rtp=" .. vim.o.rtp,
                 "-c",
                 "lua require'null-ls'.start_server()",
             })

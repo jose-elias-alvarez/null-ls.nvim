@@ -25,7 +25,10 @@ local start_client = function()
         cmd = {
             c.get().nvim_executable,
             "--headless",
-            "--noplugin",
+            "-u",
+            "NONE",
+            "-c",
+            "set rtp=" .. vim.o.rtp,
             "-c",
             "lua require'null-ls'.start_server()",
         },
