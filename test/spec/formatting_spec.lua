@@ -1,4 +1,5 @@
 local stub = require("luassert.stub")
+local mock = require("luassert.mock")
 local a = require("plenary.async_lib")
 
 local u = require("null-ls.utils")
@@ -11,8 +12,6 @@ local method = methods.lsp.FORMATTING
 
 describe("formatting", function()
     stub(vim.lsp.util, "apply_text_edits")
-    stub(vim.api, "nvim_win_get_buf")
-    stub(vim.api, "nvim_win_set_buf")
     stub(vim, "cmd")
     stub(a, "await")
 
@@ -20,17 +19,19 @@ describe("formatting", function()
     stub(generators, "run")
     local handler = stub.new()
 
+    local api
     local mock_bufnr = 65
     local mock_params
     before_each(function()
+        api = mock(vim.api, true)
+
         c._set({ save_after_format = false })
         mock_params = { key = "val" }
     end)
 
     after_each(function()
+        mock.revert(api)
         vim.lsp.util.apply_text_edits:clear()
-        vim.api.nvim_win_get_buf:clear()
-        vim.api.nvim_win_set_buf:clear()
         vim.cmd:clear()
         a.await:clear()
 
@@ -106,7 +107,7 @@ describe("formatting", function()
 
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
-            assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent noautocmd update")
+            assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
 
         it("should set window buffer to original buffer if it doesn't match", function()

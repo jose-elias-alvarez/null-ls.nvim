@@ -161,11 +161,27 @@ describe("e2e", function()
             lsp.buf.formatting()
             lsp_wait()
 
+            local found = false
             for _, mark in pairs(vim.fn.getmarklist(bufnr)) do
                 if mark.mark == "'a" then
+                    found = true
                     assert.same(start_pos, mark.pos)
                 end
             end
+            assert.truthy(found)
+        end)
+
+        it("should keep cursor position in other window", function()
+            local pos = { 1, 5 }
+            vim.cmd("vsplit")
+            local split_win = api.nvim_get_current_win()
+            api.nvim_win_set_cursor(split_win, pos)
+            vim.cmd("wincmd w")
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.same(api.nvim_win_get_cursor(split_win), pos)
         end)
     end)
 
