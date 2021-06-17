@@ -99,7 +99,7 @@ describe("formatting", function()
         it("should not save buffer if config option is not set", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
-            assert.stub(vim.cmd).was_not_called()
+            assert.stub(vim.cmd).was_not_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
 
         it("should save buffer if config option is set", function()
