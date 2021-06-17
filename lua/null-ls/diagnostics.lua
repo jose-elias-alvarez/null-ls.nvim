@@ -1,5 +1,3 @@
-local a = require("plenary.async_lib")
-
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
 local methods = require("null-ls.methods")
@@ -25,12 +23,9 @@ local postprocess = function(diagnostic)
     diagnostic.source = diagnostic.source or "null-ls"
 end
 
-local send_diagnostics = function(diagnostics, uri)
-    local lsp_handler = vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]
-    lsp_handler(nil, nil, { diagnostics = diagnostics, uri = uri }, s.get().client_id, nil, {})
-end
+M.handler = function(original_params)
+    local a = require("plenary.async_lib")
 
-M.handler = a.async_void(function(original_params)
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CHANGE then
         s.clear_cache(uri)
@@ -41,11 +36,20 @@ M.handler = a.async_void(function(original_params)
         return
     end
 
-    original_params.bufnr = s.get().attached[uri]
-    local params = u.make_params(original_params, methods.internal.DIAGNOSTICS)
+    local inject_diagnostics = a.async_void(function(params)
+        local runner = generators.make_runner(params, postprocess)
+        vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](
+            nil,
+            nil,
+            { diagnostics = a.await(runner()), uri = uri },
+            s.get().client_id,
+            nil,
+            {}
+        )
+    end)
 
-    local diagnostics = a.await(generators.run(params, postprocess))
-    send_diagnostics(diagnostics, uri)
-end)
+    original_params.bufnr = s.get().attached[uri]
+    inject_diagnostics(u.make_params(original_params, methods.internal.DIAGNOSTICS))
+end
 
 return M

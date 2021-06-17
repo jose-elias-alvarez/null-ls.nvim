@@ -16,7 +16,7 @@ describe("formatting", function()
     stub(a, "await")
 
     stub(u, "make_params")
-    stub(generators, "run")
+    stub(generators, "make_runner")
     local handler = stub.new()
 
     local api
@@ -24,6 +24,8 @@ describe("formatting", function()
     local mock_params
     before_each(function()
         api = mock(vim.api, true)
+        generators.make_runner.returns(function()
+        end)
 
         c._set({ save_after_format = false })
         mock_params = { key = "val" }
@@ -36,7 +38,7 @@ describe("formatting", function()
         a.await:clear()
 
         u.make_params:clear()
-        generators.run:clear()
+        generators.make_runner:clear()
         handler:clear()
 
         c.reset()
@@ -125,7 +127,7 @@ describe("formatting", function()
             local postprocess
             before_each(function()
                 formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-                postprocess = generators.run.calls[1].refs[2]
+                postprocess = generators.make_runner.calls[1].refs[2]
             end)
 
             it("should convert range", function()

@@ -24,7 +24,7 @@ describe("generators", function()
         c.reset_sources()
     end)
 
-    a.tests.describe("run", function()
+    a.tests.describe("make_runner", function()
         local filetype_matches_spy = spy(u.filetype_matches)
         after_each(function()
             filetype_matches_spy:clear()
@@ -66,7 +66,7 @@ describe("generators", function()
         it("should immediately return when method has no registered generators", function()
             register(method, mock_sync_generator)
 
-            local results = a.await(generators.run({ method = "someRandomMethod" }))
+            local results = a.await(generators.make_runner({ method = "someRandomMethod" })())
 
             assert.equals(vim.tbl_count(results), 0)
             assert.spy(filetype_matches_spy).was_not_called()
@@ -75,7 +75,7 @@ describe("generators", function()
         it("should get result from sync generator", function()
             register(method, mock_sync_generator)
 
-            local results = a.await(generators.run(mock_params))
+            local results = a.await(generators.make_runner(mock_params)())
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
@@ -84,7 +84,7 @@ describe("generators", function()
         it("should get result from async generator", function()
             register(method, mock_async_generator)
 
-            local results = a.await(generators.run(mock_params))
+            local results = a.await(generators.make_runner(mock_params)())
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
@@ -93,7 +93,7 @@ describe("generators", function()
         it("should not get result when filetype does not match", function()
             register(method, mock_filetype_generator, { "txt" })
 
-            local results = a.await(generators.run(mock_params))
+            local results = a.await(generators.make_runner(mock_params)())
 
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -102,7 +102,7 @@ describe("generators", function()
             stub(u, "echo")
             register(method, mock_error_generator)
 
-            local results = a.await(generators.run(mock_params))
+            local results = a.await(generators.make_runner(mock_params)())
 
             assert.equals(vim.tbl_count(results), 0)
             assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
@@ -114,7 +114,7 @@ describe("generators", function()
                 result.param = "mockParam"
             end
 
-            local results = a.await(generators.run(mock_params, postprocess))
+            local results = a.await(generators.make_runner(mock_params, postprocess)())
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].param, "mockParam")

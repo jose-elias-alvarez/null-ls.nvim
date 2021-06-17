@@ -1,5 +1,3 @@
-local a = require("plenary.async_lib")
-
 local s = require("null-ls.state")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
@@ -54,39 +52,41 @@ local postprocess = function(edit)
     edit.newText = edit.text
 end
 
-local apply_edits = a.async_void(function(params, handler)
-    local edits = a.await(generators.run(u.make_params(params, methods.internal.FORMATTING), postprocess))
-    u.debug_log("received edits from generators")
-    u.debug_log(edits)
-
-    local bufnr = params.bufnr
-    local winid = api.nvim_get_current_win()
-    local marks = save_win_data(bufnr, winid)
-
-    -- default handler doesn't accept bufnr, so call util directly
-    lsp.util.apply_text_edits(edits, bufnr)
-    restore_win_data(marks, bufnr, winid)
-
-    if c.get().save_after_format and not _G._TEST then
-        local current_bufnr = api.nvim_win_get_buf(0)
-        vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
-
-        if current_bufnr ~= bufnr then
-            api.nvim_win_set_buf(0, current_bufnr)
-        end
-    end
-
-    -- call original handler with empty response so buf.request_sync() doesn't time out
-    handler(nil, methods.lsp.FORMATTING, {}, s.get().client_id, bufnr)
-    u.debug_log("successfully applied edits")
-end)
-
 M.handler = function(method, original_params, handler, bufnr)
+    local a = require("plenary.async_lib")
+
+    local apply_edits = a.async_void(function(params)
+        local runner = generators.make_runner(u.make_params(params, methods.internal.FORMATTING), postprocess)
+        local edits = a.await(runner())
+        u.debug_log("received edits from generators")
+        u.debug_log(edits)
+
+        local winid = api.nvim_get_current_win()
+        local marks = save_win_data(bufnr, winid)
+
+        -- default handler doesn't accept bufnr, so call util directly
+        lsp.util.apply_text_edits(edits, bufnr)
+        restore_win_data(marks, bufnr, winid)
+
+        if c.get().save_after_format and not _G._TEST then
+            local current_bufnr = api.nvim_win_get_buf(0)
+            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
+
+            if current_bufnr ~= bufnr then
+                api.nvim_win_set_buf(0, current_bufnr)
+            end
+        end
+
+        -- call original handler with empty response so buf.request_sync() doesn't time out
+        handler(nil, methods.lsp.FORMATTING, {}, s.get().client_id, bufnr)
+        u.debug_log("successfully applied edits")
+    end)
+
     if method == methods.lsp.FORMATTING then
         u.debug_log("received LSP formatting request")
 
         original_params.bufnr = bufnr
-        apply_edits(original_params, handler)
+        apply_edits(original_params)
 
         original_params._null_ls_handled = true
     end

@@ -79,6 +79,37 @@ describe("state", function()
             end)
         end)
 
+        describe("get_rtp", function()
+            local original_rtp = vim.o.rtp
+            after_each(function()
+                vim.o.rtp = original_rtp
+            end)
+
+            it("should get rtp from vim.o.rtp when not set", function()
+                vim.o.rtp = "/my/plugin/path/other-plugin.nvim,/my/plugin/path/null-ls.nvim"
+
+                local rtp = s.get_rtp()
+
+                assert.equals(rtp, "/my/plugin/path/null-ls.nvim")
+            end)
+
+            it("should get rtp from state when already set", function()
+                s.set({ rtp = "/my/rtp/null-ls.nvim" })
+
+                local rtp = s.get_rtp()
+
+                assert.equals(rtp, "/my/rtp/null-ls.nvim")
+            end)
+
+            it("should throw error when null-ls rtp not fund", function()
+                vim.o.rtp = "/my/plugin/path/other-plugin.nvim"
+
+                assert.has_error(function()
+                    s.get_rtp()
+                end)
+            end)
+        end)
+
         describe("initialize", function()
             stub(loop, "timer")
 

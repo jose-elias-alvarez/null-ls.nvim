@@ -10,6 +10,7 @@ local initial_state = {
     client = nil,
     on_attach = nil,
     keep_alive_timer = nil,
+    rtp = nil,
     actions = {},
     attached = {},
     cache = {},
@@ -39,6 +40,19 @@ local notify_client = function(method, params)
     state.client.notify(method, params)
 end
 M.notify_client = notify_client
+
+M.get_rtp = function()
+    if not state.rtp then
+        for _, path in ipairs(vim.split(vim.o.rtp, ",")) do
+            if path:find("null-ls.nvim", 1, true) then
+                state.rtp = path
+                break
+            end
+        end
+        assert(state.rtp, "null-ls.nvim must be available on your rtp")
+    end
+    return state.rtp
+end
 
 M.initialize = function(client)
     state.client = client
