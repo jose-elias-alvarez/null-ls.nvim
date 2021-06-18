@@ -28,7 +28,7 @@ local start_client = function()
             "-u",
             "NONE",
             "-c",
-            "set rtp=" .. vim.o.rtp,
+            "set rtp+=" .. s.get_rtp(),
             "-c",
             "lua require'null-ls'.start_server()",
         },

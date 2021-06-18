@@ -18,6 +18,7 @@ describe("client", function()
     stub(lsp, "buf_attach_client")
     stub(handlers, "setup_client")
     stub(s, "attach")
+    stub(s, "get_rtp")
     stub(s, "initialize")
     stub(u, "filetype_matches")
 
@@ -25,6 +26,7 @@ describe("client", function()
 
     local mock_client_id = 1234
     local mock_uri = "file:///mock-file.lua"
+    local mock_rtp = "/my/rtp/null-ls.nvim"
     local mock_bufnr = 5
     before_each(function()
         vim.fn.buflisted.returns(1)
@@ -34,6 +36,7 @@ describe("client", function()
         vim.uri_from_bufnr.returns(mock_uri)
         vim.api.nvim_get_current_buf.returns(mock_bufnr)
 
+        s.get_rtp.returns(mock_rtp)
         u.filetype_matches.returns(true)
     end)
 
@@ -46,6 +49,7 @@ describe("client", function()
         lsp.buf_attach_client:clear()
         s.attach:clear()
         s.initialize:clear()
+        s.get_rtp:clear()
         u.filetype_matches:clear()
         handlers.setup_client:clear()
 
@@ -103,7 +107,7 @@ describe("client", function()
                 "-u",
                 "NONE",
                 "-c",
-                "set rtp=" .. vim.o.rtp,
+                "set rtp+=" .. mock_rtp,
                 "-c",
                 "lua require'null-ls'.start_server()",
             })

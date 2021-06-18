@@ -17,11 +17,14 @@ describe("diagnostics", function()
         stub(s, "detach")
         stub(s, "clear_cache")
         stub(u, "make_params")
-        stub(generators, "run")
+        stub(generators, "make_runner")
 
         local mock_bufnr, mock_client_id = 99, 999
         local mock_params
         before_each(function()
+            generators.make_runner.returns(function()
+            end)
+
             s.set({ client_id = mock_client_id })
             mock_params = { textDocument = { uri = "file:///mock-file" } }
         end)
@@ -32,7 +35,7 @@ describe("diagnostics", function()
             s.detach:clear()
             s.clear_cache:clear()
 
-            generators.run:clear()
+            generators.make_runner:clear()
             u.make_params:clear()
 
             s.reset()
@@ -83,7 +86,7 @@ describe("diagnostics", function()
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
-                postprocess = generators.run.calls[1].refs[2]
+                postprocess = generators.make_runner.calls[1].refs[2]
             end)
 
             it("should convert range when all positions are defined", function()

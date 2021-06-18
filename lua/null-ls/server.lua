@@ -1,3 +1,4 @@
+-- note: anything required here needs to be added to the server's rtp
 local loop = require("null-ls.loop")
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")

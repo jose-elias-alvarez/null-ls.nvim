@@ -28,11 +28,15 @@ describe("code_actions", function()
 
     describe("handler", function()
         local handler = stub.new()
-        stub(generators, "run")
+        stub(generators, "make_runner")
         stub(u, "make_params")
 
+        before_each(function()
+            generators.make_runner.returns(function()
+            end)
+        end)
         after_each(function()
-            generators.run:clear()
+            generators.make_runner:clear()
             u.make_params:clear()
             handler:clear()
         end)
@@ -90,7 +94,7 @@ describe("code_actions", function()
                         end,
                     }
                     code_actions.handler(method, {}, handler, 1)
-                    postprocess = generators.run.calls[1].refs[2]
+                    postprocess = generators.make_runner.calls[1].refs[2]
                 end)
 
                 it("should register action in state", function()
