@@ -19,7 +19,7 @@ M.lua_format = h.make_builtin({
 M.stylua = h.make_builtin({
     method = FORMATTING,
     filetypes = { "lua" },
-    generator_opts = { command = "stylua", args = { "-" }, to_stdin = true },
+    generator_opts = { command = "stylua", args = { "-s", "-" }, to_stdin = true },
     factory = h.formatter_factory,
 })
 
