@@ -1,6 +1,5 @@
 local mock = require("luassert.mock")
 local stub = require("luassert.stub")
-local a = require("plenary.async_lib")
 
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
@@ -13,29 +12,24 @@ describe("diagnostics", function()
     local diagnostics = require("null-ls.diagnostics")
 
     describe("handler", function()
-        stub(a, "await")
         stub(s, "detach")
         stub(s, "clear_cache")
         stub(u, "make_params")
-        stub(generators, "make_runner")
+        stub(generators, "run")
 
         local mock_bufnr, mock_client_id = 99, 999
         local mock_params
         before_each(function()
-            generators.make_runner.returns(function()
-            end)
-
             s.set({ client_id = mock_client_id })
             mock_params = { textDocument = { uri = "file:///mock-file" } }
         end)
 
         after_each(function()
             lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
-            a.await:clear()
             s.detach:clear()
             s.clear_cache:clear()
 
-            generators.make_runner:clear()
+            generators.run:clear()
             u.make_params:clear()
 
             s.reset()
@@ -70,9 +64,10 @@ describe("diagnostics", function()
 
         it("should send results of diagnostic generators to lsp handler", function()
             u.make_params.returns({ uri = mock_params.textDocument.uri })
-            a.await.returns("diagnostics")
 
             diagnostics.handler(mock_params)
+            local callback = generators.run.calls[1].refs[3]
+            callback("diagnostics")
 
             assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, nil, {
                 diagnostics = "diagnostics",
@@ -86,7 +81,7 @@ describe("diagnostics", function()
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
-                postprocess = generators.make_runner.calls[1].refs[2]
+                postprocess = generators.run.calls[1].refs[2]
             end)
 
             it("should convert range when all positions are defined", function()

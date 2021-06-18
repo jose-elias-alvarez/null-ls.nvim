@@ -3,8 +3,6 @@ local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
-local schedule = vim.schedule_wrap
-
 local M = {}
 
 local postprocess = function(action)
@@ -15,28 +13,17 @@ local postprocess = function(action)
 end
 
 M.handler = function(method, original_params, handler, bufnr)
-    local a = require("plenary.async_lib")
-
-    local inject_actions = a.async_void(function(params, callback)
-        s.clear_actions()
-
-        local runner = generators.make_runner(u.make_params(params, methods.internal.CODE_ACTION), postprocess)
-        local actions = a.await(runner())
-        callback(actions)
-    end)
-
     if method == methods.lsp.CODE_ACTION then
         if original_params._null_ls_ignore then
             return
         end
 
         original_params.bufnr = bufnr
-        inject_actions(
-            u.make_params(original_params, methods.internal.CODE_ACTION),
-            schedule(function(actions)
-                handler(nil, method, actions, s.get().client_id, bufnr)
-            end)
-        )
+
+        s.clear_actions()
+        generators.run(u.make_params(original_params, methods.internal.CODE_ACTION), postprocess, function(actions)
+            handler(nil, method, actions, s.get().client_id, bufnr)
+        end)
 
         original_params._null_ls_handled = true
     end

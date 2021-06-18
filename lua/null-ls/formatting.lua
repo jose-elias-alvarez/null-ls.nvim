@@ -53,11 +53,7 @@ local postprocess = function(edit)
 end
 
 M.handler = function(method, original_params, handler, bufnr)
-    local a = require("plenary.async_lib")
-
-    local apply_edits = a.async_void(function(params)
-        local runner = generators.make_runner(u.make_params(params, methods.internal.FORMATTING), postprocess)
-        local edits = a.await(runner())
+    local apply_edits = function(edits)
         u.debug_log("received edits from generators")
         u.debug_log(edits)
 
@@ -80,13 +76,13 @@ M.handler = function(method, original_params, handler, bufnr)
         -- call original handler with empty response so buf.request_sync() doesn't time out
         handler(nil, methods.lsp.FORMATTING, {}, s.get().client_id, bufnr)
         u.debug_log("successfully applied edits")
-    end)
+    end
 
     if method == methods.lsp.FORMATTING then
         u.debug_log("received LSP formatting request")
 
         original_params.bufnr = bufnr
-        apply_edits(original_params)
+        generators.run(u.make_params(original_params, methods.internal.FORMATTING), postprocess, apply_edits)
 
         original_params._null_ls_handled = true
     end

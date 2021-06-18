@@ -1,5 +1,4 @@
 local stub = require("luassert.stub")
-local a = require("plenary.async_lib")
 
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
@@ -8,7 +7,6 @@ local methods = require("null-ls.methods")
 local code_actions = require("null-ls.code-actions")
 
 describe("code_actions", function()
-    stub(a, "await")
     stub(s, "clear_actions")
     stub(s, "register_action")
     stub(s, "get")
@@ -19,7 +17,6 @@ describe("code_actions", function()
     end)
 
     after_each(function()
-        a.await:clear()
         s.clear_actions:clear()
         s.register_action:clear()
         s.get:clear()
@@ -28,15 +25,11 @@ describe("code_actions", function()
 
     describe("handler", function()
         local handler = stub.new()
-        stub(generators, "make_runner")
+        stub(generators, "run")
         stub(u, "make_params")
 
-        before_each(function()
-            generators.make_runner.returns(function()
-            end)
-        end)
         after_each(function()
-            generators.make_runner:clear()
+            generators.run:clear()
             u.make_params:clear()
             handler:clear()
         end)
@@ -67,9 +60,10 @@ describe("code_actions", function()
             end)
 
             it("should call handler with arguments", function()
-                a.await.returns("actions")
-
                 code_actions.handler(method, {}, handler, 1)
+
+                local callback = generators.run.calls[1].refs[3]
+                callback("actions")
 
                 -- wait for schedule_wrap
                 vim.wait(0)
@@ -94,7 +88,7 @@ describe("code_actions", function()
                         end,
                     }
                     code_actions.handler(method, {}, handler, 1)
-                    postprocess = generators.make_runner.calls[1].refs[2]
+                    postprocess = generators.run.calls[1].refs[2]
                 end)
 
                 it("should register action in state", function()

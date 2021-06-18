@@ -1,6 +1,5 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
-local a = require("plenary.async_lib")
 
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
@@ -13,10 +12,9 @@ local method = methods.lsp.FORMATTING
 describe("formatting", function()
     stub(vim.lsp.util, "apply_text_edits")
     stub(vim, "cmd")
-    stub(a, "await")
 
     stub(u, "make_params")
-    stub(generators, "make_runner")
+    stub(generators, "run")
     local handler = stub.new()
 
     local api
@@ -24,8 +22,6 @@ describe("formatting", function()
     local mock_params
     before_each(function()
         api = mock(vim.api, true)
-        generators.make_runner.returns(function()
-        end)
 
         c._set({ save_after_format = false })
         mock_params = { key = "val" }
@@ -35,10 +31,9 @@ describe("formatting", function()
         mock.revert(api)
         vim.lsp.util.apply_text_edits:clear()
         vim.cmd:clear()
-        a.await:clear()
 
         u.make_params:clear()
-        generators.make_runner:clear()
+        generators.run:clear()
         handler:clear()
 
         c.reset()
@@ -86,14 +81,17 @@ describe("formatting", function()
 
         it("should call handler with empty response", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+            local callback = generators.run.calls[1].refs[3]
+            callback("edits")
 
             assert.stub(handler).was_called_with(nil, methods.lsp.FORMATTING, {}, mock_client_id, mock_bufnr)
         end)
 
         it("should call apply_text_edits with edits", function()
-            a.await.returns("edits")
-
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+
+            local callback = generators.run.calls[1].refs[3]
+            callback("edits")
 
             assert.stub(vim.lsp.util.apply_text_edits).was_called_with("edits", mock_bufnr)
         end)
@@ -101,13 +99,18 @@ describe("formatting", function()
         it("should not save buffer if config option is not set", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
+            local callback = generators.run.calls[1].refs[3]
+            callback("edits")
+
             assert.stub(vim.cmd).was_not_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
 
         it("should save buffer if config option is set", function()
             c.setup({ save_after_format = true })
-
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+
+            local callback = generators.run.calls[1].refs[3]
+            callback("edits")
 
             assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
@@ -116,8 +119,10 @@ describe("formatting", function()
             local current_bufnr = mock_bufnr + 1
             vim.api.nvim_win_get_buf.returns(current_bufnr)
             c.setup({ save_after_format = true })
-
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+
+            local callback = generators.run.calls[1].refs[3]
+            callback("edits")
 
             assert.stub(vim.api.nvim_win_set_buf).was_called_with(0, current_bufnr)
         end)
@@ -127,7 +132,7 @@ describe("formatting", function()
             local postprocess
             before_each(function()
                 formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-                postprocess = generators.make_runner.calls[1].refs[2]
+                postprocess = generators.run.calls[1].refs[2]
             end)
 
             it("should convert range", function()
