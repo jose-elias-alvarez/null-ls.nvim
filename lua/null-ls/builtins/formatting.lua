@@ -23,6 +23,37 @@ M.stylua = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.black = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "black",
+        args = {
+            "--quiet",
+            "--fast",
+            "-",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.isort = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "isort",
+        args = {
+            "--stdout",
+            "--profile",
+            "black",
+            "-",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.prettier = h.make_builtin({
     method = FORMATTING,
     filetypes = {
