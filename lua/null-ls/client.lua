@@ -53,7 +53,7 @@ local try_attach = schedule(function()
 
     -- the event that triggers this function must fire after the buffer's filetype has been set
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
-    if ft == "" or not u.filetype_matches(c.get().filetypes, ft) then
+    if ft == "" or not u.filetype_matches(c.get()._filetypes, ft) then
         return
     end
 
