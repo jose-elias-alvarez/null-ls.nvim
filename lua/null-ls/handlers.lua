@@ -42,7 +42,12 @@ local handle_all_factory = function(handler, method, bufnr)
     local completed = 0
 
     local all_results = {}
-    return function(_, _, results, client_id)
+    return function(err, _, results, client_id)
+        if err then
+            handler(err, method, bufnr)
+            return
+        end
+
         vim.list_extend(all_results, results or {})
         completed = completed + 1
 
