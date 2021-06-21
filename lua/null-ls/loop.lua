@@ -108,7 +108,7 @@ M.spawn = function(cmd, args, opts)
         close_handle(handle)
     end)
 
-    handle = uv.spawn(cmd, { args = parse_args(args, bufnr), stdio = stdio }, close)
+    handle = uv.spawn(cmd, { args = parse_args(args, bufnr), stdio = stdio, cwd = vim.fn.getcwd() }, close)
     if timeout then
         timer = M.timer(timeout, nil, true, function()
             close(TIMEOUT_EXIT_CODE)
