@@ -153,4 +153,38 @@ M.teal = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.shellcheck = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "sh" },
+    generator_opts = {
+        command = "shellcheck",
+        args = { "--format", "json", "-" },
+        to_stdin = true,
+        format = "json",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = function(params)
+            local diagnostics = {}
+            for _, diagnostic in ipairs(params.output) do
+                table.insert(diagnostics, {
+                    row = diagnostic.line,
+                    col = diagnostic.column - 1,
+                    end_row = diagnostic.endLine,
+                    end_col = diagnostic.endColumn == diagnostic.column and diagnostic.endColumn
+                        or diagnostic.endColumn - 1,
+                    message = diagnostic.message,
+                    source = "shellcheck",
+                    severity = diagnostic.level == "error" and 1
+                        or diagnostic.level == "warning" and 2
+                        or diagnostic.level == "info" and 3
+                        or diagnostic.level == "style" and 4,
+                })
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M

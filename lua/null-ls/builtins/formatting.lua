@@ -138,4 +138,16 @@ M.trim_whitespace = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.shfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "sh",
+    },
+    generator_opts = {
+        command = "shfmt",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 return M
