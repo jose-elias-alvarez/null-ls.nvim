@@ -33,6 +33,14 @@ M.disable = function()
     M.shutdown()
 end
 
+M.setup_lspconfig = function(user_config)
+    if vim.g.null_ls_disable then
+        return
+    end
+    config.setup(user_config or {})
+    require("null-ls.lspconfig").setup()
+end
+
 M.setup = function(user_config)
     if vim.g.null_ls_disable then
         return
