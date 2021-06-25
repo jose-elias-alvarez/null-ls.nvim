@@ -106,6 +106,7 @@ M.setup_client = function(client)
         end
 
         params.method = method
+        params.client_id = client.id
         diagnostics.handler(params)
 
         -- no need to actually send notifications to server,
@@ -118,6 +119,7 @@ M.setup_client = function(client)
         handler = handler or lsp.handlers[method]
         params = params or {}
 
+        params.client_id = client.id
         params.method = method
         code_actions.handler(method, params, handler, bufnr)
         formatting.handler(method, params, handler, bufnr)

@@ -55,6 +55,7 @@ M.make_params = function(original_params, method)
     local content = get_content_from_params(original_params)
 
     return {
+        client_id = original_params.client_id,
         content = content,
         lsp_method = lsp_method,
         method = method,
