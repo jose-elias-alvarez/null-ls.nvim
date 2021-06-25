@@ -187,4 +187,46 @@ M.shellcheck = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.selene = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "selene",
+        args = { "--display-style", "json", "-" },
+        to_stdin = true,
+        format = "line",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = function(line, params)
+            local function get_pos(byte)
+                return unpack(vim.api.nvim_buf_call(params.bufnr, function()
+                    local lnum = vim.fn.byte2line(byte)
+                    local lbyte = vim.fn.line2byte(lnum)
+                    return { lnum, byte - lbyte + 1 }
+                end))
+            end
+            local ok, diagnostic = pcall(vim.fn.json_decode, line)
+            if not ok then
+                return
+            end
+            local span = diagnostic.primary_label.span
+            local row, col = get_pos(span.start)
+            local end_row, end_col = get_pos(span["end"])
+            local ret = {
+                row = row,
+                col = col,
+                end_row = end_row,
+                end_col = end_col,
+                message = diagnostic.message,
+                code = diagnostic.code,
+                source = "selene",
+                severity = (diagnostic.severity == "Error" and 1) or (diagnostic.severity == "Warning" and 2) or 4,
+            }
+            return ret
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
