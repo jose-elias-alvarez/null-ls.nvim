@@ -33,7 +33,7 @@ M.disable = function()
     M.shutdown()
 end
 
-M.setup_lspconfig = function(user_config)
+M.config = function(user_config)
     if vim.g.null_ls_disable then
         return
     end
