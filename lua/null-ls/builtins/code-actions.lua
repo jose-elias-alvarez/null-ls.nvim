@@ -15,8 +15,13 @@ M.gitsigns = h.make_builtin({
                 return u.string.to_start_case(string.gsub(name, "_", " "))
             end
 
+            local ok, gitsigns_actions = pcall(require("gitsigns").get_actions)
+            if not ok then
+                return
+            end
+
             local actions = {}
-            for name, action in pairs(require("gitsigns").get_actions()) do
+            for name, action in pairs(gitsigns_actions) do
                 table.insert(actions, { title = name_to_title(name), action = action })
             end
             return actions
