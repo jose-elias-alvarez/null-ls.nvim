@@ -64,7 +64,8 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache = opts.command,
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache =
+        opts.command,
         opts.args,
         opts.on_output,
         opts.format,

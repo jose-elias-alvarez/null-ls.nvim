@@ -173,7 +173,7 @@ local file_size_comment = {
     method = null_ls.methods.CODE_ACTION,
     filetypes = {"*"},
     generator = {
-        -- must be explictly defined
+        -- must be explicitly defined
         async = true,
         fn = function(params, done)
             local bufnr = params.bufnr

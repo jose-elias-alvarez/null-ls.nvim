@@ -187,4 +187,54 @@ M.shellcheck = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.eslint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    generator_opts = {
+        command = "eslint",
+        args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
+        to_stdin = true,
+        format = "json_raw",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        use_cache = true,
+        on_output = function(params)
+            local get_message_range = function(problem)
+                local row = problem.line and problem.line > 0 and problem.line - 1 or 0
+                local col = problem.column and problem.column > 0 and problem.column - 1 or 0
+                local end_row = problem.endLine and problem.endLine - 1 or 0
+                local end_col = problem.endColumn and problem.endColumn - 1 or 0
+                return { row = row, col = col, end_row = end_row, end_col = end_col }
+            end
+
+            local create_diagnostic = function(message)
+                local range = get_message_range(message)
+                return {
+                    message = message.message,
+                    code = message.ruleId,
+                    row = range.row + 1,
+                    col = range.col,
+                    end_row = range.end_row + 1,
+                    end_col = range.end_col,
+                    severity = message.severity == 1 and 2 or 1,
+                    source = "eslint",
+                }
+            end
+
+            local diagnostics = {}
+            params.messages = params.output and params.output[1] and params.output[1].messages or {}
+            if params.err then
+                table.insert(params.messages, { message = params.err })
+            end
+
+            for _, message in ipairs(params.output[1].messages) do
+                table.insert(diagnostics, create_diagnostic(message))
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
