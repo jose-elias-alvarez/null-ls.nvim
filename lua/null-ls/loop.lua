@@ -163,9 +163,9 @@ M.timer = function(timeout, interval, should_start, callback)
 end
 
 M.temp_file = function(content)
-    local fd, tmp_path = uv.fs_mkstemp("/tmp/null-ls-XXXXXX")
-
-    uv.fs_write(fd, content)
+    local tmp_path = os.tmpname()
+    local fd = uv.fs_open(tmp_path, 'w', 0)
+    uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 
     return tmp_path, function()
