@@ -52,6 +52,7 @@ M.make_params = function(original_params, method)
     local bufnr = original_params.bufnr
     local lsp_method = original_params.method
     local pos = api.nvim_win_get_cursor(0)
+    local range = original_params.range
     local content = get_content_from_params(original_params)
 
     return {
@@ -60,6 +61,7 @@ M.make_params = function(original_params, method)
         method = method,
         row = pos[1],
         col = pos[2],
+        range = range,
         bufnr = bufnr,
         bufname = api.nvim_buf_get_name(bufnr),
         ft = api.nvim_buf_get_option(bufnr, "filetype"),
