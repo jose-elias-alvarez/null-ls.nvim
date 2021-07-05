@@ -20,9 +20,16 @@ M.gitsigns = h.make_builtin({
                 return
             end
 
+            local cbuf = vim.api.nvim_get_current_buf()
+
             local actions = {}
             for name, action in pairs(gitsigns_actions) do
-                table.insert(actions, { title = name_to_title(name), action = action })
+                table.insert(actions, {
+                    title = name_to_title(name),
+                    action = function()
+                        vim.api.nvim_buf_call(cbuf, action)
+                    end
+                })
             end
             return actions
         end,
