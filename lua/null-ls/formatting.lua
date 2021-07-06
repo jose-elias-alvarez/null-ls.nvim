@@ -39,16 +39,7 @@ local restore_win_data = function(marks, bufnr, winid)
 end
 
 local postprocess = function(edit)
-    edit.range = {
-        start = {
-            line = u.string.to_number_safe(edit.row, 0),
-            character = u.string.to_number_safe(edit.col, 0),
-        },
-        ["end"] = {
-            line = u.string.to_number_safe(edit.end_row, edit.row),
-            character = u.string.to_number_safe(edit.end_col, -1),
-        },
-    }
+    edit.range = u.range.to_lsp(edit)
     edit.newText = edit.text
 end
 

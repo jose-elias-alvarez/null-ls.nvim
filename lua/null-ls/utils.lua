@@ -48,41 +48,61 @@ M.filetype_matches = function(filetypes, ft)
     return vim.tbl_contains(filetypes, "*") or vim.tbl_contains(filetypes, ft)
 end
 
--- transform lsp_range to a lua-friendly shape.
----@param lsp_range table<"'start'"|"'end'", table<"'line'"|"'character'", number>> | nil
----@return table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number> | nil
-M.transform_lsp_range = function(lsp_range)
-  if not lsp_range then
-    return lsp_range
-  end
-
-  local range = {
-    row = lsp_range["start"]["line"] + 1,
-    col = lsp_range["start"]["character"] + 1,
-    end_row = lsp_range["end"]["line"] + 1,
-    end_col = lsp_range["end"]["character"] + 1,
-  }
-  return range
-end
+-- lsp-compatible range is 0-indexed.
+-- lua-friendly range is 1-indexed.
+M.range = {
+    -- transform lua-friendly range to a lsp-compatible shape.
+    ---@param range table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
+    ---@return table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
+    to_lsp = function(range)
+        local lsp_range = {
+            ["start"] = {
+                line = range.row - 1,
+                character = range.col - 1,
+            },
+            ["end"] = {
+                line = range.end_row - 1,
+                character = range.end_col - 1,
+            }
+        }
+        return lsp_range
+    end,
+    -- transform lsp_range to a lua-friendly shape.
+    ---@param lsp_range table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
+    ---@return table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
+    from_lsp = function(lsp_range)
+        local range = {
+            row = lsp_range["start"].line + 1,
+            col = lsp_range["start"].character + 1,
+            end_row = lsp_range["end"].line + 1,
+            end_col = lsp_range["end"].character + 1,
+        }
+        return range
+    end,
+}
 
 M.make_params = function(original_params, method)
     local bufnr = original_params.bufnr
     local lsp_method = original_params.method
     local pos = api.nvim_win_get_cursor(0)
-    local range = M.transform_lsp_range(original_params.range)
     local content = get_content_from_params(original_params)
 
-    return {
+    local params = {
         content = content,
         lsp_method = lsp_method,
         method = method,
         row = pos[1],
         col = pos[2],
-        range = range,
         bufnr = bufnr,
         bufname = api.nvim_buf_get_name(bufnr),
         ft = api.nvim_buf_get_option(bufnr, "filetype"),
     }
+
+    if original_params.range then
+        params.range = M.range.from_lsp(original_params.range)
+    end
+
+    return params
 end
 
 M.buf = {

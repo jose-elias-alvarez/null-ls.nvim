@@ -201,10 +201,13 @@ M.formatter_factory = function(opts)
 
         return done({
             {
-                row = 0,
-                col = 0,
-                end_row = vim.tbl_count(params.content),
-                end_col = -1,
+                row = 1,
+                col = 1,
+                -- source: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#range
+                -- "... the end position is exclusive. If you want to specify a range that contains a line including the
+                --  line ending character(s) then use an end position denoting the start of the next line."
+                end_row = vim.tbl_count(params.content) + 1,
+                end_col = 1,
                 text = output,
             },
         })
