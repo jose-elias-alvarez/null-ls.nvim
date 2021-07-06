@@ -138,6 +138,24 @@ local sources = { null_ls.builtins.formatting.trim_whitespace.with({ filetypes =
 
 ### Diagnostics
 
+#### [ESLint](https://github.com/eslint/eslint)
+
+A linter for the JavaScript ecosystem. Note that the null-ls builtin requires
+your ESLint executable to be available on your `$PATH`. To use local (project)
+executables, use the integration in
+[nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+
+```lua
+local sources = {null_ls.builtins.diagnostics.eslint}
+
+-- if you want to use eslint_d
+local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"})}
+```
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Command: `eslint`
+- Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 #### [write-good](https://github.com/btford/write-good)
 
 English prose linter.
