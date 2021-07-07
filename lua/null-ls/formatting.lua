@@ -83,7 +83,7 @@ M.handler = function(method, original_params, handler, bufnr)
         u.debug_log("received LSP rangeFormatting request")
 
         original_params.bufnr = bufnr
-        generators.run(u.make_params(original_params, methods.internal.RANGE_FORMATTING), postprocess, apply_edits)
+        generators.run(u.make_params(original_params, methods.internal.RANGE_FORMATTING), nil, apply_edits)
 
         original_params._null_ls_handled = true
     end

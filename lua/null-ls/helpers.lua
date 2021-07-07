@@ -84,9 +84,9 @@ M.generator_factory = function(opts)
             args = {
                 args,
                 function(v)
-                  return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
+                    return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
                 end,
-                "type function or table"
+                "type function or table",
             },
             on_output = { on_output, "function" },
             format = {
@@ -164,7 +164,7 @@ M.generator_factory = function(opts)
             end
 
             local spawn_args = args or {}
-            spawn_args = type(spawn_args) == 'function' and spawn_args(params) or spawn_args
+            spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             local spawn_opts = {
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,

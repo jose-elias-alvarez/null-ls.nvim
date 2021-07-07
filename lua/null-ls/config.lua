@@ -74,7 +74,7 @@ local register_source = function(source, filetypes)
         return
     end
 
-    local methods = type(method) == 'table' and method or { method }
+    local methods = type(method) == "table" and method or { method }
 
     for _, method in pairs(methods) do
         validate({

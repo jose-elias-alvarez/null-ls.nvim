@@ -8,9 +8,11 @@ describe("config", function()
     local mock_source = {
         method = "mockMethod",
         filetypes = { "txt", "markdown" },
-        generator = { fn = function()
-            print("I am a generator")
-        end },
+        generator = {
+            fn = function()
+                print("I am a generator")
+            end,
+        },
     }
 
     after_each(function()

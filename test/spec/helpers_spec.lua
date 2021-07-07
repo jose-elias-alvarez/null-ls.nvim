@@ -446,9 +446,11 @@ describe("helpers", function()
                 nested = { nested_key = "nested_val", other_nested = "original_val" },
             },
         }
-        local mock_generator = { fn = function()
-            print("I am a generator")
-        end }
+        local mock_generator = {
+            fn = function()
+                print("I am a generator")
+            end,
+        }
 
         local builtin
         before_each(function()

@@ -63,7 +63,7 @@ M.range = {
             ["end"] = {
                 line = range.end_row - 1,
                 character = range.end_col - 1,
-            }
+            },
         }
         return lsp_range
     end,
