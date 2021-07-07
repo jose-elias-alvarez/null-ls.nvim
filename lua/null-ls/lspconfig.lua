@@ -1,6 +1,5 @@
 local client = require("null-ls.client")
 local config = require("null-ls.config")
-local state = require("null-ls.state")
 
 local M = {}
 
