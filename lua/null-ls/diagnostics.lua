@@ -39,7 +39,7 @@ M.handler = function(original_params)
         vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
             diagnostics = diagnostics,
             uri = uri,
-        }, s.get().client_id, nil, {})
+        }, original_params.client_id, nil, {})
     end)
 end
 

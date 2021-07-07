@@ -22,7 +22,7 @@ M.handler = function(method, original_params, handler, bufnr)
 
         s.clear_actions()
         generators.run(u.make_params(original_params, methods.internal.CODE_ACTION), postprocess, function(actions)
-            handler(nil, method, actions, s.get().client_id, bufnr)
+            handler(nil, method, actions, original_params.client_id, bufnr)
         end)
 
         original_params._null_ls_handled = true
