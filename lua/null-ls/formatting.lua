@@ -38,30 +38,22 @@ local restore_win_data = function(marks, bufnr, winid)
     api.nvim_set_current_win(winid)
 end
 
-local postprocess = function(edit)
-    edit.range = {
-        start = {
-            line = u.string.to_number_safe(edit.row, 0),
-            character = u.string.to_number_safe(edit.col, 0),
-        },
-        ["end"] = {
-            line = u.string.to_number_safe(edit.end_row, edit.row),
-            character = u.string.to_number_safe(edit.end_col, -1),
-        },
-    }
-    edit.newText = edit.text
-end
-
 M.handler = function(method, original_params, handler, bufnr)
-    local apply_edits = function(edits)
+    local apply_edits = function(edits, params)
         u.debug_log("received edits from generators")
         u.debug_log(edits)
+
+        local diffed_edits = {}
+        for _, edit in ipairs(edits) do
+            local diffed = lsp.util.compute_diff(params.content, vim.split(edit.text, "\n"))
+            table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
+        end
 
         local winid = api.nvim_get_current_win()
         local marks = save_win_data(bufnr, winid)
 
         -- default handler doesn't accept bufnr, so call util directly
-        lsp.util.apply_text_edits(edits, bufnr)
+        lsp.util.apply_text_edits(diffed_edits, bufnr)
         restore_win_data(marks, bufnr, winid)
 
         if c.get().save_after_format and not _G._TEST then
@@ -82,7 +74,7 @@ M.handler = function(method, original_params, handler, bufnr)
         u.debug_log("received LSP formatting request")
 
         original_params.bufnr = bufnr
-        generators.run(u.make_params(original_params, methods.internal.FORMATTING), postprocess, apply_edits)
+        generators.run(u.make_params(original_params, methods.internal.FORMATTING), nil, apply_edits)
 
         original_params._null_ls_handled = true
     end

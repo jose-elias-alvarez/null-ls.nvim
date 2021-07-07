@@ -9,12 +9,13 @@ local generators = require("null-ls.generators")
 
 local method = methods.lsp.FORMATTING
 
-describe("formatting", function()
-    stub(vim.lsp.util, "apply_text_edits")
-    stub(vim, "cmd")
+local lsp = mock(vim.lsp, true)
 
+describe("formatting", function()
+    stub(vim, "cmd")
     stub(u, "make_params")
     stub(generators, "run")
+
     local handler = stub.new()
 
     local api
@@ -29,7 +30,8 @@ describe("formatting", function()
 
     after_each(function()
         mock.revert(api)
-        vim.lsp.util.apply_text_edits:clear()
+        lsp.util.apply_text_edits:clear()
+        lsp.util.compute_diff:clear()
         vim.cmd:clear()
 
         u.make_params:clear()
@@ -65,8 +67,14 @@ describe("formatting", function()
         stub(s, "get")
 
         local mock_client_id = 99
+        local mock_edits = { { text = "new text" } }
+        local mock_diffed = { text = "diffed text", range = {
+            start = { line = 0, character = 10 },
+            ["end"] = { line = 35, character = 1 },
+        } }
         before_each(function()
             s.get.returns({ client_id = mock_client_id })
+            lsp.util.compute_diff.returns(mock_diffed)
         end)
         after_each(function()
             s.get:clear()
@@ -81,26 +89,30 @@ describe("formatting", function()
 
         it("should call handler with empty response", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+
             local callback = generators.run.calls[1].refs[3]
-            callback("edits")
+            callback(mock_edits, mock_params)
 
             assert.stub(handler).was_called_with(nil, methods.lsp.FORMATTING, {}, mock_client_id, mock_bufnr)
         end)
 
-        it("should call apply_text_edits with edits", function()
+        it("should call apply_text_edits with diffed edits", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             local callback = generators.run.calls[1].refs[3]
-            callback("edits")
+            callback(mock_edits, mock_params)
 
-            assert.stub(vim.lsp.util.apply_text_edits).was_called_with("edits", mock_bufnr)
+            assert.stub(vim.lsp.util.apply_text_edits).was_called_with(
+                { { newText = mock_diffed.text, range = mock_diffed.range } },
+                mock_bufnr
+            )
         end)
 
         it("should not save buffer if config option is not set", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             local callback = generators.run.calls[1].refs[3]
-            callback("edits")
+            callback(mock_edits, mock_params)
 
             assert.stub(vim.cmd).was_not_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
@@ -110,7 +122,7 @@ describe("formatting", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             local callback = generators.run.calls[1].refs[3]
-            callback("edits")
+            callback(mock_edits, mock_params)
 
             assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
@@ -122,31 +134,9 @@ describe("formatting", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
 
             local callback = generators.run.calls[1].refs[3]
-            callback("edits")
+            callback(mock_edits, mock_params)
 
             assert.stub(vim.api.nvim_win_set_buf).was_called_with(0, current_bufnr)
-        end)
-
-        describe("postprocess", function()
-            local edit = { row = 1, col = 5, text = "something bad" }
-            local postprocess
-            before_each(function()
-                formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-                postprocess = generators.run.calls[1].refs[2]
-            end)
-
-            it("should convert range", function()
-                postprocess(edit)
-
-                assert.same(edit.range.start, { character = 5, line = 1 })
-                assert.same(edit.range["end"], { character = -1, line = 1 })
-            end)
-
-            it("should assign edit newText", function()
-                postprocess(edit)
-
-                assert.equals(edit.newText, edit.text)
-            end)
         end)
     end)
 end)
