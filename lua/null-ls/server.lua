@@ -9,6 +9,7 @@ local capabilities = {
     codeActionProvider = true,
     executeCommandProvider = true,
     documentFormattingProvider = true,
+    documentRangeFormattingProvider = true,
     textDocumentSync = {
         change = 1, -- prompt LSP client to send full document text on didOpen and didChange
         openClose = true,

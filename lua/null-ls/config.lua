@@ -74,23 +74,27 @@ local register_source = function(source, filetypes)
         return
     end
 
-    validate({
-        method = { method, "string" },
-        generator = { generator, "table" },
-        filetypes = { filetypes, "table" },
-        name = { name, "string", true },
-    })
+    local methods = type(method) == 'table' and method or { method }
 
-    local fn, async = generator.fn, generator.async
-    validate({ fn = { fn, "function" }, async = { async, "boolean", true } })
+    for _, method in pairs(methods) do
+        validate({
+            method = { method, "string" },
+            generator = { generator, "table" },
+            filetypes = { filetypes, "table" },
+            name = { name, "string", true },
+        })
 
-    if not config._generators[method] then
-        config._generators[method] = {}
+        local fn, async = generator.fn, generator.async
+        validate({ fn = { fn, "function" }, async = { async, "boolean", true } })
+
+        if not config._generators[method] then
+            config._generators[method] = {}
+        end
+        register_filetypes(filetypes)
+
+        generator.filetypes = filetypes
+        table.insert(config._generators[method], generator)
     end
-    register_filetypes(filetypes)
-
-    generator.filetypes = filetypes
-    table.insert(config._generators[method], generator)
 
     -- plugins that register sources after BufEnter may need to call try_attach() again,
     -- after filetypes have been registered

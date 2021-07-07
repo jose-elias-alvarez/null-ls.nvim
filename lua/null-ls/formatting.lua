@@ -39,16 +39,7 @@ local restore_win_data = function(marks, bufnr, winid)
 end
 
 local postprocess = function(edit)
-    edit.range = {
-        start = {
-            line = u.string.to_number_safe(edit.row, 0),
-            character = u.string.to_number_safe(edit.col, 0),
-        },
-        ["end"] = {
-            line = u.string.to_number_safe(edit.end_row, edit.row),
-            character = u.string.to_number_safe(edit.end_col, -1),
-        },
-    }
+    edit.range = u.range.to_lsp(edit)
     edit.newText = edit.text
 end
 
@@ -74,7 +65,7 @@ M.handler = function(method, original_params, handler, bufnr)
         end
 
         -- call original handler with empty response so buf.request_sync() doesn't time out
-        handler(nil, methods.lsp.FORMATTING, {}, original_params.client_id, bufnr)
+        handler(nil, method, {}, original_params.client_id, bufnr)
         u.debug_log("successfully applied edits")
     end
 
@@ -83,6 +74,15 @@ M.handler = function(method, original_params, handler, bufnr)
 
         original_params.bufnr = bufnr
         generators.run(u.make_params(original_params, methods.internal.FORMATTING), postprocess, apply_edits)
+
+        original_params._null_ls_handled = true
+    end
+
+    if method == methods.lsp.RANGE_FORMATTING then
+        u.debug_log("received LSP rangeFormatting request")
+
+        original_params.bufnr = bufnr
+        generators.run(u.make_params(original_params, methods.internal.RANGE_FORMATTING), postprocess, apply_edits)
 
         original_params._null_ls_handled = true
     end

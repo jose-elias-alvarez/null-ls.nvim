@@ -2,6 +2,7 @@ local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
 local FORMATTING = methods.internal.FORMATTING
+local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 local M = {}
 
@@ -54,8 +55,35 @@ M.isort = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+local get_prettier_generator_args = function(common_args)
+    return function(params)
+        local args = vim.deepcopy(common_args)
+
+        if params.method == FORMATTING then
+            return args
+        end
+
+        local content, range = params.content, params.range
+
+        local row, col = range.row, range.col
+        local range_start = row == 1 and 0 or vim.fn.strchars(table.concat({ unpack(content, 1, row - 1) }, "\n") .. "\n", true)
+        range_start = range_start + vim.fn.strchars(vim.fn.strcharpart(unpack(content, row, row), 0, col), true)
+
+        local end_row, end_col = range.end_row, range.end_col
+        local range_end = end_row == 1 and 0 or vim.fn.strchars(table.concat({ unpack(content, 1, end_row - 1) }, "\n") .. "\n", true)
+        range_end = range_end + vim.fn.strchars(vim.fn.strcharpart(unpack(content, end_row, end_row), 0, end_col), true)
+
+        table.insert(args, "--range-start")
+        table.insert(args, range_start)
+        table.insert(args, "--range-end")
+        table.insert(args, range_end)
+
+        return args
+    end
+end
+
 M.prettier = h.make_builtin({
-    method = FORMATTING,
+    method = { FORMATTING, RANGE_FORMATTING },
     filetypes = {
         "javascript",
         "javascriptreact",
@@ -69,7 +97,7 @@ M.prettier = h.make_builtin({
     },
     generator_opts = {
         command = "prettier",
-        args = { "--stdin-filepath", "$FILENAME" },
+        args = get_prettier_generator_args({ "--stdin-filepath", "$FILENAME" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -90,14 +118,14 @@ M.prettierd = h.make_builtin({
     },
     generator_opts = {
         command = "prettierd",
-        args = { "$FILENAME" },
+        args = get_prettier_generator_args({ "$FILENAME" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
 })
 
 M.prettier_d_slim = h.make_builtin({
-    method = FORMATTING,
+    method = { FORMATTING, RANGE_FORMATTING },
     filetypes = {
         "javascript",
         "javascriptreact",
@@ -106,7 +134,7 @@ M.prettier_d_slim = h.make_builtin({
     },
     generator_opts = {
         command = "prettier_d_slim",
-        args = { "--stdin", "--stdin-filepath", "$FILENAME" },
+        args = get_prettier_generator_args({ "--stdin", "--stdin-filepath", "$FILENAME" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
