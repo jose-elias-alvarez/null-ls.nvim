@@ -164,7 +164,7 @@ end
 
 M.temp_file = function(content)
     local tmp_path = os.tmpname()
-    local fd = uv.fs_open(tmp_path, 'w', 0)
+    local fd = uv.fs_open(tmp_path, "w", 0)
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 

@@ -527,28 +527,31 @@ describe("loop", function()
 
     describe("temp_file", function()
         local mock_content = "write me to a temp file"
-
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
+
         before_each(function()
-            uv.fs_mkstemp.returns(mock_fd, mock_path)
+            stub(os, "tmpname")
+            os.tmpname.returns(mock_path)
+            uv.fs_open.returns(mock_fd)
         end)
         after_each(function()
-            uv.fs_mkstemp:clear()
+            os.tmpname:revert()
             uv.fs_write:clear()
             uv.fs_close:clear()
             uv.fs_unlink:clear()
         end)
 
-        it("should call fs_mkstemp with pattern", function()
+        it("should call uv.fs_open with args", function()
             loop.temp_file(mock_content)
 
-            assert.stub(uv.fs_mkstemp).was_called_with("/tmp/null-ls-XXXXXX")
+            assert.stub(os.tmpname).was_called()
+            assert.stub(uv.fs_open).was_called_with(mock_path, "w", 0)
         end)
 
         it("should call fs_write and fs_close with fd and content", function()
             loop.temp_file(mock_content)
 
-            assert.stub(uv.fs_write).was_called_with(mock_fd, mock_content)
+            assert.stub(uv.fs_write).was_called_with(mock_fd, mock_content, -1)
             assert.stub(uv.fs_close).was_called_with(mock_fd)
         end)
 
