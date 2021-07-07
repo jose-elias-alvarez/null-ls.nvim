@@ -66,7 +66,7 @@ M.handler = function(method, original_params, handler, bufnr)
         end
 
         -- call original handler with empty response so buf.request_sync() doesn't time out
-        handler(nil, methods.lsp.FORMATTING, {}, s.get().client_id, bufnr)
+        handler(nil, method, {}, s.get().client_id, bufnr)
         u.debug_log("successfully applied edits")
     end
 
@@ -75,6 +75,15 @@ M.handler = function(method, original_params, handler, bufnr)
 
         original_params.bufnr = bufnr
         generators.run(u.make_params(original_params, methods.internal.FORMATTING), nil, apply_edits)
+
+        original_params._null_ls_handled = true
+    end
+
+    if method == methods.lsp.RANGE_FORMATTING then
+        u.debug_log("received LSP rangeFormatting request")
+
+        original_params.bufnr = bufnr
+        generators.run(u.make_params(original_params, methods.internal.RANGE_FORMATTING), postprocess, apply_edits)
 
         original_params._null_ls_handled = true
     end
