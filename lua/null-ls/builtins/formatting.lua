@@ -63,28 +63,15 @@ local get_prettier_generator_args = function(common_args)
             return args
         end
 
-        local range = params.range
-        local start_row, start_col = range.row, range.col
+        local content, range = params.content, params.range
+
+        local row, col = range.row, range.col
+        local range_start = row == 1 and 0 or vim.fn.strchars(table.concat({ unpack(content, 1, row - 1) }, "\n") .. "\n", true)
+        range_start = range_start + vim.fn.strchars(vim.fn.strcharpart(unpack(content, row, row), 0, col), true)
+
         local end_row, end_col = range.end_row, range.end_col
-
-        local range_start = 0
-        local range_end = 0
-
-        for i, line in pairs(params.content) do
-            if i <= end_row then
-                if i == start_row then
-                    range_start = range_start + string.len(string.sub(line, 1, start_col))
-                    if i == end_row then
-                        range_end = range_end + string.len(string.sub(line, 1, end_col))
-                    end
-                elseif i == end_row then
-                    range_end = range_end + string.len(line, 1, end_col)
-                else
-                    range_start = range_start + string.len(line)
-                    range_end = range_end + string.len(line)
-                end
-            end
-        end
+        local range_end = end_row == 1 and 0 or vim.fn.strchars(table.concat({ unpack(content, 1, end_row - 1) }, "\n") .. "\n", true)
+        range_end = range_end + vim.fn.strchars(vim.fn.strcharpart(unpack(content, end_row, end_row), 0, end_col), true)
 
         table.insert(args, "--range-start")
         table.insert(args, range_start)
