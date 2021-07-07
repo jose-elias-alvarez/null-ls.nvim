@@ -424,10 +424,10 @@ describe("helpers", function()
 
                 assert.stub(formatter_done).was_called_with({
                     {
-                        row = 0,
-                        col = 0,
-                        end_row = 2,
-                        end_col = -1,
+                        row = 1,
+                        col = 1,
+                        end_row = 3,
+                        end_col = 1,
                         text = "new text",
                     },
                 })

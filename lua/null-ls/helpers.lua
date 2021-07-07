@@ -81,7 +81,13 @@ M.generator_factory = function(opts)
     local validate_opts = function()
         validate({
             command = { command, "string" },
-            args = { args, "table", true },
+            args = {
+                args,
+                function(v)
+                  return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
+                end,
+                "type function or table"
+            },
             on_output = { on_output, "function" },
             format = {
                 format,
@@ -158,6 +164,7 @@ M.generator_factory = function(opts)
             end
 
             local spawn_args = args or {}
+            spawn_args = type(spawn_args) == 'function' and spawn_args(params) or spawn_args
             local spawn_opts = {
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
@@ -169,7 +176,7 @@ M.generator_factory = function(opts)
             if to_temp_file then
                 local temp_path, cleanup = loop.temp_file(get_content(params))
 
-                spawn_args = u.table.replace(args, "$FILENAME", temp_path)
+                spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = cleanup
             end
 
@@ -194,10 +201,13 @@ M.formatter_factory = function(opts)
 
         return done({
             {
-                row = 0,
-                col = 0,
-                end_row = vim.tbl_count(params.content),
-                end_col = -1,
+                row = 1,
+                col = 1,
+                -- source: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#range
+                -- "... the end position is exclusive. If you want to specify a range that contains a line including the
+                --  line ending character(s) then use an end position denoting the start of the next line."
+                end_row = vim.tbl_count(params.content) + 1,
+                end_col = 1,
                 text = output,
             },
         })

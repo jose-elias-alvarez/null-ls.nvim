@@ -81,6 +81,9 @@ local sources = {null_ls.builtins.formatting.lua_format}
 
 #### [Prettier](https://github.com/prettier/prettier)
 
+Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
+(may not work on some filetypes).
+
 ```lua
 local sources = {null_ls.builtins.formatting.prettier}
 ```
@@ -92,7 +95,9 @@ local sources = {null_ls.builtins.formatting.prettier}
 #### [prettier_d_slim](https://github.com/mikew/prettier_d_slim)
 
 A faster version of Prettier that doesn't seem to work well on non-JavaScript
-filetypes.
+filetypes. Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
+(may not work on some filetypes).
+
 
 ```lua
 local sources = {null_ls.builtins.formatting.prettier_d_slim}

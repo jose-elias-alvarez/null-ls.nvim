@@ -128,7 +128,7 @@ describe("formatting", function()
         end)
 
         describe("postprocess", function()
-            local edit = { row = 1, col = 5, text = "something bad" }
+            local edit = { row = 1, col = 5, end_row = 2, end_col = 10, text = "something bad" }
             local postprocess
             before_each(function()
                 formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
@@ -138,8 +138,8 @@ describe("formatting", function()
             it("should convert range", function()
                 postprocess(edit)
 
-                assert.same(edit.range.start, { character = 5, line = 1 })
-                assert.same(edit.range["end"], { character = -1, line = 1 })
+                assert.same(edit.range.start, { character = 4, line = 0 })
+                assert.same(edit.range["end"], { character = 9, line = 1 })
             end)
 
             it("should assign edit newText", function()
