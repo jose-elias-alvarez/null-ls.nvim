@@ -66,7 +66,7 @@ M.handler = function(method, original_params, handler, bufnr)
         end
 
         -- call original handler with empty response so buf.request_sync() doesn't time out
-        handler(nil, method, {}, s.get().client_id, bufnr)
+        handler(nil, method, {}, original_params.client_id, bufnr)
         u.debug_log("successfully applied edits")
     end
 

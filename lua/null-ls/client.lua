@@ -10,6 +10,7 @@ local api = vim.api
 local schedule = vim.schedule_wrap
 
 local function on_init(client)
+    s.set({ client_id = client.id })
     handlers.setup_client(client)
     s.initialize(client)
 end
@@ -18,10 +19,8 @@ local on_exit = function()
     s.reset()
 end
 
-local start_client = function()
-    s.reset()
-
-    local client_id = lsp.start_client({
+local function get_client_config()
+    return {
         cmd = {
             c.get().nvim_executable,
             "--headless",
@@ -38,8 +37,12 @@ local start_client = function()
         on_attach = c.get().on_attach,
         name = "null-ls",
         flags = { debounce_text_changes = c.get().debounce },
-    })
+    }
+end
 
+local start_client = function()
+    s.reset()
+    local client_id = lsp.start_client(get_client_config())
     -- this completes before the client is initialized
     -- and signals that start_client should not be called again
     s.set({ client_id = client_id })
@@ -69,6 +72,8 @@ local M = {}
 M.start = start_client
 
 M.try_attach = try_attach
+
+M.get_client_config = get_client_config
 
 -- triggered after dynamically registering sources
 M.attach_or_refresh = schedule(function()

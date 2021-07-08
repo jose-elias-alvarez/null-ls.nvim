@@ -33,14 +33,18 @@ M.disable = function()
     M.shutdown()
 end
 
-M.setup = function(user_config)
+M.config = function(user_config)
     if vim.g.null_ls_disable then
         return
     end
     config.setup(user_config or {})
+    require("null-ls.lspconfig").setup()
+end
 
-    autocommands.setup()
-    handlers.setup()
+M.setup = function(user_config)
+    user_config = user_config or {}
+    M.config(user_config)
+    require("lspconfig")["null-ls"].setup({ on_attach = user_config.on_attach })
 end
 
 return M
