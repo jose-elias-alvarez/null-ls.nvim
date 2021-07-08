@@ -11,11 +11,14 @@ M.names = names
 
 local register = function(trigger, fn, ft)
     if not vim.fn.exists("#" .. names.GROUP) then
-        exec(string.format([[
+        exec(string.format(
+            [[
         augroup %s
             autocmd!
         augroup END
-        ]], names.GROUP))
+        ]],
+            names.GROUP
+        ))
     end
 
     exec(string.format(
@@ -37,11 +40,14 @@ M.setup = function()
 end
 
 M.reset = function()
-    exec(string.format([[
+    exec(string.format(
+        [[
     augroup %s
         autocmd!
     augroup END
-    ]], names.GROUP))
+    ]],
+        names.GROUP
+    ))
 
     vim.cmd("augroup! " .. names.GROUP)
 end

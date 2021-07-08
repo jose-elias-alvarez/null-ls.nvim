@@ -28,7 +28,7 @@ M.gitsigns = h.make_builtin({
                     title = name_to_title(name),
                     action = function()
                         vim.api.nvim_buf_call(cbuf, action)
-                    end
+                    end,
                 })
             end
             return actions

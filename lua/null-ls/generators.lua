@@ -52,7 +52,7 @@ M.run = function(params, postprocess, callback)
     end)
 
     a.run(runner(), function(results)
-        callback(results)
+        callback(results, params)
     end)
 end
 

@@ -95,8 +95,7 @@ M.cached_code_action = h.make_builtin({
             return done({
                 {
                     title = params._null_ls_cached and "Cached" or "Not cached",
-                    action = function()
-                    end,
+                    action = function() end,
                 },
             })
         end,
