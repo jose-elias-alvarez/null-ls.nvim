@@ -25,12 +25,27 @@ rpc.start = function(cmd, ...)
     return rpc_start(cmd, ...)
 end
 
+local function get_client(pid)
+    for _, client in pairs(vim.lsp.get_active_clients()) do
+        if client.rpc.pid == pid then
+            return client
+        end
+    end
+end
+
 function M.start(...)
     lastpid = lastpid + 1
     local pid = lastpid
     local stopped = false
 
+    local client
     local function handle(method, _params, callback)
+        client = client or get_client(pid)
+
+        if client then
+            print("client: " .. client.id)
+        end
+
         local send_response = function(result)
             if callback then
                 callback(nil, result)
