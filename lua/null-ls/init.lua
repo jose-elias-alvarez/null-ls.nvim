@@ -37,6 +37,7 @@ M.config = function(user_config)
     if vim.g.null_ls_disable then
         return
     end
+    require("null-ls.rpc")
     config.setup(user_config or {})
     require("null-ls.lspconfig").setup()
 end
