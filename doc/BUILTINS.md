@@ -185,6 +185,22 @@ local sources = {null_ls.builtins.diagnostics.markdownlint}
 - Command: `markdownlint`
 - Arguments: `{ "--stdin" }`
 
+#### [vale](https://docs.errata.ai/vale/about)
+
+Syntax-aware linter for prose built with speed and extensibility in mind.
+
+vale does include a syntax by itself, so you probably need to grab a `vale.ini`
+(at "~/.vale.ini") and a `StylesPath` (somewhere, pointed from `vale.ini`) from
+[here](https://docs.errata.ai/vale/about#open-source-configurations).
+
+```lua
+local sources = {null_ls.builtins.diagnostics.vale}
+```
+
+- Filetypes: `{ "markdown" }`
+- Command: `write-good`
+- Arguments: `{ "--text=$TEXT", "--parse" }`
+
 ### tl check via [teal](https://github.com/teal-language/tl)
 
 Turns `tl check` into a linter. It writes the buffer's content to a temporary
