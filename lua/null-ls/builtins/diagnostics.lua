@@ -88,6 +88,40 @@ M.markdownlint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.vale = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "markdown", "tex" },
+    generator_opts = {
+        command = "vale",
+        format = "json",
+        args = { "--no-exit", "--output=JSON", "$FILENAME" },
+        on_output = function(params, done)
+            local diagnostics = {}
+            if not params.output or params.output == "" then
+                return done()
+            end
+            for _, diagnostic in ipairs(params.output[params.bufname]) do
+                if diagnostic then
+                    local severity = 1
+                    if diagnostic.Severity == "warning" then
+                        severity = 2
+                    end
+                    table.insert(diagnostics, {
+                        row = diagnostic.Line,
+                        col = diagnostic.Span[1],
+                        end_col = diagnostic.Span[2],
+                        source = diagnostic.Check .. " (vale)",
+                        message = diagnostic.Message,
+                        severity = severity,
+                    })
+                end
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 M.teal = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "teal" },
