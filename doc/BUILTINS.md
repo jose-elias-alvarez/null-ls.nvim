@@ -197,9 +197,9 @@ vale does include a syntax by itself, so you probably need to grab a `vale.ini`
 local sources = {null_ls.builtins.diagnostics.vale}
 ```
 
-- Filetypes: `{ "markdown" }`
-- Command: `write-good`
-- Arguments: `{ "--text=$TEXT", "--parse" }`
+- Filetypes: `{ "markdown", "tex" }`
+- Command: `vale`
+- Arguments: `{ "--no-exit", "--output=JSON", "$FILENAME" }`
 
 ### tl check via [teal](https://github.com/teal-language/tl)
 
