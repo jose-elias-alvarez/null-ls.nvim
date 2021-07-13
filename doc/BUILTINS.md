@@ -189,8 +189,9 @@ local sources = {null_ls.builtins.diagnostics.markdownlint}
 
 Syntax-aware linter for prose built with speed and extensibility in mind.
 
-vale does include a syntax by itself, so you probably need to grab a `vale.ini`
-(at "~/.vale.ini") and a `StylesPath` (somewhere, pointed from `vale.ini`) from
+vale does not include a syntax by itself, so you probably need to grab a
+`vale.ini` (at "~/.vale.ini") and a `StylesPath` (somewhere, pointed from
+`vale.ini`) from
 [here](https://docs.errata.ai/vale/about#open-source-configurations).
 
 ```lua
