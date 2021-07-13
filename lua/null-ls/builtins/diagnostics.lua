@@ -97,24 +97,23 @@ M.vale = h.make_builtin({
         args = { "--no-exit", "--output=JSON", "$FILENAME" },
         on_output = function(params, done)
             local diagnostics = {}
-            if not params.output or params.output == "" then
+            if not params.output or type(params.output) ~= "table" then
                 return done()
             end
             for _, diagnostic in ipairs(params.output[params.bufname]) do
-                if diagnostic then
-                    local severity = 1
-                    if diagnostic.Severity == "warning" then
-                        severity = 2
-                    end
-                    table.insert(diagnostics, {
-                        row = diagnostic.Line,
-                        col = diagnostic.Span[1],
-                        end_col = diagnostic.Span[2],
-                        source = diagnostic.Check .. " (vale)",
-                        message = diagnostic.Message,
-                        severity = severity,
-                    })
+                local severity = 1
+                if diagnostic.Severity == "warning" then
+                    severity = 2
                 end
+                table.insert(diagnostics, {
+                    row = diagnostic.Line,
+                    col = diagnostic.Span[1],
+                    end_col = diagnostic.Span[2],
+                    code = diagnostic.Check,
+                    source = "vale",
+                    message = diagnostic.Message,
+                    severity = severity,
+                })
             end
             return diagnostics
         end,
