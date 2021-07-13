@@ -107,7 +107,7 @@ M.vale = h.make_builtin({
                 end
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
-                    col = diagnostic.Span[1],
+                    col = diagnostic.Span[1] - 1,
                     end_col = diagnostic.Span[2],
                     code = diagnostic.Check,
                     source = "vale",
