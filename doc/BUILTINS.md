@@ -161,6 +161,18 @@ local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"}
 - Command: `eslint`
 - Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### [hadolint](https://github.com/hadolint/hadolint)
+
+A smarter Dockerfile linter that helps you build best practice Docker images.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.hadolint}
+```
+
+- Filetypes: `{ "dockerfile" }`
+- Command: `hadolint`
+- Arguments: `{ "--no-fail", "--format=json", "$FILENAME" }`
+
 #### [write-good](https://github.com/btford/write-good)
 
 English prose linter.
