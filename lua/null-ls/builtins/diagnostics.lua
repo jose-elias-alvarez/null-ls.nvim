@@ -270,4 +270,36 @@ M.eslint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.hadolint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "dockerfile" },
+    generator_opts = {
+        command = "hadolint",
+        format = "json",
+        args = { "--no-fail", "--format=json", "$FILENAME" },
+        on_output = function(params, done)
+            if not params.output or type(params.output) ~= "table" then
+                return done()
+            end
+
+            local diagnostics = {}
+            local severities = { error = 1, warning = 2, info = 3, style = 4 }
+
+            for _, diagnostic in ipairs(params.output) do
+                table.insert(diagnostics, {
+                    row = diagnostic.line,
+                    col = diagnostic.column - 1,
+                    end_col = diagnostic.column,
+                    code = diagnostic.code,
+                    source = "hadolint",
+                    message = diagnostic.message,
+                    severity = severities[diagnostic.level],
+                })
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
