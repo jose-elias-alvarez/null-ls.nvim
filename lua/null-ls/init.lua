@@ -19,6 +19,7 @@ M.config = function(user_config)
     config.setup(user_config or {})
     require("null-ls.rpc").setup()
     require("null-ls.lspconfig").setup()
+    require("null-ls.handlers").setup()
 end
 
 M.setup = function(user_config)
