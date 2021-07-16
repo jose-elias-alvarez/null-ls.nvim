@@ -24,7 +24,7 @@ function M.setup()
     vim.cmd([[
       augroup null-ls
         autocmd!
-        autocmd BufReadPost * lua require("null-ls.lspconfig").try_add()
+        autocmd BufReadPost,FileType * lua require("null-ls.lspconfig").try_add()
       augroup end
     ]])
 end
