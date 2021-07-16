@@ -67,13 +67,12 @@ function M.start()
         elseif method == methods.lsp.SHUTDOWN then
             stopped = true
             send()
-        elseif is_notify and client then
-            diagnostics.handler(params)
         else
-            code_actions.handler(method, params, send)
-            if not params._null_ls_handled then
-                formatting.handler(method, params, send)
+            if is_notify then
+                diagnostics.handler(params)
             end
+            code_actions.handler(method, params, send)
+            formatting.handler(method, params, send)
             if not params._null_ls_handled then
                 send()
             end

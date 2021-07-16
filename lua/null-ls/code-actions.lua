@@ -13,13 +13,12 @@ local postprocess = function(action)
 end
 
 M.handler = function(method, original_params, handler)
-    if not original_params.textDocument then
-        return
-    end
-    local uri = original_params.textDocument.uri
-    local bufnr = vim.uri_to_bufnr(uri)
-
     if method == methods.lsp.CODE_ACTION then
+        if not original_params.textDocument then
+            return
+        end
+        local uri = original_params.textDocument.uri
+        local bufnr = vim.uri_to_bufnr(uri)
         if original_params._null_ls_ignore then
             return
         end
@@ -28,15 +27,17 @@ M.handler = function(method, original_params, handler)
 
         s.clear_actions()
         generators.run(u.make_params(original_params, methods.internal.CODE_ACTION), postprocess, function(actions)
-            handler(nil, method, actions, original_params.client_id, bufnr)
+            -- sort actions on title
+            table.sort(actions, function(a, b)
+                return a.title < b.title
+            end)
+            handler(actions)
         end)
-
         original_params._null_ls_handled = true
     end
 
     if method == methods.lsp.EXECUTE_COMMAND and original_params.command == methods.internal.CODE_ACTION then
         s.run_action(original_params.title)
-
         original_params._null_ls_handled = true
     end
 end
