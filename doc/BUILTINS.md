@@ -161,6 +161,18 @@ local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"}
 - Command: `eslint`
 - Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### [hadolint](https://github.com/hadolint/hadolint)
+
+A smarter Dockerfile linter that helps you build best practice Docker images.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.hadolint}
+```
+
+- Filetypes: `{ "dockerfile" }`
+- Command: `hadolint`
+- Arguments: `{ "--no-fail", "--format=json", "$FILENAME" }`
+
 #### [write-good](https://github.com/btford/write-good)
 
 English prose linter.
@@ -184,6 +196,23 @@ local sources = {null_ls.builtins.diagnostics.markdownlint}
 - Filetypes: `{ "markdown" }`
 - Command: `markdownlint`
 - Arguments: `{ "--stdin" }`
+
+#### [vale](https://docs.errata.ai/vale/about)
+
+Syntax-aware linter for prose built with speed and extensibility in mind.
+
+vale does not include a syntax by itself, so you probably need to grab a
+`vale.ini` (at "~/.vale.ini") and a `StylesPath` (somewhere, pointed from
+`vale.ini`) from
+[here](https://docs.errata.ai/vale/about#open-source-configurations).
+
+```lua
+local sources = {null_ls.builtins.diagnostics.vale}
+```
+
+- Filetypes: `{ "markdown", "tex" }`
+- Command: `vale`
+- Arguments: `{ "--no-exit", "--output=JSON", "$FILENAME" }`
 
 ### tl check via [teal](https://github.com/teal-language/tl)
 

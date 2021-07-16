@@ -88,6 +88,39 @@ M.markdownlint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.vale = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "markdown", "tex" },
+    generator_opts = {
+        command = "vale",
+        format = "json",
+        args = { "--no-exit", "--output=JSON", "$FILENAME" },
+        on_output = function(params, done)
+            local diagnostics = {}
+            if not params.output or type(params.output) ~= "table" then
+                return done()
+            end
+            for _, diagnostic in ipairs(params.output[params.bufname]) do
+                local severity = 1
+                if diagnostic.Severity == "warning" then
+                    severity = 2
+                end
+                table.insert(diagnostics, {
+                    row = diagnostic.Line,
+                    col = diagnostic.Span[1] - 1,
+                    end_col = diagnostic.Span[2],
+                    code = diagnostic.Check,
+                    source = "vale",
+                    message = diagnostic.Message,
+                    severity = severity,
+                })
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 M.teal = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "teal" },
@@ -187,6 +220,48 @@ M.shellcheck = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.selene = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "selene",
+        args = { "--display-style", "json", "-" },
+        to_stdin = true,
+        format = "line",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = function(line, params)
+            local function get_pos(byte)
+                return unpack(vim.api.nvim_buf_call(params.bufnr, function()
+                    local lnum = vim.fn.byte2line(byte)
+                    local lbyte = vim.fn.line2byte(lnum)
+                    return { lnum, byte - lbyte + 1 }
+                end))
+            end
+            local ok, diagnostic = pcall(vim.fn.json_decode, line)
+            if not ok then
+                return
+            end
+            local span = diagnostic.primary_label.span
+            local row, col = get_pos(span.start)
+            local end_row, end_col = get_pos(span["end"])
+            local ret = {
+                row = row,
+                col = col,
+                end_row = end_row,
+                end_col = end_col,
+                message = diagnostic.message,
+                code = diagnostic.code,
+                source = "selene",
+                severity = (diagnostic.severity == "Error" and 1) or (diagnostic.severity == "Warning" and 2) or 4,
+            }
+            return ret
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 M.eslint = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
@@ -237,43 +312,33 @@ M.eslint = h.make_builtin({
     factory = h.generator_factory,
 })
 
-M.selene = h.make_builtin({
+M.hadolint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "lua" },
+    filetypes = { "dockerfile" },
     generator_opts = {
-        command = "selene",
-        args = { "--display-style", "json", "-" },
-        to_stdin = true,
-        format = "line",
-        check_exit_code = function(code)
-            return code <= 1
-        end,
-        on_output = function(line, params)
-            local function get_pos(byte)
-                return unpack(vim.api.nvim_buf_call(params.bufnr, function()
-                    local lnum = vim.fn.byte2line(byte)
-                    local lbyte = vim.fn.line2byte(lnum)
-                    return { lnum, byte - lbyte + 1 }
-                end))
+        command = "hadolint",
+        format = "json",
+        args = { "--no-fail", "--format=json", "$FILENAME" },
+        on_output = function(params, done)
+            if not params.output or type(params.output) ~= "table" then
+                return done()
             end
-            local ok, diagnostic = pcall(vim.fn.json_decode, line)
-            if not ok then
-                return
+
+            local diagnostics = {}
+            local severities = { error = 1, warning = 2, info = 3, style = 4 }
+
+            for _, diagnostic in ipairs(params.output) do
+                table.insert(diagnostics, {
+                    row = diagnostic.line,
+                    col = diagnostic.column - 1,
+                    end_col = diagnostic.column,
+                    code = diagnostic.code,
+                    source = "hadolint",
+                    message = diagnostic.message,
+                    severity = severities[diagnostic.level],
+                })
             end
-            local span = diagnostic.primary_label.span
-            local row, col = get_pos(span.start)
-            local end_row, end_col = get_pos(span["end"])
-            local ret = {
-                row = row,
-                col = col,
-                end_row = end_row,
-                end_col = end_col,
-                message = diagnostic.message,
-                code = diagnostic.code,
-                source = "selene",
-                severity = (diagnostic.severity == "Error" and 1) or (diagnostic.severity == "Warning" and 2) or 4,
-            }
-            return ret
+            return diagnostics
         end,
     },
     factory = h.generator_factory,
