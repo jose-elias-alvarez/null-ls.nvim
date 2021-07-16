@@ -33,7 +33,6 @@ M.handler = function(original_params)
     end
 
     if method == methods.lsp.DID_CLOSE then
-        s.detach(uri)
         return
     end
 
