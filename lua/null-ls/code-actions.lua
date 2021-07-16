@@ -12,7 +12,13 @@ local postprocess = function(action)
     action.action = nil
 end
 
-M.handler = function(method, original_params, handler, bufnr)
+M.handler = function(method, original_params, handler)
+    if not original_params.textDocument then
+        return
+    end
+    local uri = original_params.textDocument.uri
+    local bufnr = vim.uri_to_bufnr(uri)
+
     if method == methods.lsp.CODE_ACTION then
         if original_params._null_ls_ignore then
             return

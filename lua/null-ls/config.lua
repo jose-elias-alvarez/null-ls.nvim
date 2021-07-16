@@ -1,5 +1,3 @@
-local autocommands = require("null-ls.autocommands")
-
 local validate = vim.validate
 
 local defaults = {
@@ -32,10 +30,8 @@ local wanted_type = function(k)
     if type(override) == "table" then
         return function(a)
             return vim.tbl_contains(override, type(a))
-        end, table.concat(
-            override,
-            ", "
-        )
+        end,
+            table.concat(override, ", ")
     end
 
     return type(defaults[k]), true
@@ -67,14 +63,14 @@ local register_filetypes = function(filetypes)
 end
 
 local register_source = function(source, filetypes)
-    local method, generator, name = source.method, source.generator, source.name
+    local generator, name = source.generator, source.name
     filetypes = filetypes or source.filetypes
 
     if is_registered(name, true) then
         return
     end
 
-    local methods = type(method) == "table" and method or { method }
+    local methods = type(source.method) == "table" and source.method or { source.method }
 
     for _, method in pairs(methods) do
         validate({
@@ -95,10 +91,6 @@ local register_source = function(source, filetypes)
         generator.filetypes = filetypes
         table.insert(config._generators[method], generator)
     end
-
-    -- plugins that register sources after BufEnter may need to call try_attach() again,
-    -- after filetypes have been registered
-    autocommands.trigger(autocommands.names.REGISTERED)
 end
 
 local register = function(to_register)

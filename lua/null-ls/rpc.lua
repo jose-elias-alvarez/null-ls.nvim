@@ -1,7 +1,9 @@
 local methods = require("null-ls.methods")
+local code_actions = require("null-ls.code-actions")
+local formatting = require("null-ls.formatting")
+local diagnostics = require("null-ls.diagnostics")
 
 local rpc = require("vim.lsp.rpc")
-local rpc_start = rpc.start
 
 local M = {}
 
@@ -18,11 +20,14 @@ local capabilities = {
 
 local lastpid = 5000
 
-rpc.start = function(cmd, ...)
-    if cmd == "nvim" then
-        return M.start(cmd, ...)
+function M.setup()
+    local rpc_start = rpc.start
+    rpc.start = function(cmd, ...)
+        if cmd == "nvim" then
+            return M.start()
+        end
+        return rpc_start(cmd, ...)
     end
-    return rpc_start(cmd, ...)
 end
 
 local function get_client(pid)
@@ -33,52 +38,56 @@ local function get_client(pid)
     end
 end
 
-function M.start(...)
+function M.start()
     lastpid = lastpid + 1
+    local message_id = 1
     local pid = lastpid
     local stopped = false
 
     local client
-    local function handle(method, _params, callback)
+    local function handle(method, params, callback)
+        message_id = message_id + 1
+        local is_notify = callback == nil
         client = client or get_client(pid)
 
+        params.method = method
         if client then
-            -- print("client: " .. client.id)
+            params.client_id = client.id
         end
 
-        local send_response = function(result)
+        local send = function(result)
             if callback then
-                callback(nil, result)
+                callback = vim.schedule_wrap(callback)
+                callback(nil, result or vim.NIL)
             end
         end
 
-        local send_nil_response = function()
-            send_response(vim.NIL)
-        end
         if method == methods.lsp.INITIALIZE then
-            send_response({ capabilities = capabilities })
-        end
-        if method == methods.lsp.SHUTDOWN then
-            send_nil_response()
-        end
-        if method == methods.lsp.EXECUTE_COMMAND then
+            send({ capabilities = capabilities })
+        elseif method == methods.lsp.SHUTDOWN then
             stopped = true
-            send_nil_response()
+            send()
+        elseif is_notify and client then
+            diagnostics.handler(params)
+        else
+            code_actions.handler(method, params, send)
+            if not params._null_ls_handled then
+                formatting.handler(method, params, send)
+            end
+            if not params._null_ls_handled then
+                send()
+            end
         end
-        if method == methods.lsp.CODE_ACTION then
-            send_nil_response()
-        end
-        if method == methods.lsp.DID_CHANGE then
-            send_nil_response()
-        end
+
+        return true, message_id
     end
 
     local function request(method, params, callback)
-        handle(method, params, callback)
+        return handle(method, params, callback)
     end
 
     local function notify(method, params)
-        handle(method, params)
+        return handle(method, params)
     end
 
     return {
@@ -95,3 +104,5 @@ function M.start(...)
         },
     }
 end
+
+return M
