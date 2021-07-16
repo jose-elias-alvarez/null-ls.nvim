@@ -167,7 +167,7 @@ M.generator_factory = function(opts)
             local client = vim.lsp.get_client_by_id(params.client_id)
             spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             local spawn_opts = {
-                cwd = client.config.root_dir,
+                cwd = client and client.config.root_dir or vim.fn.getcwd(),
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
                 bufnr = params.bufnr,

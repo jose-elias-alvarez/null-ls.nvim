@@ -64,9 +64,7 @@ M.handler = function(method, original_params, handler)
         restore_win_data(marks, view, bufnr, winid)
 
         if c.get().save_after_format and not _G._TEST then
-            api.nvim_buf_call(bufnr, function()
-                vim.cmd("silent keepjumps noautocmd update")
-            end)
+            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
         end
 
         -- call original handler with empty response so buf.request_sync() doesn't time out

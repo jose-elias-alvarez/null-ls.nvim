@@ -1,7 +1,5 @@
 local stub = require("luassert.stub")
 
-local autocommands = require("null-ls.autocommands")
-
 describe("config", function()
     local c = require("null-ls.config")
 
@@ -38,11 +36,6 @@ describe("config", function()
     end)
 
     describe("register", function()
-        stub(autocommands, "trigger")
-        after_each(function()
-            autocommands.trigger:clear()
-        end)
-
         it("should register single source", function()
             c.register(mock_source)
 
@@ -62,12 +55,6 @@ describe("config", function()
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
-        end)
-
-        it("should call autocommands trigger method after registration", function()
-            c.register(mock_source)
-
-            assert.stub(autocommands.trigger).was_called_with(autocommands.names.REGISTERED)
         end)
 
         it("should register multiple sources from simple list", function()
@@ -91,22 +78,6 @@ describe("config", function()
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
             assert.equals(vim.tbl_count(c.get()._filetypes), 1)
-        end)
-
-        it("should only register sources once when name is specified", function()
-            c.register({
-                name = "my-mock-source",
-                filetypes = { "txt" },
-                sources = { mock_source },
-            })
-
-            c.register({
-                name = "my-mock-source",
-                filetypes = { "txt" },
-                sources = { mock_source },
-            })
-
-            assert.stub(autocommands.trigger).was_called(1)
         end)
     end)
 

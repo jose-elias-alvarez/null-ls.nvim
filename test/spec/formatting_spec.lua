@@ -19,13 +19,14 @@ describe("formatting", function()
     local handler = stub.new()
 
     local api
-    local mock_bufnr = 65
+    local mock_uri = "file:///mock-file"
+    local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
     local mock_params
     before_each(function()
         api = mock(vim.api, true)
 
         c._set({ save_after_format = false })
-        mock_params = { key = "val" }
+        mock_params = { textDocument = { uri = mock_uri }, client_id = mock_client_id }
     end)
 
     after_each(function()
@@ -45,19 +46,19 @@ describe("formatting", function()
 
     describe("handler", function()
         it("should not set handled flag if method does not match", function()
-            formatting.handler("otherMethod", mock_params, handler, mock_bufnr)
+            formatting.handler("otherMethod", mock_params, handler)
 
             assert.equals(mock_params._null_ls_handled, nil)
         end)
 
         it("should set handled flag if method matches", function()
-            formatting.handler(method, mock_params, handler, mock_bufnr)
+            formatting.handler(method, mock_params, handler)
 
             assert.equals(mock_params._null_ls_handled, true)
         end)
 
         it("should assign bufnr to params", function()
-            formatting.handler(method, mock_params, handler, mock_bufnr)
+            formatting.handler(method, mock_params, handler)
 
             assert.equals(mock_params.bufnr, mock_bufnr)
         end)
@@ -68,10 +69,13 @@ describe("formatting", function()
 
         local mock_client_id = 99
         local mock_edits = { { text = "new text" } }
-        local mock_diffed = { text = "diffed text", range = {
-            start = { line = 0, character = 10 },
-            ["end"] = { line = 35, character = 1 },
-        } }
+        local mock_diffed = {
+            text = "diffed text",
+            range = {
+                start = { line = 0, character = 10 },
+                ["end"] = { line = 35, character = 1 },
+            },
+        }
         before_each(function()
             s.get.returns({ client_id = mock_client_id })
             lsp.util.compute_diff.returns(mock_diffed)
@@ -81,35 +85,23 @@ describe("formatting", function()
         end)
 
         it("should call make_params with params and internal method", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
             assert.same(u.make_params.calls[1].refs[1], mock_params)
             assert.equals(u.make_params.calls[1].refs[2], methods.internal.FORMATTING)
         end)
 
-        it("should call handler with empty response", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+        it("should call handler with text edits", function()
+            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
             local callback = generators.run.calls[1].refs[3]
             callback(mock_edits, mock_params)
 
-            assert.stub(handler).was_called_with(nil, methods.lsp.FORMATTING, {}, mock_client_id, mock_bufnr)
-        end)
-
-        it("should call apply_text_edits with diffed edits", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-
-            local callback = generators.run.calls[1].refs[3]
-            callback(mock_edits, mock_params)
-
-            assert.stub(vim.lsp.util.apply_text_edits).was_called_with(
-                { { newText = mock_diffed.text, range = mock_diffed.range } },
-                mock_bufnr
-            )
+            assert.stub(handler).was_called_with({ { newText = mock_diffed.text, range = mock_diffed.range } })
         end)
 
         it("should not save buffer if config option is not set", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
             local callback = generators.run.calls[1].refs[3]
             callback(mock_edits, mock_params)
@@ -119,24 +111,12 @@ describe("formatting", function()
 
         it("should save buffer if config option is set", function()
             c.setup({ save_after_format = true })
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
+            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
             local callback = generators.run.calls[1].refs[3]
             callback(mock_edits, mock_params)
 
             assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
-        end)
-
-        it("should set window buffer to original buffer if it doesn't match", function()
-            local current_bufnr = mock_bufnr + 1
-            vim.api.nvim_win_get_buf.returns(current_bufnr)
-            c.setup({ save_after_format = true })
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler, mock_bufnr)
-
-            local callback = generators.run.calls[1].refs[3]
-            callback(mock_edits, mock_params)
-
-            assert.stub(vim.api.nvim_win_set_buf).was_called_with(0, current_bufnr)
         end)
     end)
 end)

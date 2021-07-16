@@ -258,36 +258,4 @@ describe("utils", function()
             end)
         end)
     end)
-
-    describe("rpc", function()
-        describe("decode", function()
-            it("should return decoded data minus header", function()
-                local data = vim.fn.json_encode({ key = "val" })
-                local encoded = { "Content-Length: 50", "", data }
-
-                local decoded = u.rpc.decode(encoded)
-
-                assert.same(decoded, vim.fn.json_decode(data))
-            end)
-
-            it("should return nil if decode fails", function()
-                local data = "NOT JSON"
-                local encoded = { "Content-Length: 50", "", data }
-
-                local decoded = u.rpc.decode(encoded)
-
-                assert.equals(decoded, nil)
-            end)
-        end)
-
-        describe("format", function()
-            it("should return encoded data plus header", function()
-                local data = { key = "val" }
-
-                local formatted = u.rpc.format(data)
-
-                assert.equals(formatted, 'Content-Length: 14\r\n\r\n{"key": "val"}')
-            end)
-        end)
-    end)
 end)

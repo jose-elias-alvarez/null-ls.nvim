@@ -12,21 +12,20 @@ describe("diagnostics", function()
     local diagnostics = require("null-ls.diagnostics")
 
     describe("handler", function()
-        stub(s, "detach")
         stub(s, "clear_cache")
         stub(u, "make_params")
         stub(generators, "run")
 
-        local mock_bufnr, mock_client_id = 99, 999
+        local mock_uri = "file:///mock-file"
+        local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
         local mock_params
         before_each(function()
             s.set({ client_id = mock_client_id })
-            mock_params = { textDocument = { uri = "file:///mock-file" } }
+            mock_params = { textDocument = { uri = mock_uri }, client_id = mock_client_id }
         end)
 
         after_each(function()
             lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
-            s.detach:clear()
             s.clear_cache:clear()
 
             generators.run:clear()
@@ -43,21 +42,12 @@ describe("diagnostics", function()
             assert.stub(s.clear_cache).was_called_with(mock_params.textDocument.uri)
         end)
 
-        it("should call detach with uri and return if method == DID_CLOSE", function()
-            mock_params.method = methods.lsp.DID_CLOSE
-
-            diagnostics.handler(mock_params)
-
-            assert.stub(s.detach).was_called_with(mock_params.textDocument.uri)
-            assert.stub(u.make_params).was_not_called()
-        end)
-
         it("should call make_params with params and method", function()
             s.set({ attached = { [mock_params.textDocument.uri] = mock_bufnr } })
             diagnostics.handler(mock_params)
 
             assert.stub(u.make_params).was_called_with(
-                { bufnr = mock_bufnr, textDocument = mock_params.textDocument },
+                { bufnr = mock_bufnr, textDocument = mock_params.textDocument, client_id = mock_client_id },
                 methods.internal.DIAGNOSTICS
             )
         end)

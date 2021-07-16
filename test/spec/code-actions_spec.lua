@@ -11,9 +11,12 @@ describe("code_actions", function()
     stub(s, "register_action")
     stub(s, "get")
     stub(s, "run_action")
-
+    local mock_uri = "file:///mock-file"
+    local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
+    local mock_params
     before_each(function()
         s.get.returns({ client_id = 99 })
+        mock_params = { textDocument = { uri = mock_uri }, client_id = mock_client_id }
     end)
 
     after_each(function()
@@ -39,40 +42,40 @@ describe("code_actions", function()
 
             it("should return immediately if null_ls_ignore flag is set", function()
                 local params = { _null_ls_ignore = true }
-                code_actions.handler(method, params, handler, 1)
+                code_actions.handler(method, params, handler)
 
                 assert.stub(u.make_params).was_not_called()
                 assert.equals(params._null_ls_handled, nil)
             end)
 
             it("should call make_params with original params and internal method", function()
-                code_actions.handler(method, {}, handler, 1)
+                code_actions.handler(method, mock_params, handler)
 
-                assert.stub(u.make_params).was_called_with({ bufnr = 1 }, methods.internal.CODE_ACTION)
+                mock_params.bufnr = mock_bufnr
+                mock_params._null_ls_handled = nil
+                assert.stub(u.make_params).was_called_with(mock_params, methods.internal.CODE_ACTION)
             end)
 
             it("should set handled flag on params", function()
-                local params = {}
+                code_actions.handler(method, mock_params, handler, 1)
 
-                code_actions.handler(method, params, handler, 1)
-
-                assert.equals(params._null_ls_handled, true)
+                assert.equals(mock_params._null_ls_handled, true)
             end)
 
             it("should call handler with arguments", function()
-                code_actions.handler(method, {}, handler, 1)
+                code_actions.handler(method, mock_params, handler)
 
                 local callback = generators.run.calls[1].refs[3]
-                callback("actions")
+                callback({ { title = "actions" } })
 
                 -- wait for schedule_wrap
                 vim.wait(0)
-                assert.stub(handler).was_called_with(nil, method, "actions", 99, 1)
+                assert.stub(handler).was_called_with({ { title = "actions" } })
             end)
 
             describe("get_actions", function()
                 it("should clear state actions", function()
-                    code_actions.handler(method, {}, handler, 1)
+                    code_actions.handler(method, mock_params, handler)
 
                     assert.stub(s.clear_actions).was_called()
                 end)

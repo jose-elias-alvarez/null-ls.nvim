@@ -3,7 +3,7 @@ local utils = require("null-ls.utils")
 local M = {}
 
 function M.setup()
-    M.combine("textDocument/codeAction")
+    M.code_action_handler = M.combine("textDocument/codeAction")
 end
 
 -- this will override a handler, batch results and debounce them
@@ -24,6 +24,7 @@ function M.combine(method, ms)
         vim.list_extend(results, actions or {})
         handler()
     end
+    return vim.lsp.handlers[method]
 end
 
 return M
