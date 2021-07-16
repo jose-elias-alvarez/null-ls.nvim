@@ -46,6 +46,7 @@ function M.start()
 
     local client
     local function handle(method, params, callback)
+        callback = callback and vim.schedule_wrap(callback)
         message_id = message_id + 1
         local is_notify = callback == nil
         client = client or get_client(pid)
@@ -57,10 +58,7 @@ function M.start()
 
         local send = function(result)
             if callback then
-                -- use defer so async processing is possible
-                vim.defer_fn(function()
-                    callback(nil, result or vim.NIL)
-                end, 0)
+                callback(nil, result or vim.NIL)
             end
         end
 
