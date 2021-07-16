@@ -24,6 +24,9 @@ local postprocess = function(diagnostic)
 end
 
 M.handler = function(original_params)
+    if not original_params.textDocument then
+        return
+    end
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CHANGE then
         s.clear_cache(uri)
