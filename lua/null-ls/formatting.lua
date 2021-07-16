@@ -17,7 +17,7 @@ local save_win_data = function(bufnr)
     end
 
     local views = {}
-    for _, win in pairs(vim.api.nvim_list_wins()) do
+    for _, win in pairs(vim.api.nvim_list_wins() or {}) do
         views[win] = api.nvim_win_call(win, function()
             return vim.fn.winsaveview()
         end)
