@@ -45,10 +45,10 @@ function M.start()
     local stopped = false
 
     local client
-    local function handle(method, params, callback)
+    local function handle(method, params, callback, is_notify)
+        params = params or {}
         callback = callback and vim.schedule_wrap(callback)
         message_id = message_id + 1
-        local is_notify = callback == nil
         client = client or get_client(pid)
 
         params.method = method
@@ -86,7 +86,7 @@ function M.start()
     end
 
     local function notify(method, params)
-        return handle(method, params)
+        return handle(method, params, nil, true)
     end
 
     return {
