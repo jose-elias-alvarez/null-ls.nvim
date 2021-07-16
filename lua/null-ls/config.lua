@@ -60,6 +60,7 @@ local register_filetypes = function(filetypes)
             table.insert(config._filetypes, filetype)
         end
     end
+    require("null-ls.lspconfig").update_filetypes()
 end
 
 local register_source = function(source, filetypes)
