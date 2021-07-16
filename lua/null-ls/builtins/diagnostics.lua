@@ -227,6 +227,7 @@ M.selene = h.make_builtin({
         command = "selene",
         args = { "--display-style", "json", "-" },
         to_stdin = true,
+        to_stderr = true,
         format = "line",
         check_exit_code = function(code)
             return code <= 1
@@ -241,6 +242,16 @@ M.selene = h.make_builtin({
             end
             local ok, diagnostic = pcall(vim.fn.json_decode, line)
             if not ok then
+                local error, row, col = line:match("ERROR: (.*) at line (%d+), column (%d+)")
+                if error then
+                    return {
+                        row = row,
+                        col = col,
+                        message = error,
+                        source = "selene",
+                        severity = 1,
+                    }
+                end
                 return
             end
             local span = diagnostic.primary_label.span
