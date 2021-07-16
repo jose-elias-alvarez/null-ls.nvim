@@ -42,7 +42,8 @@ function M.try_add(bufnr)
     if nls then
         bufnr = bufnr or tonumber(vim.fn.expand("<abuf>"))
         local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
-        if vim.tbl_contains(config.get()._filetypes, ft) then
+        local fts = config.get()._filetypes
+        if vim.tbl_contains(fts, ft) or vim.tbl_contains(fts, "*") then
             nls.manager.try_add(bufnr)
         end
     end
