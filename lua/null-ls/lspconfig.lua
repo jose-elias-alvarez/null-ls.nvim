@@ -14,7 +14,7 @@ function M.setup()
     configs["null-ls"] = {
         default_config = config_def,
         on_new_config = function(new_config, root_dir)
-            print("on_new_config")
+            -- print("on_new_config")
             -- state.reset()
         end,
     }

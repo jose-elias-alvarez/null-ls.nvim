@@ -43,7 +43,7 @@ function M.start(...)
         client = client or get_client(pid)
 
         if client then
-            print("client: " .. client.id)
+            -- print("client: " .. client.id)
         end
 
         local send_response = function(result)
@@ -74,12 +74,10 @@ function M.start(...)
     end
 
     local function request(method, params, callback)
-        print("request: " .. method)
         handle(method, params, callback)
     end
 
     local function notify(method, params)
-        print("notify: " .. method)
         handle(method, params)
     end
 
