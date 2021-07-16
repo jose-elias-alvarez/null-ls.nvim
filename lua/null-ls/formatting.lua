@@ -8,7 +8,7 @@ local api = vim.api
 
 local M = {}
 
-local save_win_data = function(bufnr, winid)
+local save_win_data = function(bufnr)
     local marks = {}
     for _, m in pairs(vim.fn.getmarklist(bufnr)) do
         if m.mark:match("%a") then
@@ -16,14 +16,17 @@ local save_win_data = function(bufnr, winid)
         end
     end
 
-    local view = api.nvim_win_call(winid, function()
-        return vim.fn.winsaveview()
-    end)
+    local views = {}
+    for _, win in pairs(vim.api.nvim_list_wins()) do
+        views[win] = api.nvim_win_call(win, function()
+            return vim.fn.winsaveview()
+        end)
+    end
 
-    return marks, view
+    return marks, views
 end
 
-local restore_win_data = function(marks, view, bufnr, winid)
+local restore_win_data = function(marks, views, bufnr)
     -- no need to restore marks that still exist
     for _, m in pairs(vim.fn.getmarklist(bufnr)) do
         marks[m.mark] = nil
@@ -34,9 +37,11 @@ local restore_win_data = function(marks, view, bufnr, winid)
         end
     end
 
-    api.nvim_win_call(winid, function()
-        vim.fn.winrestview(view)
-    end)
+    for win, view in pairs(views) do
+        api.nvim_win_call(win, function()
+            vim.fn.winrestview(view)
+        end)
+    end
 end
 
 M.handler = function(method, original_params, handler)
@@ -56,18 +61,17 @@ M.handler = function(method, original_params, handler)
             table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
         end
 
-        local winid = api.nvim_get_current_win()
-        local marks, view = save_win_data(bufnr, winid)
+        local marks, views = save_win_data(bufnr)
 
         handler(diffed_edits)
 
-        restore_win_data(marks, view, bufnr, winid)
+        vim.defer_fn(function()
+            restore_win_data(marks, views, bufnr)
+            if c.get().save_after_format and not _G._TEST then
+                vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
+            end
+        end, 0)
 
-        if c.get().save_after_format and not _G._TEST then
-            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
-        end
-
-        -- call original handler with empty response so buf.request_sync() doesn't time out
         u.debug_log("successfully applied edits")
     end
 
