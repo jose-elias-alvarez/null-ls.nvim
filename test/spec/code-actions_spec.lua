@@ -90,7 +90,7 @@ describe("code_actions", function()
                             print("I am an action")
                         end,
                     }
-                    code_actions.handler(method, {}, handler, 1)
+                    code_actions.handler(method, mock_params, handler)
                     postprocess = generators.run.calls[1].refs[2]
                 end)
 

@@ -115,6 +115,7 @@ describe("formatting", function()
 
             local callback = generators.run.calls[1].refs[3]
             callback(mock_edits, mock_params)
+            vim.wait(100)
 
             assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
