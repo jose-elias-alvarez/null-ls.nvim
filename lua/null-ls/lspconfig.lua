@@ -20,11 +20,11 @@ function M.setup()
         default_config = config_def,
     }
 
-    -- listen on BufReadPost and attach if needed
+    -- listen on FileType and attach if needed
     vim.cmd([[
       augroup null-ls
         autocmd!
-        autocmd BufReadPost,FileType * unsilent lua require("null-ls.lspconfig").try_add()
+        autocmd FileType * unsilent lua require("null-ls.lspconfig").try_add()
       augroup end
     ]])
 end
