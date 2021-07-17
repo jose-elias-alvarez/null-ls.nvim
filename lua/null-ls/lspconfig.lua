@@ -41,7 +41,7 @@ end
 function M.on_register_source()
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
         M.try_add(bufnr)
-        vim.lsp.buf_notify(bufnr, "textDocument/didOpen", { textDocument = { uri = vim.uri_from_bufnr(bufnr) } })
+        vim.lsp.buf_notify(bufnr, "textDocument/didChange", { textDocument = { uri = vim.uri_from_bufnr(bufnr) } })
     end
 end
 
