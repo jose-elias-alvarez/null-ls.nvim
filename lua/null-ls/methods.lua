@@ -2,6 +2,7 @@ local M = {}
 M.lsp = {
     INITIALIZE = "initialize",
     SHUTDOWN = "shutdown",
+    EXIT = "exit",
     CODE_ACTION = "textDocument/codeAction",
     EXECUTE_COMMAND = "workspace/executeCommand",
     PUBLISH_DIAGNOSTICS = "textDocument/publishDiagnostics",

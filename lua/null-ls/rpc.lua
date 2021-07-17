@@ -22,11 +22,11 @@ local lastpid = 5000
 
 function M.setup()
     local rpc_start = rpc.start
-    rpc.start = function(cmd, ...)
+    rpc.start = function(cmd, cmd_args, dispatchers, ...)
         if cmd == "nvim" then
-            return M.start()
+            return M.start(dispatchers)
         end
-        return rpc_start(cmd, ...)
+        return rpc_start(cmd, cmd_args, dispatchers, ...)
     end
 end
 
@@ -38,7 +38,7 @@ local function get_client(pid)
     end
 end
 
-function M.start()
+function M.start(dispatchers)
     lastpid = lastpid + 1
     local message_id = 1
     local pid = lastpid
@@ -67,6 +67,10 @@ function M.start()
         elseif method == methods.lsp.SHUTDOWN then
             stopped = true
             send()
+        elseif method == methods.lsp.EXIT then
+            if dispatchers.on_exit then
+                dispatchers.on_exit(0, 0)
+            end
         else
             if is_notify then
                 diagnostics.handler(params)
