@@ -139,6 +139,7 @@ M.register = register
 M.reset_sources = function()
     config._generators = {}
     config._names = {}
+    config._filetypes = {}
 end
 
 M.generators = function(method)
