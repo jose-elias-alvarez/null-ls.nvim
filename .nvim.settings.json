@@ -1,0 +1,3 @@
+{
+  "lua-dev": { "library": { "plugins": ["plenary.nvim", "nvim-lspconfig"] } }
+}
