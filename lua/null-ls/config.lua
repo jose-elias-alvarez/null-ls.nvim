@@ -138,6 +138,7 @@ M.is_registered = is_registered
 M.register = register
 M.reset_sources = function()
     config._generators = {}
+    config._names = {}
 end
 
 M.generators = function(method)

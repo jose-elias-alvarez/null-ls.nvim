@@ -227,6 +227,7 @@ M.make_builtin = function(opts)
         filetypes = filetypes,
         generator = generator,
         _opts = generator_opts or {},
+        name = opts.name,
     }
 
     setmetatable(builtin, {

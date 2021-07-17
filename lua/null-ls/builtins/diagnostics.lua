@@ -256,7 +256,7 @@ M.selene = h.make_builtin({
                     end
                 end
             end
-            for _, line in ipairs(vim.split(params.output, "\n")) do
+            for _, line in ipairs(vim.split(params.output or "", "\n")) do
                 if line ~= "" then
                     local ok, diagnostic = pcall(vim.fn.json_decode, line)
                     if ok then
