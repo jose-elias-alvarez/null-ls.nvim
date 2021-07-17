@@ -58,7 +58,7 @@ function M.start(dispatchers)
 
         local send = function(result)
             if callback then
-                callback(nil, result or vim.NIL)
+                callback(nil, result)
             end
         end
 
