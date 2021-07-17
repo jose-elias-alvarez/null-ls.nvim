@@ -14,8 +14,13 @@ local api = vim.api
 local lsp_wait = function()
     vim.wait(400)
 end
-
-main.setup()
+main.config()
+require("lspconfig")["null-ls"].setup({
+    flags = {
+        debounce_text_changes = nil,
+        allow_incremental_sync = true,
+    },
+})
 
 describe("e2e", function()
     _G._TEST = true
@@ -236,10 +241,12 @@ describe("e2e", function()
     describe("cached generator", function()
         local actions, null_ls_action
         local mock_params
+        local mock_bufnr
         before_each(function()
             c.register(builtins._test.cached_code_action)
             tu.edit_test_file("test-file.lua")
             lsp_wait()
+            mock_bufnr = vim.api.nvim_get_current_buf()
             mock_params = { textDocument = { uri = vim.uri_from_bufnr() } }
             require("null-ls.state").clear_cache(vim.uri_from_bufnr())
             actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
@@ -257,9 +264,9 @@ describe("e2e", function()
 
         it("should reset cache when file is edited", function()
             assert.equals(null_ls_action.title, "Not cached")
-            api.nvim_buf_set_lines(api.nvim_get_current_buf(), 0, 0, false, { "print('new content')" })
+            api.nvim_buf_set_lines(mock_bufnr, 0, 1, false, { "print('new content')" })
             lsp_wait()
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+            actions = lsp.buf_request_sync(mock_bufnr, methods.lsp.CODE_ACTION, mock_params)
             null_ls_action = actions[1].result[1]
 
             assert.equals(null_ls_action.title, "Not cached")
