@@ -60,7 +60,7 @@ local register_filetypes = function(filetypes)
             table.insert(config._filetypes, filetype)
         end
     end
-    require("null-ls.lspconfig").update_filetypes()
+    require("null-ls.lspconfig").on_register_filetypes()
 end
 
 local register_source = function(source, filetypes)
@@ -92,6 +92,7 @@ local register_source = function(source, filetypes)
         generator.filetypes = filetypes
         table.insert(config._generators[method], generator)
     end
+    require("null-ls.lspconfig").on_register_source()
 end
 
 local register = function(to_register)

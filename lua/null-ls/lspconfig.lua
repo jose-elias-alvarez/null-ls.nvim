@@ -30,16 +30,24 @@ function M.setup()
 end
 
 -- this updates the filetypes on the lspconfig. Only used by LspInfo
-function M.update_filetypes()
+function M.on_register_filetypes()
     local nls = require("lspconfig")["null-ls"]
     if nls then
         nls.filetypes = config.get()._filetypes
     end
 end
 
+-- this will try to attach to existing buffers and will send a didOpen to trigger diagnostics
+function M.on_register_source()
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+        M.try_add(bufnr)
+        vim.lsp.buf_notify(bufnr, "textDocument/didOpen", { textDocument = { uri = vim.uri_from_bufnr(bufnr) } })
+    end
+end
+
 function M.try_add(bufnr)
     local nls = require("lspconfig")["null-ls"]
-    if nls then
+    if nls and nls.manager then
         bufnr = bufnr or tonumber(vim.fn.expand("<abuf>"))
         local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
         local fts = config.get()._filetypes
