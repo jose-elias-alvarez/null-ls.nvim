@@ -15,7 +15,7 @@ function M.combine(method, ms)
 
     local handler = utils.debounce(ms, function()
         if #results > 0 then
-            orig(nil, nil, results)
+            pcall(orig, nil, nil, results)
             results = {}
         end
     end)
