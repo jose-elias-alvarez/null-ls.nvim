@@ -366,4 +366,47 @@ M.hadolint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+
+M.flake8 = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "flake8",
+        to_stdin = true,
+        to_stderr = true,
+        args = { "--stdin-display-name", "$FILENAME", "-" },
+        format = "line",
+        check_exit_code = function(code)
+            return code == 0 or code == 255
+        end,
+        on_output = function(line, params)
+            local pos = vim.split(string.match(line, "%d+:%d+:.+"), ":")
+            local row = pos[1]
+            local col = pos[2]
+            local message = vim.trim(pos[3])
+            local end_col = col
+
+            local severity
+
+            if vim.startswith(message, 'E') then
+              severity = 1
+            elseif vim.startswith(message, 'W') then
+              severity = 2
+            else
+              severity = 3
+            end
+
+            return {
+                row = row,
+                col = col - 1,
+                end_col = end_col,
+                message = message,
+                severity = severity,
+                source = "flake8",
+            }
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
