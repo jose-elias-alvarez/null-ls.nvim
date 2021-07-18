@@ -20,7 +20,7 @@ null_ls.builtins.diagnostics
 null_ls.builtins.formatting
 ```
 
-You can then register sources by passing a `sources` list into your `setup`
+You can then register sources by passing a `sources` list into your `config`
 function:
 
 ```lua
@@ -33,7 +33,7 @@ local sources = {
     null_ls.builtins.code_actions.gitsigns,
 }
 
-null_ls.setup {sources = sources}
+null_ls.config({ sources = sources })
 ```
 
 Built-in sources also have access to a special method, `with()`, which modifies
@@ -97,7 +97,6 @@ local sources = {null_ls.builtins.formatting.prettier}
 A faster version of Prettier that doesn't seem to work well on non-JavaScript
 filetypes. Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
 (may not work on some filetypes).
-
 
 ```lua
 local sources = {null_ls.builtins.formatting.prettier_d_slim}

@@ -11,23 +11,17 @@ Neovim's LSP ecosystem is growing, and plugins like
 LSP features like code actions and diagnostics.
 
 Unlike the VS Code and coc.nvim ecosystems, Neovim doesn't provide a way for
-non-LSP sources to hook into its LSP client. null-ls is, first of all, an
-attempt to bridge that gap and simplify the process of creating, sharing, and
-setting up LSP sources.
+non-LSP sources to hook into its LSP client. null-ls is an attempt to bridge
+that gap and simplify the process of creating, sharing, and setting up LSP
+sources using pure Lua.
 
-null-ls is also an attempt to reduce the confusion, bloat, and boilerplate
-required for general-purpose language servers like
-[efm-langserver](https://github.com/mattn/efm-langserver) and
-[diagnostic-languageserver](https://github.com/iamcco/diagnostic-languageserver).
-null-ls makes it straightforward to transform command-line output into a format
-that Neovim's LSP client can handle, using Lua and without any extra executables
-or overhead.
+null-ls is also an attempt to reduce the boilerplate required to set up
+general-purpose language servers and improve performance by removing the need
+for external processes.
 
 ## Status
 
-null-ls is in **alpha status**. I'll do my best to avoid breaking changes that
-affect users or integrations, but bugs are inevitable, and the plugin's behavior
-might not yet match user expectations. Please open an issue if something doesn't
+null-ls is in **alpha status**. Please open an issue if something doesn't
 work the way you expect (or doesn't work at all).
 
 Any and all feedback, criticism, or contributions about the plugin's features,
@@ -41,7 +35,7 @@ null-ls sources are able to hook into the following LSP features:
 
 - Diagnostics
 
-- Formatting
+- Formatting (including range formatting)
 
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
@@ -57,21 +51,32 @@ see [HELPERS](doc/HELPERS.md) for details.
 ## Setup
 
 Install null-ls using your favorite package manager. The plugin depends on
-[plenary.nvim](https://github.com/nvim-lua/plenary.nvim).
-
-To enable the plugin, you must call `null_ls.setup {}` somewhere in your LSP
-configuration, which will set up the necessary autocommands. You must then
-register a source, either manually or via an integration.
+[plenary.nvim](https://github.com/nvim-lua/plenary.nvim) and
+[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), both of which you
+are (probably) already using.
 
 Please see [CONFIG](doc/CONFIG.md) for information about setting up and
 configuring null-ls.
 
+At a minimum, you must register at least one source and set up the plugin's
+integration with nvim-lspconfig, as in this example:
+
+```lua
+-- example configuration! (see CONFIG above to make your own)
+require("null-ls").config({
+    sources = { require("null-ls").builtins.formatting.stylua }
+})
+require("lspconfig")["null-ls"].setup({
+    on_attach = my_custom_on_attach
+})
+
+```
+
 ## Documentation
 
 The definitive source for information about null-ls is its
-[documentation](doc/MAIN.md), which is still a work in progress but contains
-information about how null-ls works, how to set it up, and how to create
-sources.
+[documentation](doc/MAIN.md), which contains information about how null-ls
+works, how to set it up, and how to create sources.
 
 ## Examples
 
@@ -217,7 +222,9 @@ formatting.
 ### How do I format files?
 
 null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`.
+`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
+formatting by visually selecting part of the buffer and calling
+`vim.lsp.buf.range_formatting()`.
 
 If you have other language servers running that can format the current buffer,
 Neovim will prompt you to choose a formatter. You can prevent actual LSP clients
@@ -237,7 +244,7 @@ See the following snippet:
 
 ```lua
 -- add to a specific server's on_attach,
--- or to a shared on_attach to enable for all supported filetypes
+-- or to a common on_attach callback to enable for all supported filetypes
 on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
         vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
@@ -248,30 +255,23 @@ end
 ### Does it work with (other plugin)?
 
 In most cases, yes. null-ls tries to act like an actual LSP server as much as
-possible, so it should work seamlessly with most LSP-related plugins, but it
-makes some compromises when necessary. If you run into problems, please open an
+possible, so it should work seamlessly with most LSP-related plugins. If you run
+into problems, please try to determine which plugin is causing them and open an
 issue.
 
 ### How does it work?
 
-For a high-level overview: null-ls spawns a headless instance of Neovim as a
-minimal RPC server, whose main purpose is to respond to Neovim's LSP client with
-its capabilities. The client instance keeps the server alive and shuts it down
-on exit or after a period of inactivity.
-
-Everything else happens by modifying the client's `request` and `notify`
-handlers to redirect or override their default behavior, run defined sources,
-and send their output back to Neovim's LSP client.
+Thanks to hard work by @folke, the plugin wraps the mechanism Neovim uses to
+spawn language servers to start a client entirely in-memory. The client attaches
+to buffers that match defined sources and receives and responds to requests,
+document changes, and other events from Neovim.
 
 ### Will it affect my performance?
 
-More testing is necessary, but informal metrics show that the performance impact
-of running a (nearly) inactive headless instance of Neovim is minimal compared
-to the overhead required by a general-purpose language server.
-
-Since null-ls uses pure Lua, minimizes server communication, and removes the
-need to communicate via JSON, in most cases it should (theoretically) run faster
-than similar solutions.
+More testing is necessary, but since null-ls uses pure Lua and runs entirely in
+memory without any external processes, in most cases it should run faster than
+similar solutions. If you notice that performance is worse with null-ls than
+with an alternative, please open an issue!
 
 ### Why hijack LSP features for non-LSP functionality? Why not use (other solution)?
 
@@ -291,9 +291,3 @@ it within Neovim.
 The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
-
-## TODO
-
-- [ ] Continue improving documentation
-- [ ] Add more built-ins
-- [ ] Investigate other potential LSP integrations

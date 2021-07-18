@@ -1,35 +1,38 @@
-# Configuring null-ls
-
-One of the goals of null-ls is to work out-of-the-box with minimal
-configuration.
+# Installing and configuring null-ls
 
 You can install null-ls using any package manager. Here is a simple example
-using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+showing how to install it and its dependencies using
+[packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use({ "jose-elias-alvarez/null-ls.nvim", config = function()
-    require("null-ls").setup({})
-end })
+use({ "jose-elias-alvarez/null-ls.nvim",
+    config = function()
+        require("null-ls").config({})
+        require("lspconfig")["null-ls"].setup({})
+    end,
+    requires = {"nvim-lua/plenary.nvim", "neovim/nvim-lspconfig"}
+    })
 ```
 
-null-ls also depends on
-[plenary.nvim](https://github.com/nvim-lua/plenary.nvim). It's required by other
-popular plugins, so you may already have it installed.
+As shown above, the plugin depends on
+[plenary.nvim](https://github.com/nvim-lua/plenary.nvim) and
+[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), so make sure you've
+installed those, too.
 
-Once installed, the minimal config required to enable null-ls is as follows:
+Below is a simple example demonstrating how you might configure null-ls.
+See [BUILTINS](BUILTINS.md) for information about built-in sources like the one
+in the example below.
 
 ```lua
-require("null-ls").setup {}
+require("null-ls").config({
+    -- you must define at least one source for the plugin to work
+    sources = { require("null-ls").builtins.formatting.stylua }
+})
+require("lspconfig")["null-ls"].setup({
+    -- see the nvim-lspconfig documentation for available configuration options
+    on_attach = my_custom_on_attach
+})
 ```
-
-Users can customize settings by passing them into the `setup()` method, but the
-defaults should work for most users.
-
-Note that null-ls will not do anything until you've registered at least one
-source via `setup()`, `register()`, or an integration.
-
-See [BUILTINS](BUILTINS.md) for information about built-in sources or
-[HELPERS](HELPERS.md) to see how to create your own.
 
 ## Options
 
@@ -38,12 +41,10 @@ The following code block shows the available options and their defaults.
 ```lua
 local defaults = {
     debounce = 250,
-    keep_alive_interval = 60000, -- 60 seconds,
     save_after_format = true,
     default_timeout = 5000,
     nvim_executable = "nvim",
     sources = nil,
-    on_attach = nil,
 }
 ```
 
@@ -57,16 +58,6 @@ Lowering `debounce` will result in more frequent diagnostic refreshes at the
 cost of running diagnostic sources more frequently. The default value should be
 enough to provide nearly-instantaneous feedback from most sources without
 unnecessary resource usage.
-
-### keep_alive_interval (number)
-
-null-ls will shut down its server when Neovim exits, but if the editor crashes
-or the user exits without autocommands, the server process will remain alive.
-Accordingly, the server will shut down if it hasn't received a signal from the
-client within the period specified (in milliseconds) by `keep_alive_interval`.
-
-If you are consistently seeing orphaned null-ls processes after shutting down
-Neovim, please open an issue.
 
 ### save_after_format (boolean)
 
@@ -107,11 +98,6 @@ If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The
 integration will register them independently.
 
-### on_attach (function)
-
-Allows the user to pass in a custom `on_attach` function, which you are
-(probably) already using to define LSP-specific keybindings and settings.
-
 ## Disabling null-ls
 
 You can conditionally block null-ls setup on Neovim startup by setting
@@ -126,7 +112,3 @@ if vim.g.started_by_firenvim then
     vim.g.null_ls_disable = true
 end
 ```
-
-Note that if you've already called `setup()`, null-ls will continue to attach to
-new buffers. To shut down null-ls and prevent it from starting again in the current
-Neovim instance, run `:lua require'null-ls'.disable()`.
