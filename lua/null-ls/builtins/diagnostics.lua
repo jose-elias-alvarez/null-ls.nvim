@@ -206,7 +206,7 @@ M.shellcheck = h.make_builtin({
                     end_row = diagnostic.endLine,
                     end_col = diagnostic.endColumn == diagnostic.column and diagnostic.endColumn
                         or diagnostic.endColumn - 1,
-                    message = diagnostic.message,
+                    message = "[SC" .. diagnostic.code .. "] " .. diagnostic.message,
                     source = "shellcheck",
                     severity = diagnostic.level == "error" and 1
                         or diagnostic.level == "warning" and 2
