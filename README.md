@@ -291,3 +291,23 @@ it within Neovim.
 The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
+
+## Alternatives
+
+- [efm-langserver](https://github.com/mattn/efm-langserver) and
+  [diagnostic-languageserver](https://github.com/iamcco/diagnostic-languageserver):
+  general-purpose language servers that can provide formatting and diagnostics
+  (but not code actions) from CLI output. Both require installing external
+  executables, and neither provides built-ins (and configuring them is, to put
+  it nicely, unfriendly).
+
+- [nvim-lint](https://github.com/mfussenegger/nvim-lint): a Lua plugin that
+  focuses on providing diagnostics from CLI output. Provides built-in linters.
+  Runs independently, which provides flexibility but requires users to define
+  their own autocommands. Does not currently support writing to temp files for
+  diagnostics.
+
+- [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
+  that (surprise) focuses on formatting. Does not currently provide built-in
+  formatters, meaning users have to define their own. Makes no attempt to
+  integrate with LSP behavior (which may be an upside or a downside).
