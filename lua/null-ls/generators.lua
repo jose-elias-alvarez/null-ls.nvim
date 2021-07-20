@@ -56,4 +56,17 @@ M.run = function(params, postprocess, callback)
     end)
 end
 
+M.can_run = function(filetype, method)
+    local generators = c.generators(method)
+    if not generators then
+        return false
+    end
+    for _, generator in ipairs(generators) do
+        if u.filetype_matches(generator.filetypes, filetype) then
+            return true
+        end
+    end
+    return false
+end
+
 return M

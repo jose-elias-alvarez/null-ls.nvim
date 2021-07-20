@@ -1,5 +1,4 @@
-local M = {}
-M.lsp = {
+local lsp_methods = {
     INITIALIZE = "initialize",
     SHUTDOWN = "shutdown",
     EXIT = "exit",
@@ -13,13 +12,17 @@ M.lsp = {
     DID_CLOSE = "textDocument/didClose",
 }
 
-M.internal = {
+local internal_methods = {
     CODE_ACTION = "NULL_LS_CODE_ACTION",
     DIAGNOSTICS = "NULL_LS_DIAGNOSTICS",
     FORMATTING = "NULL_LS_FORMATTING",
     RANGE_FORMATTING = "NULL_LS_RANGE_FORMATTING",
-    _NOTIFICATION = "NULL_LS_NOTIFICATION",
-    _REQUEST_ID = 712345,
 }
 
-return M
+local lsp_to_internal_map = {
+    [lsp_methods.CODE_ACTION] = internal_methods.CODE_ACTION,
+    [lsp_methods.FORMATTING] = internal_methods.FORMATTING,
+    [lsp_methods.RANGE_FORMATTING] = internal_methods.RANGE_FORMATTING,
+}
+
+return { lsp = lsp_methods, internal = internal_methods, map = lsp_to_internal_map }

@@ -2,6 +2,7 @@ local methods = require("null-ls.methods")
 local code_actions = require("null-ls.code-actions")
 local formatting = require("null-ls.formatting")
 local diagnostics = require("null-ls.diagnostics")
+local handlers = require("null-ls.handlers")
 
 local rpc = require("vim.lsp.rpc")
 
@@ -54,6 +55,7 @@ function M.start(dispatchers)
         params.method = method
         if client then
             params.client_id = client.id
+            handlers.setup_client(client)
         end
 
         local send = function(result)

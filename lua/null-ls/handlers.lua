@@ -1,5 +1,6 @@
 local utils = require("null-ls.utils")
 local methods = require("null-ls.methods")
+local generators = require("null-ls.generators")
 
 local M = {}
 
@@ -31,6 +32,22 @@ function M.combine(method, ms)
         handler()
     end
     return vim.lsp.handlers[method]
+end
+
+M.setup_client = function(client)
+    if client._null_ls_setup then
+        return
+    end
+
+    local supports_method_original = client.supports_method
+    client.supports_method = function(method)
+        if methods.map[method] then
+            return generators.can_run(vim.bo.filetype, methods.map[method])
+        end
+        return supports_method_original(method)
+    end
+
+    client._null_ls_setup = true
 end
 
 return M
