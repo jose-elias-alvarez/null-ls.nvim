@@ -1,9 +1,15 @@
 local utils = require("null-ls.utils")
+local methods = require("null-ls.methods")
 
 local M = {}
 
 function M.setup()
-    M.code_action_handler = M.combine("textDocument/codeAction")
+    -- code action batching is merged into master
+    if vim.fn.has("nvim-0.6.0") > 0 then
+        return
+    end
+
+    M.code_action_handler = M.combine(methods.lsp.CODE_ACTION)
 end
 
 -- this will override a handler, batch results and debounce them
