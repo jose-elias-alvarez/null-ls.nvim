@@ -51,6 +51,20 @@ local sources = {
 See the descriptions below or the relevant `builtins` source file to see the
 default options passed to each built-in source.
 
+For diagnostics sources, you can change the format of diagnostic messages by
+setting `diagnostics_format`:
+
+```lua
+local sources = {
+    -- will show code and source name
+    null_ls.builtins.diagnostics.shellcheck.with({ diagnostics_format = "[#{c}] #{m} (#{s})" }),
+}
+```
+
+See [CONFIG](CONFIG.md) to learn about `diagnostics_format`. Note that
+specifying `diagnostics_format` for a built-in will override your global
+`diagnostics_format` for that source.
+
 ## Available Sources
 
 ### Formatting

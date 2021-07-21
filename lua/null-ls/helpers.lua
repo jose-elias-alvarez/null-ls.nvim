@@ -64,7 +64,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache =
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache, diagnostics_format =
         opts.command,
         opts.args,
         opts.on_output,
@@ -75,7 +75,8 @@ M.generator_factory = function(opts)
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
-        opts.use_cache
+        opts.use_cache,
+        opts.diagnostics_format
 
     local _validated
     local validate_opts = function()
@@ -132,6 +133,7 @@ M.generator_factory = function(opts)
                 end
 
                 params.output = output
+                params.diagnostics_format = diagnostics_format
                 if use_cache then
                     s.set_cache(params.bufnr, command, output)
                 end

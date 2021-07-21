@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
@@ -18,9 +19,20 @@ local convert_range = function(diagnostic)
     }
 end
 
-local postprocess = function(diagnostic)
+local postprocess = function(diagnostic, params)
     diagnostic.range = convert_range(diagnostic)
     diagnostic.source = diagnostic.source or "null-ls"
+
+    local formatted = params.diagnostics_format or c.get().diagnostics_format
+    -- avoid unnecessary gsub if using default
+    if formatted == "#{m}" then
+        return
+    end
+
+    formatted = formatted:gsub("#{m}", diagnostic.message)
+    formatted = formatted:gsub("#{s}", diagnostic.source)
+    formatted = formatted:gsub("#{c}", diagnostic.code or "")
+    diagnostic.message = formatted
 end
 
 M.handler = function(original_params)

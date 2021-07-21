@@ -40,6 +40,7 @@ The following code block shows the available options and their defaults.
 
 ```lua
 local defaults = {
+    diagnostics_format = "#{m}",
     debounce = 250,
     save_after_format = true,
     default_timeout = 5000,
@@ -47,6 +48,30 @@ local defaults = {
     sources = nil,
 }
 ```
+
+## diagnostics_format (string)
+
+Sets the default format used for diagnostics. The plugin will replace the
+following special components with the relevant diagnostic information:
+
+- `#{m}`: message
+- `#{s}`: source name (defaults to `null-ls` if not specified)
+- `#{c}`: code (if available)
+
+For example, setting `diagnostics_format` to the following:
+
+```lua
+diagnostics_format = "[#{c}] #{m} (#{s})"
+```
+
+Formats diagnostics as follows:
+
+```txt
+[2148] Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive. (shellcheck)
+```
+
+You can also set `diagnostics_format` for built-ins by using the `with` method,
+described in [BUILTINS](BUILTINS.md).
 
 ## debounce (number)
 
