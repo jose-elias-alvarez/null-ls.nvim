@@ -403,4 +403,36 @@ M.flake8 = h.make_builtin({
     factory = h.generator_factory,
 })
 
+
+
+M.misspell = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "*" },
+    generator_opts = {
+        command = "misspell",
+        to_stdin = true,
+        to_stderr = false,
+        args = { "$FILENAME" },
+        format = "line",
+        check_exit_code = function(code)
+            return code == 0
+        end,
+        on_output = function(line, params)
+            local row, col, message = line:match(":(%d+):(%d+): (.*)")
+            local end_col = col
+            local severity = 3
+
+            return {
+                message = message,
+                row = row,
+                col = col - 1,
+                end_col = end_col,
+                severity = severity,
+                source = "misspell",
+            }
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
