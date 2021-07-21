@@ -228,3 +228,15 @@ local sources = {null_ls.builtins.diagnostics.teal}
 - Filetypes: `{ "teal" }`
 - Command: `tl`
 - Arguments: `{ "check", "$FILENAME" }`
+
+#### [misspell](https://github.com/client9/misspell)
+
+Correct commonly misspelled English words in source files
+
+```lua
+local sources = {null_ls.builtins.diagnostics.misspell}
+```
+
+- Filetypes: `{ "*" }`
+- Command: `misspell`
+- Arguments: `{ "$FILENAME" }`
