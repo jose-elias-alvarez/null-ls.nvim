@@ -411,13 +411,10 @@ M.misspell = h.make_builtin({
     generator_opts = {
         command = "misspell",
         to_stdin = true,
-        to_stderr = false,
         args = { "$FILENAME" },
         format = "line",
-        check_exit_code = function(code)
-            return code == 0
-        end,
-        on_output = function(line, params)
+        to_temp_file = true,
+        on_output = function(line)
             local row, col, message = line:match(":(%d+):(%d+): (.*)")
             local end_col = col
             local severity = 3
@@ -425,7 +422,7 @@ M.misspell = h.make_builtin({
             return {
                 message = message,
                 row = row,
-                col = col - 1,
+                col = col,
                 end_col = end_col,
                 severity = severity,
                 source = "misspell",
