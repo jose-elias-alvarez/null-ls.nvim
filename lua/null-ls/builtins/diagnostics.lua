@@ -409,7 +409,7 @@ M.misspell = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "*" },
     generator_opts = {
-        command = "misspell",
+        command = "zig",
         to_stdin = true,
         args = {},
         format = "line",
@@ -427,6 +427,21 @@ M.misspell = h.make_builtin({
                 source = "misspell",
             }
         end,
+    },
+    factory = h.generator_factory,
+})
+
+M.zig_astcheck = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "zig" },
+    generator_opts = {
+        command = "zig",
+        to_stdin = true,
+        to_stderr = true,
+        args = {"ast-check"},
+        format = "efm",
+        efm = vim.api.nvim_get_option_info'efm'.default,
+        on_output = function() end,
     },
     factory = h.generator_factory,
 })

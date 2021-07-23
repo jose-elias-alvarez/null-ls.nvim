@@ -11,6 +11,7 @@ local output_formats = {
     line = "line", -- call handler once per line of output
     json = "json", -- send processed json output to handler
     json_raw = "json_raw", -- attempt to process json, but send errors to handler
+    efm = "efm", -- process output as errorformat
 }
 
 local M = {}
@@ -63,8 +64,40 @@ local line_output_wrapper = function(params, done, on_output)
     done(all_results)
 end
 
+local efm_output_wrapper = function(params, done, on_output, efm)
+    local output = params.output
+    if not output then
+        done()
+        return
+    end
+
+    local all_results = {}
+    local lines = vim.split(output, "\n")
+    -- when efm is nil, 'errorformat' option will be used
+    local items = vim.fn.getqflist {efm=efm, lines=lines}
+
+    local severities = {e=1, w=2, i=3, n=4}
+
+    for _, item in ipairs(items.items) do
+      if item.text ~= "" then
+          table.insert(all_results, {
+              row = item.lnum,
+              col = item.col,
+              -- end_col = diagnostic.Span[2],
+              message = item.text,
+              severity = severities[item.type],
+          })
+        end
+    end
+
+    all_results = on_output(all_results) or all_results
+
+    done(all_results)
+end
+
+
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache =
+    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache, efm =
         opts.command,
         opts.args,
         opts.on_output,
@@ -75,7 +108,8 @@ M.generator_factory = function(opts)
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
-        opts.use_cache
+        opts.use_cache,
+        opts.efm
 
     local _validated
     local validate_opts = function()
@@ -149,6 +183,12 @@ M.generator_factory = function(opts)
                     line_output_wrapper(params, done, on_output)
                     return
                 end
+
+                if format == output_formats.efm then
+                    efm_output_wrapper(params, done, on_output, efm)
+                    return
+                end
+
 
                 on_output(params, done)
             end
