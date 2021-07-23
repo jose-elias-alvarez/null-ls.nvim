@@ -245,13 +245,10 @@ local sources = {null_ls.builtins.diagnostics.misspell}
 
 Linter for vimscript.
 
-**Note**: the pre-release version should be used to properly parse stdin. It can be
-installed with `pip install --user --pre vim-vint`. See [this issue](https://github.com/Vimjas/vint/issues/305).
-
 ```lua
 local sources = {null_ls.builtins.diagnostics.vint}
 ```
 
 - Filetypes: `{ "vim" }`
 - Command: `vint`
-- Arguments: `{ "-s", "-j", "-" }`
+- Arguments: `{ "-s", "-j", "$FILENAME" }`

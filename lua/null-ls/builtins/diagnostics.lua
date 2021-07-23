@@ -435,8 +435,9 @@ M.vint = h.make_builtin({
     generator_opts = {
         command = "vint",
         format = "json",
-        args = { "-s", "-j", "-" },
-        to_stdin = true,
+        args = { "-s", "-j", "$FILENAME" },
+        to_stdin = false,
+        to_temp_file = true,
         check_exit_code = function(code)
             return code == 0 or code == 1
         end,
