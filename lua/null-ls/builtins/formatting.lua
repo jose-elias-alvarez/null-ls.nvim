@@ -46,6 +46,17 @@ M.asmfmt = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.bean_format = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "beancount" },
+    generator_opts = {
+        command = "bean-format",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.black = h.make_builtin({
     method = FORMATTING,
     filetypes = { "python" },
