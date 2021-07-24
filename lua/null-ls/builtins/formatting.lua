@@ -35,6 +35,17 @@ local get_prettier_generator_args = function(common_args)
     end
 end
 
+M.asmfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "asm" },
+    generator_opts = {
+        command = "asmfmt",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.black = h.make_builtin({
     method = FORMATTING,
     filetypes = { "python" },
