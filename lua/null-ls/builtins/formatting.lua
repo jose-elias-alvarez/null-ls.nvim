@@ -247,6 +247,17 @@ M.mix = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.nginx_beautifier = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "nginx" },
+    generator_opts = {
+        command = "nginxbeautifier",
+        args = { "-i" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.phpcbf = h.make_builtin({
     method = FORMATTING,
     filetypes = { "php" },
