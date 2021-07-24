@@ -44,12 +44,27 @@ function M.on_register_filetypes()
     config.filetypes = c.get()._filetypes
 end
 
--- attach to existing buffers and send a didChange notification to refresh diagnostics
-function M.on_register_source()
-    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        M.try_add(bufnr)
-        vim.lsp.buf_notify(bufnr, methods.lsp.DID_CHANGE, { textDocument = { uri = vim.uri_from_bufnr(bufnr) } })
+-- try attaching to existing buffers and (if applicable) send a didChange notification to refresh diagnostics
+function M.on_register_source(source_methods)
+    -- lspconfig hasn't been set up yet, meaning the source was registered normally (i.e. not dynamically)
+    if not require("lspconfig")["null-ls"] then
+        return
     end
+
+    local client = u.get_client()
+    local is_diagnostic_source = vim.tbl_contains(source_methods, methods.internal.DIAGNOSTICS)
+    local handle_existing_buffer = function(buf)
+        if buf.name == "" then
+            return
+        end
+
+        M.try_add(buf.bufnr)
+        if client and is_diagnostic_source then
+            client.notify(methods.lsp.DID_CHANGE, { textDocument = { uri = vim.uri_from_bufnr(buf.bufnr) } })
+        end
+    end
+
+    vim.tbl_map(handle_existing_buffer, vim.fn.getbufinfo({ listed = 1 }))
 end
 
 function M.try_add(bufnr)

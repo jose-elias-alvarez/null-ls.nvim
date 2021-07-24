@@ -30,8 +30,10 @@ local wanted_type = function(k)
     if type(override) == "table" then
         return function(a)
             return vim.tbl_contains(override, type(a))
-        end,
-            table.concat(override, ", ")
+        end, table.concat(
+            override,
+            ", "
+        )
     end
 
     return type(defaults[k]), true
@@ -92,7 +94,7 @@ local register_source = function(source, filetypes)
         generator.filetypes = filetypes
         table.insert(config._generators[method], generator)
     end
-    require("null-ls.lspconfig").on_register_source()
+    require("null-ls.lspconfig").on_register_source(methods)
 end
 
 local register = function(to_register)

@@ -47,6 +47,14 @@ M.filetype_matches = function(filetypes, ft)
     return vim.tbl_contains(filetypes, "*") or vim.tbl_contains(filetypes, ft)
 end
 
+M.get_client = function()
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+        if client.name == "null-ls" then
+            return client
+        end
+    end
+end
+
 -- lsp-compatible range is 0-indexed.
 -- lua-friendly range is 1-indexed.
 M.range = {
