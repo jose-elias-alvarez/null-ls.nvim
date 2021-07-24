@@ -143,6 +143,17 @@ M.eslint_d = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.erl_fmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "erlang" },
+    generator_opts = {
+        command = "erlfmt",
+        args = { "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.goimports = h.make_builtin({
     method = FORMATTING,
     filetypes = { "go" },
