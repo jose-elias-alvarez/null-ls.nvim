@@ -258,6 +258,17 @@ M.nginx_beautifier = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.perl_tidy = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "perl" },
+    generator_opts = {
+        command = "perltidy",
+        args = { "-q" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.phpcbf = h.make_builtin({
     method = FORMATTING,
     filetypes = { "php" },
