@@ -240,3 +240,15 @@ local sources = {null_ls.builtins.diagnostics.misspell}
 - Filetypes: `{ "*" }`
 - Command: `misspell`
 - Arguments: `{ "$FILENAME" }`
+
+#### [vim-vint](https://github.com/Vimjas/vint)
+
+Linter for vimscript.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.vint}
+```
+
+- Filetypes: `{ "vim" }`
+- Command: `vint`
+- Arguments: `{ "-s", "-j", "$FILENAME" }`
