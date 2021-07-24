@@ -35,6 +35,11 @@ local get_prettier_generator_args = function(common_args)
     end
 end
 
+local function get_uncrustify_args()
+    local format_type = "-l " .. vim.bo.filetype:upper()
+    return { "-q", format_type }
+end
+
 M.asmfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "asm" },
@@ -447,6 +452,17 @@ M.trim_whitespace = h.make_builtin({
     generator_opts = {
         command = "awk",
         args = { '{ sub(/[ \t]+$/, ""); print }' },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.uncrustify = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "c", "cpp", "cs", "java" },
+    generator_opts = {
+        command = "uncrustify",
+        args = get_uncrustify_args(),
         to_stdin = true,
     },
     factory = h.formatter_factory,
