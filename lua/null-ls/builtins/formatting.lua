@@ -151,6 +151,22 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.r_tidy = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "r", "rmd" },
+    generator_opts = {
+        command = "R",
+        args = {
+            "--slave",
+            "--no-restore",
+            "--no-save",
+            '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"',
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rufo = h.make_builtin({
     method = FORMATTING,
     filetypes = { "ruby" },
