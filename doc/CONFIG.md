@@ -43,7 +43,6 @@ local defaults = {
     debounce = 250,
     save_after_format = true,
     default_timeout = 5000,
-    nvim_executable = "nvim",
     sources = nil,
 }
 ```
@@ -56,7 +55,7 @@ formatting,** both of which run on demand.
 
 Lowering `debounce` will result in more frequent diagnostic refreshes at the
 cost of running diagnostic sources more frequently. The default value should be
-enough to provide nearly-instantaneous feedback from most sources without
+enough to provide near-instantaneous feedback from most sources without
 unnecessary resource usage.
 
 ### save_after_format (boolean)
@@ -76,10 +75,6 @@ end
 
 Setting `save_after_format = false` will leave the buffer in a modified state
 after formatting, which is consistent with default LSP behavior.
-
-### nvim_executable (string)
-
-Defines the executable used to start the null-ls server.
 
 ### default_timeout (number)
 
@@ -101,14 +96,18 @@ integration will register them independently.
 ## Disabling null-ls
 
 You can conditionally block null-ls setup on Neovim startup by setting
-`vim.g.null_ls_disable = true` before `setup()` runs.
+`vim.g.null_ls_disable = true` before `config()` runs.
 
 For example, you can use the following snippet to disable null-ls when using
 [firenvim](https://github.com/glacambre/firenvim), as long as the module
-containing the snippet loads before `setup()`:
+containing the snippet loads before `config()`:
 
 ```lua
 if vim.g.started_by_firenvim then
     vim.g.null_ls_disable = true
 end
 ```
+
+If null-ls is already running but you want to stop it, you can use the methods
+provided by nvim-lspconfig (`:LspStart`, `:LspStop`, and `:LspRestart`) to
+control its behavior.

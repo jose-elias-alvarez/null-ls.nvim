@@ -2,11 +2,9 @@ local validate = vim.validate
 
 local defaults = {
     debounce = 250,
-    keep_alive_interval = 60000, -- 60 seconds,
     save_after_format = true,
     default_timeout = 5000,
     debug = false,
-    nvim_executable = "nvim",
     _generators = {},
     _filetypes = {},
     _names = {},
