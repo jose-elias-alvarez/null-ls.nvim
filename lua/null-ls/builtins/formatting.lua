@@ -139,6 +139,7 @@ M.eslint_d = h.make_builtin({
         "javascriptreact",
         "typescript",
         "typescriptreact",
+        "vue",
     },
     generator_opts = {
         command = "eslint_d",
