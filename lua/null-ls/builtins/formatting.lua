@@ -376,6 +376,17 @@ M.rustfmt = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.sql_fmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "sql" },
+    generator_opts = {
+        command = "sqlfmt",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.scalafmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "scala" },
