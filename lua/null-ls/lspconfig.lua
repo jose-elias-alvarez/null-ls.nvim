@@ -1,5 +1,8 @@
 local methods = require("null-ls.methods")
 local c = require("null-ls.config")
+local u = require("null-ls.utils")
+
+local api = vim.api
 
 local M = {}
 
@@ -22,9 +25,9 @@ function M.setup()
         default_config = config_def,
     }
 
-    -- listen on FileType and attach if needed
+    -- listen on FileType and try attaching
     vim.cmd([[
-      augroup null-ls
+      augroup NullLs
         autocmd!
         autocmd FileType * unsilent lua require("null-ls.lspconfig").try_add()
       augroup end
@@ -55,12 +58,14 @@ function M.try_add(bufnr)
         return
     end
 
-    bufnr = bufnr or tonumber(vim.fn.expand("<abuf>"))
-    local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
-    local fts = c.get()._filetypes
-    if vim.tbl_contains(fts, ft) or vim.tbl_contains(fts, "*") then
-        config.manager.try_add(bufnr)
+    bufnr = bufnr or api.nvim_get_current_buf()
+    local ft, buftype = api.nvim_buf_get_option(bufnr, "filetype"), api.nvim_buf_get_option(bufnr, "buftype")
+    -- lspconfig checks if buftype == "nofile", but we want to be defensive, since (if configured) null-ls will try attaching to any buffer
+    if buftype ~= "" or not u.filetype_matches(c.get()._filetypes, ft) then
+        return
     end
+
+    config.manager.try_add(bufnr)
 end
 
 return M
