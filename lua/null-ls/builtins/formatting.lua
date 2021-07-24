@@ -93,6 +93,17 @@ M.lua_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.phpcbf = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "php" },
+    generator_opts = {
+        command = "phpcbf",
+        args = { "--standard=PSR12", "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.prettier = h.make_builtin({
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = {
