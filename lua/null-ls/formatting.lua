@@ -46,6 +46,44 @@ local restore_win_data = function(marks, views, bufnr)
     end
 end
 
+---@param edits table[]
+---@param params table
+---@param handler fun(edits: table[]): nil
+M.apply_edits = function(edits, params, handler)
+    local bufnr = params.bufnr
+
+    u.debug_log("received edits from generators")
+    u.debug_log(edits)
+
+    local diffed_edits = {}
+    for _, edit in ipairs(edits) do
+        local diffed = lsp.util.compute_diff(params.content, vim.split(edit.text, "\n"))
+        -- check if the computed diff is an actual edit
+        if
+            not (
+                diffed.text == ""
+                and diffed.range.start.character == diffed.range["end"].character
+                and diffed.range.start.line == diffed.range["end"].line
+            )
+        then
+            table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
+        end
+    end
+
+    local marks, views = save_win_data(bufnr)
+
+    handler(diffed_edits)
+
+    vim.defer_fn(function()
+        restore_win_data(marks, views, bufnr)
+        if c.get().save_after_format and not _G._TEST then
+            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
+        end
+    end, 0)
+
+    u.debug_log("successfully applied edits")
+end
+
 M.handler = function(method, original_params, handler)
     if not original_params.textDocument then
         return
@@ -54,36 +92,7 @@ M.handler = function(method, original_params, handler)
     local bufnr = vim.uri_to_bufnr(uri)
 
     local apply_edits = function(edits, params)
-        u.debug_log("received edits from generators")
-        u.debug_log(edits)
-
-        local diffed_edits = {}
-        for _, edit in ipairs(edits) do
-            local diffed = lsp.util.compute_diff(params.content, vim.split(edit.text, "\n"))
-            -- check if the computed diff is an actual edit
-            if
-                not (
-                    diffed.text == ""
-                    and diffed.range.start.character == diffed.range["end"].character
-                    and diffed.range.start.line == diffed.range["end"].line
-                )
-            then
-                table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
-            end
-        end
-
-        local marks, views = save_win_data(bufnr)
-
-        handler(diffed_edits)
-
-        vim.defer_fn(function()
-            restore_win_data(marks, views, bufnr)
-            if c.get().save_after_format and not _G._TEST then
-                vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
-            end
-        end, 0)
-
-        u.debug_log("successfully applied edits")
+        M.apply_edits(edits, params, handler)
     end
 
     if method == methods.lsp.FORMATTING then
