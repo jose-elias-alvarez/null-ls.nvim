@@ -94,6 +94,17 @@ M.crystal_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.dfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "d" },
+    generator_opts = {
+        command = "dfmt",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.dart_format = h.make_builtin({
     method = FORMATTING,
     filetypes = { "dart" },
