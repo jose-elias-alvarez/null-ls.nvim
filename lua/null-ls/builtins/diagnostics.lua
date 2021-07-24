@@ -404,4 +404,68 @@ M.flake8 = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.misspell = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "*" },
+    generator_opts = {
+        command = "misspell",
+        to_stdin = true,
+        args = {},
+        format = "line",
+        on_output = function(line)
+            local row, col, message = line:match(":(%d+):(%d+): (.*)")
+            local end_col = col
+            local severity = 3
+
+            return {
+                message = message,
+                row = row,
+                col = col,
+                end_col = end_col,
+                severity = severity,
+                source = "misspell",
+            }
+        end,
+    },
+    factory = h.generator_factory,
+})
+
+M.vint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "vim" },
+    generator_opts = {
+        command = "vint",
+        format = "json",
+        args = { "-s", "-j", "$FILENAME" },
+        to_stdin = false,
+        to_temp_file = true,
+        check_exit_code = function(code)
+            return code == 0 or code == 1
+        end,
+        on_output = function(params, done)
+            if not params.output or type(params.output) ~= "table" then
+                return done()
+            end
+
+            local diagnostics = {}
+
+            for _, diagnostic in ipairs(params.output) do
+                table.insert(diagnostics, {
+                    row = diagnostic.line_number,
+                    col = diagnostic.column_number - 1,
+                    end_col = diagnostic.column_number,
+                    code = diagnostic.policy_name,
+                    source = "vint",
+                    message = diagnostic.description,
+                    severity = diagnostic.severity == "error" and 1
+                        or diagnostic.severity == "warning" and 2
+                        or diagnostic.severity == "style_problem" and 3
+                })
+            end
+            return diagnostics
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M

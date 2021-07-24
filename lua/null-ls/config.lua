@@ -95,7 +95,7 @@ local register_source = function(source, filetypes)
         generator.filetypes = filetypes
         table.insert(config._generators[method], generator)
     end
-    require("null-ls.lspconfig").on_register_source()
+    require("null-ls.lspconfig").on_register_source(methods)
 end
 
 local register = function(to_register)

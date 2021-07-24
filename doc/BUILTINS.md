@@ -242,3 +242,27 @@ local sources = {null_ls.builtins.diagnostics.teal}
 - Filetypes: `{ "teal" }`
 - Command: `tl`
 - Arguments: `{ "check", "$FILENAME" }`
+
+#### [misspell](https://github.com/client9/misspell)
+
+Correct commonly misspelled English words in source files
+
+```lua
+local sources = {null_ls.builtins.diagnostics.misspell}
+```
+
+- Filetypes: `{ "*" }`
+- Command: `misspell`
+- Arguments: `{ "$FILENAME" }`
+
+#### [vim-vint](https://github.com/Vimjas/vint)
+
+Linter for vimscript.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.vint}
+```
+
+- Filetypes: `{ "vim" }`
+- Command: `vint`
+- Arguments: `{ "-s", "-j", "$FILENAME" }`
