@@ -151,6 +151,17 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.rustfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "rust" },
+    generator_opts = {
+        command = "rustfmt",
+        args = { "--emit=stdout", "--edition=2018" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.scalafmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "scala" },
