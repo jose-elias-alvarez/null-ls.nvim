@@ -151,6 +151,17 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.rufo = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "ruby" },
+    generator_opts = {
+        command = "rufo",
+        args = { "-x" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rustfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "rust" },
