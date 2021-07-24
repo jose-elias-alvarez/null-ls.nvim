@@ -151,6 +151,17 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.scalafmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "scala" },
+    generator_opts = {
+        command = "scalafmt",
+        args = { "--stdin" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.shfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = {
@@ -170,7 +181,7 @@ M.stylua = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.swift = h.make_builtin({
+M.swiftformat = h.make_builtin({
     method = FORMATTING,
     filetypes = { "swift" },
     generator_opts = {
