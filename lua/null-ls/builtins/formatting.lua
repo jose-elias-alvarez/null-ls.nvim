@@ -55,6 +55,19 @@ M.isort = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.yapf = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "yapf",
+        args = {
+            "--quiet",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 local get_prettier_generator_args = function(common_args)
     return function(params)
         local args = vim.deepcopy(common_args)
@@ -163,6 +176,20 @@ M.trim_whitespace = h.make_builtin({
     generator_opts = {
         command = "awk",
         args = { '{ sub(/[ \t]+$/, ""); print }' },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.terraform = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "tf", "hcl" },
+    generator_opts = {
+        command = "terraform",
+        args = {
+            "fmt",
+            "-",
+        },
         to_stdin = true,
     },
     factory = h.formatter_factory,
