@@ -116,6 +116,17 @@ M.dart_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.elm_format = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "elm" },
+    generator_opts = {
+        command = "elm-format",
+        args = { "--stdin", "--elm-version=0.19" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.eslint_d = h.make_builtin({
     method = FORMATTING,
     filetypes = {
@@ -219,7 +230,7 @@ M.mix = h.make_builtin({
     filetypes = { "elixir" },
     generator_opts = {
         command = "mix",
-        args = { "format" },
+        args = { "format", "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
