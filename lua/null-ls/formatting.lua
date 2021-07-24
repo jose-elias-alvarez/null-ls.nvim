@@ -38,9 +38,11 @@ local restore_win_data = function(marks, views, bufnr)
     end
 
     for win, view in pairs(views) do
-        api.nvim_win_call(win, function()
-            vim.fn.winrestview(view)
-        end)
+        if api.nvim_win_is_valid(win) then
+            api.nvim_win_call(win, function()
+                vim.fn.winrestview(view)
+            end)
+        end
     end
 end
 
