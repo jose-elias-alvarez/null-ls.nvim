@@ -6,68 +6,6 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 local M = {}
 
-M.lua_format = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "lua" },
-    generator_opts = {
-        command = "lua-format",
-        args = { "-i" },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
-M.stylua = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "lua" },
-    generator_opts = { command = "stylua", args = { "-s", "-" }, to_stdin = true },
-    factory = h.formatter_factory,
-})
-
-M.black = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "python" },
-    generator_opts = {
-        command = "black",
-        args = {
-            "--quiet",
-            "--fast",
-            "-",
-        },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
-M.isort = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "python" },
-    generator_opts = {
-        command = "isort",
-        args = {
-            "--stdout",
-            "--profile",
-            "black",
-            "-",
-        },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
-M.yapf = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "python" },
-    generator_opts = {
-        command = "yapf",
-        args = {
-            "--quiet",
-        },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
 local get_prettier_generator_args = function(common_args)
     return function(params)
         local args = vim.deepcopy(common_args)
@@ -96,6 +34,64 @@ local get_prettier_generator_args = function(common_args)
         return args
     end
 end
+
+M.black = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "black",
+        args = {
+            "--quiet",
+            "--fast",
+            "-",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.eslint_d = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+    },
+    generator_opts = {
+        command = "eslint_d",
+        args = { "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.isort = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "isort",
+        args = {
+            "--stdout",
+            "--profile",
+            "black",
+            "-",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.lua_format = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "lua-format",
+        args = { "-i" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
 
 M.prettier = h.make_builtin({
     method = { FORMATTING, RANGE_FORMATTING },
@@ -155,27 +151,31 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.eslint_d = h.make_builtin({
+M.shfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = {
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact",
+        "sh",
     },
     generator_opts = {
-        command = "eslint_d",
-        args = { "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" },
+        command = "shfmt",
         to_stdin = true,
     },
     factory = h.formatter_factory,
 })
 
-M.trim_whitespace = h.make_builtin({
+M.stylua = h.make_builtin({
     method = FORMATTING,
+    filetypes = { "lua" },
+    generator_opts = { command = "stylua", args = { "-s", "-" }, to_stdin = true },
+    factory = h.formatter_factory,
+})
+
+M.swift = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "swift" },
     generator_opts = {
-        command = "awk",
-        args = { '{ sub(/[ \t]+$/, ""); print }' },
+        command = "swiftformat",
+        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -195,13 +195,24 @@ M.terraform = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.shfmt = h.make_builtin({
+M.trim_whitespace = h.make_builtin({
     method = FORMATTING,
-    filetypes = {
-        "sh",
-    },
     generator_opts = {
-        command = "shfmt",
+        command = "awk",
+        args = { '{ sub(/[ \t]+$/, ""); print }' },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.yapf = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "yapf",
+        args = {
+            "--quiet",
+        },
         to_stdin = true,
     },
     factory = h.formatter_factory,
