@@ -72,6 +72,17 @@ M.black = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.cmake_format = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "cmake" },
+    generator_opts = {
+        command = "cmake-format",
+        args = { "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.dart_format = h.make_builtin({
     method = FORMATTING,
     filetypes = { "dart" },
