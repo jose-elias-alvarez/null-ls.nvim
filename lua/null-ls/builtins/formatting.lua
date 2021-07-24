@@ -82,6 +82,17 @@ M.isort = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.json_tool = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "json" },
+    generator_opts = {
+        command = "python",
+        args = { "-m", "json.tool" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.lua_format = h.make_builtin({
     method = FORMATTING,
     filetypes = { "lua" },
