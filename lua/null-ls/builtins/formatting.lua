@@ -50,6 +50,17 @@ M.black = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.dart_format = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "dart" },
+    generator_opts = {
+        command = "dart",
+        args = { "format" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.eslint_d = h.make_builtin({
     method = FORMATTING,
     filetypes = {
@@ -307,7 +318,7 @@ M.swiftformat = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.terraform = h.make_builtin({
+M.terraform_fmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "tf", "hcl" },
     generator_opts = {
