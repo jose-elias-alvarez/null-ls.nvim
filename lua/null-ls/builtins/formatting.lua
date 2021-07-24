@@ -66,6 +66,50 @@ M.eslint_d = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.goimports = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "goimports",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.gofmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "gofmt",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.gofumports = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "gofumports",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.gofumpt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "gofumpt",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.isort = h.make_builtin({
     method = FORMATTING,
     filetypes = { "python" },
