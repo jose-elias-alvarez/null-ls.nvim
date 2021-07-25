@@ -5,6 +5,80 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local M = {}
 
+local default_severities = {
+    ["error"] = 1,
+    ["warning"] = 2,
+    ["information"] = 3,
+    ["hint"] = 4,
+}
+
+--- Parse a linter's output using a regex pattern
+-- @param pattern The regex pattern
+-- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
+-- @param severities An optional table mapping the severity values to their codes
+-- @param defaults An optional table of diagnostic default values
+local from_pattern = function(pattern, groups, severities, defaults)
+    local group_handlers = {
+        row = function(entries)
+            return tonumber(entries["row"])
+        end,
+        col = function(entries)
+            return tonumber(entries["col"])
+        end,
+        end_col = function(entries)
+            return tonumber(entries["end_col"]) or tonumber(entries["col"])
+        end,
+        code = function(entries)
+            return entries["code"]
+        end,
+        severity = function(entries)
+            local severity = entries["severity"]
+            return severities[severity] or defaults["severity"] or default_severities["error"]
+        end,
+        message = function(entries)
+            return entries["message"]
+        end,
+    }
+
+    severities = severities or {}
+    defaults = defaults or {}
+    return function(line, params)
+        local results = { line:match(pattern) }
+        local entries = {}
+
+        for i, match in ipairs(results) do
+            entries[groups[i]] = match
+        end
+        if not (entries["row"] and entries["message"]) then
+            return nil
+        end
+
+        local diagnostic = {}
+        for key, handler in pairs(group_handlers) do
+            diagnostic[key] = defaults[key] or handler(entries)
+        end
+
+        return diagnostic
+    end
+end
+
+--- Parse a linter's output using multiple regex patterns until one matches
+-- @param patterns The regex pattern list
+-- @param groups The groups list defined by the patterns
+-- @param severities An optional table mapping the severity values to their codes
+-- @param defaults An optional table of diagnostic default values
+local from_patterns = function(patterns, groups, severities, defaults)
+    return function()
+        for i, pattern in ipairs(patterns) do
+            local diagnostic = from_pattern(pattern, groups[i], severities, defaults)
+            if diagnostic then
+                return diagnostic
+            end
+        end
+        return nil
+    end
+end
+
 M.write_good = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
@@ -15,32 +89,12 @@ M.write_good = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = function(line, params)
-            local pos = vim.split(string.match(line, "%d+:%d+"), ":")
-            local row = pos[1]
-
-            local message = string.match(line, ":([^:]+)$")
-
-            local col, end_col
-            local issue = string.match(line, '%b""')
-            local issue_line = params.content[tonumber(row)]
-            if issue and issue_line then
-                local issue_start, issue_end = string.find(issue_line, string.match(issue, '([^"]+)'))
-                if issue_start and issue_end then
-                    col = tonumber(issue_start) - 1
-                    end_col = issue_end
-                end
-            end
-
-            return {
-                row = row,
-                col = col,
-                end_col = end_col,
-                message = message,
-                severity = 1,
-                source = "write-good",
-            }
-        end,
+        on_output = from_pattern(
+            [[(%d+):(%d+):(.*)]], --
+            { "row", "col", "message" },
+            nil,
+            { source = "write-good" }
+        ),
     },
     factory = h.generator_factory,
 })
@@ -57,33 +111,12 @@ M.markdownlint = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = function(line, params)
-            local split = vim.split(line, " ")
-            local rule = split[2]
-            local _, rule_end = string.find(line, rule, nil, true)
-            local message = string.sub(line, rule_end + 2)
-
-            local pos = vim.split(split[1], ":")
-            local row = pos[2]
-            local col = pos[3]
-
-            local end_col
-            local issue = string.match(line, "%b[]")
-            if issue then
-                issue = string.sub(issue, 2, #issue - 1)
-                local issue_line = params.content[tonumber(row)]
-                _, end_col = string.find(issue_line, issue, nil, true)
-            end
-
-            return {
-                row = row,
-                col = col and col - 1,
-                end_col = end_col,
-                message = message,
-                severity = 1,
-                source = "markdownlint",
-            }
-        end,
+        on_output = from_patterns(
+            { [[:(%d+):(%d+) [%w-/]+ (.*)]], [[:(%d+) [%w-/]+ (.*)]] },
+            { { "row", "col", "message" }, { "row", "message" } },
+            nil,
+            { source = "markdownlint" }
+        ),
     },
     factory = h.generator_factory,
 })
@@ -121,61 +154,17 @@ M.teal = h.make_builtin({
     generator_opts = {
         command = "tl",
         args = { "check", "$FILENAME" },
+        format = "line",
         check_exit_code = function(code)
             return code <= 1
         end,
         to_stderr = true,
         to_temp_file = true,
-        on_output = function(params, done)
-            if not params.output or params.output == "" then
-                return done()
-            end
-
-            local diagnostics, severity = {}, nil
-            for _, line in ipairs(vim.split(params.output, "\n")) do
-                if not string.find(line, "^===") then
-                    if string.find(line, "warning") then
-                        severity = 2
-                    end
-                    if string.find(line, "error") then
-                        severity = 1
-                    end
-                    if string.find(line, "/tmp/", nil) then
-                        local split = vim.split(line, " ")
-
-                        local pos = vim.split(split[1], ":")
-                        local row = pos[2]
-                        local col = pos[3]
-                        if row and col then
-                            local _, message_start = string.find(line, split[1], nil, true)
-                            local message = string.sub(line, message_start + 2)
-
-                            local content_line = params.content[tonumber(row)]
-                            local end_col = col
-                            for i = col, #content_line do
-                                i = i + 1
-                                local next_char = string.sub(content_line, i, i)
-                                if next_char == "" or string.find(next_char, "[^%w\"'.:]") then
-                                    break
-                                end
-                                end_col = i
-                            end
-
-                            table.insert(diagnostics, {
-                                row = row,
-                                col = col - 1,
-                                end_col = end_col,
-                                message = message,
-                                severity = severity,
-                                source = "tl check",
-                            })
-                        end
-                    end
-                end
-            end
-
-            return done(diagnostics)
-        end,
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (.*)]], --
+            { "row", "col", "message" },
+            { source = "tl check" }
+        ),
     },
     factory = h.generator_factory,
 })
@@ -367,30 +356,12 @@ M.flake8 = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = function(line, params)
-            local row, col, message = line:match(":(%d+):(%d+): (.*)")
-            local end_col = col
-            local severity = 1
-            local code = string.match(message, "[EFW]%d+")
-
-            if vim.startswith(code, "E") then
-                severity = 1
-            elseif vim.startswith(code, "W") then
-                severity = 2
-            else
-                severity = 3
-            end
-
-            return {
-                message = message,
-                code = code,
-                row = row,
-                col = col - 1,
-                end_col = end_col,
-                severity = severity,
-                source = "flake8",
-            }
-        end,
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
+            { "row", "col", "code", "severity", "message" },
+            { E = 1, W = 2, F = 3 },
+            { source = "flake8" }
+        ),
     },
     factory = h.generator_factory,
 })
@@ -403,20 +374,12 @@ M.misspell = h.make_builtin({
         to_stdin = true,
         args = {},
         format = "line",
-        on_output = function(line)
-            local row, col, message = line:match(":(%d+):(%d+): (.*)")
-            local end_col = col
-            local severity = 3
-
-            return {
-                message = message,
-                row = row,
-                col = col,
-                end_col = end_col,
-                severity = severity,
-                source = "misspell",
-            }
-        end,
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (.*)]],
+            { "row", "col", "message" },
+            nil,
+            { source = "misspell", severity = default_severities["information"] }
+        ),
     },
     factory = h.generator_factory,
 })
