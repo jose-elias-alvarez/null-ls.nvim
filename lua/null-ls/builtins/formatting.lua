@@ -165,12 +165,28 @@ M.eslint_d = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.erl_fmt = h.make_builtin({
+M.erlfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "erlang" },
     generator_opts = {
         command = "erlfmt",
         args = { "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.format_r = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "r", "rmd" },
+    generator_opts = {
+        command = "R",
+        args = {
+            "--slave",
+            "--no-restore",
+            "--no-save",
+            '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"',
+        },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -192,17 +208,6 @@ M.gofmt = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "gofmt",
-        args = {},
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
-M.gofumports = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "go" },
-    generator_opts = {
-        command = "gofumports",
         args = {},
         to_stdin = true,
     },
@@ -280,7 +285,7 @@ M.nginx_beautifier = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.perl_tidy = h.make_builtin({
+M.perltidy = h.make_builtin({
     method = FORMATTING,
     filetypes = { "perl" },
     generator_opts = {
@@ -360,22 +365,6 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.r_tidy = h.make_builtin({
-    method = FORMATTING,
-    filetypes = { "r", "rmd" },
-    generator_opts = {
-        command = "R",
-        args = {
-            "--slave",
-            "--no-restore",
-            "--no-save",
-            '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"',
-        },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
 M.rufo = h.make_builtin({
     method = FORMATTING,
     filetypes = { "ruby" },
@@ -398,12 +387,12 @@ M.rustfmt = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-M.sql_fmt = h.make_builtin({
+M.sqlformat = h.make_builtin({
     method = FORMATTING,
     filetypes = { "sql" },
     generator_opts = {
-        command = "sqlfmt",
-        args = {},
+        command = "sqlformat",
+        args = { "--reindent", "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
