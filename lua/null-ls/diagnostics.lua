@@ -37,12 +37,16 @@ M.handler = function(original_params)
     end
 
     original_params.bufnr = vim.uri_to_bufnr(uri)
-    generators.run(u.make_params(original_params, methods.internal.DIAGNOSTICS), postprocess, function(diagnostics)
-        vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
-            diagnostics = diagnostics,
-            uri = uri,
-        }, original_params.client_id, nil, {})
-    end)
+    generators.run_registered(
+        u.make_params(original_params, methods.internal.DIAGNOSTICS),
+        postprocess,
+        function(diagnostics)
+            vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
+                diagnostics = diagnostics,
+                uri = uri,
+            }, original_params.client_id, nil, {})
+        end
+    )
 end
 
 return M
