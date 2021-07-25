@@ -221,25 +221,21 @@ M.shellcheck = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = function(params)
-            local diagnostics = {}
-            for _, diagnostic in ipairs(params.output) do
-                table.insert(diagnostics, {
-                    row = diagnostic.line,
-                    col = diagnostic.column - 1,
-                    end_row = diagnostic.endLine,
-                    end_col = diagnostic.endColumn == diagnostic.column and diagnostic.endColumn
-                        or diagnostic.endColumn - 1,
-                    message = diagnostic.message,
-                    source = "shellcheck",
-                    severity = diagnostic.level == "error" and 1
-                        or diagnostic.level == "warning" and 2
-                        or diagnostic.level == "info" and 3
-                        or diagnostic.level == "style" and 4,
-                })
-            end
-            return diagnostics
-        end,
+        on_output = from_json({
+            row = "line",
+            col = "column",
+            end_row = "endLine",
+            end_col = "endColumn",
+            message = "message",
+            severity = "level",
+        }, {
+            error = 1,
+            warning = 2,
+            info = 3,
+            style = 4,
+        }, {
+            source = "shellcheck",
+        }),
     },
     factory = h.generator_factory,
 })
