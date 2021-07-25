@@ -12,13 +12,8 @@ local default_severities = {
     ["hint"] = 4,
 }
 
---- Parse a linter's output using a regex pattern
--- @param pattern The regex pattern
--- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
--- @param severities An optional table mapping the severity values to their codes
--- @param defaults An optional table of diagnostic default values
-local from_pattern = function(pattern, groups, severities, defaults)
-    local group_handlers = {
+local make_attribute_handlers = function(severities, defaults)
+    return {
         row = function(entries)
             return tonumber(entries["row"])
         end,
@@ -39,9 +34,17 @@ local from_pattern = function(pattern, groups, severities, defaults)
             return entries["message"]
         end,
     }
+end
 
+--- Parse a linter's output using a regex pattern
+-- @param pattern The regex pattern
+-- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
+-- @param severities An optional table mapping the severity values to their codes
+-- @param defaults An optional table of diagnostic default values
+local from_pattern = function(pattern, groups, severities, defaults)
     severities = severities or {}
     defaults = defaults or {}
+    local attribute_handlers = make_attribute_handlers(severities, defaults)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
@@ -54,7 +57,7 @@ local from_pattern = function(pattern, groups, severities, defaults)
         end
 
         local diagnostic = {}
-        for key, handler in pairs(group_handlers) do
+        for key, handler in pairs(attribute_handlers) do
             diagnostic[key] = defaults[key] or handler(entries)
         end
 
@@ -76,6 +79,47 @@ local from_patterns = function(patterns, groups, severities, defaults)
             end
         end
         return nil
+    end
+end
+
+local from_json = function(attributes, severities, defaults)
+    severities = severities or {}
+    defaults = defaults or {}
+    local attribute_handlers = make_attribute_handlers(severities, defaults)
+    return function(params)
+        local diagnostics = {}
+        for _, json_diagnostic in ipairs(params.output) do
+            local entries = {}
+            for diagnostic_key, json_key in pairs(attributes) do
+                if json_key:find(".", 1, true) then
+                    local entry = nil
+                    local path = vim.split(json_key, ".")
+                    for i, key in ipairs(path) do
+                        print("unfolding ", json_key, " ", i, " v: ", key)
+                        -- Avoid copying the whole attribute dict
+                        entry = i == 1 and json_diagnostic[key] or entry[key]
+                    end
+                    entries[diagnostic_key] = entry
+                else
+                    entries[diagnostic_key] = json_diagnostic[json_key]
+                end
+            end
+
+            print("ENTRIES")
+            for k, v in pairs(entries) do
+                print(k, v)
+            end
+
+            if entries["row"] and entries["message"] then
+                local diagnostic = {}
+                for key, handler in pairs(attribute_handlers) do
+                    diagnostic[key] = defaults[key] or handler(entries)
+                end
+                table.insert(diagnostics, diagnostic)
+            end
+        end
+
+        return diagnostics
     end
 end
 
@@ -396,23 +440,11 @@ M.vint = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 1
         end,
-        on_output = function(params)
-            local diagnostics = {}
-            for _, diagnostic in ipairs(params.output) do
-                table.insert(diagnostics, {
-                    row = diagnostic.line_number,
-                    col = diagnostic.column_number - 1,
-                    end_col = diagnostic.column_number,
-                    code = diagnostic.policy_name,
-                    source = "vint",
-                    message = diagnostic.description,
-                    severity = diagnostic.severity == "error" and 1
-                        or diagnostic.severity == "warning" and 2
-                        or diagnostic.severity == "style_problem" and 3,
-                })
-            end
-            return diagnostics
-        end,
+        on_output = from_json(
+            { row = "line_number", col = "column_number", code = "policy_name", message = "description" },
+            { error = 1, warning = 2, style_problem = 3 },
+            { source = "vint" }
+        ),
     },
     factory = h.generator_factory,
 })
