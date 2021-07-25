@@ -55,6 +55,10 @@ local from_pattern = function(pattern, groups, severities, defaults)
         for i, match in ipairs(results) do
             entries[groups[i]] = match
         end
+        print("ENTRIES")
+        for k,v in pairs(entries) do
+          print(k, v)
+        end
         if not (entries["row"] and entries["message"]) then
             return nil
         end
@@ -245,61 +249,20 @@ M.selene = h.make_builtin({
     filetypes = { "lua" },
     generator_opts = {
         command = "selene",
-        args = { "--display-style", "json", "-" },
+        args = { "--display-style", "quiet", "-" },
         to_stdin = true,
         to_stderr = false,
         ignore_errors = true,
-        format = "raw",
+        format = "line",
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = function(params, done)
-            local function get_pos(byte)
-                return unpack(vim.api.nvim_buf_call(params.bufnr, function()
-                    local lnum = vim.fn.byte2line(byte)
-                    local lbyte = vim.fn.line2byte(lnum)
-                    return { lnum, byte - lbyte + 1 }
-                end))
-            end
-            local ret = {}
-            for _, line in ipairs(vim.split(params.err or "", "\n")) do
-                if line ~= "" then
-                    local error, row, col = line:match("ERROR: (.*) at line (%d+), column (%d+)")
-                    if error then
-                        table.insert(ret, {
-                            row = row,
-                            col = col,
-                            message = error,
-                            source = "selene",
-                            severity = 1,
-                        })
-                    end
-                end
-            end
-            for _, line in ipairs(vim.split(params.output or "", "\n")) do
-                if line ~= "" then
-                    local ok, diagnostic = pcall(vim.fn.json_decode, line)
-                    if ok then
-                        local span = diagnostic.primary_label.span
-                        local row, col = get_pos(span.start)
-                        local end_row, end_col = get_pos(span["end"])
-                        table.insert(ret, {
-                            row = row,
-                            col = col,
-                            end_row = end_row,
-                            end_col = end_col,
-                            message = diagnostic.message,
-                            code = diagnostic.code,
-                            source = "selene",
-                            severity = (diagnostic.severity == "Error" and 1)
-                                or (diagnostic.severity == "Warning" and 2)
-                                or 4,
-                        })
-                    end
-                end
-            end
-            done(ret)
-        end,
+        on_output = from_pattern(
+            [[(%d+):(%d+): (%w+)%[([%w_]+)%]: (.*)]],
+            { "row", "col", "severity", "code", "message" },
+            nil,
+            { source = "selene" }
+        ),
     },
     factory = h.generator_factory,
 })
