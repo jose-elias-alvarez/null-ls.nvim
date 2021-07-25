@@ -20,6 +20,9 @@ local make_attribute_handlers = function(severities, defaults)
         col = function(entries)
             return tonumber(entries["col"])
         end,
+        end_row = function(entries)
+            return tonumber(entries["end_row"]) or tonumber(entries["row"])
+        end,
         end_col = function(entries)
             return tonumber(entries["end_col"]) or tonumber(entries["col"])
         end,
@@ -95,7 +98,6 @@ local from_json = function(attributes, severities, defaults)
                     local entry = nil
                     local path = vim.split(json_key, ".")
                     for i, key in ipairs(path) do
-                        print("unfolding ", json_key, " ", i, " v: ", key)
                         -- Avoid copying the whole attribute dict
                         entry = i == 1 and json_diagnostic[key] or entry[key]
                     end
@@ -103,11 +105,6 @@ local from_json = function(attributes, severities, defaults)
                 else
                     entries[diagnostic_key] = json_diagnostic[json_key]
                 end
-            end
-
-            print("ENTRIES")
-            for k, v in pairs(entries) do
-                print(k, v)
             end
 
             if entries["row"] and entries["message"] then
@@ -324,38 +321,27 @@ M.eslint = h.make_builtin({
         end,
         use_cache = true,
         on_output = function(params)
-            local get_message_range = function(problem)
-                local row = problem.line and problem.line > 0 and problem.line - 1 or 0
-                local col = problem.column and problem.column > 0 and problem.column - 1 or 0
-                local end_row = problem.endLine and problem.endLine - 1 or 0
-                local end_col = problem.endColumn and problem.endColumn - 1 or 0
-                return { row = row, col = col, end_row = end_row, end_col = end_col }
-            end
-
-            local create_diagnostic = function(message)
-                local range = get_message_range(message)
-                return {
-                    message = message.message,
-                    code = message.ruleId,
-                    row = range.row + 1,
-                    col = range.col,
-                    end_row = range.end_row + 1,
-                    end_col = range.end_col,
-                    severity = message.severity == 1 and 2 or 1,
-                    source = "eslint",
-                }
-            end
-
-            local diagnostics = {}
             params.messages = params.output and params.output[1] and params.output[1].messages or {}
             if params.err then
                 table.insert(params.messages, { message = params.err })
             end
 
-            for _, message in ipairs(params.messages) do
-                table.insert(diagnostics, create_diagnostic(message))
-            end
-            return diagnostics
+            local parser = from_json({
+                row = "line",
+                col = "column",
+                end_row = "endLine",
+                end_col = "endColumn",
+                code = "ruleId",
+                message = "message",
+                severity = "severity",
+            }, {
+                default_severities["warning"],
+                default_severities["error"],
+            }, {
+                source = "eslint",
+            })
+
+            return parser({ output = params.messages })
         end,
     },
     factory = h.generator_factory,
@@ -368,22 +354,11 @@ M.hadolint = h.make_builtin({
         command = "hadolint",
         format = "json",
         args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = function(params)
-            local diagnostics = {}
-            local severities = { error = 1, warning = 2, info = 3, style = 4 }
-            for _, diagnostic in ipairs(params.output) do
-                table.insert(diagnostics, {
-                    row = diagnostic.line,
-                    col = diagnostic.column - 1,
-                    end_col = diagnostic.column,
-                    code = diagnostic.code,
-                    source = "hadolint",
-                    message = diagnostic.message,
-                    severity = severities[diagnostic.level],
-                })
-            end
-            return diagnostics
-        end,
+        on_output = from_json(
+            { row = "line", col = "column", code = "code", message = "message", severity = "level" },
+            { error = 1, warning = 2, info = 3, style = 4 },
+            { source = "hadolint" }
+        ),
     },
     factory = h.generator_factory,
 })
