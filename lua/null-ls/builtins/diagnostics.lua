@@ -55,10 +55,6 @@ local from_pattern = function(pattern, groups, severities, defaults)
         for i, match in ipairs(results) do
             entries[groups[i]] = match
         end
-        print("ENTRIES")
-        for k,v in pairs(entries) do
-          print(k, v)
-        end
         if not (entries["row"] and entries["message"]) then
             return nil
         end
@@ -89,6 +85,10 @@ local from_patterns = function(patterns, groups, severities, defaults)
     end
 end
 
+--- Parse a linter's output in JSON format
+-- @param attributes A conversion map from JSON keys to diagnostic attributes
+-- @param severities An optional table mapping the severity values to their codes
+-- @param defaults An optional table of diagnostic default values
 local from_json = function(attributes, severities, defaults)
     severities = severities or {}
     defaults = defaults or {}
@@ -98,17 +98,7 @@ local from_json = function(attributes, severities, defaults)
         for _, json_diagnostic in ipairs(params.output) do
             local entries = {}
             for diagnostic_key, json_key in pairs(attributes) do
-                if json_key:find(".", 1, true) then
-                    local entry = nil
-                    local path = vim.split(json_key, ".")
-                    for i, key in ipairs(path) do
-                        -- Avoid copying the whole attribute dict
-                        entry = i == 1 and json_diagnostic[key] or entry[key]
-                    end
-                    entries[diagnostic_key] = entry
-                else
-                    entries[diagnostic_key] = json_diagnostic[json_key]
-                end
+                entries[diagnostic_key] = json_diagnostic[json_key]
             end
 
             if entries["row"] and entries["message"] then
