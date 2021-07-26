@@ -187,6 +187,18 @@ local sources = {null_ls.builtins.formatting.erlfmt}
 - Command: `erlfmt`
 - Arguments: `{ "-" }`
 
+#### [fish_indent](https://linux.die.net/man/1/fish_indent)
+
+```lua
+local sources = {null_ls.builtins.formatting.fish_indent}
+```
+
+`fish_indent` is used to indent or otherwise prettify a piece of fish code.
+
+- Filetypes: `{ "fish" }`
+- Command: `fish_indent`
+- Arguments: `{}`
+
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
 ```lua

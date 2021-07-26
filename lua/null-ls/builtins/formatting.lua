@@ -176,6 +176,17 @@ M.erlfmt = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.fish_indent = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "fish" },
+    generator_opts = {
+        command = "fish_indent",
+        args = {},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.format_r = h.make_builtin({
     method = FORMATTING,
     filetypes = { "r", "rmd" },
