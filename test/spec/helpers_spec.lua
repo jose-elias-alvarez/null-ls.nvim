@@ -41,13 +41,31 @@ describe("helpers", function()
                 assert.same(output, { key = "val" })
             end)
 
-            it("should set output to nil if json_decode returns vim.NIL", function()
+            it("should return without calling on_output if output is nil", function()
                 local good_json = vim.fn.json_encode(nil)
 
                 helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
 
-                local output = on_output.calls[1].refs[1].output
-                assert.equals(output, nil)
+                assert.stub(done).was_called()
+                assert.stub(on_output).was_not_called()
+            end)
+
+            it("should return without calling on_output if output is empty string", function()
+                local good_json = vim.fn.json_encode("")
+
+                helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
+
+                assert.stub(done).was_called()
+                assert.stub(on_output).was_not_called()
+            end)
+
+            it("should return without calling on_output if output is empty table", function()
+                local good_json = vim.fn.json_encode({})
+
+                helpers._json_output_wrapper({ output = good_json }, done, on_output, format)
+
+                assert.stub(done).was_called()
+                assert.stub(on_output).was_not_called()
             end)
 
             it("should call done and on_output with updated params", function()
@@ -74,8 +92,15 @@ describe("helpers", function()
     end)
 
     describe("line_output_wrapper", function()
-        it("should immediately call done if output is nil", function()
+        it("should call done and return if output is nil", function()
             helpers._line_output_wrapper({ output = nil }, done, on_output)
+
+            assert.stub(done).was_called()
+            assert.stub(on_output).was_not_called()
+        end)
+
+        it("should call done and return if output is empty string", function()
+            helpers._line_output_wrapper({ output = "" }, done, on_output)
 
             assert.stub(done).was_called()
             assert.stub(on_output).was_not_called()

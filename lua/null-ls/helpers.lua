@@ -27,7 +27,7 @@ end
 
 local json_output_wrapper = function(params, done, on_output, format)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
-    if decoded == vim.NIL then
+    if decoded == vim.NIL or decoded == "" then
         decoded = nil
     end
 
@@ -40,12 +40,18 @@ local json_output_wrapper = function(params, done, on_output, format)
         params.output = decoded
     end
 
+    -- don't bother calling on_output if output is empty
+    if not params.err and (params.output == nil or vim.tbl_count(params.output) == 0) then
+        done()
+        return
+    end
+
     done(on_output(params))
 end
 
 local line_output_wrapper = function(params, done, on_output)
     local output = params.output
-    if not output then
+    if not output or output == "" then
         done()
         return
     end
