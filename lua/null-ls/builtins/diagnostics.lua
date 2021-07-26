@@ -5,6 +5,41 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local M = {}
 
+M.chktex = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "tex" },
+    generator_opts = {
+        command = "chktex",
+        to_stdin = true,
+        args = {
+            -- Disable printing version information to stderr
+            "-q",
+            -- Disable executing \input statements
+            "-I0",
+            -- Format output
+            "-f%l:%c:%d:%k:%m\n",
+        },
+        format = "line",
+        on_output = function(line)
+            local row, col, length, severity, message = line:match("(%d+):(%d+):(%d+):(%w+):(.+)")
+
+            if row then
+                col = col - 1
+
+                return {
+                    message = message,
+                    row = row,
+                    col = col,
+                    end_col = col + length,
+                    severity = severity == "Error" and 1 or severity == "Warning" and 2,
+                    source = "chktex",
+                }
+            end
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 M.write_good = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "markdown" },

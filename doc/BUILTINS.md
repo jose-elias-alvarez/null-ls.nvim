@@ -142,6 +142,18 @@ local sources = { null_ls.builtins.formatting.trim_whitespace.with({ filetypes =
 
 ### Diagnostics
 
+#### [ChkTeX](https://www.nongnu.org/chktex/)
+
+A LaTeX semantic linter.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.chktex}
+```
+
+- Filetypes: `{ "tex" }`
+- Command: `chktex`
+- Arguments: `{ "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
+
 #### [ESLint](https://github.com/eslint/eslint)
 
 A linter for the JavaScript ecosystem. Note that the null-ls builtin requires
