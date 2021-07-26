@@ -65,7 +65,7 @@ describe("generators", function()
             end,
         }
 
-        local wrapped_run = a.wrap(generators.run, 3)
+        local wrapped_run = a.wrap(generators.run_registered, 3)
 
         it("should immediately return when method has no registered generators", function()
             register(method, mock_sync_generator)
