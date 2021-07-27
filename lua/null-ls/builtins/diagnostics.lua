@@ -40,6 +40,19 @@ local make_attr_adapters = function(severities)
     }
 end
 
+local make_diagnostic = function(entries, defaults, attr_adapters, params)
+    if not (entries["row"] and entries["message"]) then
+        return nil
+    end
+
+    local content_line = params.content and params.content[tonumber(entries["row"])] or nil
+    for attr, adapter in pairs(attr_adapters) do
+        entries[attr] = adapter(entries, content_line) or entries[attr]
+    end
+
+    return vim.tbl_extend("keep", defaults, entries)
+end
+
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
 -- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"], ["quote"]}
@@ -57,16 +70,7 @@ local from_pattern = function(pattern, groups, severities, defaults)
             entries[groups[i]] = match
         end
 
-        if not (entries["row"] and entries["message"]) then
-            return nil
-        end
-
-        local content_line = params.content and params.contents[tonumber(entries["row"])] or nil
-        for attr, adapter in pairs(attr_adapters) do
-            entries[attr] = adapter(entries, content_line) or entries[attr]
-        end
-
-        return vim.tbl_extend("keep", defaults, entries)
+        return make_diagnostic(entries, defaults, attr_adapters, params)
     end
 end
 
@@ -105,13 +109,9 @@ local from_json = function(attributes, severities, defaults)
                 entries[attr] = json_diagnostic[json_key]
             end
 
-            if entries["row"] and entries["message"] then
-                local content_line = params.content and params.contents[tonumber(entries["row"])] or nil
-                for attr, adapter in pairs(attr_adapters) do
-                    entries[attr] = adapter(entries, content_line) or entries[attr]
-                end
-
-                table.insert(diagnostics, vim.tbl_extend("keep", defaults, entries))
+            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params)
+            if diagnostic then
+                table.insert(diagnostics, diagnostic)
             end
         end
 
