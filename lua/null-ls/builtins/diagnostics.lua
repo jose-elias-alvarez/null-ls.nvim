@@ -34,7 +34,7 @@ local make_attr_adapters = function(severities)
                 return end_col
             end
 
-            _, end_col = line:find(quote)
+            _, end_col = line:find(quote, 1, true)
             return end_col
         end,
     }
@@ -196,8 +196,8 @@ M.teal = h.make_builtin({
         to_stderr = true,
         to_temp_file = true,
         on_output = from_pattern(
-            [[:(%d+):(%d+): (.*)]], --
-            { "row", "col", "message" }
+            [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
+            { "row", "col", "message", "quote" }
         ),
     },
     factory = h.generator_factory,
