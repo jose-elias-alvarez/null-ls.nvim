@@ -88,7 +88,7 @@ Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
 local sources = {null_ls.builtins.formatting.prettier}
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "html", "json", "yaml", "markdown" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
 - Command: `prettier`
 - Arguments: `{ "--stdin-filepath", "$FILENAME" }`
 
@@ -102,7 +102,7 @@ filetypes. Supports both `textDocument/formatting` and `textDocument/rangeFormat
 local sources = {null_ls.builtins.formatting.prettier_d_slim}
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - Command: `prettier_d_slim`
 - Arguments: ` { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -111,7 +111,7 @@ local sources = {null_ls.builtins.formatting.prettier_d_slim}
 Another "Prettier, but faster" formatter, with better support for non-JavaScript
 filetypes.
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "css", "html", "json", "yaml", "markdown" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
 - Command: `prettierd`
 - Arguments: `{ "$FILENAME" }`
 
@@ -124,7 +124,7 @@ An absurdly fast formatter (and linter). For full integration, check out
 local sources = {null_ls.builtins.formatting.eslint_d}
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - Command: `eslint_d`
 - Arguments: ` { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -156,7 +156,7 @@ local sources = {null_ls.builtins.diagnostics.eslint}
 local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"})}
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - Command: `eslint`
 - Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
