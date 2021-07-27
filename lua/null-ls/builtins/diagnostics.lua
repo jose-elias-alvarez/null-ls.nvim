@@ -24,15 +24,25 @@ local default_json_attributes = {
 
 local make_attr_adapters = function(severities)
     return {
-        severity = function(value)
-            return severities[value]
+        severity = function(entries, _)
+            return severities[entries["severity"]]
+        end,
+        end_col = function(entries, line)
+            local end_col = entries["end_col"]
+            local quote = entries["quote"]
+            if end_col or not quote or not line then
+                return end_col
+            end
+
+            _, end_col = line:find(quote)
+            return end_col
         end,
     }
 end
 
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
--- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
+-- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"], ["quote"]}
 -- @param severities An optional table of severity overrides (see default_severities)
 -- @param defaults An optional table of diagnostic default values
 local from_pattern = function(pattern, groups, severities, defaults)
@@ -43,13 +53,17 @@ local from_pattern = function(pattern, groups, severities, defaults)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
-
         for i, match in ipairs(results) do
-            local attr = groups[i]
-            entries[attr] = attr_adapters[attr] and attr_adapters[attr](match) or match
+            entries[groups[i]] = match
         end
+
         if not (entries["row"] and entries["message"]) then
             return nil
+        end
+
+        local content_line = params.content and params.contents[tonumber(entries["row"])] or nil
+        for attr, adapter in pairs(attr_adapters) do
+            entries[attr] = adapter(entries, content_line) or entries[attr]
         end
 
         return vim.tbl_extend("keep", defaults, entries)
@@ -88,11 +102,15 @@ local from_json = function(attributes, severities, defaults)
         for _, json_diagnostic in ipairs(params.output) do
             local entries = {}
             for attr, json_key in pairs(attributes) do
-                entries[attr] = attr_adapters[attr] and attr_adapters[attr](json_diagnostic[json_key])
-                    or json_diagnostic[json_key]
+                entries[attr] = json_diagnostic[json_key]
             end
 
             if entries["row"] and entries["message"] then
+                local content_line = params.content and params.contents[tonumber(entries["row"])] or nil
+                for attr, adapter in pairs(attr_adapters) do
+                    entries[attr] = adapter(entries, content_line) or entries[attr]
+                end
+
                 table.insert(diagnostics, vim.tbl_extend("keep", defaults, entries))
             end
         end
@@ -112,8 +130,8 @@ M.write_good = h.make_builtin({
             return code == 0 or code == 255
         end,
         on_output = from_pattern(
-            [[(%d+):(%d+):(.*)]], --
-            { "row", "col", "message" }
+            [[(%d+):(%d+):("([%w%s]+)".*)]], --
+            { "row", "col", "message", "quote" }
         ),
     },
     factory = h.generator_factory,
