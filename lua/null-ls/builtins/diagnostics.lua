@@ -12,6 +12,16 @@ local default_severities = {
     ["hint"] = 4,
 }
 
+local default_json_attributes = {
+    row = "line",
+    col = "column",
+    end_row = "endLine",
+    end_col = "endColumn",
+    code = "ruleId",
+    severity = "level",
+    message = "message",
+}
+
 local make_attribute_handlers = function(severities, defaults)
     return {
         row = function(entries)
@@ -42,10 +52,10 @@ end
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
 -- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
--- @param severities An optional table mapping the severity values to their codes
+-- @param severities An optional table of severity overrides (see default_severities)
 -- @param defaults An optional table of diagnostic default values
 local from_pattern = function(pattern, groups, severities, defaults)
-    severities = severities or {}
+    severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
     local attribute_handlers = make_attribute_handlers(severities, defaults)
     return function(line, params)
@@ -71,7 +81,7 @@ end
 --- Parse a linter's output using multiple regex patterns until one matches
 -- @param patterns The regex pattern list
 -- @param groups The groups list defined by the patterns
--- @param severities An optional table mapping the severity values to their codes
+-- @param severities An optional table of severity overrides (see default_severities)
 -- @param defaults An optional table of diagnostic default values
 local from_patterns = function(patterns, groups, severities, defaults)
     return function()
@@ -86,11 +96,12 @@ local from_patterns = function(patterns, groups, severities, defaults)
 end
 
 --- Parse a linter's output in JSON format
--- @param attributes A conversion map from JSON keys to diagnostic attributes
--- @param severities An optional table mapping the severity values to their codes
+-- @param attributes An optional table of JSON to diagnostic attributes overrides (see default_json_attributes)
+-- @param severities An optional table of severity overrides (see default_severities)
 -- @param defaults An optional table of diagnostic default values
 local from_json = function(attributes, severities, defaults)
-    severities = severities or {}
+    attributes = vim.tbl_extend("force", default_json_attributes, attributes or {})
+    severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
     local attribute_handlers = make_attribute_handlers(severities, defaults)
     return function(params)
@@ -215,21 +226,15 @@ M.shellcheck = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_json({
-            row = "line",
-            col = "column",
-            end_row = "endLine",
-            end_col = "endColumn",
-            message = "message",
-            severity = "level",
-        }, {
-            error = 1,
-            warning = 2,
-            info = 3,
-            style = 4,
-        }, {
-            source = "shellcheck",
-        }),
+        on_output = from_json( --
+            {},
+            {
+                style = 4,
+            },
+            {
+                source = "shellcheck",
+            }
+        ),
     },
     factory = h.generator_factory,
 })
@@ -276,12 +281,6 @@ M.eslint = h.make_builtin({
             end
 
             local parser = from_json({
-                row = "line",
-                col = "column",
-                end_row = "endLine",
-                end_col = "endColumn",
-                code = "ruleId",
-                message = "message",
                 severity = "severity",
             }, {
                 default_severities["warning"],
@@ -303,9 +302,9 @@ M.hadolint = h.make_builtin({
         command = "hadolint",
         format = "json",
         args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = from_json(
-            { row = "line", col = "column", code = "code", message = "message", severity = "level" },
-            { error = 1, warning = 2, info = 3, style = 4 },
+        on_output = from_json( --
+            { code = "code" },
+            { style = 4 },
             { source = "hadolint" }
         ),
     },
@@ -366,7 +365,7 @@ M.vint = h.make_builtin({
         end,
         on_output = from_json(
             { row = "line_number", col = "column_number", code = "policy_name", message = "description" },
-            { error = 1, warning = 2, style_problem = 3 },
+            { style_problem = 3 },
             { source = "vint" }
         ),
     },
