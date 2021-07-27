@@ -22,33 +22,6 @@ local default_json_attributes = {
     message = "message",
 }
 
-local make_attribute_handlers = function(severities, defaults)
-    return {
-        row = function(entries)
-            return tonumber(entries["row"])
-        end,
-        col = function(entries)
-            return tonumber(entries["col"])
-        end,
-        end_row = function(entries)
-            return tonumber(entries["end_row"]) or tonumber(entries["row"])
-        end,
-        end_col = function(entries)
-            return tonumber(entries["end_col"]) or tonumber(entries["col"])
-        end,
-        code = function(entries)
-            return entries["code"]
-        end,
-        severity = function(entries)
-            local severity = entries["severity"]
-            return severities[severity] or defaults["severity"] or default_severities["error"]
-        end,
-        message = function(entries)
-            return entries["message"]
-        end,
-    }
-end
-
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
 -- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
@@ -57,7 +30,6 @@ end
 local from_pattern = function(pattern, groups, severities, defaults)
     severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
-    local attribute_handlers = make_attribute_handlers(severities, defaults)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
@@ -69,12 +41,7 @@ local from_pattern = function(pattern, groups, severities, defaults)
             return nil
         end
 
-        local diagnostic = {}
-        for key, handler in pairs(attribute_handlers) do
-            diagnostic[key] = defaults[key] or handler(entries)
-        end
-
-        return diagnostic
+        return vim.tbl_extend("keep", defaults, entries)
     end
 end
 
@@ -103,7 +70,6 @@ local from_json = function(attributes, severities, defaults)
     attributes = vim.tbl_extend("force", default_json_attributes, attributes or {})
     severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
-    local attribute_handlers = make_attribute_handlers(severities, defaults)
     return function(params)
         local diagnostics = {}
         for _, json_diagnostic in ipairs(params.output) do
@@ -113,11 +79,7 @@ local from_json = function(attributes, severities, defaults)
             end
 
             if entries["row"] and entries["message"] then
-                local diagnostic = {}
-                for key, handler in pairs(attribute_handlers) do
-                    diagnostic[key] = defaults[key] or handler(entries)
-                end
-                table.insert(diagnostics, diagnostic)
+                table.insert(diagnostics, vim.tbl_extend("keep", defaults, entries))
             end
         end
 
