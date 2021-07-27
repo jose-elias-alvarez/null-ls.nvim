@@ -95,12 +95,9 @@ M.vale = h.make_builtin({
         command = "vale",
         format = "json",
         args = { "--no-exit", "--output=JSON", "$FILENAME" },
-        on_output = function(params, done)
+        on_output = function(params)
             local diagnostics = {}
             local severities = { error = 1, warning = 2, suggestion = 4 }
-            if not params.output or type(params.output) ~= "table" then
-                return done()
-            end
             for _, diagnostic in ipairs(params.output[params.bufname]) do
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
@@ -283,7 +280,7 @@ M.selene = h.make_builtin({
 
 M.eslint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {
         command = "eslint",
         args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
@@ -322,7 +319,7 @@ M.eslint = h.make_builtin({
                 table.insert(params.messages, { message = params.err })
             end
 
-            for _, message in ipairs(params.output[1].messages) do
+            for _, message in ipairs(params.messages) do
                 table.insert(diagnostics, create_diagnostic(message))
             end
             return diagnostics
@@ -338,14 +335,9 @@ M.hadolint = h.make_builtin({
         command = "hadolint",
         format = "json",
         args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = function(params, done)
-            if not params.output or type(params.output) ~= "table" then
-                return done()
-            end
-
+        on_output = function(params)
             local diagnostics = {}
             local severities = { error = 1, warning = 2, info = 3, style = 4 }
-
             for _, diagnostic in ipairs(params.output) do
                 table.insert(diagnostics, {
                     row = diagnostic.line,
@@ -441,13 +433,8 @@ M.vint = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 1
         end,
-        on_output = function(params, done)
-            if not params.output or type(params.output) ~= "table" then
-                return done()
-            end
-
+        on_output = function(params)
             local diagnostics = {}
-
             for _, diagnostic in ipairs(params.output) do
                 table.insert(diagnostics, {
                     row = diagnostic.line_number,
@@ -458,7 +445,7 @@ M.vint = h.make_builtin({
                     message = diagnostic.description,
                     severity = diagnostic.severity == "error" and 1
                         or diagnostic.severity == "warning" and 2
-                        or diagnostic.severity == "style_problem" and 3
+                        or diagnostic.severity == "style_problem" and 3,
                 })
             end
             return diagnostics

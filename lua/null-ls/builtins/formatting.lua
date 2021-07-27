@@ -325,6 +325,7 @@ M.prettier = h.make_builtin({
         "javascriptreact",
         "typescript",
         "typescriptreact",
+        "vue",
         "css",
         "html",
         "json",
@@ -346,6 +347,7 @@ M.prettierd = h.make_builtin({
         "javascriptreact",
         "typescript",
         "typescriptreact",
+        "vue",
         "css",
         "html",
         "json",
@@ -367,6 +369,7 @@ M.prettier_d_slim = h.make_builtin({
         "javascriptreact",
         "typescript",
         "typescriptreact",
+        "vue",
     },
     generator_opts = {
         command = "prettier_d_slim",

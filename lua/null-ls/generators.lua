@@ -3,14 +3,13 @@ local u = require("null-ls.utils")
 
 local M = {}
 
-M.run = function(params, postprocess, callback)
+M.run = function(generators, params, postprocess, callback)
     -- NOTE: avoid importing plenary elsewhere to limit server dependencies
     local a = require("plenary.async_lib")
 
     local runner = a.async(function()
         u.debug_log("running generators for method " .. params.method)
 
-        local generators = c.generators(params.method)
         if not generators then
             u.debug_log("no generators registered")
             return {}
@@ -54,6 +53,11 @@ M.run = function(params, postprocess, callback)
     a.run(runner(), function(results)
         callback(results, params)
     end)
+end
+
+M.run_registered = function(params, postprocess, callback)
+    local generators = c.generators(params.method)
+    M.run(generators, params, postprocess, callback)
 end
 
 M.can_run = function(filetype, method)

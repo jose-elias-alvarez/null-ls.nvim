@@ -2,11 +2,9 @@ local validate = vim.validate
 
 local defaults = {
     debounce = 250,
-    keep_alive_interval = 60000, -- 60 seconds,
     save_after_format = true,
     default_timeout = 5000,
     debug = false,
-    nvim_executable = "nvim",
     _generators = {},
     _filetypes = {},
     _names = {},
@@ -30,8 +28,10 @@ local wanted_type = function(k)
     if type(override) == "table" then
         return function(a)
             return vim.tbl_contains(override, type(a))
-        end,
-            table.concat(override, ", ")
+        end, table.concat(
+            override,
+            ", "
+        )
     end
 
     return type(defaults[k]), true
@@ -92,7 +92,7 @@ local register_source = function(source, filetypes)
         generator.filetypes = filetypes
         table.insert(config._generators[method], generator)
     end
-    require("null-ls.lspconfig").on_register_source()
+    require("null-ls.lspconfig").on_register_source(methods)
 end
 
 local register = function(to_register)

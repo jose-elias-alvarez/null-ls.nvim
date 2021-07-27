@@ -26,13 +26,17 @@ M.handler = function(method, original_params, handler)
         original_params.bufnr = bufnr
 
         s.clear_actions()
-        generators.run(u.make_params(original_params, methods.internal.CODE_ACTION), postprocess, function(actions)
-            -- sort actions on title
-            table.sort(actions, function(a, b)
-                return a.title < b.title
-            end)
-            handler(actions)
-        end)
+        generators.run_registered(
+            u.make_params(original_params, methods.internal.CODE_ACTION),
+            postprocess,
+            function(actions)
+                -- sort actions on title
+                table.sort(actions, function(a, b)
+                    return a.title < b.title
+                end)
+                handler(actions)
+            end
+        )
         original_params._null_ls_handled = true
     end
 
