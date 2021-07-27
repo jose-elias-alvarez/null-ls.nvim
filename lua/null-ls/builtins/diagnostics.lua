@@ -22,6 +22,14 @@ local default_json_attributes = {
     message = "message",
 }
 
+local make_attr_adapters = function(severities)
+    return {
+        severity = function(value)
+            return severities[value]
+        end,
+    }
+end
+
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
 -- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
@@ -30,12 +38,15 @@ local default_json_attributes = {
 local from_pattern = function(pattern, groups, severities, defaults)
     severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
+
+    local attr_adapters = make_attr_adapters(severities)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
 
         for i, match in ipairs(results) do
-            entries[groups[i]] = match
+            local attr = groups[i]
+            entries[attr] = attr_adapters[attr] and attr_adapters[attr](match) or match
         end
         if not (entries["row"] and entries["message"]) then
             return nil
@@ -70,12 +81,15 @@ local from_json = function(attributes, severities, defaults)
     attributes = vim.tbl_extend("force", default_json_attributes, attributes or {})
     severities = vim.tbl_extend("force", default_severities, severities or {})
     defaults = defaults or {}
+
+    local attr_adapters = make_attr_adapters(severities)
     return function(params)
         local diagnostics = {}
         for _, json_diagnostic in ipairs(params.output) do
             local entries = {}
-            for diagnostic_key, json_key in pairs(attributes) do
-                entries[diagnostic_key] = json_diagnostic[json_key]
+            for attr, json_key in pairs(attributes) do
+                entries[attr] = attr_adapters[attr] and attr_adapters[attr](json_diagnostic[json_key])
+                    or json_diagnostic[json_key]
             end
 
             if entries["row"] and entries["message"] then
