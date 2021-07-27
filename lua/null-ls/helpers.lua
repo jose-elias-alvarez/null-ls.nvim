@@ -193,6 +193,7 @@ M.generator_factory = function(opts)
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
+        command = opts.command,
         async = true,
     }
 end

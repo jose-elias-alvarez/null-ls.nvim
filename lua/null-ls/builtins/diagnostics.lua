@@ -99,9 +99,7 @@ M.write_good = h.make_builtin({
         end,
         on_output = from_pattern(
             [[(%d+):(%d+):(.*)]], --
-            { "row", "col", "message" },
-            nil,
-            { source = "write-good" }
+            { "row", "col", "message" }
         ),
     },
     factory = h.generator_factory,
@@ -121,9 +119,7 @@ M.markdownlint = h.make_builtin({
         end,
         on_output = from_patterns(
             { [[:(%d+):(%d+) [%w-/]+ (.*)]], [[:(%d+) [%w-/]+ (.*)]] },
-            { { "row", "col", "message" }, { "row", "message" } },
-            nil,
-            { source = "markdownlint" }
+            { { "row", "col", "message" }, { "row", "message" } }
         ),
     },
     factory = h.generator_factory,
@@ -145,7 +141,6 @@ M.vale = h.make_builtin({
                     col = diagnostic.Span[1] - 1,
                     end_col = diagnostic.Span[2],
                     code = diagnostic.Check,
-                    source = "vale",
                     message = diagnostic.Message,
                     severity = severities[diagnostic.Severity],
                 })
@@ -170,8 +165,7 @@ M.teal = h.make_builtin({
         to_temp_file = true,
         on_output = from_pattern(
             [[:(%d+):(%d+): (.*)]], --
-            { "row", "col", "message" },
-            { source = "tl check" }
+            { "row", "col", "message" }
         ),
     },
     factory = h.generator_factory,
@@ -188,15 +182,9 @@ M.shellcheck = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_json( --
-            {},
-            {
-                style = 4,
-            },
-            {
-                source = "shellcheck",
-            }
-        ),
+        on_output = from_json({}, {
+            style = 4,
+        }),
     },
     factory = h.generator_factory,
 })
@@ -216,9 +204,7 @@ M.selene = h.make_builtin({
         end,
         on_output = from_pattern(
             [[(%d+):(%d+): (%w+)%[([%w_]+)%]: (.*)]],
-            { "row", "col", "severity", "code", "message" },
-            nil,
-            { source = "selene" }
+            { "row", "col", "severity", "code", "message" }
         ),
     },
     factory = h.generator_factory,
@@ -247,8 +233,6 @@ M.eslint = h.make_builtin({
             }, {
                 default_severities["warning"],
                 default_severities["error"],
-            }, {
-                source = "eslint",
             })
 
             return parser({ output = params.messages })
@@ -266,8 +250,7 @@ M.hadolint = h.make_builtin({
         args = { "--no-fail", "--format=json", "$FILENAME" },
         on_output = from_json( --
             { code = "code" },
-            { style = 4 },
-            { source = "hadolint" }
+            { style = 4 }
         ),
     },
     factory = h.generator_factory,
@@ -288,8 +271,7 @@ M.flake8 = h.make_builtin({
         on_output = from_pattern(
             [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
-            { E = 1, W = 2, F = 3 },
-            { source = "flake8" }
+            { E = 1, W = 2, F = 3 }
         ),
     },
     factory = h.generator_factory,
@@ -306,8 +288,8 @@ M.misspell = h.make_builtin({
         on_output = from_pattern(
             [[:(%d+):(%d+): (.*)]],
             { "row", "col", "message" },
-            nil,
-            { source = "misspell", severity = default_severities["information"] }
+            {},
+            { severity = default_severities["information"] }
         ),
     },
     factory = h.generator_factory,
@@ -327,8 +309,7 @@ M.vint = h.make_builtin({
         end,
         on_output = from_json(
             { row = "line_number", col = "column_number", code = "policy_name", message = "description" },
-            { style_problem = 3 },
-            { source = "vint" }
+            { style_problem = 3 }
         ),
     },
     factory = h.generator_factory,

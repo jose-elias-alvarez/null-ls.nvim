@@ -35,7 +35,7 @@ M.run = function(generators, params, postprocess, callback)
                         elseif type(results) == "table" then
                             for _, result in ipairs(results) do
                                 if postprocess then
-                                    postprocess(result)
+                                    postprocess(result, generator)
                                 end
 
                                 table.insert(all_results, result)
