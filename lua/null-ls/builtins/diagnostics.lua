@@ -235,8 +235,8 @@ M.selene = h.make_builtin({
             return code <= 1
         end,
         on_output = from_pattern(
-            [[(%d+):(%d+): (%w+)%[([%w_]+)%]: (.*)]],
-            { "row", "col", "severity", "code", "message" }
+            [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
+            { "row", "col", "severity", "code", "message", "quote" }
         ),
     },
     factory = h.generator_factory,
