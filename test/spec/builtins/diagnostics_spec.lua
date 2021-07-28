@@ -287,4 +287,24 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("flake8", function()
+        local linter = diagnostics.flake8
+        local parser = linter._opts.on_output
+        local file = {
+            [[#===- run-clang-tidy.py - Parallel clang-tidy runner ---------*- python -*--===#]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[run-clang-tidy.py:3:1: E265 block comment should start with '# ']]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "3", --
+                col = "1",
+                severity = 1,
+                code = "E265",
+                message = "block comment should start with '# '",
+            }, diagnostic)
+        end)
+    end)
 end)
