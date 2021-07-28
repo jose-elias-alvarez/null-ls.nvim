@@ -80,9 +80,9 @@ end
 -- @param severities An optional table of severity overrides (see default_severities)
 -- @param defaults An optional table of diagnostic default values
 local from_patterns = function(patterns, groups, severities, defaults)
-    return function()
+    return function(line, params)
         for i, pattern in ipairs(patterns) do
-            local diagnostic = from_pattern(pattern, groups[i], severities, defaults)
+            local diagnostic = from_pattern(pattern, groups[i], severities, defaults)(line, params)
             if diagnostic then
                 return diagnostic
             end
