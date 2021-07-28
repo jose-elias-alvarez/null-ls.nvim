@@ -51,6 +51,7 @@ local make_diagnostic = function(entries, defaults, attr_adapters, params)
     end
     -- Remote quote as only used for computing end_col
     entries["quote"] = nil
+    entries["severity"] = entries["severity"] or default_severities["error"]
 
     return vim.tbl_extend("keep", defaults, entries)
 end

@@ -16,6 +16,7 @@ describe("diagnostics", function()
                 row = "1", --
                 col = "46",
                 end_col = 58,
+                severity = 1,
                 message = '"is deprecated" may be passive voice',
             }, diagnostic)
         end)
