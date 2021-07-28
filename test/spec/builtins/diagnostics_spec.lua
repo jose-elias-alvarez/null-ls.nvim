@@ -88,9 +88,18 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with info severity", function()
-            local output = vim.fn.json_decode(
-                [[ [{"file":"./OpenCast.sh","line":21,"endLine":21,"column":8,"endColumn":37,"level":"info","code":1091,"message":"Not following: script/cli_builder.sh was not specified as input (see shellcheck -x).","fix":null}] ]]
-            )
+            local output = vim.fn.json_decode([[
+            [{
+              "file": "./OpenCast.sh",
+              "line": 21,
+              "endLine": 21,
+              "column": 8,
+              "endColumn": 37,
+              "level": "info",
+              "code": 1091,
+              "message": "Not following: script/cli_builder.sh was not specified as input (see shellcheck -x).",
+              "fix": null
+            }] ]])
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
@@ -104,9 +113,18 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with style severity", function()
-            local output = vim.fn.json_decode(
-                [[ [{"file":"./OpenCast.sh","line":21,"endLine":21,"column":8,"endColumn":37,"level":"style","code":1091,"message":"Not following: script/cli_builder.sh was not specified as input (see shellcheck -x).","fix":null}] ]]
-            )
+            local output = vim.fn.json_decode([[
+            [{
+              "file": "./OpenCast.sh",
+              "line": 21,
+              "endLine": 21,
+              "column": 8,
+              "endColumn": 37,
+              "level": "style",
+              "code": 1091,
+              "message": "Not following: script/cli_builder.sh was not specified as input (see shellcheck -x).",
+              "fix": null
+            }] ]])
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {

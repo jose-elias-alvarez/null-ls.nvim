@@ -218,8 +218,8 @@ M.shellcheck = h.make_builtin({
             return code <= 1
         end,
         on_output = from_json({}, {
-            info = 3,
-            style = 4,
+            info = default_severities["information"],
+            style = default_severities["hint"],
         }),
     },
     factory = h.generator_factory,
@@ -286,7 +286,10 @@ M.hadolint = h.make_builtin({
         args = { "--no-fail", "--format=json", "$FILENAME" },
         on_output = from_json( --
             { code = "code" },
-            { info = default_severities["information"], style = default_severities["hint"] }
+            {
+                info = default_severities["information"],
+                style = default_severities["hint"],
+            }
         ),
     },
     factory = h.generator_factory,
@@ -304,10 +307,14 @@ M.flake8 = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = from_pattern(
+        on_output = from_pattern( --
             [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
-            { E = 1, W = 2, F = 3 }
+            {
+                E = default_severities["error"],
+                W = default_severities["warning"],
+                F = default_severities["information"],
+            }
         ),
     },
     factory = h.generator_factory,
@@ -343,16 +350,15 @@ M.vint = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 1
         end,
-        on_output = from_json(
-            {
-                row = "line_number",
-                col = "column_number",
-                code = "policy_name",
-                severity = "severity",
-                message = "description",
-            },
-            { style_problem = default_severities["information"] }
-        ),
+        on_output = from_json({
+            row = "line_number",
+            col = "column_number",
+            code = "policy_name",
+            severity = "severity",
+            message = "description",
+        }, {
+            style_problem = default_severities["information"],
+        }),
     },
     factory = h.generator_factory,
 })
