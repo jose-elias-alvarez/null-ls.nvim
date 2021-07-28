@@ -120,4 +120,39 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("selene", function()
+        local linter = diagnostics.selene
+        local parser = linter._opts.on_output
+        local file = {
+            "vim.cmd [[",
+            [[CACHE_PATH = vim.fn.stdpath "cache"]],
+        }
+
+        it("should create a diagnostic (quote is between backquotes)", function()
+            local output = [[init.lua:1:1: error[undefined_variable]: `vim` is not defined]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "1",
+                end_col = 3,
+                severity = 1,
+                code = "undefined_variable",
+                message = "`vim` is not defined",
+            }, diagnostic)
+        end)
+        it("should create a diagnostic (quote is not between backquotes)", function()
+            local output =
+                [[lua/default-config.lua:2:1: warning[unused_variable]: CACHE_PATH is defined, but never used]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "2", --
+                col = "1",
+                end_col = 10,
+                severity = 2,
+                code = "unused_variable",
+                message = "CACHE_PATH is defined, but never used",
+            }, diagnostic)
+        end)
+    end)
 end)
