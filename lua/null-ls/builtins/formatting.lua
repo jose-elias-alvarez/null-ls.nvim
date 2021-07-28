@@ -40,11 +40,6 @@ local function get_uncrustify_args()
     return { "-q", format_type }
 end
 
-local function get_clang_format_args()
-    local assume_filename = "-assume-filename=" .. vim.fn.expand("%:t")
-    return { assume_filename }
-end
-
 M.asmfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "asm" },
@@ -87,7 +82,7 @@ M.clang_format = h.make_builtin({
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {
         command = "clang-format",
-        args = get_clang_format_args(),
+        args = { "-assume-filename=" .. vim.fn.expand("%:t") },
         to_stdin = true,
     },
     factory = h.formatter_factory,
