@@ -53,4 +53,38 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("teal", function()
+        local linter = diagnostics.teal
+        local parser = linter._opts.on_output
+        local file = {
+            [[require("settings").load_options()]],
+            "vim.cmd [[",
+        }
+
+        it("should create a diagnostic (quote field is between quotes)", function()
+            local output = [[init.lua:1:8: module not found: 'settings']]
+
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "8",
+                end_col = 17,
+                severity = 1,
+                message = "module not found: 'settings'",
+            }, diagnostic)
+        end)
+        it("should create a diagnostic (quote field is not between quotes)", function()
+            local output = [[init.lua:2:1: unknown variable: vim]]
+
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "2", --
+                col = "1",
+                end_col = 3,
+                severity = 1,
+                message = "unknown variable: vim",
+            }, diagnostic)
+        end)
+    end)
 end)
