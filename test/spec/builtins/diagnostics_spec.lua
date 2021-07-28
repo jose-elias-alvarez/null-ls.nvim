@@ -237,4 +237,54 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("hadolint", function()
+        local linter = diagnostics.hadolint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            local output = vim.fn.json_decode([[
+                  [{
+                    "line": 24,
+                    "code": "DL3008",
+                    "message": "Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`",
+                    "column": 1,
+                    "file": "/home/luc/Projects/Test/buildroot/support/docker/Dockerfile",
+                    "level": "warning"
+                  }]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    row = 24, --
+                    col = 1,
+                    severity = 2,
+                    code = "DL3008",
+                    message = "Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`",
+                },
+            }, diagnostic)
+        end)
+        it("should create a diagnostic with info severity", function()
+            local output = vim.fn.json_decode([[
+                  [{
+                    "line": 24,
+                    "code": "DL3059",
+                    "message": "Multiple consecutive `RUN` instructions. Consider consolidation.",
+                    "column": 1,
+                    "file": "/home/luc/Projects/Test/buildroot/support/docker/Dockerfile",
+                    "level": "info"
+                  }]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    row = 24, --
+                    col = 1,
+                    severity = 3,
+                    code = "DL3059",
+                    message = "Multiple consecutive `RUN` instructions. Consider consolidation.",
+                },
+            }, diagnostic)
+        end)
+    end)
 end)

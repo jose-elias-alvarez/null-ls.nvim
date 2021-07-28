@@ -286,7 +286,7 @@ M.hadolint = h.make_builtin({
         args = { "--no-fail", "--format=json", "$FILENAME" },
         on_output = from_json( --
             { code = "code" },
-            { style = 4 }
+            { info = default_severities["information"], style = default_severities["hint"] }
         ),
     },
     factory = h.generator_factory,
