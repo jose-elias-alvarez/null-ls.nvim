@@ -307,4 +307,23 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("misspell", function()
+        local linter = diagnostics.misspell
+        local parser = linter._opts.on_output
+        local file = {
+            [[Did I misspell langauge ?]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[stdin:1:15: "langauge" is a misspelling of "language"]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "15",
+                severity = 3,
+                message = [["langauge" is a misspelling of "language"]],
+            }, diagnostic)
+        end)
+    end)
 end)
