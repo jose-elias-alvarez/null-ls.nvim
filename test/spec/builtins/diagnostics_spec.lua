@@ -326,4 +326,33 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("vint", function()
+        local linter = diagnostics.vint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            local output = vim.fn.json_decode([[
+                  [{
+                    "file_path": "/home/luc/Projects/Test/vim-scriptease/plugin/scriptease.vim",
+                    "line_number": 5,
+                    "column_number": 37,
+                    "severity": "style_problem",
+                    "description": "Use the full option name `compatible` instead of `cp`",
+                    "policy_name": "ProhibitAbbreviationOption",
+                    "reference": ":help option-summary"
+                  }]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    row = 5, --
+                    col = 37,
+                    severity = 3,
+                    code = "ProhibitAbbreviationOption",
+                    message = "Use the full option name `compatible` instead of `cp`",
+                },
+            }, diagnostic)
+        end)
+    end)
 end)

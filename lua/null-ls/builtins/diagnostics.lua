@@ -344,8 +344,14 @@ M.vint = h.make_builtin({
             return code == 0 or code == 1
         end,
         on_output = from_json(
-            { row = "line_number", col = "column_number", code = "policy_name", message = "description" },
-            { style_problem = 3 }
+            {
+                row = "line_number",
+                col = "column_number",
+                code = "policy_name",
+                severity = "severity",
+                message = "description",
+            },
+            { style_problem = default_severities["information"] }
         ),
     },
     factory = h.generator_factory,
