@@ -218,6 +218,7 @@ M.shellcheck = h.make_builtin({
             return code <= 1
         end,
         on_output = from_json({}, {
+            info = 3,
             style = 4,
         }),
     },
