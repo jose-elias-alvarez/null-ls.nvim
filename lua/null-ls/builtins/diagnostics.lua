@@ -49,6 +49,8 @@ local make_diagnostic = function(entries, defaults, attr_adapters, params)
     for attr, adapter in pairs(attr_adapters) do
         entries[attr] = adapter(entries, content_line) or entries[attr]
     end
+    -- Remote quote as only used for computing end_col
+    entries["quote"] = nil
 
     return vim.tbl_extend("keep", defaults, entries)
 end
