@@ -18,9 +18,9 @@ local convert_range = function(diagnostic)
     }
 end
 
-local postprocess = function(diagnostic, generator)
+local postprocess = function(diagnostic, params)
     diagnostic.range = convert_range(diagnostic)
-    diagnostic.source = diagnostic.source or generator.command or "null-ls"
+    diagnostic.source = diagnostic.source or params.command or "null-ls"
 end
 
 M.handler = function(original_params)

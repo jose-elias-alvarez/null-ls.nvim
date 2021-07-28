@@ -163,11 +163,13 @@ M.generator_factory = function(opts)
                 local cached = s.get_cache(params.bufnr, command)
                 if cached then
                     params._null_ls_cached = true
-
                     wrapper(to_stderr and cached, to_stderr and nil or cached)
                     return
                 end
             end
+
+            -- Set the command used as value for the diagnostic source.
+            params.command = command
 
             local spawn_args = args or {}
             local client = vim.lsp.get_client_by_id(params.client_id)
@@ -193,7 +195,6 @@ M.generator_factory = function(opts)
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
-        command = opts.command,
         async = true,
     }
 end
