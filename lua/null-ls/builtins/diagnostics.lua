@@ -113,17 +113,18 @@ local from_pattern = function(pattern, groups, overrides)
 end
 
 --- Parse a linter's output using multiple regex patterns until one matches
--- @param patterns The regex pattern list
--- @param groups The groups list defined by the patterns
--- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
--- @param overrides.diagnostic An optional table of diagnostic default values
--- @param overrides.severities An optional table of severity overrides (see default_severities)
--- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
--- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
-local from_patterns = function(patterns, groups, overrides)
+-- @param matchers A table containing the parameters to use for each pattern
+-- @param matchers.pattern The regex pattern
+-- @param matchers.groups The groups defined by the pattern
+-- @param matchers.overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
+-- @param matchers.overrides.diagnostic An optional table of diagnostic default values
+-- @param matchers.overrides.severities An optional table of severity overrides (see default_severities)
+-- @param matchers.overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
+-- @param matchers.overrides.offsets An optional table of offsets to apply to diagnostic ranges
+local from_patterns = function(matchers)
     return function(line, params)
-        for i, pattern in ipairs(patterns) do
-            local diagnostic = from_pattern(pattern, groups[i], overrides)(line, params)
+        for _, matcher in ipairs(matchers) do
+            local diagnostic = from_pattern(matcher.pattern, matcher.groups, matcher.overrides)(line, params)
             if diagnostic then
                 return diagnostic
             end
@@ -234,10 +235,16 @@ M.markdownlint = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_patterns(
-            { [[:(%d+):(%d+) [%w-/]+ (.*)]], [[:(%d+) [%w-/]+ (.*)]] },
-            { { "row", "col", "message" }, { "row", "message" } }
-        ),
+        on_output = from_patterns({
+            {
+                pattern = [[:(%d+):(%d+) [%w-/]+ (.*)]],
+                groups = { "row", "col", "message" },
+            },
+            {
+                pattern = [[:(%d+) [%w-/]+ (.*)]],
+                groups = { "row", "message" },
+            },
+        }),
     },
     factory = h.generator_factory,
 })
@@ -280,14 +287,21 @@ M.teal = h.make_builtin({
         end,
         to_stderr = true,
         to_temp_file = true,
-        on_output = from_pattern(
-            [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
-            { "row", "col", "message", "_quote" },
+        on_output = from_patterns({
             {
-                adapters = { diagnostic_adapters.end_col.from_quote },
-                diagnostic = { source = "tl check" },
-            }
-        ),
+                pattern = [[:(%d+):(%d+): (.* ['"]?([%w%.%-]+)['"]?)$]], --
+                groups = { "row", "col", "message", "_quote" },
+                overrides = {
+                    adapters = { diagnostic_adapters.end_col.from_quote },
+                    diagnostic = { source = "tl check" },
+                },
+            },
+            {
+                pattern = [[:(%d+):(%d+): (.*)]], --
+                groups = { "row", "col", "message" },
+                overrides = { diagnostic = { source = "tl check" } },
+            },
+        }),
     },
     factory = h.generator_factory,
 })
