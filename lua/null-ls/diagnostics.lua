@@ -17,9 +17,11 @@ local convert_range = function(diagnostic)
     return u.range.to_lsp({ row = row, col = col, end_row = end_row, end_col = end_col })
 end
 
-local postprocess = function(diagnostic, params)
+local postprocess = function(diagnostic, params, index)
     diagnostic.range = convert_range(diagnostic)
-    diagnostic.source = diagnostic.source or params.command or "null-ls"
+    diagnostic.source = diagnostic.source
+        or params.generators[index] and params.generators[index].opts.command
+        or "null-ls"
 end
 
 M.handler = function(original_params)

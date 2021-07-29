@@ -81,8 +81,12 @@ local register_source = function(source, filetypes)
             name = { name, "string", true },
         })
 
-        local fn, async = generator.fn, generator.async
-        validate({ fn = { fn, "function" }, async = { async, "boolean", true } })
+        local fn, async, opts = generator.fn, generator.async, generator.opts
+        validate({
+            fn = { fn, "function" },
+            async = { async, "boolean", true },
+            opts = { opts, "table", true },
+        })
 
         if not config._generators[method] then
             config._generators[method] = {}
@@ -90,6 +94,7 @@ local register_source = function(source, filetypes)
         register_filetypes(filetypes)
 
         generator.filetypes = filetypes
+        generator.opts = opts or {}
         table.insert(config._generators[method], generator)
     end
     require("null-ls.lspconfig").on_register_source(methods)

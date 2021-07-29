@@ -90,6 +90,7 @@ local from_pattern = function(pattern, groups, overrides)
     overrides = overrides or {}
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
+    defaults.source = source
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(line, params)
@@ -136,6 +137,7 @@ local from_json = function(overrides)
     local attributes = vim.tbl_extend("force", default_json_attributes, overrides.attributes or {})
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
+    defaults.source = source
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(params)
@@ -211,7 +213,7 @@ M.vale = h.make_builtin({
             for _, diagnostic in ipairs(params.output[params.bufname]) do
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
-                    col = diagnostic.Span[1] - 1,
+                    col = diagnostic.Span[1],
                     end_col = diagnostic.Span[2],
                     code = diagnostic.Check,
                     message = diagnostic.Message,
@@ -239,7 +241,10 @@ M.teal = h.make_builtin({
         on_output = from_pattern(
             [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
             { "row", "col", "message", "_quote" },
-            { adapters = { diagnostic_adapters.end_col.from_quote } }
+            {
+                adapters = { diagnostic_adapters.end_col.from_quote },
+                diagnostic = { source = "tl check" },
+            }
         ),
     },
     factory = h.generator_factory,
@@ -352,8 +357,8 @@ M.flake8 = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = from_pattern( --
-            [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
             { "row", "col", "code", "severity", "message" },
             {
                 severities = {
