@@ -304,7 +304,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(on_output).was_called_with({ output = "output" }, done)
+                assert.stub(on_output).was_called_with({ output = "output", command = command }, done)
             end)
 
             it("should set output to error_output and error_output to nil if to_stderr = true", function()
@@ -315,7 +315,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ output = "error output" }, done)
+                assert.stub(on_output).was_called_with({ output = "error output", command = command }, done)
             end)
 
             it("should throw error if error_output exists and format ~= raw", function()
@@ -336,7 +336,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ err = "error output" }, done)
+                assert.stub(on_output).was_called_with({ err = "error output", command = command }, done)
             end)
 
             it("should set params.err if format == json_raw", function()
@@ -347,7 +347,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ err = "error output" })
+                assert.stub(on_output).was_called_with({ err = "error output", command = command })
             end)
 
             it("should call json_output_wrapper and return if format == json", function()
@@ -358,7 +358,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, vim.fn.json_encode({ key = "val" }))
 
-                assert.stub(on_output).was_called_with({ output = { key = "val" } })
+                assert.stub(on_output).was_called_with({ output = { key = "val" }, command = command })
             end)
 
             it("should call json_output_wrapper and return if format == json_raw", function()
@@ -369,7 +369,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, vim.fn.json_encode({ key = "val" }))
 
-                assert.stub(on_output).was_called_with({ output = { key = "val" } })
+                assert.stub(on_output).was_called_with({ output = { key = "val" }, command = command })
             end)
 
             it("should call line_output_wrapper and return if format == line", function()
@@ -380,7 +380,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(on_output).was_called_with("output", { output = "output" })
+                assert.stub(on_output).was_called_with("output", { output = "output", command = command })
             end)
 
             it("should call set_cache with bufnr, command, and output if use_cache is true", function()

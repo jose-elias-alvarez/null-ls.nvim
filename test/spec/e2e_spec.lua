@@ -230,10 +230,10 @@ describe("e2e", function()
 
             local tl_check_diagnostic = buf_diagnostics[1]
             assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
-            assert.equals(tl_check_diagnostic.source, "tl check")
+            assert.equals(tl_check_diagnostic.source, "tl")
             assert.same(tl_check_diagnostic.range, {
-                start = { character = 52, line = 0 },
-                ["end"] = { character = 54, line = 0 },
+                start = { character = 53, line = 0 },
+                ["end"] = { character = -1, line = 0 },
             })
         end)
     end)
