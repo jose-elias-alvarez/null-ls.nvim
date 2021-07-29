@@ -1,6 +1,29 @@
 local diagnostics = require("null-ls.builtins.diagnostics")
 
 describe("diagnostics", function()
+    describe("chktex", function()
+        local linter = diagnostics.chktex
+        local parser = linter._opts.on_output
+        local file = {
+            [[\documentclass{article}]],
+            [[\begin{document}]],
+            [[Lorem ipsum dolor \sit amet]],
+            [[\end{document}]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[3:23:1:Warning:Command terminated with space.]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "3",
+                col = "23",
+                end_col = 24,
+                severity = 2,
+                message = "Command terminated with space.",
+            }, diagnostic)
+        end)
+    end)
+
     describe("write-good", function()
         local linter = diagnostics.write_good
         local parser = linter._opts.on_output
