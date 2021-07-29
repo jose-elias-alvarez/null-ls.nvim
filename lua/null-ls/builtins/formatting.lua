@@ -450,7 +450,7 @@ M.swiftformat = h.make_builtin({
 
 M.terraform_fmt = h.make_builtin({
     method = FORMATTING,
-    filetypes = { "tf", "hcl" },
+    filetypes = { "terraform", "tf" },
     generator_opts = {
         command = "terraform",
         args = {
