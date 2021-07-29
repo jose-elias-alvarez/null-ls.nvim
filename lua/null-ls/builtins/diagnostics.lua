@@ -37,6 +37,13 @@ local diagnostic_adapters = {
                 return end_col and end_col > tonumber(entries["col"]) and end_col or nil
             end,
         },
+        from_length = {
+            end_col = function(entries)
+                local col = tonumber(entries["col"])
+                local length = tonumber(entries["_length"])
+                return col + length
+            end,
+        },
     },
 }
 
@@ -157,6 +164,41 @@ local from_json = function(overrides)
         return diagnostics
     end
 end
+
+M.chktex = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "tex" },
+    generator_opts = {
+        command = "chktex",
+        to_stdin = true,
+        args = {
+            -- Disable printing version information to stderr
+            "-q",
+            -- Disable executing \input statements
+            "-I0",
+            -- Format output
+            "-f%l:%c:%d:%k:%m\n",
+        },
+        format = "line",
+        check_exit_code = function (code)
+            return code <= 1
+        end,
+        on_output = from_pattern(
+            [[(%d+):(%d+):(%d+):(%w+):(.+)]], --
+            { "row", "col", "_length", "severity", "message" },
+            {
+                adapters = {
+                    diagnostic_adapters.end_col.from_length,
+                },
+                severities = {
+                    Error = default_severities["error"],
+                    Warning = default_severities["warning"],
+                },
+            }
+        ),
+    },
+    factory = h.generator_factory,
+})
 
 M.write_good = h.make_builtin({
     method = DIAGNOSTICS,
