@@ -35,7 +35,7 @@ local make_attr_adapters = function(severities)
             end
 
             _, end_col = line:find(quote, 1, true)
-            return end_col
+            return end_col > tonumber(entries["col"]) and end_col or nil
         end,
     }
 end
@@ -69,6 +69,7 @@ local from_pattern = function(pattern, groups, severities, defaults)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
+
         for i, match in ipairs(results) do
             entries[groups[i]] = match
         end
