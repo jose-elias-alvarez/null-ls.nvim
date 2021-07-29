@@ -80,8 +80,8 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = { character = 6, line = 1 },
-                    start = { character = 5, line = 0 },
+                    ["end"] = { character = 5, line = 1 },
+                    start = { character = 4, line = 0 },
                 })
             end)
 
@@ -96,8 +96,8 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = { character = 6, line = 1 },
-                    start = { character = 5, line = 0 },
+                    ["end"] = { character = 5, line = 1 },
+                    start = { character = 4, line = 0 },
                 })
             end)
 
@@ -112,7 +112,7 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = { character = 6, line = 1 },
+                    ["end"] = { character = 5, line = 1 },
                     start = { character = 0, line = 0 },
                 })
             end)
@@ -128,8 +128,8 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = { character = 6, line = 0 },
-                    start = { character = 5, line = 0 },
+                    ["end"] = { character = 5, line = 0 },
+                    start = { character = 4, line = 0 },
                 })
             end)
 
@@ -145,7 +145,7 @@ describe("diagnostics", function()
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = -1, line = 1 },
-                    start = { character = 5, line = 0 },
+                    start = { character = 4, line = 0 },
                 })
             end)
 
