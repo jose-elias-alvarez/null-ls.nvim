@@ -5,22 +5,23 @@ local generators = require("null-ls.generators")
 
 local M = {}
 
+-- assume 1-indexed ranges
 local convert_range = function(diagnostic)
-    local start_line = u.string.to_number_safe(diagnostic.row, 0, -1)
-    local start_char = u.string.to_number_safe(diagnostic.col, 0)
-    local end_line = u.string.to_number_safe(diagnostic.end_row, start_line, -1)
-    -- default to end of line
-    local end_char = u.string.to_number_safe(diagnostic.end_col, -1)
+    local row = u.string.to_number_safe(diagnostic.row, 1)
+    local col = u.string.to_number_safe(diagnostic.col, 1)
+    -- default end_row to row
+    local end_row = u.string.to_number_safe(diagnostic.end_row, row)
+    -- default end_col to -1, which wraps to the end of the line (after range.to_lsp conversion)
+    local end_col = u.string.to_number_safe(diagnostic.end_col, 0)
 
-    return {
-        start = { line = start_line, character = start_char },
-        ["end"] = { line = end_line, character = end_char },
-    }
+    return u.range.to_lsp({ row = row, col = col, end_row = end_row, end_col = end_col })
 end
 
-local postprocess = function(diagnostic, params)
+local postprocess = function(diagnostic, params, index)
     diagnostic.range = convert_range(diagnostic)
-    diagnostic.source = diagnostic.source or params.command or "null-ls"
+    diagnostic.source = diagnostic.source
+        or params.generators[index] and params.generators[index].opts.command
+        or "null-ls"
 end
 
 M.handler = function(original_params)

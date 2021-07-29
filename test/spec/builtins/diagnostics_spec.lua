@@ -13,8 +13,8 @@ describe("diagnostics", function()
             local diagnostic = parser(output, { content = file })
             assert.are.same({
                 row = "1", --
-                col = "46",
-                end_col = 58,
+                col = 47,
+                end_col = 59,
                 severity = 1,
                 message = '"is deprecated" may be passive voice',
             }, diagnostic)
@@ -51,7 +51,7 @@ describe("diagnostics", function()
         end)
     end)
 
-    describe("teal", function()
+    describe("tl check", function()
         local linter = diagnostics.teal
         local parser = linter._opts.on_output
         local file = {
@@ -68,6 +68,7 @@ describe("diagnostics", function()
                 end_col = 17,
                 severity = 1,
                 message = "module not found: 'settings'",
+                source = "tl check",
             }, diagnostic)
         end)
         it("should create a diagnostic (quote field is not between quotes)", function()
@@ -79,6 +80,7 @@ describe("diagnostics", function()
                 end_col = 3,
                 severity = 1,
                 message = "unknown variable: vim",
+                source = "tl check",
             }, diagnostic)
         end)
     end)

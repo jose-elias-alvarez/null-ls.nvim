@@ -34,7 +34,7 @@ local diagnostic_adapters = {
                 end
 
                 _, end_col = line:find(quote, 1, true)
-                return end_col > tonumber(entries["col"]) and end_col or nil
+                return end_col and end_col > tonumber(entries["col"]) and end_col or nil
             end,
         },
     },
@@ -53,7 +53,7 @@ local make_attr_adapters = function(severities, user_adapters)
     return adapters
 end
 
-local make_diagnostic = function(entries, defaults, attr_adapters, params)
+local make_diagnostic = function(entries, defaults, attr_adapters, params, offsets)
     if not (entries["row"] and entries["message"]) then
         return nil
     end
@@ -71,20 +71,26 @@ local make_diagnostic = function(entries, defaults, attr_adapters, params)
         end
     end
 
-    return vim.tbl_extend("keep", defaults, entries)
+    local diagnostic = vim.tbl_extend("keep", defaults, entries)
+    for k, offset in pairs(offsets) do
+        diagnostic[k] = diagnostic[k] and diagnostic[k] + offset
+    end
+    return diagnostic
 end
 
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
 -- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
--- @param overrides A table providing overrides for {adapters, diagnostic, severities}
+-- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
 -- @param overrides.diagnostic An optional table of diagnostic default values
 -- @param overrides.severities An optional table of severity overrides (see default_severities)
 -- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
+-- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
 local from_pattern = function(pattern, groups, overrides)
     overrides = overrides or {}
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
+    local offsets = overrides.offsets or {}
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(line, params)
@@ -95,17 +101,18 @@ local from_pattern = function(pattern, groups, overrides)
             entries[groups[i]] = match
         end
 
-        return make_diagnostic(entries, defaults, attr_adapters, params)
+        return make_diagnostic(entries, defaults, attr_adapters, params, offsets)
     end
 end
 
 --- Parse a linter's output using multiple regex patterns until one matches
 -- @param patterns The regex pattern list
 -- @param groups The groups list defined by the patterns
--- @param overrides A table providing overrides for {adapters, diagnostic, severities}
+-- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
 -- @param overrides.diagnostic An optional table of diagnostic default values
 -- @param overrides.severities An optional table of severity overrides (see default_severities)
 -- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
+-- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
 local from_patterns = function(patterns, groups, overrides)
     return function(line, params)
         for i, pattern in ipairs(patterns) do
@@ -119,16 +126,18 @@ local from_patterns = function(patterns, groups, overrides)
 end
 
 --- Parse a linter's output in JSON format
--- @param overrides A table providing overrides for {adapters, attributes, diagnostic, severities}
+-- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
 -- @param overrides.attributes An optional table of JSON to diagnostic attributes (see default_json_attributes)
 -- @param overrides.diagnostic An optional table of diagnostic default values
 -- @param overrides.severities An optional table of severity overrides (see default_severities)
 -- @param overrides.adapters An optional table of adapters from JSON entries to diagnostic attributes
+-- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
 local from_json = function(overrides)
     overrides = overrides or {}
     local attributes = vim.tbl_extend("force", default_json_attributes, overrides.attributes or {})
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
+    local offsets = overrides.offsets or {}
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(params)
@@ -139,7 +148,7 @@ local from_json = function(overrides)
                 entries[attr] = json_diagnostic[json_key]
             end
 
-            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params)
+            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params, offsets)
             if diagnostic then
                 table.insert(diagnostics, diagnostic)
             end
@@ -162,7 +171,10 @@ M.write_good = h.make_builtin({
         on_output = from_pattern(
             [[(%d+):(%d+):("([%w%s]+)".*)]], --
             { "row", "col", "message", "_quote" },
-            { adapters = { diagnostic_adapters.end_col.from_quote } }
+            {
+                adapters = { diagnostic_adapters.end_col.from_quote },
+                offsets = { col = 1, end_col = 1 },
+            }
         ),
     },
     factory = h.generator_factory,
@@ -201,7 +213,7 @@ M.vale = h.make_builtin({
             for _, diagnostic in ipairs(params.output[params.bufname]) do
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
-                    col = diagnostic.Span[1] - 1,
+                    col = diagnostic.Span[1],
                     end_col = diagnostic.Span[2],
                     code = diagnostic.Check,
                     message = diagnostic.Message,
@@ -229,7 +241,10 @@ M.teal = h.make_builtin({
         on_output = from_pattern(
             [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
             { "row", "col", "message", "_quote" },
-            { adapters = { diagnostic_adapters.end_col.from_quote } }
+            {
+                adapters = { diagnostic_adapters.end_col.from_quote },
+                diagnostic = { source = "tl check" },
+            }
         ),
     },
     factory = h.generator_factory,
@@ -342,8 +357,8 @@ M.flake8 = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = from_pattern( --
-            [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
             { "row", "col", "code", "severity", "message" },
             {
                 severities = {
