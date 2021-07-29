@@ -232,7 +232,7 @@ describe("e2e", function()
             assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
             assert.equals(tl_check_diagnostic.source, "tl")
             assert.same(tl_check_diagnostic.range, {
-                start = { character = 53, line = 0 },
+                start = { character = 52, line = 0 },
                 ["end"] = { character = -1, line = 0 },
             })
         end)
