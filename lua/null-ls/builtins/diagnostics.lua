@@ -90,7 +90,7 @@ local from_pattern = function(pattern, groups, overrides)
     overrides = overrides or {}
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
-    defaults.source = source
+    local offsets = overrides.offsets or {}
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(line, params)
@@ -101,7 +101,7 @@ local from_pattern = function(pattern, groups, overrides)
             entries[groups[i]] = match
         end
 
-        return make_diagnostic(entries, defaults, attr_adapters, params, overrides.offsets or {})
+        return make_diagnostic(entries, defaults, attr_adapters, params, offsets)
     end
 end
 
@@ -137,7 +137,7 @@ local from_json = function(overrides)
     local attributes = vim.tbl_extend("force", default_json_attributes, overrides.attributes or {})
     local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
     local defaults = overrides.diagnostic or {}
-    defaults.source = source
+    local offsets = overrides.offsets or {}
     local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
     return function(params)
@@ -148,7 +148,7 @@ local from_json = function(overrides)
                 entries[attr] = json_diagnostic[json_key]
             end
 
-            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params, overrides.offsets or {})
+            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params, offsets)
             if diagnostic then
                 table.insert(diagnostics, diagnostic)
             end
