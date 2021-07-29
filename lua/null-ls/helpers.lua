@@ -134,6 +134,7 @@ M.generator_factory = function(opts)
                     if not ignore_errors then
                         error("error in generator output: " .. error_output)
                     end
+                    done()
                     return
                 end
 
