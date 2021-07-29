@@ -37,6 +37,13 @@ local diagnostic_adapters = {
                 return end_col and end_col > tonumber(entries["col"]) and end_col or nil
             end,
         },
+        from_length = {
+            end_col = function(entries)
+                local col = tonumber(entries["col"])
+                local length = tonumber(entries["_length"])
+                return col + length
+            end,
+        },
     },
 }
 
@@ -173,22 +180,22 @@ M.chktex = h.make_builtin({
             "-f%l:%c:%d:%k:%m\n",
         },
         format = "line",
-        on_output = function(line)
-            local row, col, length, severity, message = line:match("(%d+):(%d+):(%d+):(%w+):(.+)")
-
-            if row then
-                col = col - 1
-
-                return {
-                    message = message,
-                    row = row,
-                    col = col,
-                    end_col = col + length,
-                    severity = severity == "Error" and 1 or severity == "Warning" and 2,
-                    source = "chktex",
-                }
-            end
+        check_exit_code = function (code)
+            return code <= 1
         end,
+        on_output = from_pattern(
+            [[(%d+):(%d+):(%d+):(%w+):(.+)]], --
+            { "row", "col", "_length", "severity", "message" },
+            {
+                adapters = {
+                    diagnostic_adapters.end_col.from_length,
+                },
+                severities = {
+                    Error = default_severities["error"],
+                    Warning = default_severities["warning"],
+                },
+            }
+        ),
     },
     factory = h.generator_factory,
 })
