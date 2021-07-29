@@ -57,6 +57,7 @@ describe("diagnostics", function()
         local file = {
             [[require("settings").load_options()]],
             "vim.cmd [[",
+            [[local command = table.concat(vim.tbl_flatten { "autocmd", def }, " ")]],
         }
 
         it("should create a diagnostic (quote field is between quotes)", function()
@@ -80,6 +81,17 @@ describe("diagnostics", function()
                 end_col = 3,
                 severity = 1,
                 message = "unknown variable: vim",
+                source = "tl check",
+            }, diagnostic)
+        end)
+        it("should create a diagnostic by using the second pattern", function()
+            local output = [[autocmds.lua:3:46: argument 1: got <unknown type>, expected {string}]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "3", --
+                col = "46",
+                severity = 1,
+                message = "argument 1: got <unknown type>, expected {string}",
                 source = "tl check",
             }, diagnostic)
         end)

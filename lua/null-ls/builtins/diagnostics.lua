@@ -245,14 +245,21 @@ M.teal = h.make_builtin({
         end,
         to_stderr = true,
         to_temp_file = true,
-        on_output = from_pattern(
-            [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
-            { "row", "col", "message", "_quote" },
+        on_output = from_patterns({
             {
-                adapters = { diagnostic_adapters.end_col.from_quote },
-                diagnostic = { source = "tl check" },
-            }
-        ),
+                pattern = [[:(%d+):(%d+): (.* ['"]?([%w%.%-]+)['"]?)$]], --
+                groups = { "row", "col", "message", "_quote" },
+                overrides = {
+                    adapters = { diagnostic_adapters.end_col.from_quote },
+                    diagnostic = { source = "tl check" },
+                },
+            },
+            {
+                pattern = [[:(%d+):(%d+): (.*)]], --
+                groups = { "row", "col", "message" },
+                overrides = { diagnostic = { source = "tl check" } },
+            },
+        }),
     },
     factory = h.generator_factory,
 })
