@@ -14,7 +14,7 @@ describe("diagnostics", function()
     describe("handler", function()
         stub(s, "clear_cache")
         stub(u, "make_params")
-        stub(generators, "run")
+        stub(generators, "run_registered")
 
         local mock_uri = "file:///mock-file"
         local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
@@ -28,7 +28,7 @@ describe("diagnostics", function()
             lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]:clear()
             s.clear_cache:clear()
 
-            generators.run:clear()
+            generators.run_registered:clear()
             u.make_params:clear()
 
             s.reset()
@@ -56,7 +56,7 @@ describe("diagnostics", function()
             u.make_params.returns({ uri = mock_params.textDocument.uri })
 
             diagnostics.handler(mock_params)
-            local callback = generators.run.calls[1].refs[3]
+            local callback = generators.run_registered.calls[1].refs[3]
             callback("diagnostics")
 
             assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, nil, {
@@ -71,13 +71,13 @@ describe("diagnostics", function()
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
-                postprocess = generators.run.calls[1].refs[2]
+                postprocess = generators.run_registered.calls[1].refs[2]
             end)
 
             it("should convert range when all positions are defined", function()
                 local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 6, line = 1 },
@@ -93,7 +93,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 6, line = 1 },
@@ -109,7 +109,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 6, line = 1 },
@@ -125,7 +125,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 6, line = 0 },
@@ -141,7 +141,7 @@ describe("diagnostics", function()
                     end_col = nil,
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = -1, line = 1 },
@@ -157,7 +157,7 @@ describe("diagnostics", function()
                     end_col = nil,
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = -1, line = 0 },
@@ -174,15 +174,24 @@ describe("diagnostics", function()
                     source = "mock-source",
                 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.equals(diagnostic.source, "mock-source")
+            end)
+
+            it("should get source from params.command", function()
+                mock_params.command = "mock-command"
+                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
+
+                postprocess(diagnostic, mock_params)
+
+                assert.equals(diagnostic.source, "mock-command")
             end)
 
             it("should set default source when undefined", function()
                 local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
-                postprocess(diagnostic)
+                postprocess(diagnostic, mock_params)
 
                 assert.equals(diagnostic.source, "null-ls")
             end)

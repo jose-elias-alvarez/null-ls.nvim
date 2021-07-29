@@ -28,11 +28,11 @@ describe("code_actions", function()
 
     describe("handler", function()
         local handler = stub.new()
-        stub(generators, "run")
+        stub(generators, "run_registered")
         stub(u, "make_params")
 
         after_each(function()
-            generators.run:clear()
+            generators.run_registered:clear()
             u.make_params:clear()
             handler:clear()
         end)
@@ -65,7 +65,7 @@ describe("code_actions", function()
             it("should call handler with arguments", function()
                 code_actions.handler(method, mock_params, handler)
 
-                local callback = generators.run.calls[1].refs[3]
+                local callback = generators.run_registered.calls[1].refs[3]
                 callback({ { title = "actions" } })
 
                 -- wait for schedule_wrap
@@ -91,7 +91,7 @@ describe("code_actions", function()
                         end,
                     }
                     code_actions.handler(method, mock_params, handler)
-                    postprocess = generators.run.calls[1].refs[2]
+                    postprocess = generators.run_registered.calls[1].refs[2]
                 end)
 
                 it("should register action in state", function()
@@ -121,7 +121,7 @@ describe("code_actions", function()
                 title = "Mock action",
             }
 
-            code_actions.handler(method, params, handler, 1)
+            code_actions.handler(method, params, handler)
 
             assert.equals(params._null_ls_handled, true)
         end)
@@ -130,14 +130,14 @@ describe("code_actions", function()
             code_actions.handler(method, {
                 command = methods.internal.CODE_ACTION,
                 title = "Mock action",
-            }, handler, 1)
+            }, handler)
 
             assert.stub(s.run_action).was_called_with("Mock action")
         end)
 
         it("should not run action when command does not match", function()
             local params = { command = "someOtherCommand", title = "Mock action" }
-            code_actions.handler(method, params, handler, 1)
+            code_actions.handler(method, params, handler)
 
             assert.stub(s.run_action).was_not_called()
             assert.equals(params._null_ls_handled, nil)

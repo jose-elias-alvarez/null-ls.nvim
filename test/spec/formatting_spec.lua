@@ -14,7 +14,7 @@ local lsp = mock(vim.lsp, true)
 describe("formatting", function()
     stub(vim, "cmd")
     stub(u, "make_params")
-    stub(generators, "run")
+    stub(generators, "run_registered")
 
     local handler = stub.new()
 
@@ -36,7 +36,7 @@ describe("formatting", function()
         vim.cmd:clear()
 
         u.make_params:clear()
-        generators.run:clear()
+        generators.run_registered:clear()
         handler:clear()
 
         c.reset()
@@ -67,7 +67,6 @@ describe("formatting", function()
     describe("apply_edits", function()
         stub(s, "get")
 
-        local mock_client_id = 99
         local mock_edits = { { text = "new text" } }
         local mock_diffed = {
             text = "diffed text",
@@ -94,7 +93,7 @@ describe("formatting", function()
         it("should call handler with text edits", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
-            local callback = generators.run.calls[1].refs[3]
+            local callback = generators.run_registered.calls[1].refs[3]
             callback(mock_edits, mock_params)
 
             assert.stub(handler).was_called_with({ { newText = mock_diffed.text, range = mock_diffed.range } })
@@ -103,7 +102,7 @@ describe("formatting", function()
         it("should not save buffer if config option is not set", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
-            local callback = generators.run.calls[1].refs[3]
+            local callback = generators.run_registered.calls[1].refs[3]
             callback(mock_edits, mock_params)
 
             assert.stub(vim.cmd).was_not_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
@@ -113,7 +112,7 @@ describe("formatting", function()
             c.setup({ save_after_format = true })
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
 
-            local callback = generators.run.calls[1].refs[3]
+            local callback = generators.run_registered.calls[1].refs[3]
             callback(mock_edits, mock_params)
             vim.wait(100)
 
