@@ -243,11 +243,12 @@ callbacks are schedule-wrapped, making it safe to call any API function.
 #### Diagnostics
 
 ```lua
+-- null-ls assumes ranges are 1-indexed, so sources should offset if not
 return { {
-    row, -- number, optional (defaults to 0)
-    col, -- number, optional (defaults to 0)
-    end_row, -- number, optional (defaults to row value)
-    end_col, -- number, optional (defaults to -1),
+    row, -- number, optional (defaults to first line)
+    col, -- number, optional (defaults to beginning of line)
+    end_row, -- number, optional (defaults to row)
+    end_col, -- number, optional (defaults to end of line),
     source, -- string, optional (defaults to "null-ls")
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
@@ -261,10 +262,10 @@ them in the editor.
 
 ```lua
 return { {
-    row, -- number, optional (defaults to 0)
-    col, -- number, optional (defaults to 0)
-    end_row, -- number, optional (defaults to row value)
-    end_col, -- number, optional (defaults to -1),
+    row, -- number, optional (see diagnostics for defaults)
+    col, -- number, optional
+    end_row, -- number, optional
+    end_col, -- number, optional
     text, -- string
 } }
 ```

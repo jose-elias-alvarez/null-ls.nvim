@@ -169,9 +169,6 @@ M.generator_factory = function(opts)
                 end
             end
 
-            -- Set the command used as value for the diagnostic source.
-            params.command = command
-
             local spawn_args = args or {}
             local client = vim.lsp.get_client_by_id(params.client_id)
             spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
@@ -196,6 +193,7 @@ M.generator_factory = function(opts)
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
+        opts = opts,
         async = true,
     }
 end
