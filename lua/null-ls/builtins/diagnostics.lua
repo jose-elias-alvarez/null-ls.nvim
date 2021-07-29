@@ -22,22 +22,35 @@ local default_json_attributes = {
     message = "message",
 }
 
-local make_attr_adapters = function(severities)
-    return {
+-- User defined diagnostic attribute adapters
+local diagnostic_adapters = {
+    end_col = {
+        from_quote = {
+            end_col = function(entries, line)
+                local end_col = entries["end_col"]
+                local quote = entries["_quote"]
+                if end_col or not quote or not line then
+                    return end_col
+                end
+
+                _, end_col = line:find(quote, 1, true)
+                return end_col > tonumber(entries["col"]) and end_col or nil
+            end,
+        },
+    },
+}
+
+local make_attr_adapters = function(severities, user_adapters)
+    local adapters = {
         severity = function(entries, _)
             return severities[entries["severity"]]
         end,
-        end_col = function(entries, line)
-            local end_col = entries["end_col"]
-            local quote = entries["quote"]
-            if end_col or not quote or not line then
-                return end_col
-            end
-
-            _, end_col = line:find(quote, 1, true)
-            return end_col > tonumber(entries["col"]) and end_col or nil
-        end,
     }
+    for _, adapter in ipairs(user_adapters) do
+        adapters = vim.tbl_extend("force", adapters, adapter)
+    end
+
+    return adapters
 end
 
 local make_diagnostic = function(entries, defaults, attr_adapters, params)
@@ -49,23 +62,31 @@ local make_diagnostic = function(entries, defaults, attr_adapters, params)
     for attr, adapter in pairs(attr_adapters) do
         entries[attr] = adapter(entries, content_line) or entries[attr]
     end
-    -- Remote quote as only used for computing end_col
-    entries["quote"] = nil
     entries["severity"] = entries["severity"] or default_severities["error"]
+
+    -- Unset private attributes
+    for k, _ in pairs(entries) do
+        if k:find("^_") then
+            entries[k] = nil
+        end
+    end
 
     return vim.tbl_extend("keep", defaults, entries)
 end
 
 --- Parse a linter's output using a regex pattern
 -- @param pattern The regex pattern
--- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"], ["quote"]}
--- @param severities An optional table of severity overrides (see default_severities)
--- @param defaults An optional table of diagnostic default values
-local from_pattern = function(pattern, groups, severities, defaults)
-    severities = vim.tbl_extend("force", default_severities, severities or {})
-    defaults = defaults or {}
+-- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
+-- @param overrides A table providing overrides for {adapters, diagnostic, severities}
+-- @param overrides.diagnostic An optional table of diagnostic default values
+-- @param overrides.severities An optional table of severity overrides (see default_severities)
+-- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
+local from_pattern = function(pattern, groups, overrides)
+    overrides = overrides or {}
+    local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
+    local defaults = overrides.diagnostic or {}
+    local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
-    local attr_adapters = make_attr_adapters(severities)
     return function(line, params)
         local results = { line:match(pattern) }
         local entries = {}
@@ -81,12 +102,14 @@ end
 --- Parse a linter's output using multiple regex patterns until one matches
 -- @param patterns The regex pattern list
 -- @param groups The groups list defined by the patterns
--- @param severities An optional table of severity overrides (see default_severities)
--- @param defaults An optional table of diagnostic default values
-local from_patterns = function(patterns, groups, severities, defaults)
+-- @param overrides A table providing overrides for {adapters, diagnostic, severities}
+-- @param overrides.diagnostic An optional table of diagnostic default values
+-- @param overrides.severities An optional table of severity overrides (see default_severities)
+-- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
+local from_patterns = function(patterns, groups, overrides)
     return function(line, params)
         for i, pattern in ipairs(patterns) do
-            local diagnostic = from_pattern(pattern, groups[i], severities, defaults)(line, params)
+            local diagnostic = from_pattern(pattern, groups[i], overrides)(line, params)
             if diagnostic then
                 return diagnostic
             end
@@ -96,15 +119,18 @@ local from_patterns = function(patterns, groups, severities, defaults)
 end
 
 --- Parse a linter's output in JSON format
--- @param attributes An optional table of JSON to diagnostic attributes overrides (see default_json_attributes)
--- @param severities An optional table of severity overrides (see default_severities)
--- @param defaults An optional table of diagnostic default values
-local from_json = function(attributes, severities, defaults)
-    attributes = vim.tbl_extend("force", default_json_attributes, attributes or {})
-    severities = vim.tbl_extend("force", default_severities, severities or {})
-    defaults = defaults or {}
+-- @param overrides A table providing overrides for {adapters, attributes, diagnostic, severities}
+-- @param overrides.attributes An optional table of JSON to diagnostic attributes (see default_json_attributes)
+-- @param overrides.diagnostic An optional table of diagnostic default values
+-- @param overrides.severities An optional table of severity overrides (see default_severities)
+-- @param overrides.adapters An optional table of adapters from JSON entries to diagnostic attributes
+local from_json = function(overrides)
+    overrides = overrides or {}
+    local attributes = vim.tbl_extend("force", default_json_attributes, overrides.attributes or {})
+    local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
+    local defaults = overrides.diagnostic or {}
+    local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
 
-    local attr_adapters = make_attr_adapters(severities)
     return function(params)
         local diagnostics = {}
         for _, json_diagnostic in ipairs(params.output) do
@@ -135,7 +161,8 @@ M.write_good = h.make_builtin({
         end,
         on_output = from_pattern(
             [[(%d+):(%d+):("([%w%s]+)".*)]], --
-            { "row", "col", "message", "quote" }
+            { "row", "col", "message", "_quote" },
+            { adapters = { diagnostic_adapters.end_col.from_quote } }
         ),
     },
     factory = h.generator_factory,
@@ -201,7 +228,8 @@ M.teal = h.make_builtin({
         to_temp_file = true,
         on_output = from_pattern(
             [[:(%d+):(%d+): (.* ['"]*([%w%.%-]+)['"]*)]], --
-            { "row", "col", "message", "quote" }
+            { "row", "col", "message", "_quote" },
+            { adapters = { diagnostic_adapters.end_col.from_quote } }
         ),
     },
     factory = h.generator_factory,
@@ -218,9 +246,11 @@ M.shellcheck = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_json({}, {
-            info = default_severities["information"],
-            style = default_severities["hint"],
+        on_output = from_json({
+            severities = {
+                info = default_severities["information"],
+                style = default_severities["hint"],
+            },
         }),
     },
     factory = h.generator_factory,
@@ -241,7 +271,8 @@ M.selene = h.make_builtin({
         end,
         on_output = from_pattern(
             [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
-            { "row", "col", "severity", "code", "message", "quote" }
+            { "row", "col", "severity", "code", "message", "_quote" },
+            { adapters = { diagnostic_adapters.end_col.from_quote } }
         ),
     },
     factory = h.generator_factory,
@@ -266,10 +297,13 @@ M.eslint = h.make_builtin({
             end
 
             local parser = from_json({
-                severity = "severity",
-            }, {
-                default_severities["warning"],
-                default_severities["error"],
+                attributes = {
+                    severity = "severity",
+                },
+                severities = {
+                    default_severities["warning"],
+                    default_severities["error"],
+                },
             })
 
             return parser({ output = params.messages })
@@ -285,13 +319,13 @@ M.hadolint = h.make_builtin({
         command = "hadolint",
         format = "json",
         args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = from_json( --
-            { code = "code" },
-            {
+        on_output = from_json({
+            attributes = { code = "code" },
+            severities = {
                 info = default_severities["information"],
                 style = default_severities["hint"],
-            }
-        ),
+            },
+        }),
     },
     factory = h.generator_factory,
 })
@@ -312,9 +346,11 @@ M.flake8 = h.make_builtin({
             [[:(%d+):(%d+): (([EFW])%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
             {
-                E = default_severities["error"],
-                W = default_severities["warning"],
-                F = default_severities["information"],
+                severities = {
+                    E = default_severities["error"],
+                    W = default_severities["warning"],
+                    F = default_severities["information"],
+                },
             }
         ),
     },
@@ -332,8 +368,7 @@ M.misspell = h.make_builtin({
         on_output = from_pattern(
             [[:(%d+):(%d+): (.*)]],
             { "row", "col", "message" },
-            {},
-            { severity = default_severities["information"] }
+            { diagnostic = { severity = default_severities["information"] } }
         ),
     },
     factory = h.generator_factory,
@@ -352,13 +387,16 @@ M.vint = h.make_builtin({
             return code == 0 or code == 1
         end,
         on_output = from_json({
-            row = "line_number",
-            col = "column_number",
-            code = "policy_name",
-            severity = "severity",
-            message = "description",
-        }, {
-            style_problem = default_severities["information"],
+            attributes = {
+                row = "line_number",
+                col = "column_number",
+                code = "policy_name",
+                severity = "severity",
+                message = "description",
+            },
+            severities = {
+                style_problem = default_severities["information"],
+            },
         }),
     },
     factory = h.generator_factory,
