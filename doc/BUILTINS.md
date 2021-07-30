@@ -546,6 +546,18 @@ local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"}
 - Command: `eslint`
 - Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### [Flake8](https://github.com/pycqa/flake8)
+
+flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code. 
+
+```lua
+local sources = {null_ls.builtins.diagnostics.flake8}
+```
+
+- Filetypes: `{ "python" }`
+- Command: `flake8`
+- Arguments: `{ "--stdin-display-name", "$FILENAME", "-" }`
+
 #### [Golangci-lint](https://golangci-lint.run/)
 
 A Go linters aggregator
@@ -593,6 +605,30 @@ local sources = {null_ls.builtins.diagnostics.misspell}
 - Filetypes: `{ "*" }`
 - Command: `misspell`
 - Arguments: `{ "$FILENAME" }`
+
+#### [selene](https://github.com/Kampfkarren/selene)
+
+A blazing-fast modern Lua linter written in Rust
+
+```lua
+local sources = {null_ls.builtins.diagnostics.selene}
+```
+
+- Filetypes: `{ "lua" }`
+- Command: `selene`
+- Arguments: `{ "--display_style", "quiet", "-" }`
+
+#### [shellcheck](https://github.com/koalaman/shellcheck)
+
+ShellCheck, a static analysis tool for shell scripts
+
+```lua
+local sources = {null_ls.builtins.diagnostics.shellcheck}
+```
+
+- Filetypes: `{ "sh" }`
+- Command: `shellcheck`
+- Arguments: `{ "--format", "json", "-" }`
 
 ### tl check via [teal](https://github.com/teal-language/tl)
 
