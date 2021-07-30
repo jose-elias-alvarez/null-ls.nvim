@@ -46,6 +46,25 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("golangci_lint", function()
+        local linter = diagnostics.golangci_lint
+        local parser = linter._opts.on_output
+        local file = {
+            [[for packet := range pdu.Ch() {]],
+        }
+        it("should create a diagnostic", function()
+            local output = [[pdu.go:1:26: pdu.Ch undefined (type *pduImpl has no field or method Ch) (typecheck)]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1",
+                col = "26",
+                severity = 1,
+                message = "pdu.Ch undefined (type *pduImpl has no field or method Ch)",
+                source = "typecheck",
+            }, diagnostic)
+        end)
+    end)
+
     describe("write-good", function()
         local linter = diagnostics.write_good
         local parser = linter._opts.on_output

@@ -528,6 +528,18 @@ local sources = {null_ls.builtins.diagnostics.clang_tidy}
 - Command: `clang-tidy`
 - Arguments: `{ "--quiet" }`
 
+#### [Golangci-lint](https://golangci-lint.run/)
+
+A Go linters aggregator
+
+```lua
+local sources = {null_ls.builtins.diagnostics.golangci_lint}
+```
+
+- Filetypes: `{ "go" }`
+- Command: `golangci`
+- Arguments: `{ "run" }`
+
 #### [ESLint](https://github.com/eslint/eslint)
 
 A linter for the JavaScript ecosystem. Note that the null-ls builtin requires

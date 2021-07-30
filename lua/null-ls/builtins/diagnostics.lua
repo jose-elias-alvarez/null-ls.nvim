@@ -218,6 +218,22 @@ M.clang_tidy = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.golangci_lint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "golangci-lint",
+        args = { "run" },
+        to_stdin = true,
+        format = "line",
+        on_output = from_pattern(
+            "(%d+):(%d+): (.*) %((.*)%)", --
+            { "row", "col", "message", "source" }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
 M.write_good = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
