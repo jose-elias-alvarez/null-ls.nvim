@@ -29,15 +29,21 @@ body:
   - type: textarea
     attributes:
       label: "Steps to reproduce"
+    validations:
+      required: true
 
   - type: textarea
     attributes:
       label: "Expected behavior"
+    validations:
+      required: true
 
   - type: textarea
     attributes:
       label: "Actual behavior"
       description: "A description of the behavior you expected. May optionally include logs, images, or videos."
+    validations:
+      required: true
 
   - type: dropdown
     id: help
