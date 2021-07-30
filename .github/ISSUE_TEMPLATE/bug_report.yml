@@ -16,7 +16,7 @@ body:
     attributes:
       label: Issues
       options:
-        - label: I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues) and there are no issues already open with the same problem.
+        - label: I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues?q=is%3Aissue) and there are no issues with the same problem.
           required: true
 
   - type: input
