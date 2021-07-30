@@ -21,7 +21,7 @@ body:
     id: help
     attributes:
       label: "Help"
-      description: "Would you be able to resolve this issue by submitting a pull request?"
+      description: "Would you be able to implement this by submitting a pull request?"
       options:
         - "Yes"
         - "Yes, but I don't know how to start. I would need guidance"
