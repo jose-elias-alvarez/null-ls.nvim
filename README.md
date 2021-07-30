@@ -286,6 +286,18 @@ Arguably, general-purpose language servers are already "cheating" by creating
 what looks like LSP output from non-LSP programs. null-ls skips a step and keeps
 it within Neovim.
 
+### How to enable and use debug mode
+
+1. Set `debug` flag to `true` in the config like so:
+
+    ```lua
+    require("null-ls").config({
+        debug = true
+    })
+    ```
+
+2. When the error occurs run `:messages` to see the stack trace
+
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
