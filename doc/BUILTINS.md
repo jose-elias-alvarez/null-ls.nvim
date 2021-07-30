@@ -528,18 +528,6 @@ local sources = {null_ls.builtins.diagnostics.clang_tidy}
 - Command: `clang-tidy`
 - Arguments: `{ "--quiet" }`
 
-#### [Golangci-lint](https://golangci-lint.run/)
-
-A Go linters aggregator
-
-```lua
-local sources = {null_ls.builtins.diagnostics.golangci_lint}
-```
-
-- Filetypes: `{ "go" }`
-- Command: `golangci`
-- Arguments: `{ "run" }`
-
 #### [ESLint](https://github.com/eslint/eslint)
 
 A linter for the JavaScript ecosystem. Note that the null-ls builtin requires
@@ -558,6 +546,18 @@ local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"}
 - Command: `eslint`
 - Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### [Golangci-lint](https://golangci-lint.run/)
+
+A Go linters aggregator
+
+```lua
+local sources = {null_ls.builtins.diagnostics.golangci_lint}
+```
+
+- Filetypes: `{ "go" }`
+- Command: `golangci`
+- Arguments: `{ "run" }`
+
 #### [hadolint](https://github.com/hadolint/hadolint)
 
 A smarter Dockerfile linter that helps you build best practice Docker images.
@@ -570,18 +570,6 @@ local sources = {null_ls.builtins.diagnostics.hadolint}
 - Command: `hadolint`
 - Arguments: `{ "--no-fail", "--format=json", "$FILENAME" }`
 
-#### [write-good](https://github.com/btford/write-good)
-
-English prose linter.
-
-```lua
-local sources = {null_ls.builtins.diagnostics.write_good}
-```
-
-- Filetypes: `{ "markdown" }`
-- Command: `write-good`
-- Arguments: `{ "--text=$TEXT", "--parse" }`
-
 #### [markdownlint](https://github.com/DavidAnson/markdownlint) via [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli)
 
 Markdown style and syntax checker.
@@ -593,6 +581,34 @@ local sources = {null_ls.builtins.diagnostics.markdownlint}
 - Filetypes: `{ "markdown" }`
 - Command: `markdownlint`
 - Arguments: `{ "--stdin" }`
+
+#### [misspell](https://github.com/client9/misspell)
+
+Correct commonly misspelled English words in source files
+
+```lua
+local sources = {null_ls.builtins.diagnostics.misspell}
+```
+
+- Filetypes: `{ "*" }`
+- Command: `misspell`
+- Arguments: `{ "$FILENAME" }`
+
+### tl check via [teal](https://github.com/teal-language/tl)
+
+Turns `tl check` into a linter. It writes the buffer's content to a temporary
+file, so it works on change, not (only) on save!
+
+Note that Neovim doesn't support Teal files out-of-the-box, so you'll probably
+want to use [vim-teal](https://github.com/teal-language/vim-teal).
+
+```lua
+local sources = {null_ls.builtins.diagnostics.teal}
+```
+
+- Filetypes: `{ "teal" }`
+- Command: `tl`
+- Arguments: `{ "check", "$FILENAME" }`
 
 #### [vale](https://docs.errata.ai/vale/about)
 
@@ -611,34 +627,6 @@ local sources = {null_ls.builtins.diagnostics.vale}
 - Command: `vale`
 - Arguments: `{ "--no-exit", "--output=JSON", "$FILENAME" }`
 
-### tl check via [teal](https://github.com/teal-language/tl)
-
-Turns `tl check` into a linter. It writes the buffer's content to a temporary
-file, so it works on change, not (only) on save!
-
-Note that Neovim doesn't support Teal files out-of-the-box, so you'll probably
-want to use [vim-teal](https://github.com/teal-language/vim-teal).
-
-```lua
-local sources = {null_ls.builtins.diagnostics.teal}
-```
-
-- Filetypes: `{ "teal" }`
-- Command: `tl`
-- Arguments: `{ "check", "$FILENAME" }`
-
-#### [misspell](https://github.com/client9/misspell)
-
-Correct commonly misspelled English words in source files
-
-```lua
-local sources = {null_ls.builtins.diagnostics.misspell}
-```
-
-- Filetypes: `{ "*" }`
-- Command: `misspell`
-- Arguments: `{ "$FILENAME" }`
-
 #### [vim-vint](https://github.com/Vimjas/vint)
 
 Linter for vimscript.
@@ -650,3 +638,17 @@ local sources = {null_ls.builtins.diagnostics.vint}
 - Filetypes: `{ "vim" }`
 - Command: `vint`
 - Arguments: `{ "-s", "-j", "$FILENAME" }`
+
+#### [write-good](https://github.com/btford/write-good)
+
+English prose linter.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.write_good}
+```
+
+- Filetypes: `{ "markdown" }`
+- Command: `write-good`
+- Arguments: `{ "--text=$TEXT", "--parse" }`
+
+

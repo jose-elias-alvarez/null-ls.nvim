@@ -218,6 +218,67 @@ M.clang_tidy = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.eslint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+    generator_opts = {
+        command = "eslint",
+        args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
+        to_stdin = true,
+        format = "json_raw",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        use_cache = true,
+        on_output = function(params)
+            params.messages = params.output and params.output[1] and params.output[1].messages or {}
+            if params.err then
+                table.insert(params.messages, { message = params.err })
+            end
+
+            local parser = from_json({
+                attributes = {
+                    severity = "severity",
+                },
+                severities = {
+                    default_severities["warning"],
+                    default_severities["error"],
+                },
+            })
+
+            return parser({ output = params.messages })
+        end,
+    },
+    factory = h.generator_factory,
+})
+
+M.flake8 = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "flake8",
+        to_stdin = true,
+        to_stderr = true,
+        args = { "--stdin-display-name", "$FILENAME", "-" },
+        format = "line",
+        check_exit_code = function(code)
+            return code == 0 or code == 255
+        end,
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
+            { "row", "col", "code", "severity", "message" },
+            {
+                severities = {
+                    E = default_severities["error"],
+                    W = default_severities["warning"],
+                    F = default_severities["information"],
+                },
+            }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
 M.golangci_lint = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "go" },
@@ -234,24 +295,20 @@ M.golangci_lint = h.make_builtin({
     factory = h.generator_factory,
 })
 
-M.write_good = h.make_builtin({
+M.hadolint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "markdown" },
+    filetypes = { "dockerfile" },
     generator_opts = {
-        command = "write-good",
-        args = { "--text=$TEXT", "--parse" },
-        format = "line",
-        check_exit_code = function(code)
-            return code == 0 or code == 255
-        end,
-        on_output = from_pattern(
-            [[(%d+):(%d+):("([%w%s]+)".*)]], --
-            { "row", "col", "message", "_quote" },
-            {
-                adapters = { diagnostic_adapters.end_col.from_quote },
-                offsets = { col = 1, end_col = 1 },
-            }
-        ),
+        command = "hadolint",
+        format = "json",
+        args = { "--no-fail", "--format=json", "$FILENAME" },
+        on_output = from_json({
+            attributes = { code = "code" },
+            severities = {
+                info = default_severities["information"],
+                style = default_severities["hint"],
+            },
+        }),
     },
     factory = h.generator_factory,
 })
@@ -282,28 +339,62 @@ M.markdownlint = h.make_builtin({
     factory = h.generator_factory,
 })
 
-M.vale = h.make_builtin({
+M.misspell = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "markdown", "tex" },
+    filetypes = { "*" },
     generator_opts = {
-        command = "vale",
-        format = "json",
-        args = { "--no-exit", "--output=JSON", "$FILENAME" },
-        on_output = function(params)
-            local diagnostics = {}
-            local severities = { error = 1, warning = 2, suggestion = 4 }
-            for _, diagnostic in ipairs(params.output[params.bufname]) do
-                table.insert(diagnostics, {
-                    row = diagnostic.Line,
-                    col = diagnostic.Span[1],
-                    end_col = diagnostic.Span[2],
-                    code = diagnostic.Check,
-                    message = diagnostic.Message,
-                    severity = severities[diagnostic.Severity],
-                })
-            end
-            return diagnostics
+        command = "misspell",
+        to_stdin = true,
+        args = {},
+        format = "line",
+        on_output = from_pattern(
+            [[:(%d+):(%d+): (.*)]],
+            { "row", "col", "message" },
+            { diagnostic = { severity = default_severities["information"] } }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
+M.selene = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "selene",
+        args = { "--display-style", "quiet", "-" },
+        to_stdin = true,
+        to_stderr = false,
+        ignore_errors = true,
+        format = "line",
+        check_exit_code = function(code)
+            return code <= 1
         end,
+        on_output = from_pattern(
+            [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
+            { "row", "col", "severity", "code", "message", "_quote" },
+            { adapters = { diagnostic_adapters.end_col.from_quote } }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
+M.shellcheck = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "sh" },
+    generator_opts = {
+        command = "shellcheck",
+        args = { "--format", "json", "-" },
+        to_stdin = true,
+        format = "json",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = from_json({
+            severities = {
+                info = default_severities["information"],
+                style = default_severities["hint"],
+            },
+        }),
     },
     factory = h.generator_factory,
 })
@@ -339,141 +430,28 @@ M.teal = h.make_builtin({
     factory = h.generator_factory,
 })
 
-M.shellcheck = h.make_builtin({
+M.vale = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "sh" },
+    filetypes = { "markdown", "tex" },
     generator_opts = {
-        command = "shellcheck",
-        args = { "--format", "json", "-" },
-        to_stdin = true,
+        command = "vale",
         format = "json",
-        check_exit_code = function(code)
-            return code <= 1
-        end,
-        on_output = from_json({
-            severities = {
-                info = default_severities["information"],
-                style = default_severities["hint"],
-            },
-        }),
-    },
-    factory = h.generator_factory,
-})
-
-M.selene = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "lua" },
-    generator_opts = {
-        command = "selene",
-        args = { "--display-style", "quiet", "-" },
-        to_stdin = true,
-        to_stderr = false,
-        ignore_errors = true,
-        format = "line",
-        check_exit_code = function(code)
-            return code <= 1
-        end,
-        on_output = from_pattern(
-            [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
-            { "row", "col", "severity", "code", "message", "_quote" },
-            { adapters = { diagnostic_adapters.end_col.from_quote } }
-        ),
-    },
-    factory = h.generator_factory,
-})
-
-M.eslint = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
-    generator_opts = {
-        command = "eslint",
-        args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
-        to_stdin = true,
-        format = "json_raw",
-        check_exit_code = function(code)
-            return code <= 1
-        end,
-        use_cache = true,
+        args = { "--no-exit", "--output=JSON", "$FILENAME" },
         on_output = function(params)
-            params.messages = params.output and params.output[1] and params.output[1].messages or {}
-            if params.err then
-                table.insert(params.messages, { message = params.err })
+            local diagnostics = {}
+            local severities = { error = 1, warning = 2, suggestion = 4 }
+            for _, diagnostic in ipairs(params.output[params.bufname]) do
+                table.insert(diagnostics, {
+                    row = diagnostic.Line,
+                    col = diagnostic.Span[1],
+                    end_col = diagnostic.Span[2],
+                    code = diagnostic.Check,
+                    message = diagnostic.Message,
+                    severity = severities[diagnostic.Severity],
+                })
             end
-
-            local parser = from_json({
-                attributes = {
-                    severity = "severity",
-                },
-                severities = {
-                    default_severities["warning"],
-                    default_severities["error"],
-                },
-            })
-
-            return parser({ output = params.messages })
+            return diagnostics
         end,
-    },
-    factory = h.generator_factory,
-})
-
-M.hadolint = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "dockerfile" },
-    generator_opts = {
-        command = "hadolint",
-        format = "json",
-        args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = from_json({
-            attributes = { code = "code" },
-            severities = {
-                info = default_severities["information"],
-                style = default_severities["hint"],
-            },
-        }),
-    },
-    factory = h.generator_factory,
-})
-
-M.flake8 = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "python" },
-    generator_opts = {
-        command = "flake8",
-        to_stdin = true,
-        to_stderr = true,
-        args = { "--stdin-display-name", "$FILENAME", "-" },
-        format = "line",
-        check_exit_code = function(code)
-            return code == 0 or code == 255
-        end,
-        on_output = from_pattern(
-            [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
-            { "row", "col", "code", "severity", "message" },
-            {
-                severities = {
-                    E = default_severities["error"],
-                    W = default_severities["warning"],
-                    F = default_severities["information"],
-                },
-            }
-        ),
-    },
-    factory = h.generator_factory,
-})
-
-M.misspell = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "*" },
-    generator_opts = {
-        command = "misspell",
-        to_stdin = true,
-        args = {},
-        format = "line",
-        on_output = from_pattern(
-            [[:(%d+):(%d+): (.*)]],
-            { "row", "col", "message" },
-            { diagnostic = { severity = default_severities["information"] } }
-        ),
     },
     factory = h.generator_factory,
 })
@@ -502,6 +480,28 @@ M.vint = h.make_builtin({
                 style_problem = default_severities["information"],
             },
         }),
+    },
+    factory = h.generator_factory,
+})
+
+M.write_good = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "markdown" },
+    generator_opts = {
+        command = "write-good",
+        args = { "--text=$TEXT", "--parse" },
+        format = "line",
+        check_exit_code = function(code)
+            return code == 0 or code == 255
+        end,
+        on_output = from_pattern(
+            [[(%d+):(%d+):("([%w%s]+)".*)]], --
+            { "row", "col", "message", "_quote" },
+            {
+                adapters = { diagnostic_adapters.end_col.from_quote },
+                offsets = { col = 1, end_col = 1 },
+            }
+        ),
     },
     factory = h.generator_factory,
 })
