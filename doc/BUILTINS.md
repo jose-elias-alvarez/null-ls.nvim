@@ -516,6 +516,18 @@ local sources = {null_ls.builtins.diagnostics.chktex}
 - Command: `chktex`
 - Arguments: `{ "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
 
+#### [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/)
+
+A clang-based C++ linter tool.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.clang_tidy}
+```
+
+- Filetypes: `{ "c", "cpp" }`
+- Command: `clang-tidy`
+- Arguments: `{ "--quiet" }`
+
 #### [ESLint](https://github.com/eslint/eslint)
 
 A linter for the JavaScript ecosystem. Note that the null-ls builtin requires

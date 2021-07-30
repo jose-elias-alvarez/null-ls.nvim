@@ -24,6 +24,28 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("clang_tidy", function()
+        local linter = diagnostics.clang_tidy
+        local parser = linter._opts.on_output
+        local file = {
+            [[int test(int* v) {]],
+            [[  printf("%s", v);]],
+            [[}]],
+        }
+        it("should create a diagnostic", function()
+            local output =
+                [[main.cpp:2:16: warning: format specifies type 'char *' but the argument has type 'int *' [clang-diagnostic-format] ]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "2",
+                col = "16",
+                severity = 2,
+                code = "clang-diagnostic-format",
+                message = "format specifies type 'char *' but the argument has type 'int *'",
+            }, diagnostic)
+        end)
+    end)
+
     describe("write-good", function()
         local linter = diagnostics.write_good
         local parser = linter._opts.on_output

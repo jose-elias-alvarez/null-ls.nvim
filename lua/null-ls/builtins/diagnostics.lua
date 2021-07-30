@@ -181,7 +181,7 @@ M.chktex = h.make_builtin({
             "-f%l:%c:%d:%k:%m\n",
         },
         format = "line",
-        check_exit_code = function (code)
+        check_exit_code = function(code)
             return code <= 1
         end,
         on_output = from_pattern(
@@ -196,6 +196,23 @@ M.chktex = h.make_builtin({
                     Warning = default_severities["warning"],
                 },
             }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
+M.clang_tidy = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "c", "cpp" },
+    generator_opts = {
+        command = "clang-tidy",
+        args = { "--quiet" },
+        to_stdin = false,
+        to_temp_file = true,
+        format = "line",
+        on_output = from_pattern(
+            "(%d+):(%d+): (%w+): (.*) %[(.*)%]", --
+            { "row", "col", "severity", "message", "code" }
         ),
     },
     factory = h.generator_factory,
