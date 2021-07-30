@@ -526,7 +526,7 @@ local sources = {null_ls.builtins.diagnostics.clang_tidy}
 
 - Filetypes: `{ "c", "cpp" }`
 - Command: `clang-tidy`
-- Arguments: `{ "--quiet" }`
+- Arguments: `{ "--quiet", "$FILENAME" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
