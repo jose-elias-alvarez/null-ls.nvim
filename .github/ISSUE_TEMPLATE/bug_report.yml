@@ -35,13 +35,21 @@ body:
   - type: textarea
     attributes:
       label: "Expected behavior"
+      description: "A description of the behavior you expected. May optionally include logs, images, or videos."
     validations:
       required: true
 
   - type: textarea
     attributes:
       label: "Actual behavior"
-      description: "A description of the behavior you expected. May optionally include logs, images, or videos."
+      description: "A description of the actual behavior."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: "Debug log"
+      description: Error stack trace. Guide on how to get it can be found [here](https://github.com/jose-elias-alvarez/null-ls.nvim#how-to-enable-and-use-debug-mode)
     validations:
       required: true
 
