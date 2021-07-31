@@ -130,10 +130,12 @@ M.generator_factory = function(opts)
                     error_output = nil
                 end
 
-                if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
-                    if not ignore_errors then
-                        error("error in generator output: " .. error_output)
-                    end
+                if
+                    error_output
+                    and not ignore_errors
+                    and not (format == output_formats.raw or format == output_formats.json_raw)
+                then
+                    error("error in generator output: " .. error_output)
                     done()
                     return
                 end

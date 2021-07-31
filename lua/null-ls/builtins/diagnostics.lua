@@ -208,7 +208,8 @@ M.clang_tidy = h.make_builtin({
         command = "clang-tidy",
         args = { "--quiet", "$FILENAME" },
         to_stdin = false,
-        to_temp_file = true,
+        to_stderr = false,
+        ignore_errors = true,
         format = "line",
         on_output = from_pattern(
             "(%d+):(%d+): (%w+): (.*) %[(.*)%]", --
