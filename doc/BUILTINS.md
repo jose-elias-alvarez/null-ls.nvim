@@ -568,7 +568,7 @@ local sources = {null_ls.builtins.diagnostics.golangci_lint}
 
 - Filetypes: `{ "go" }`
 - Command: `golangci`
-- Arguments: `{ "run" }`
+- Arguments: `{ "run", "--fix=false", "--out-format", "tab", "$FILENAME" }`
 
 #### [hadolint](https://github.com/hadolint/hadolint)
 

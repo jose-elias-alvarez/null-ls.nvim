@@ -284,13 +284,19 @@ M.golangci_lint = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "golangci-lint",
-        args = { "run", "--fix=false","$FILENAME"},
+        args = { "run", "--fix=false", "--out-format", "tab", "$FILENAME" },
         to_stdin = true,
         format = "line",
-        on_output = from_pattern(
-            "(%d+):(%d+): (.*) %((.*)%)", --
-            { "row", "col", "message", "source" }
-        ),
+        on_output = from_patterns({
+            {
+                pattern = "(%d+):(%d+)%s+([%w%-%_]+)%s+([%w%-]+): (.*)",
+                groups = { "row", "col", "source", "code", "message" },
+            },
+            {
+                pattern = "(%d+):(%d+)%s+([%w%-%_]+)%s+(.*)",
+                groups = { "row", "col", "source", "message" },
+            },
+        }),
     },
     factory = h.generator_factory,
 })

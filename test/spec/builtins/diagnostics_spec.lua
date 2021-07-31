@@ -50,17 +50,59 @@ describe("diagnostics", function()
         local linter = diagnostics.golangci_lint
         local parser = linter._opts.on_output
         local file = {
-            [[for packet := range pdu.Ch() {]],
+            [[
+              package main
+
+              import (
+                "fmt"
+                "os/exec"
+              )
+
+              // snake_case should not be allowed.
+              var go_version string
+              // exporter variables should have comment.
+              var ExitCode = 0
+              //bad comment formatting.
+              func main() {
+                executable := "go"
+                command := "version"
+                command = "version"
+                cmd := exec.Command(executable, command)
+                stdout, err := cmd.Output()
+                if err != nil {
+                  // the `if` statement should have and empty line above it
+                  fmt.Println(err.Error())
+                  ExitCode = 1
+                }
+                // there should be an empty line below this assignment
+                go_version = string(stdout)
+                fmt.Printf("go_version is %v\n", go_version)
+                fmt.Println("Checking the os version")
+              }
+            ]],
         }
-        it("should create a diagnostic", function()
-            local output = [[pdu.go:1:26: pdu.Ch undefined (type *pduImpl has no field or method Ch) (typecheck)]]
+        it("should create a diagnostic with a code", function()
+            local output =
+                [[cmd/main.go:12:1  gocritic     commentFormatting: put a space between `//` and comment text]]
             local diagnostic = parser(output, { content = file })
             assert.are.same({
-                row = "1",
-                col = "26",
+                row = "12",
+                col = "1",
                 severity = 1,
-                message = "pdu.Ch undefined (type *pduImpl has no field or method Ch)",
-                source = "typecheck",
+                code = "commentFormatting",
+                message = "put a space between `//` and comment text",
+                source = "gocritic",
+            }, diagnostic)
+        end)
+        it("should create a diagnostic without a code", function()
+            local output = [[cmd/main.go:15:2  ineffassign  ineffectual assignment to command]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "15",
+                col = "2",
+                severity = 1,
+                message = "ineffectual assignment to command",
+                source = "ineffassign",
             }, diagnostic)
         end)
     end)
