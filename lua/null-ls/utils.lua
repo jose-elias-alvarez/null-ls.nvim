@@ -104,6 +104,7 @@ M.make_params = function(original_params, method)
         bufnr = bufnr,
         bufname = api.nvim_buf_get_name(bufnr),
         ft = api.nvim_buf_get_option(bufnr, "filetype"),
+        generators = {},
     }
 
     if original_params.range then

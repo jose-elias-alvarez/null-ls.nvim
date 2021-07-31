@@ -27,7 +27,7 @@ end
 
 local json_output_wrapper = function(params, done, on_output, format)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
-    if decoded == vim.NIL then
+    if decoded == vim.NIL or decoded == "" then
         decoded = nil
     end
 
@@ -40,12 +40,18 @@ local json_output_wrapper = function(params, done, on_output, format)
         params.output = decoded
     end
 
+    -- don't bother calling on_output if output is empty
+    if not params.err and (params.output == nil or vim.tbl_count(params.output) == 0) then
+        done()
+        return
+    end
+
     done(on_output(params))
 end
 
 local line_output_wrapper = function(params, done, on_output)
     local output = params.output
-    if not output then
+    if not output or output == "" then
         done()
         return
     end
@@ -129,6 +135,7 @@ M.generator_factory = function(opts)
                     if not ignore_errors then
                         error("error in generator output: " .. error_output)
                     end
+                    done()
                     return
                 end
 
@@ -159,7 +166,6 @@ M.generator_factory = function(opts)
                 local cached = s.get_cache(params.bufnr, command)
                 if cached then
                     params._null_ls_cached = true
-
                     wrapper(to_stderr and cached, to_stderr and nil or cached)
                     return
                 end
@@ -189,6 +195,7 @@ M.generator_factory = function(opts)
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
+        opts = opts,
         async = true,
     }
 end
