@@ -49,7 +49,7 @@ body:
   - type: textarea
     attributes:
       label: "Debug log"
-      description: Error stack trace. Guide on how to get it can be found [here](https://github.com/jose-elias-alvarez/null-ls.nvim#how-to-enable-and-use-debug-mode)
+      description: "Debug output from `:messages`"
     validations:
       required: true
 
