@@ -287,6 +287,9 @@ M.golangci_lint = h.make_builtin({
         args = { "run", "--fix=false", "--out-format", "tab", "$FILENAME" },
         to_stdin = true,
         format = "line",
+        check_exit_code = function(code)
+            return code == 0 or code == 1
+        end,
         on_output = from_patterns({
             {
                 pattern = "(%d+):(%d+)%s+([%w%-%_]+)%s+([%w%-]+): (.*)",
