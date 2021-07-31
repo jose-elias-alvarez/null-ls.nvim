@@ -284,7 +284,7 @@ M.golangci_lint = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "golangci-lint",
-        args = { "run" },
+        args = { "run", "--fix=false","$FILENAME"},
         to_stdin = true,
         format = "line",
         on_output = from_pattern(
