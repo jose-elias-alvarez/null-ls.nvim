@@ -14,8 +14,8 @@ M.run = function(generators, params, postprocess, callback)
             return {}
         end
 
-        local futures, all_results = {}, {}
-        for index, generator in ipairs(generators) do
+        local futures, all_results, index = {}, {}, 0
+        for _, generator in ipairs(generators) do
             if u.filetype_matches(generator.filetypes, params.ft) then
                 table.insert(
                     futures,
@@ -43,6 +43,7 @@ M.run = function(generators, params, postprocess, callback)
                     end)
                 )
 
+                index = index + 1
                 table.insert(params.generators, generator)
             end
         end
