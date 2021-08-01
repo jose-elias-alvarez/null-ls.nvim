@@ -120,14 +120,27 @@ describe("e2e", function()
             assert.equals(vim.tbl_count(lsp.diagnostic.get()), 0)
         end)
 
-        it("should combine diagnostics from multiple sources", function()
+        it("should show diagnostics from multiple sources", function()
             vim.cmd("bufdo! bdelete!")
 
             c.register(builtins._test.mock_diagnostics)
             tu.edit_test_file("test-file.md")
             lsp_wait()
 
-            assert.equals(vim.tbl_count(lsp.diagnostic.get()), 2)
+            local diagnostics = lsp.diagnostic.get()
+            assert.equals(vim.tbl_count(diagnostics), 2)
+
+            local mock_source_diagnostic, write_good_diagnostic
+            for _, diagnostic in ipairs(diagnostics) do
+                if diagnostic.source == "mock-diagnostics" then
+                    mock_source_diagnostic = diagnostic
+                end
+                if diagnostic.source == "write-good" then
+                    write_good_diagnostic = diagnostic
+                end
+            end
+            assert.truthy(mock_source_diagnostic)
+            assert.truthy(write_good_diagnostic)
         end)
 
         it("should format diagnostics with source-specific diagnostics_format", function()

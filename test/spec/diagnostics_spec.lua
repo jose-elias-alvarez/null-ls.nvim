@@ -74,8 +74,18 @@ describe("diagnostics", function()
         end)
 
         describe("postprocess", function()
-            local postprocess
+            local postprocess, mock_diagnostic, mock_generator
             before_each(function()
+                mock_diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = 2,
+                    end_col = 6,
+                    source = "source",
+                    message = "message",
+                    code = "code",
+                }
+                mock_generator = { opts = {} }
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
@@ -85,7 +95,7 @@ describe("diagnostics", function()
             it("should convert range when all positions are defined", function()
                 local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 5, line = 1 },
@@ -101,7 +111,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 5, line = 1 },
@@ -117,7 +127,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 5, line = 1 },
@@ -133,7 +143,7 @@ describe("diagnostics", function()
                     end_col = 6,
                 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = 5, line = 0 },
@@ -149,7 +159,7 @@ describe("diagnostics", function()
                     end_col = nil,
                 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = -1, line = 1 },
@@ -165,7 +175,7 @@ describe("diagnostics", function()
                     end_col = nil,
                 }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
                     ["end"] = { character = -1, line = 0 },
@@ -174,64 +184,47 @@ describe("diagnostics", function()
             end)
 
             it("should keep diagnostic source when defined", function()
-                local diagnostic = {
-                    row = 1,
-                    col = 5,
-                    end_row = 2,
-                    end_col = 6,
-                    source = "mock-source",
-                }
+                postprocess(mock_diagnostic, mock_params, { opts = {} })
 
-                postprocess(diagnostic, mock_params, 1)
-
-                assert.equals(diagnostic.source, "mock-source")
+                assert.equals(mock_diagnostic.source, "source")
             end)
 
             it("should set source from generator command", function()
-                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
-                mock_params.generators = { [1] = { opts = { command = "mock-source" } } }
+                mock_diagnostic.source = nil
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(mock_diagnostic, mock_params, { opts = { command = "generator-source" } })
 
-                assert.equals(diagnostic.source, "mock-source")
+                assert.equals(mock_diagnostic.source, "generator-source")
             end)
 
-            it("should set default source when undefined", function()
-                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
+            it("should set default source when undefined in diagnostic and generator", function()
+                mock_diagnostic.source = nil
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(mock_diagnostic, mock_params, { opts = {} })
 
-                assert.equals(diagnostic.source, "null-ls")
+                assert.equals(mock_diagnostic.source, "null-ls")
             end)
 
             it("should return message with default format", function()
-                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6, message = "message" }
+                postprocess(mock_diagnostic, mock_params, { opts = {} })
 
-                postprocess(diagnostic, mock_params, 1)
-
-                assert.equals(diagnostic.message, "message")
+                assert.equals(mock_diagnostic.message, "message")
             end)
 
             it("should format message from global format", function()
                 c._set({ diagnostics_format = "[#{c}] #{m} (#{s})" })
-                local diagnostic = { message = "message", code = "code", source = "source" }
 
-                postprocess(diagnostic, mock_params, 1)
+                postprocess(mock_diagnostic, mock_params, { opts = {} })
 
-                assert.equals(diagnostic.message, "[code] message (source)")
+                assert.equals(mock_diagnostic.message, "[code] message (source)")
             end)
 
-            it("should format message from source format", function()
-                mock_params.generators = { { opts = { diagnostics_format = "[code] message (source)" } } }
-                local diagnostic = {
-                    message = "message",
-                    code = "code",
-                    source = "source",
-                }
+            it("should format message from generator format", function()
+                postprocess(mock_diagnostic, mock_params, {
+                    opts = { diagnostics_format = "#{c}! #{m} [#{s}]" },
+                })
 
-                postprocess(diagnostic, mock_params, 1)
-
-                assert.equals(diagnostic.message, "[code] message (source)")
+                assert.equals(mock_diagnostic.message, "code! message [source]")
             end)
         end)
     end)

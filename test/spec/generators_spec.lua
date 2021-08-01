@@ -114,10 +114,10 @@ describe("generators", function()
             assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
         end)
 
-        it("should call postprocess with result, params, and index", function()
+        it("should call postprocess with result, params, and generator", function()
             a.await(wrapped_run({ sync_generator }, mock_params, postprocess))
 
-            assert.stub(postprocess).was_called_with(mock_result, mock_params, 1)
+            assert.stub(postprocess).was_called_with(mock_result, mock_params, sync_generator)
         end)
     end)
 

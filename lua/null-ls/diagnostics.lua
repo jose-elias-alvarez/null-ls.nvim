@@ -18,10 +18,9 @@ local convert_range = function(diagnostic)
     return u.range.to_lsp({ row = row, col = col, end_row = end_row, end_col = end_col })
 end
 
-local postprocess = function(diagnostic, params, index)
-    local generator = params.generators[index]
+local postprocess = function(diagnostic, _, generator)
     diagnostic.range = convert_range(diagnostic)
-    diagnostic.source = diagnostic.source or generator and generator.opts.command or "null-ls"
+    diagnostic.source = diagnostic.source or generator.opts.command or "null-ls"
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
     -- avoid unnecessary gsub if using default
