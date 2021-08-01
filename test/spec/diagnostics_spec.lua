@@ -3,6 +3,7 @@ local stub = require("luassert.stub")
 
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
@@ -36,6 +37,7 @@ describe("diagnostics", function()
             u.make_params:clear()
 
             s.reset()
+            c.reset()
         end)
 
         it("should call clear_cache with uri when method is DID_CHANGE", function()
@@ -200,6 +202,36 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params, 1)
 
                 assert.equals(diagnostic.source, "null-ls")
+            end)
+
+            it("should return message with default format", function()
+                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6, message = "message" }
+
+                postprocess(diagnostic, mock_params, 1)
+
+                assert.equals(diagnostic.message, "message")
+            end)
+
+            it("should format message from global format", function()
+                c._set({ diagnostics_format = "[#{c}] #{m} (#{s})" })
+                local diagnostic = { message = "message", code = "code", source = "source" }
+
+                postprocess(diagnostic, mock_params, 1)
+
+                assert.equals(diagnostic.message, "[code] message (source)")
+            end)
+
+            it("should format message from source format", function()
+                mock_params.generators = { { opts = { diagnostics_format = "[code] message (source)" } } }
+                local diagnostic = {
+                    message = "message",
+                    code = "code",
+                    source = "source",
+                }
+
+                postprocess(diagnostic, mock_params, 1)
+
+                assert.equals(diagnostic.message, "[code] message (source)")
             end)
         end)
     end)

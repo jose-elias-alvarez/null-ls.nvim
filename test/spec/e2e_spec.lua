@@ -129,6 +129,18 @@ describe("e2e", function()
 
             assert.equals(vim.tbl_count(lsp.diagnostic.get()), 2)
         end)
+
+        it("should format diagnostics with source-specific diagnostics_format", function()
+            vim.cmd("bufdo! bdelete!")
+            c.reset_sources()
+
+            c.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
+            tu.edit_test_file("test-file.md")
+            lsp_wait()
+
+            local write_good_diagnostic = lsp.diagnostic.get()[1]
+            assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
+        end)
     end)
 
     describe("formatting", function()
