@@ -560,6 +560,18 @@ local sources = {null_ls.builtins.diagnostics.hadolint}
 - Command: `hadolint`
 - Arguments: `{ "--no-fail", "--format=json", "$FILENAME" }`
 
+#### [luacheck](https://github.com/mpeterv/luacheck)
+
+A tool for linting and static analysis of Lua code.
+
+```lua
+local sources = {null_ls.builtins.diagnostics.luacheck}
+```
+
+- Filetypes: `{ "lua" }`
+- Command: `luacheck`
+- Arguments: `{ "--formatter", "plain", "--codes", "--ranges", "--filename", "$FILENAME", "-"}`
+
 #### [write-good](https://github.com/btford/write-good)
 
 English prose linter.

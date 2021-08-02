@@ -181,7 +181,7 @@ M.chktex = h.make_builtin({
             "-f%l:%c:%d:%k:%m\n",
         },
         format = "line",
-        check_exit_code = function (code)
+        check_exit_code = function(code)
             return code <= 1
         end,
         on_output = from_pattern(
@@ -194,6 +194,40 @@ M.chktex = h.make_builtin({
                 severities = {
                     Error = default_severities["error"],
                     Warning = default_severities["warning"],
+                },
+            }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
+M.luacheck = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "lua" },
+    generator_opts = {
+        command = "luacheck",
+        to_stdin = true,
+        to_stderr = true,
+        args = {
+            "--formatter",
+            "plain",
+            "--codes",
+            "--ranges",
+            "--filename",
+            "$FILENAME",
+            "-",
+        },
+        format = "line",
+        on_output = from_pattern(
+            [[:(%d+):(%d+)-(%d+): %((%a)(%d+)%) (.*)]],
+            { "row", "col", "end_col", "severity", "code", "message" },
+            {
+                adapters = {
+                    diagnostic_adapters.end_col.from_quote,
+                },
+                severities = {
+                    E = default_severities["error"],
+                    W = default_severities["warning"],
                 },
             }
         ),
