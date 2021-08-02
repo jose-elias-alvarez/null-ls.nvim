@@ -263,7 +263,7 @@ M.vale = h.make_builtin({
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
                     col = diagnostic.Span[1],
-                    end_col = diagnostic.Span[2],
+                    end_col = diagnostic.Span[2] + 1, 
                     code = diagnostic.Check,
                     message = diagnostic.Message,
                     severity = severities[diagnostic.Severity],
