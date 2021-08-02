@@ -65,6 +65,13 @@ local register_filetypes = function(filetypes)
 end
 
 local register_source = function(source, filetypes)
+    if type(source) == "function" then
+        source = source()
+        if not source then
+            return
+        end
+    end
+
     local generator, name = source.generator, source.name
     filetypes = filetypes or source.filetypes
 
@@ -103,7 +110,7 @@ end
 
 local register = function(to_register)
     -- register a single source
-    if to_register.method then
+    if type(to_register) == "function" or (type(to_register) == "table" and to_register.method) then
         register_source(to_register)
         return
     end

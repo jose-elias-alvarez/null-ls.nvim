@@ -1,3 +1,5 @@
+local lsputil = require("lspconfig.util")
+
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
@@ -112,6 +114,19 @@ M.make_params = function(original_params, method)
     end
 
     return params
+end
+
+M.make_conditional_utils = function()
+    local cwd = vim.loop.cwd()
+
+    return {
+        root_has_file = function(name)
+            return lsputil.path.exists(lsputil.path.join(cwd, name))
+        end,
+        root_matches = function(pattern)
+            return cwd:find(pattern) ~= nil
+        end,
+    }
 end
 
 M.buf = {

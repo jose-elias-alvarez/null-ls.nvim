@@ -513,6 +513,17 @@ describe("helpers", function()
                 assert.equals(builtin._opts.nested.nested_key, "new_val")
                 assert.equals(builtin._opts.nested.other_nested, "original_val")
             end)
+
+            it("should wrap builtin with condition", function()
+                local wrapped = builtin.with({
+                    condition = function()
+                        return true
+                    end,
+                })
+
+                assert.equals(type(wrapped), "function")
+                assert.equals(wrapped(), builtin)
+            end)
         end)
 
         describe("index metatable", function()
