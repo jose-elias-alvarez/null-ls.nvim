@@ -181,6 +181,18 @@ describe("helpers", function()
             assert.same(generator.filetypes, { "lua" })
         end)
 
+        it("should wrap check_exit_code if it's a table", function()
+            generator_args.check_exit_code = { 0 }
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({})
+
+            local spawn_opts = loop.spawn.calls[1].refs[3]
+            assert.equals(type(spawn_opts.check_exit_code), "function")
+            assert.equals(spawn_opts.check_exit_code(0), true)
+            assert.equals(spawn_opts.check_exit_code(1), false)
+        end)
+
         describe("fn", function()
             it("should call loop.spawn with command and args", function()
                 local generator = helpers.generator_factory(generator_args)

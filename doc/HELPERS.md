@@ -34,7 +34,7 @@ null_ls.helpers.generator_factory({
     to_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
     ignore_errors, -- boolean (optional)
-    check_exit_code, -- function (optional)
+    check_exit_code, -- function or table of numbers (optional)
     timeout, -- number (optional)
     to_temp_file, -- boolean (optional)
     use_cache, -- boolean (optional)
@@ -118,9 +118,10 @@ errors manually, use `format = "raw"`.
 
 ### check_exit_code
 
-A callback that receives one argument, `code`, which containing the exit code
-from the spawned command as a number. The callback should return a boolean value
-indicating whether the code indicates success.
+Can either be a table of valid exit codes (numbers) or a callback that receives
+one argument, `code`, which containing the exit code from the spawned command as
+a number. The callback should return a boolean value indicating whether the code
+indicates success.
 
 If not specified, null-ls will assume that a non-zero exit code indicates
 failure.

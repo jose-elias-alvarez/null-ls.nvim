@@ -242,9 +242,7 @@ M.write_good = h.make_builtin({
         command = "write-good",
         args = { "--text=$TEXT", "--parse" },
         format = "line",
-        check_exit_code = function(code)
-            return code == 0 or code == 255
-        end,
+        check_exit_code = { 0, 255 },
         on_output = from_pattern(
             [[(%d+):(%d+):("([%w%s]+)".*)]], --
             { "row", "col", "message", "_quote" },

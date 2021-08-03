@@ -83,6 +83,13 @@ M.generator_factory = function(opts)
         opts.to_temp_file,
         opts.use_cache
 
+    if type(check_exit_code) == "table" then
+        local codes = vim.deepcopy(check_exit_code)
+        check_exit_code = function(code)
+            return vim.tbl_contains(codes, code)
+        end
+    end
+
     local _validated
     local validate_opts = function()
         validate({
