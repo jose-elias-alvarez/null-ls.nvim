@@ -46,6 +46,17 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
+        it("should register function source", function()
+            c.register(function()
+                return mock_source
+            end)
+
+            local generators = c.generators()
+
+            assert.equals(vim.tbl_count(generators), 1)
+            assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
+        end)
+
         it("should register additional generators for same method", function()
             c.register(mock_source)
             c.register(mock_source)

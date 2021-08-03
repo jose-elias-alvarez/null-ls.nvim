@@ -65,6 +65,46 @@ See [CONFIG](CONFIG.md) to learn about `diagnostics_format`. Note that
 specifying `diagnostics_format` for a built-in will override your global
 `diagnostics_format` for that source.
 
+## Conditional registration
+
+null-ls supports dynamic registration, meaning that you can register sources
+whenever you want. To simplify this, built-ins have access to the `conditional`
+option, which should be a function that returns a boolean or `nil` indicating
+whether null-ls should register the source. null-ls will pass a single argument
+to the function, which is a table of utilities to handle common conditional
+checks (though you can use whatever you want, as long as the return value
+matches).
+
+For example, to conditionally register `stylua` by checking if the root
+directory has a `stylua.toml` file:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.stylua.with({
+        condition = function(utils)
+            return utils.root_has_file("stylua.toml")
+        end,
+    }),
+}
+```
+
+To conditionally register one of two or more sources, you can use the
+`conditional` helper, which should return a source or `nil` and will register
+the first source returned.
+
+```lua
+local sources = {
+    require("null-ls.helpers").conditional(function(utils)
+        return utils.root_has_file(".eslintrc.js") and b.formatting.eslint_d or b.formatting.prettier
+    end),
+}
+```
+
+Note that if you pass conditional sources into `null_ls.config`, null-ls will
+check and register them at the point that you source your plugin config. To
+handle advanced dynamic registration behavior, you can use `null_ls.register`
+with a relevant `autocommand` event listener.
+
 ## Available Sources
 
 ### Formatting
@@ -134,6 +174,7 @@ Can format your listfiles nicely so that they don't look like crap.
 ```lua
 local sources = {null_ls.builtins.formatting.crystal_format}
 ```
+
 A tool for automatically checking and correcting the style of code in a project.
 
 - Filetypes: `{ "crystal" }`
@@ -218,7 +259,8 @@ local sources = {null_ls.builtins.formatting.fish_indent}
 ```lua
 local sources = {null_ls.builtins.formatting.goimports}
 ```
-`goimports` updates your Go import lines, adding missing ones and removing unreferenced ones. 
+
+`goimports` updates your Go import lines, adding missing ones and removing unreferenced ones.
 
 - Filetypes: `{ "go" }`
 - Command: `goimports`
@@ -229,7 +271,8 @@ local sources = {null_ls.builtins.formatting.goimports}
 ```lua
 local sources = {null_ls.builtins.formatting.gofmt}
 ```
-Gofmt formats Go programs. It uses tabs for indentation and blanks for alignment. Alignment assumes that an editor is using a fixed-width font. 
+
+Gofmt formats Go programs. It uses tabs for indentation and blanks for alignment. Alignment assumes that an editor is using a fixed-width font.
 
 - Filetypes: `{ "go" }`
 - Command: `gofmt`

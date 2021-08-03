@@ -247,10 +247,23 @@ M.make_builtin = function(opts)
         builtin.filetypes = user_opts.filetypes or builtin.filetypes
         builtin._opts = vim.tbl_deep_extend("force", builtin._opts, user_opts)
 
+        local condition = user_opts.condition
+        if condition then
+            return function()
+                return condition(u.make_conditional_utils()) and builtin
+            end
+        end
+
         return builtin
     end
 
     return builtin
+end
+
+M.conditional = function(condition)
+    return function()
+        return condition(u.make_conditional_utils())
+    end
 end
 
 if _G._TEST then
