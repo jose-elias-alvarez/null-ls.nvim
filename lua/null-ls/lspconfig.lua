@@ -75,6 +75,12 @@ function M.try_add(bufnr)
 
     bufnr = bufnr or api.nvim_get_current_buf()
     local ft, buftype = api.nvim_buf_get_option(bufnr, "filetype"), api.nvim_buf_get_option(bufnr, "buftype")
+
+    -- disabled completely until upstream bug is fixed
+    if ft == "gitcommit" then
+        return
+    end
+
     -- lspconfig checks if buftype == "nofile", but we want to be defensive, since (if configured) null-ls will try attaching to any buffer
     if buftype ~= "" or not u.filetype_matches(c.get()._filetypes, ft) then
         return

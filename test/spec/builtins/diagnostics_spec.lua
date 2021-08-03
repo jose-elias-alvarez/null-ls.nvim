@@ -24,6 +24,27 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("luacheck", function()
+        local linter = diagnostics.luacheck
+        local parser = linter._opts.on_output
+        local file = {
+            [[sx = {]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[test.lua:2:1-1: (E011) expected expression near <eof>]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                code = "011",
+                row = "2",
+                col = "1",
+                end_col = "1",
+                severity = 1,
+                message = "expected expression near <eof>",
+            }, diagnostic)
+        end)
+    end)
+
     describe("write-good", function()
         local linter = diagnostics.write_good
         local parser = linter._opts.on_output
