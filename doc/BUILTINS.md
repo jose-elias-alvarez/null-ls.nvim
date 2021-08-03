@@ -1062,3 +1062,21 @@ local sources = { null_ls.builtins.diagnostics.vint }
 - `filetypes = { "vim" }`
 - `command = "vint"`
 - `args = { "-s", "-j", "$FILENAME" }`
+
+#### [selene](https://kampfkarren.github.io/selene/)
+
+##### About
+
+Command line tool designed to help write correct and idiomatic `lua` code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.selene }
+```
+
+##### Defaults
+
+- `filetypes = { "lua" }`
+- `command = "selene"`
+- `args = { "--display-style", "quiet", "-" }`
