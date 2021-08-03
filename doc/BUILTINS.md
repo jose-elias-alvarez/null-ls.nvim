@@ -259,6 +259,29 @@ local sources = { null_ls.builtins.formatting.dart_format }
 - `command = "dart"`
 - `args = { "format" }`
 
+#### [deno formatter](https://deno.land/manual/tools/formatter)
+
+##### About
+
+Use [deno](https://deno.land) to format TypeScript and JavaScript code
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.deno_fmt }
+```
+
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+}`
+- `command = "deno"`
+- `args = { "fmt", "-"}`
+
 #### [elm-format](https://github.com/avh4/elm-format)
 
 ##### About
