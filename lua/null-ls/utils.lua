@@ -1,5 +1,3 @@
-local lsputil = require("lspconfig.util")
-
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
@@ -117,6 +115,7 @@ M.make_params = function(original_params, method)
 end
 
 M.make_conditional_utils = function()
+    local lsputil = require("lspconfig.util")
     local cwd = vim.loop.cwd()
 
     return {
