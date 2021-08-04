@@ -386,7 +386,7 @@ M.selene = h.make_builtin({
 
 M.eslint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" },
     generator_opts = {
         command = "eslint",
         args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
