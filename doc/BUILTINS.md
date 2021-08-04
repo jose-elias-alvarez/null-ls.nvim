@@ -254,6 +254,18 @@ local sources = {null_ls.builtins.formatting.fish_indent}
 - Command: `fish_indent`
 - Arguments: `{}`
 
+#### [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+
+```lua
+local sources = {null_ls.builtins.formatting.fnlfmt}
+```
+
+`fnlfmt` is a Fennel code formatter which follows established lisp conventions when determining how to format a given piece of code.
+
+- Filetypes: `{ "fennel", "fnl" }`
+- Command: `fnlfmt`
+- Arguments: `{"--fix"}`
+
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
 ```lua
@@ -420,12 +432,7 @@ Format R code automatically.
 
 - Filetypes: `{ "r", "rmd" }`
 - Command: `R`
-- Arguments: `{ 
-  "--slave",
-  "--no-restore",
-  "--no-save",
-  '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"'
-  }`
+- Arguments: `{ "--slave", "--no-restore", "--no-save", '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"' }`
 
 #### [Rufo](https://github.com/ruby-formatter/rufo)
 
@@ -457,7 +464,7 @@ A tool for formatting Rust code according to style guidelines.
 local sources = {null_ls.builtins.formatting.sqlformat}
 ```
 
-The  `sqlformat` command-line tool can be used to reformat SQL file according to specified options.
+The `sqlformat` command-line tool can be used to reformat SQL file according to specified options.
 
 - Filetypes: `{ "sql" }`
 - Command: `sqlformat`
@@ -517,7 +524,7 @@ SwiftFormat is a code library and command-line tool for reformatting Swift code 
 local sources = {null_ls.builtins.formatting.terraform_fmt}
 ```
 
-The terraform fmt command is used to rewrite Terraform configuration files to a canonical format and style. 
+The terraform fmt command is used to rewrite Terraform configuration files to a canonical format and style.
 
 - Filetypes: `{ "tf", "hcl" }`
 - Command: `terraform`
