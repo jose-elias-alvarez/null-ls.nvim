@@ -320,7 +320,7 @@ local sources = { null_ls.builtins.formatting.eslint }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
 - `command = "eslint"`
 - `args = { "--fix-dry-run", "--format", "JSON", "--stdin", "--stdin-filename", "$FILENAME" }`
 
@@ -340,7 +340,7 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
 - `command = "eslint_d"`
 - `args = { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -595,7 +595,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "html", "json", "yaml", "markdown" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
 
@@ -616,7 +616,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
 - `command = "prettier_d_slim"`
 - `args = { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -635,7 +635,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "html", "json", "yaml", "markdown" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
@@ -906,7 +906,7 @@ local sources = {
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 

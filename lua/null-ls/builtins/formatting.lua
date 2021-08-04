@@ -167,6 +167,7 @@ M.eslint = h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
+        "svelte",
     },
     factory = h.generator_factory,
     generator_opts = {
@@ -195,6 +196,7 @@ M.eslint_d = h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
+        "svelte",
     },
     generator_opts = {
         command = "eslint_d",
@@ -376,6 +378,7 @@ M.prettier = h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
+        "svelte",
         "css",
         "html",
         "json",
@@ -398,6 +401,7 @@ M.prettierd = h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
+        "svelte",
         "css",
         "html",
         "json",
@@ -420,6 +424,7 @@ M.prettier_d_slim = h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
+        "svelte",
     },
     generator_opts = {
         command = "prettier_d_slim",
