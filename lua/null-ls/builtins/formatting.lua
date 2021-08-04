@@ -132,6 +132,22 @@ M.dart_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.deno_fmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+    },
+    generator_opts = {
+        command = "deno",
+        args = { "fmt", "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.elm_format = h.make_builtin({
     method = FORMATTING,
     filetypes = { "elm" },

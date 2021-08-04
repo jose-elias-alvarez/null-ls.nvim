@@ -57,7 +57,9 @@ setting `diagnostics_format`:
 ```lua
 local sources = {
     -- will show code and source name
-    null_ls.builtins.diagnostics.shellcheck.with({ diagnostics_format = "[#{c}] #{m} (#{s})" }),
+    null_ls.builtins.diagnostics.shellcheck.with({
+        diagnostics_format = "[#{c}] #{m} (#{s})"
+    }),
 }
 ```
 
@@ -109,150 +111,258 @@ with a relevant `autocommand` event listener.
 
 ### Formatting
 
-#### [Asmfmt](https://github.com/klauspost/asmfmt)
+#### [asmfmt](https://github.com/klauspost/asmfmt)
+
+##### About
+
+Format your assembler code in a similar way that `gofmt` formats your `go` code.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.asmfmt}
+local sources = { null_ls.builtins.formatting.asmfmt }
 ```
 
-Go Assembler Formatter that will format your assembler code in a similar way that gofmt formats your Go code.
+##### Defaults
 
-- Filetypes: `{ "asm" }`
-- Command: `asmfmt`
-- Arguments: `{}`
+- `filetypes = { "asm" }`
+- `command = "asmfmt"`
+- `args = {}`
 
-#### [Bean Format](https://beancount.github.io/docs/running_beancount_and_generating_reports.html#bean-format)
+#### [bean-format](https://beancount.github.io/docs/running_beancount_and_generating_reports.html#bean-format)
+
+##### About
+
+This pure text processing tool will reformat `beancount` input to right-align all
+the numbers at the same, minimal column.
+
+- It left-aligns all the currencies.
+- It only modifies whitespace.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.bean_format}
+local sources = { null_ls.builtins.formatting.bean_format }
 ```
 
-This pure text processing tool will reformat Beancount input to right-align all the numbers at the same, minimal column. It left-aligns all the currencies. It only modifies whitespace.
+##### Defaults
 
-- Filetypes: `{ "beancount" }`
-- Command: `bean-format`
-- Arguments: `{ "-" }`
+- `filetypes = { "beancount" }`
+- `command = "bean-format"`
+- `args = { "-" }`
 
-#### [Black](https://github.com/psf/black)
+#### [black](https://github.com/psf/black)
+
+##### About
+
+Uncompromising Python code formatter.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.black}
+local sources = { null_ls.builtins.formatting.black }
 ```
 
-Black is the uncompromising Python code formatter.
+##### Defaults
 
-- Filetypes: `{ "python" }`
-- Command: `black`
-- Arguments: `{ "--quiet", "--fast", "-" }`
+- `filetypes = { "python" }`
+- `command = "black"`
+- `args = { "--quiet", "--fast", "-" }`
 
 #### [clang-format](https://www.kernel.org/doc/html/latest/process/clang-format.html)
 
+##### About
+
+Tool to format `C`/`C++`/… code according to a set of rules and heuristics.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.clang_format}
+local sources = { null_ls.builtins.formatting.clang_format }
 ```
 
-clang-format is a tool to format C/C++/… code according to a set of rules and heuristics.
+##### Defaults
 
-- Filetypes: `{ "c", "cpp", "cs", "java" }`
-- Command: `clang-format`
-- Arguments: `{ "-assume-filename=<FILENAME>" }`
+- `filetypes = { "c", "cpp", "cs", "java" }`
+- `command = "clang-format"`
+- `args = { "-assume-filename=<FILENAME>" }`
 
 #### [cmake-format](https://github.com/cheshirekow/cmake_format)
 
-```lua
-local sources = {null_ls.builtins.formatting.cmake_format}
-```
+##### About
 
-Can format your listfiles nicely so that they don't look like crap.
+Format your `listfiles` nicely so that they don't look like crap.
 
-- Filetypes: `{ "cmake" }`
-- Command: `cmake-format`
-- Arguments: `{ "-" }`
-
-#### [Crystal Format](https://crystal-lang.org/2015/10/16/crystal-0.9.0-released.html)
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.crystal_format}
+local sources = { null_ls.builtins.formatting.cmake_format }
 ```
+
+##### Defaults
+
+- `filetypes = { "cmake" }`
+- `command = "cmake-format"`
+- `args = { "-" }`
+
+#### [crystal-format](https://crystal-lang.org/2015/10/16/crystal-0.9.0-released.html)
+
+##### About
 
 A tool for automatically checking and correcting the style of code in a project.
 
-- Filetypes: `{ "crystal" }`
-- Command: `crystal`
-- Arguments: `{ "tool", "format" }`
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.crystal_format }
+```
+
+##### Defaults
+
+- `filetypes = { "crystal" }`
+- `command = "crystal"`
+- `args = { "tool", "format" }`
 
 #### [dfmt](https://github.com/dlang-community/dfmt)
 
-```lua
-local sources = {null_ls.builtins.formatting.dfmt}
-```
+##### About
 
-dfmt is a formatter for D source code
+Formatter for `D` source code
 
-- Filetypes: `{ "d" }`
-- Command: `dfmt`
-- Arguments: `{}`
-
-#### [Dart Format](https://dart.dev/tools/dart-format)
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.dart_format}
+local sources = { null_ls.builtins.formatting.dfmt }
 ```
+
+##### Defaults
+
+- `filetypes = { "d" }`
+- `command = "dfmt"`
+- `args = {}`
+
+#### [dart-format](https://dart.dev/tools/dart-format)
+
+##### About
 
 Replace the whitespace in your program with formatting that follows Dart guidelines.
 
-- Filetypes: `{ "dart" }`
-- Command: `dart`
-- Arguments: `{ "format" }`
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.dart_format }
+```
+
+##### Defaults
+
+- `filetypes = { "dart" }`
+- `command = "dart"`
+- `args = { "format" }`
+
+#### [deno formatter](https://deno.land/manual/tools/formatter)
+
+##### About
+
+Use [deno](https://deno.land) to format TypeScript and JavaScript code
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.deno_fmt }
+```
+
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+}`
+- `command = "deno"`
+- `args = { "fmt", "-"}`
 
 #### [elm-format](https://github.com/avh4/elm-format)
 
+##### About
+
+`elm-format` formats Elm source code according to a standard set of rules based
+on the [official Elm Style Guide](https://elm-lang.org/docs/style-guide)
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.elm_format}
+local sources = { null_ls.builtins.formatting.elm_format }
 ```
 
-`elm-format` formats Elm source code according to a standard set of rules based on the [official Elm Style Guide](https://elm-lang.org/docs/style-guide)
+##### Defaults
 
-- Filetypes: `{ "elm" }`
-- Command: `elm-format`
-- Arguments: `{ "--stdin", "--elm-version=0.19" }`
+- `filetypes = { "elm" }`
+- `command = "elm-format"`
+- `args = { "--stdin", "--elm-version=0.19" }`
 
 #### [eslint_d](https://github.com/mantoni/eslint_d.js)
 
-An absurdly fast formatter (and linter). For full integration, check out
-[nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+##### About
+
+An absurdly fast formatter (and linter).
+
+- For full integration, check out [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+
+##### Usage
+
 
 ```lua
-local sources = {null_ls.builtins.formatting.eslint_d}
+local sources = { null_ls.builtins.formatting.eslint_d }
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
-- Command: `eslint_d`
-- Arguments: ` { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
+}`
+- `command = "eslint_d"`
+- `args = { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
 
 #### [erlfmt](https://github.com/WhatsApp/erlfmt)
 
+##### About
+
+Opinionated `erlang` code formatter.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.erlfmt}
+local sources = { null_ls.builtins.formatting.erlfmt }
 ```
 
-`erlfmt` is an opinionated Erlang code formatter.
+##### Defaults
 
-- Filetypes: `{ "erlang" }`
-- Command: `erlfmt`
-- Arguments: `{ "-" }`
+- `filetypes = { "erlang" }`
+- `command = "erlfmt"`
+- `args = { "-" }`
 
 #### [fish_indent](https://linux.die.net/man/1/fish_indent)
 
+##### About
+
+Indent or otherwise prettify a piece of `fish` code.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.fish_indent}
+local sources = { null_ls.builtins.formatting.fish_indent }
 ```
 
-`fish_indent` is used to indent or otherwise prettify a piece of fish code.
+##### Defaults
 
-- Filetypes: `{ "fish" }`
-- Command: `fish_indent`
-- Arguments: `{}`
+- `filetypes = { "fish" }`
+- `command = "fish_indent"`
+- `args = {}`
 
 #### [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
 
@@ -268,437 +378,740 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
+##### About
+
+Updates your Go import lines, adding missing ones and removing unreferenced ones.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.goimports}
+local sources = { null_ls.builtins.formatting.goimports }
 ```
 
-`goimports` updates your Go import lines, adding missing ones and removing unreferenced ones.
+##### Defaults
 
-- Filetypes: `{ "go" }`
-- Command: `goimports`
-- Arguments: `{}`
+- `filetypes = { "go" }`
+- `command = "goimports"`
+- `args = {}`
 
 #### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
+##### About
+
+Formats `go` programs.
+
+- It uses tabs for indentation and blanks for alignment.
+- Alignment assumes that an editor is using a fixed-width font.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.gofmt}
+local sources = { null_ls.builtins.formatting.gofmt }
 ```
 
-Gofmt formats Go programs. It uses tabs for indentation and blanks for alignment. Alignment assumes that an editor is using a fixed-width font.
+##### Defaults
 
-- Filetypes: `{ "go" }`
-- Command: `gofmt`
-- Arguments: `{}`
+- `filetypes = { "go" }`
+- `command = "gofmt"`
+- `args = {}`
 
 #### [gofumpt](https://github.com/mvdan/gofumpt)
 
+##### About
+
+Enforce a stricter format than `gofmt`, while being backwards compatible.
+That is, `gofumpt` is happy with a subset of the formats that `gofmt` is happy with.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.gofumpt}
+local sources = { null_ls.builtins.formatting.gofumpt }
 ```
 
-Enforce a stricter format than gofmt, while being backwards compatible. That is, gofumpt is happy with a subset of the formats that gofmt is happy with.
+##### Defaults
 
-- Filetypes: `{ "go" }`
-- Command: `gofumpt`
-- Arguments: `{}`
+- `filetypes = { "go" }`
+- `command = "gofumpt"`
+- `args = {}`
 
 #### [isort](https://github.com/PyCQA/isort)
 
+##### About
+
+`python` utility / library to sort imports alphabetically, and automatically
+separated into sections and by type.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.isort}
+local sources = { null_ls.builtins.formatting.isort }
 ```
 
-isort is a Python utility / library to sort imports alphabetically, and automatically separated into sections and by type.
+##### Defaults
 
-- Filetypes: `{ "python" }`
-- Command: `isort`
-- Arguments: `{ "--stdout", "--profile", "black", "-" }`
+- `filetypes = { "python" }`
+- `command = "isort"`
+- `args = { "--stdout", "--profile", "black", "-" }`
 
 #### [json.tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
+##### About
+
+Provides a simple command line interface to validate and pretty-print `JSON` objects.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.json_tool}
+local sources = { null_ls.builtins.formatting.json_tool }
 ```
 
-The json.tool module provides a simple command line interface to validate and pretty-print JSON objects.
+##### Defaults
 
-- Filetypes: `{ "json" }`
-- Command: `python`
-- Arguments: `{ "-m", "json.tool" }`
+- `filetypes = { "json" }`
+- `command = "python"`
+- `args = { "-m", "json.tool" }`
 
 #### [LuaFormatter](https://github.com/Koihik/LuaFormatter)
 
-A flexible but slow Lua formatter. Not recommended for formatting on save.
+##### About
+
+A flexible but slow `lua` formatter. Not recommended for formatting on save.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.lua_format}
+local sources = { null_ls.builtins.formatting.lua_format }
 ```
 
-- Filetypes: `{ "lua" }`
-- Command: `lua-format`
-- Arguments: `{ "-i" }`
+##### Defaults
+
+- `filetypes = { "lua" }`
+- `command = lua-format`
+- `args = { "-i" }`
 
 #### [Mix](https://hexdocs.pm/mix/1.12/Mix.html)
 
-```lua
-local sources = {null_ls.builtins.formatting.mix}
-```
+##### About
 
-Mix is a build tool that provides tasks for creating, compiling, and testing Elixir projects, managing its dependencies, and more.
+Build tool that provides tasks for creating, compiling, and testing `elixir` projects,
+managing its dependencies, and more.
 
-- Filetypes: `{ "elixir" }`
-- Command: `mix`
-- Arguments: `{ "format", "-" }`
-
-#### [Nginx Beautifier](https://github.com/vasilevich/nginxbeautifier)
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.nginx_beautifier}
+local sources = { null_ls.builtins.formatting.mix }
 ```
 
-This Javascript script beautifies and formats Nginx configuration files.
+##### Defaults
 
-- Filetypes: `{ "nginx" }`
-- Command: `nginxbeautifier`
-- Arguments: `{ "-i" }`
+- `filetypes = { "elixir" }`
+- `command = "mix"`
+- `args = { "format", "-" }`
+
+#### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
+
+##### About
+
+Beautifies and formats `nginx` configuration files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.nginx_beautifier }
+```
+
+##### Defaults
+
+- `filetypes = { "nginx" }`
+- `command = "nginxbeautifier"`
+- `args = { "-i" }`
 
 #### [perltidy](http://perltidy.sourceforge.net/)
 
+##### About
+
+`perl` script which indents and reformats `perl` scripts to make them
+easier to read. If you write `perl` scripts, or spend much time reading them,
+you will probably find it useful.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.perltidy}
+local sources = { null_ls.builtins.formatting.perltidy }
 ```
 
-Perltidy is a Perl script which indents and reformats Perl scripts to make them easier to read. If you write Perl scripts, or spend much time reading them, you will probably find it useful.
+##### Defaults
 
-- Filetypes: `{ "perl" }`
-- Command: `perltidy`
-- Arguments: `{ "-q" }`
+- `filetypes = { "perl" }`
+- `command = "perltidy"`
+- `args = { "-q" }`
 
 #### [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer)
 
-```lua
-local sources = {null_ls.builtins.formatting.phpcbf}
-```
+##### About
 
 Tokenizes PHP files and detects violations of a defined set of coding standards.
 
-- Filetypes: `{ "php" }`
-- Command: `phpcbf`
-- Arguments: `{ "--standard=PSR12", "-" }`
-
-#### [Prettier](https://github.com/prettier/prettier)
-
-Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
-(may not work on some filetypes).
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.prettier}
+local sources = { null_ls.builtins.formatting.phpcbf }
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
-- Command: `prettier`
-- Arguments: `{ "--stdin-filepath", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "phpcbf"`
+- `args = { "--standard=PSR12", "-" }`
+
+#### [prettier](https://github.com/prettier/prettier)
+
+##### About
+
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
+- May not work on some filetypes.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettier }
+```
+
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "css",
+    "html",
+    "json",
+    "yaml",
+    "markdown"
+}`
+- `command = "prettier"`
+- `args = { "--stdin-filepath", "$FILENAME" }`
 
 #### [prettier_d_slim](https://github.com/mikew/prettier_d_slim)
 
-A faster version of Prettier that doesn't seem to work well on non-JavaScript
-filetypes. Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
-(may not work on some filetypes).
+##### About
+
+- A faster version of `prettier` that doesn't seem to work well on
+non-JavaScript filetypes.
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
+- May not work on some filetypes.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.prettier_d_slim}
+local sources = { null_ls.builtins.formatting.prettier_d_slim }
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
-- Command: `prettier_d_slim`
-- Arguments: ` { "--stdin", "--stdin-filepath", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
+}`
+- `command = "prettier_d_slim"`
+- `args =  { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
 #### [prettierd](https://github.com/fsouza/prettierd)
 
-Another "Prettier, but faster" formatter, with better support for non-JavaScript
+##### About
+
+Another "`prettier`, but faster" formatter, with better support for non-JavaScript
 filetypes.
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
-- Command: `prettierd`
-- Arguments: `{ "$FILENAME" }`
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettierd }
+```
+
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "css",
+    "html",
+    "json",
+    "yaml",
+    "markdown"
+}`
+- `command = "prettierd"`
+- `args = { "$FILENAME" }`
 
 #### [formatR](https://github.com/yihui/formatR)
 
-```lua
-local sources = {null_ls.builtins.formatting.format_r}
-```
+##### About
 
 Format R code automatically.
 
-- Filetypes: `{ "r", "rmd" }`
-- Command: `R`
-- Arguments: `{ "--slave", "--no-restore", "--no-save", '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"' }`
-
-#### [Rufo](https://github.com/ruby-formatter/rufo)
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.formatting.rufo}
+local sources = { null_ls.builtins.formatting.format_r }
 ```
 
-Rufo is as an opinionated ruby formatter.
+##### Defaults
 
-- Filetypes: `{ "ruby" }`
-- Command: `rufo`
-- Arguments: `{ "-x" }`
+- `filetypes = { "r", "rmd" }`
+- `command = "R"`
+- `args = { 
+    "--slave",
+    "--no-restore",
+    "--no-save",
+    '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")),
+    arrow=FALSE)"'
+}`
+
+#### [rufo](https://github.com/ruby-formatter/rufo)
+
+##### About
+
+Opinionated `ruby` formatter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rufo }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "rufo"`
+- `args = { "-x" }`
 
 #### [rustfmt](https://github.com/rust-lang/rustfmt)
 
+##### About
+
+A tool for formatting `rust` code according to style guidelines.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.rustfmt}
+local sources = { null_ls.builtins.formatting.rustfmt }
 ```
 
-A tool for formatting Rust code according to style guidelines.
+##### Defaults
 
-- Filetypes: `{ "rust" }`
-- Command: `rustfmt`
-- Arguments: `{ "--emit=stdout", "--edition=2018" }`
+- `filetypes = { "rust" }`
+- `command = "rustfmt"`
+- `args = { "--emit=stdout", "--edition=2018" }`
 
 #### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
+##### About
+
+The `sqlformat` command-line tool can be used to reformat SQL file
+according to specified options.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.sqlformat}
+local sources = { null_ls.builtins.formatting.sqlformat }
 ```
 
-The `sqlformat` command-line tool can be used to reformat SQL file according to specified options.
+##### Defaults
 
-- Filetypes: `{ "sql" }`
-- Command: `sqlformat`
-- Arguments: `{ "--reindent", "-" }`
+- `filetypes = { "sql" }`
+- `command = "sqlformat"`
+- `args = { "--reindent", "-" }`
 
 #### [scalafmt](https://github.com/scalameta/scalafmt)
 
-```lua
-local sources = {null_ls.builtins.formatting.scalafmt}
-```
+##### About
 
 Code formatter for Scala
 
-- Filetypes: `{ "scala" }`
-- Command: `scalafmt`
-- Arguments: `{ "--stdin" }`
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.scalafmt }
+```
+
+##### Defaults
+
+- `filetypes = { "scala" }`
+- `command = "scalafmt"`
+- `args = { "--stdin" }`
 
 #### [shfmt](https://github.com/mvdan/sh)
 
+##### About
+
+A `shell` parser, formatter, and interpreter with `bash` support
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.shfmt}
+local sources = { null_ls.builtins.formatting.shfmt }
 ```
 
-A shell parser, formatter, and interpreter with bash support
+##### Defaults
 
-- Filetypes: `{ "sh" }`
-- Command: `shfmt`
-- Arguments: `{}`
+- `filetypes = { "sh" }`
+- `command = "shfmt"`
+- `args = {}`
 
 #### [StyLua](https://github.com/JohnnyMorganz/StyLua)
 
-```lua
-local sources = {null_ls.builtins.formatting.stylua}
-```
+##### About
 
 A fast and opinionated Lua formatter written in Rust. Highly recommended!
 
-- Filetypes: `{ "lua" }`
-- Command: `stylua`
-- Arguments: `{ "-" }`
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.stylua }
+```
+
+##### Defaults
+
+- `filetypes = { "lua" }`
+- `command = "stylua"`
+- `args = { "-" }`
 
 #### [swfitformat](https://github.com/nicklockwood/SwiftFormat)
 
+##### About
+
+`SwiftFormat` is a code library and command-line tool for reformatting
+`swift` code on macOS or Linux.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.swiftformat}
+local sources = { null_ls.builtins.formatting.swiftformat }
 ```
 
-SwiftFormat is a code library and command-line tool for reformatting Swift code on macOS or Linux.
+##### Defaults
 
-- Filetypes: `{ "swift" }`
-- Command: `swiftformat`
-- Arguments: `{}`
+- `filetypes = { "swift" }`
+- `command = "swiftformat"`
+- `args = {}`
 
 #### [terraform_fmt](https://www.terraform.io/docs/cli/commands/fmt.html)
 
+##### About
+
+The `terraform-fmt` command is used to rewrite `terraform`
+configuration files to a canonical format and style.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.terraform_fmt}
+local sources = { null_ls.builtins.formatting.terraform_fmt }
 ```
 
-The terraform fmt command is used to rewrite Terraform configuration files to a canonical format and style.
+##### Defaults
 
-- Filetypes: `{ "tf", "hcl" }`
-- Command: `terraform`
-- Arguments: `{ "fmt", "-" }`
+- `filetypes = { "tf", "hcl" }`
+- `command = "terraform"`
+- `args = { "fmt", "-" }`
 
 #### trim_whitespace
 
+##### About
+
 A simple wrapper around `awk` to remove trailing whitespace.
 
+##### Usage
+
 ```lua
-local sources = { null_ls.builtins.formatting.trim_whitespace.with({ filetypes = { ... } }) }
+local sources = { null_ls.builtins.formatting.trim_whitespace.with({ 
+    filetypes = { ... } 
+}) }
 ```
 
-- Filetypes: none (must specify in `with()`, as above)
-- Command: `awk`
-- Arguments: `{ '{ sub(/[ \t]+$/, ""); print }' }`
+##### Usage
+
+- `filetypes = one (must specify in with(), as above)`
+- `command = "awk"`
+- `args = { '{ sub(/[ \t]+$/, ""); print }' }`
 
 #### [uncrustify](https://github.com/uncrustify/uncrustify)
 
+##### About
+
+A source code beautifier for `C`, `C++`, `C#`, `ObjectiveC`, `D`, `java`,
+`pawn` and `VALA`.
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.uncrustify}
+local sources = { null_ls.builtins.formatting.uncrustify }
 ```
 
-A source code beautifier for C, C++, C#, ObjectiveC, D, Java, Pawn and VALA.
+##### Defaults
 
-- Filetypes: `{ "c", "cpp", "cs", "java" }`
-- Command: `uncrustify`
-- Arguments: `{ "-q", "-l <LANG>" }`
+- `filetypes = { "c", "cpp", "cs", "java" }`
+- `command = "uncrustify"`
+- `args = { "-q", "-l <LANG>" }`
 
 #### [yapf](https://github.com/google/yapf)
 
+##### About
+
+Formatter for `python` files
+
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.formatting.yapf}
+local sources = { null_ls.builtins.formatting.yapf }
 ```
 
-A formatter for Python files
+##### Defaults
 
-- Filetypes: `{ "python" }`
-- Command: `yapf`
-- Arguments: `{ "--quiet" }`
+- `filetypes = { "python" }`
+- `command = "yapf"`
+- `args = { "--quiet" }`
 
 ### Diagnostics
 
-#### [ChkTeX](https://www.nongnu.org/chktex/)
+#### [chktex](https://www.nongnu.org/chktex/)
 
-A LaTeX semantic linter.
+##### About
+
+`latex` semantic linter.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.chktex}
+local sources = { null_ls.builtins.diagnostics.chktex }
 ```
 
-- Filetypes: `{ "tex" }`
-- Command: `chktex`
-- Arguments: `{ "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
+##### Defaults
+
+- `filetypes = { "tex" }`
+- `command = "chktex"`
+- `args = { "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
-A linter for the JavaScript ecosystem. Note that the null-ls builtin requires
-your ESLint executable to be available on your `$PATH`. To use local (project)
-executables, use the integration in
-[nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+##### About
+
+A linter for the `javascript` ecosystem.
+
+- Note that the `null-ls` builtin requires your `eslint` executable to be available
+on your `$PATH`.
+- To use local (project) executables, use the integration in [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.eslint}
+local sources = { null_ls.builtins.diagnostics.eslint }
 
--- if you want to use eslint_d
-local sources = {null_ls.builtins.diagnostics.eslint.with({command = "eslint_d"})}
+-- If you want to use `eslint_d`
+local sources = { 
+    null_ls.builtins.diagnostics.eslint.with({ 
+        command = "eslint_d" 
+    }) 
+}
 ```
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
-- Command: `eslint`
-- Arguments: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
+}`
+- `command = "eslint"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 #### [hadolint](https://github.com/hadolint/hadolint)
 
-A smarter Dockerfile linter that helps you build best practice Docker images.
+##### About
+
+A smarter `Dockerfile` linter that helps you build best practice Docker images.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.hadolint}
+local sources = { null_ls.builtins.diagnostics.hadolint }
 ```
 
-- Filetypes: `{ "dockerfile" }`
-- Command: `hadolint`
-- Arguments: `{ "--no-fail", "--format=json", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = { "dockerfile" }`
+- `command = "hadolint"`
+- `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
 #### [luacheck](https://github.com/mpeterv/luacheck)
 
-A tool for linting and static analysis of Lua code.
+##### About
+
+A tool for linting and static analysis of `lua` code.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.luacheck}
+local sources = { null_ls.builtins.diagnostics.luacheck }
 ```
 
-- Filetypes: `{ "lua" }`
-- Command: `luacheck`
-- Arguments: `{ "--formatter", "plain", "--codes", "--ranges", "--filename", "$FILENAME", "-"}`
+##### Defaults
+
+- `filetypes = { "lua" }`
+- `command = "luacheck"`
+- `args = {
+    "--formatter",
+    "plain",
+    "--codes",
+    "--ranges",
+    "--filename",
+    "$FILENAME",
+    "-"
+}`
 
 #### [write-good](https://github.com/btford/write-good)
 
+##### About
+
 English prose linter.
+
+##### Usage
 
 ```lua
 local sources = {null_ls.builtins.diagnostics.write_good}
 ```
 
-- Filetypes: `{ "markdown" }`
-- Command: `write-good`
-- Arguments: `{ "--text=$TEXT", "--parse" }`
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "write"-good`
+- `args = { "--text=$TEXT", "--parse" }`
 
 #### [markdownlint](https://github.com/DavidAnson/markdownlint) via [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli)
 
-Markdown style and syntax checker.
+##### About
+
+`markdown` style and syntax checker.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.markdownlint}
+local sources = { null_ls.builtins.diagnostics.markdownlint }
 ```
 
-- Filetypes: `{ "markdown" }`
-- Command: `markdownlint`
-- Arguments: `{ "--stdin" }`
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "markdownlint"`
+- `args = { "--stdin" }`
 
 #### [vale](https://docs.errata.ai/vale/about)
 
+##### About
+
 Syntax-aware linter for prose built with speed and extensibility in mind.
 
-vale does not include a syntax by itself, so you probably need to grab a
-`vale.ini` (at "~/.vale.ini") and a `StylesPath` (somewhere, pointed from
-`vale.ini`) from
-[here](https://docs.errata.ai/vale/about#open-source-configurations).
+##### Usage
+
+- `vale` does not include a syntax by itself, so you probably need to grab a
+`vale.ini` (at `"~/.vale.ini"`) and a `StylesPath` (somewhere, pointed from
+`vale.ini`) from [here](https://docs.errata.ai/vale/about#open-source-configurations).
 
 ```lua
 local sources = {null_ls.builtins.diagnostics.vale}
 ```
 
-- Filetypes: `{ "markdown", "tex" }`
-- Command: `vale`
-- Arguments: `{ "--no-exit", "--output=JSON", "$FILENAME" }`
+##### Defaults
 
-### tl check via [teal](https://github.com/teal-language/tl)
+- `filetypes = { "markdown", "tex" }`
+- `command = "vale"`
+- `args = { "--no-exit", "--output=JSON", "$FILENAME" }`
 
-Turns `tl check` into a linter. It writes the buffer's content to a temporary
-file, so it works on change, not (only) on save!
+### [teal](https://github.com/teal-language/tl)
 
-Note that Neovim doesn't support Teal files out-of-the-box, so you'll probably
-want to use [vim-teal](https://github.com/teal-language/vim-teal).
+##### About
+
+Turns `tl check` command into a linter.
+
+- It writes the buffer's content to a temporary file,
+so it works on change, not (only) on save!
+
+##### LSP Support
+
+- [neovim](https://github.com/teal-language/teal-language-server)
+- [vim](https://github.com/teal-language/vim-teal)
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.teal}
+local sources = { null_ls.builtins.diagnostics.teal }
 ```
 
-- Filetypes: `{ "teal" }`
-- Command: `tl`
-- Arguments: `{ "check", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = { "teal" }`
+- `command = "tl"`
+- `args = { "check", "$FILENAME" }`
 
 #### [misspell](https://github.com/client9/misspell)
 
+##### About
+
 Correct commonly misspelled English words in source files
 
+##### Usage
+
 ```lua
-local sources = {null_ls.builtins.diagnostics.misspell}
+local sources = { null_ls.builtins.diagnostics.misspell }
 ```
 
-- Filetypes: `{ "*" }`
-- Command: `misspell`
-- Arguments: `{ "$FILENAME" }`
+##### Defaults
+
+- `filetypes = { "*" }`
+- `command = "misspell"`
+- `args = { "$FILENAME" }`
 
 #### [vim-vint](https://github.com/Vimjas/vint)
 
-Linter for vimscript.
+##### About
+
+Linter for `vimscript`.
+
+##### Usage
 
 ```lua
-local sources = {null_ls.builtins.diagnostics.vint}
+local sources = { null_ls.builtins.diagnostics.vint }
 ```
 
-- Filetypes: `{ "vim" }`
-- Command: `vint`
-- Arguments: `{ "-s", "-j", "$FILENAME" }`
+##### Defaults
+
+- `filetypes = { "vim" }`
+- `command = "vint"`
+- `args = { "-s", "-j", "$FILENAME" }`
+
+#### [selene](https://kampfkarren.github.io/selene/)
+
+##### About
+
+Command line tool designed to help write correct and idiomatic `lua` code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.selene }
+```
+
+##### Defaults
+
+- `filetypes = { "lua" }`
+- `command = "selene"`
+- `args = { "--display-style", "quiet", "-" }`
