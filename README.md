@@ -21,11 +21,8 @@ for external processes.
 
 ## Status
 
-null-ls is in **alpha status**. Please open an issue if something doesn't
+null-ls is in **beta status**. Please open an issue if something doesn't
 work the way you expect (or doesn't work at all).
-
-Any and all feedback, criticism, or contributions about the plugin's features,
-code quality, and user experience are greatly appreciated.
 
 ## Features
 
@@ -40,8 +37,6 @@ null-ls sources are able to hook into the following LSP features:
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
 how to set up sources and a list of available sources.
-
-Contributions to add more built-ins for any language are always welcome.
 
 null-ls also provides helpers to streamline the process of spawning and
 transforming the output of command-line processes into an LSP-friendly format.
@@ -77,6 +72,11 @@ require("lspconfig")["null-ls"].setup({
 The definitive source for information about null-ls is its
 [documentation](doc/MAIN.md), which contains information about how null-ls
 works, how to set it up, and how to create sources.
+
+## Contributing
+
+Contributions to add new features and built-ins for any language are always
+welcome. See [CONTRIBUTING](doc/CONTRIBUTING.md) for guidelines.
 
 ## Examples
 
@@ -273,30 +273,17 @@ memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
 
-### Why hijack LSP features for non-LSP functionality? Why not use (other solution)?
-
-Neovim's LSP ecosystem is wonderful, and I want to take advantage of it wherever
-I can. Other ecosystems are also much freer about what defines a "valid" code
-action or diagnostic - in fact, the inspiration for this plugin came from a
-desire to replicate a [VS Code
-plugin](https://github.com/Microsoft/vscode-eslint) that creates code actions
-from the output of a CLI program.
-
-Arguably, general-purpose language servers are already "cheating" by creating
-what looks like LSP output from non-LSP programs. null-ls skips a step and keeps
-it within Neovim.
-
 ### How to enable and use debug mode
 
 1. Set `debug` flag to `true` in the config like so:
 
-    ```lua
-    require("null-ls").config({
-        debug = true
-    })
-    ```
+   ```lua
+   require("null-ls").config({
+       debug = true
+   })
+   ```
 
-2. When the error occurs run `:messages` to see the stack trace
+2. When the error occurs, use `:messages` to see the debug output.
 
 ## Tests
 
