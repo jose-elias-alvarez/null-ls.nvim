@@ -364,6 +364,18 @@ local sources = { null_ls.builtins.formatting.fish_indent }
 - `command = "fish_indent"`
 - `args = {}`
 
+#### [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+
+```lua
+local sources = {null_ls.builtins.formatting.fnlfmt}
+```
+
+`fnlfmt` is a Fennel code formatter which follows established lisp conventions when determining how to format a given piece of code.
+
+- Filetypes: `{ "fennel", "fnl" }`
+- Command: `fnlfmt`
+- Arguments: `{"--fix"}`
+
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
 ##### About

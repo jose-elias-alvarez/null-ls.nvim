@@ -198,6 +198,17 @@ M.fish_indent = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.fnlfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "fennel", "fnl" },
+    generator_opts = {
+        command = "fnlfmt",
+        args = {"--fix"},
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.format_r = h.make_builtin({
     method = FORMATTING,
     filetypes = { "r", "rmd" },
