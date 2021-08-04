@@ -1,3 +1,10 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false,
+  "no-duplicate-header": false
+}
+-->
+
 # Using built-in sources
 
 null-ls includes a library of built-in sources meant to provide out-of-the-box
@@ -273,12 +280,7 @@ local sources = { null_ls.builtins.formatting.deno_fmt }
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }`
 - `command = "deno"`
 - `args = { "fmt", "-"}`
 
@@ -311,20 +313,13 @@ An absurdly fast formatter (and linter).
 
 ##### Usage
 
-
 ```lua
 local sources = { null_ls.builtins.formatting.eslint_d }
 ```
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue"
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint_d"`
 - `args = { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -372,9 +367,9 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 
 `fnlfmt` is a Fennel code formatter which follows established lisp conventions when determining how to format a given piece of code.
 
-- Filetypes: `{ "fennel", "fnl" }`
-- Command: `fnlfmt`
-- Arguments: `{"--fix"}`
+- `filetypes: { "fennel", "fnl" }`
+- `command: "fnlfmt"`
+- `arguments: { "--fix" }`
 
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
@@ -579,18 +574,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue",
-    "css",
-    "html",
-    "json",
-    "yaml",
-    "markdown"
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
 
@@ -599,7 +583,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 ##### About
 
 - A faster version of `prettier` that doesn't seem to work well on
-non-JavaScript filetypes.
+  non-JavaScript filetypes.
 - Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
 - May not work on some filetypes.
 
@@ -611,15 +595,9 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue"
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "prettier_d_slim"`
-- `args =  { "--stdin", "--stdin-filepath", "$FILENAME" }`
+- `args = { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
 #### [prettierd](https://github.com/fsouza/prettierd)
 
@@ -636,18 +614,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue",
-    "css",
-    "html",
-    "json",
-    "yaml",
-    "markdown"
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "html", "json", "yaml", "markdown" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
@@ -667,13 +634,7 @@ local sources = { null_ls.builtins.formatting.format_r }
 
 - `filetypes = { "r", "rmd" }`
 - `command = "R"`
-- `args = { 
-    "--slave",
-    "--no-restore",
-    "--no-save",
-    '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")),
-    arrow=FALSE)"'
-}`
+- `args = { "--slave", "--no-restore", "--no-save", '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"' }`
 
 #### [rufo](https://github.com/ruby-formatter/rufo)
 
@@ -831,8 +792,8 @@ A simple wrapper around `awk` to remove trailing whitespace.
 ##### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.trim_whitespace.with({ 
-    filetypes = { ... } 
+local sources = { null_ls.builtins.formatting.trim_whitespace.with({
+    filetypes = { ... }
 }) }
 ```
 
@@ -906,7 +867,7 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 A linter for the `javascript` ecosystem.
 
 - Note that the `null-ls` builtin requires your `eslint` executable to be available
-on your `$PATH`.
+  on your `$PATH`.
 - To use local (project) executables, use the integration in [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
 
 ##### Usage
@@ -915,22 +876,16 @@ on your `$PATH`.
 local sources = { null_ls.builtins.diagnostics.eslint }
 
 -- If you want to use `eslint_d`
-local sources = { 
-    null_ls.builtins.diagnostics.eslint.with({ 
-        command = "eslint_d" 
-    }) 
+local sources = {
+    null_ls.builtins.diagnostics.eslint.with({
+        command = "eslint_d"
+    })
 }
 ```
 
 ##### Defaults
 
-- `filetypes = {
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "vue"
-}`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
@@ -968,15 +923,7 @@ local sources = { null_ls.builtins.diagnostics.luacheck }
 
 - `filetypes = { "lua" }`
 - `command = "luacheck"`
-- `args = {
-    "--formatter",
-    "plain",
-    "--codes",
-    "--ranges",
-    "--filename",
-    "$FILENAME",
-    "-"
-}`
+- `args = { "--formatter", "plain", "--codes", "--ranges", "--filename", "$FILENAME", "-" }`
 
 #### [write-good](https://github.com/btford/write-good)
 
@@ -1023,8 +970,8 @@ Syntax-aware linter for prose built with speed and extensibility in mind.
 ##### Usage
 
 - `vale` does not include a syntax by itself, so you probably need to grab a
-`vale.ini` (at `"~/.vale.ini"`) and a `StylesPath` (somewhere, pointed from
-`vale.ini`) from [here](https://docs.errata.ai/vale/about#open-source-configurations).
+  `vale.ini` (at `"~/.vale.ini"`) and a `StylesPath` (somewhere, pointed from
+  `vale.ini`) from [here](https://docs.errata.ai/vale/about#open-source-configurations).
 
 ```lua
 local sources = {null_ls.builtins.diagnostics.vale}
@@ -1036,14 +983,11 @@ local sources = {null_ls.builtins.diagnostics.vale}
 - `command = "vale"`
 - `args = { "--no-exit", "--output=JSON", "$FILENAME" }`
 
-### [teal](https://github.com/teal-language/tl)
+#### [teal](https://github.com/teal-language/tl)
 
 ##### About
 
-Turns `tl check` command into a linter.
-
-- It writes the buffer's content to a temporary file,
-so it works on change, not (only) on save!
+Turns `tl check` command into a linter. Works on change.
 
 ##### LSP Support
 
