@@ -303,6 +303,27 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - `command = "elm-format"`
 - `args = { "--stdin", "--elm-version=0.19" }`
 
+#### [eslint](https://github.com/mantoni/eslint_d.js)
+
+##### About
+
+Fixes problems in your JavaScript code.
+
+- Slow and not suitable for formatting on save. If at all possible, use
+  `eslint_d` (described below).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.eslint }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `command = "eslint"`
+- `args = { "--fix-dry-run", "--format", "JSON", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 #### [eslint_d](https://github.com/mantoni/eslint_d.js)
 
 ##### About

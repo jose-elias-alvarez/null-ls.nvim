@@ -159,6 +159,34 @@ M.elm_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.eslint = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+    },
+    factory = h.generator_factory,
+    generator_opts = {
+        command = "eslint",
+        args = { "--fix-dry-run", "--format", "JSON", "--stdin", "--stdin-filename", "$FILENAME" },
+        to_stdin = true,
+        format = "json",
+        on_output = function(params)
+            local parsed = params.output[1]
+            return parsed and { {
+                row = 1,
+                col = 1,
+                end_row = #vim.split(parsed.output, "\n") + 1,
+                end_col = 1,
+                text = parsed.output,
+            } }
+        end,
+    },
+})
+
 M.eslint_d = h.make_builtin({
     method = FORMATTING,
     filetypes = {
@@ -203,7 +231,7 @@ M.fnlfmt = h.make_builtin({
     filetypes = { "fennel", "fnl" },
     generator_opts = {
         command = "fnlfmt",
-        args = {"--fix"},
+        args = { "--fix" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
