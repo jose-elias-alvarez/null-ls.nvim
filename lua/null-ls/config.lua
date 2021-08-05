@@ -29,10 +29,8 @@ local wanted_type = function(k)
     if type(override) == "table" then
         return function(a)
             return vim.tbl_contains(override, type(a))
-        end, table.concat(
-            override,
-            ", "
-        )
+        end,
+            table.concat(override, ", ")
     end
 
     return type(defaults[k]), true
