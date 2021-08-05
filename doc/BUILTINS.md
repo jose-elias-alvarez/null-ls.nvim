@@ -982,6 +982,25 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - `command = "markdownlint"`
 - `args = { "--stdin" }`
 
+#### [pylint](https://github.com/PyCGA/pylint)
+
+##### About
+
+Pylint is a Python static code analysis tool which looks for programming errors, helps enforcing a coding standard, sniffs for code smells and offers simple refactoring suggestions.
+
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pylint }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "pylint"`
+- `args = {"--from-stdin", "$FILENAME", "-f", "json"}`
+
 #### [vale](https://docs.errata.ai/vale/about)
 
 ##### About
