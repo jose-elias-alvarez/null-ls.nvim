@@ -463,6 +463,36 @@ M.flake8 = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.pylint = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "pylint",
+        to_stdin = true,
+        to_stderr = false,
+        args = { "--from-stdin", "$FILENAME", "-f", "json" },
+        format = "json",
+        check_exit_code = function(code)
+            return not (code == 0 or code == 32)
+        end,
+        on_output = from_json({
+            attributes = {
+                row = "line",
+                col = "column",
+                code = "message-id",
+                severity = "type",
+                message = "message",
+                source = "pylint",
+            },
+            severities = {
+                convention = default_severities["information"],
+                refactor = default_severities["information"],
+            },
+        }),
+    },
+    factory = h.generator_factory,
+})
+
 M.misspell = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "*" },
