@@ -82,7 +82,7 @@ M.clang_format = h.make_builtin({
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {
         command = "clang-format",
-        args = { "-assume-filename=" .. vim.fn.expand("%:t") },
+        args = { "-assume-filename", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
