@@ -289,7 +289,7 @@ M.vale = h.make_builtin({
         format = "json",
         to_stdin = true,
         args = function(params)
-			      return { "--no-exit", "--output", "JSON", "--ext", "." .. vim.fn.fnamemodify(params.bufname, ":e") }
+            return { "--no-exit", "--output", "JSON", "--ext", "." .. vim.fn.fnamemodify(params.bufname, ":e") }
         end,
         on_output = function(params)
             local diagnostics = {}
