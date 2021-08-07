@@ -351,6 +351,16 @@ M.nginx_beautifier = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.nixfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "nix" },
+    generator_opts = {
+        command = "nixfmt",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.perltidy = h.make_builtin({
     method = FORMATTING,
     filetypes = { "perl" },

@@ -542,6 +542,23 @@ local sources = { null_ls.builtins.formatting.nginx_beautifier }
 - `command = "nginxbeautifier"`
 - `args = { "-i" }`
 
+#### [nixfmt](https://github.com/serokell/nixfmt)
+
+##### About
+
+`nixfmt` is a formatter for Nix code, intended to easily apply a uniform style.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.nixfmt }
+```
+
+##### Defaults
+
+- `filetypes = { "nix" }`
+- `command = "nixfmt"`
+
 #### [perltidy](http://perltidy.sourceforge.net/)
 
 ##### About
