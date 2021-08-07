@@ -910,6 +910,27 @@ local sources = {
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+
+#### [flake8](https://github.com/PyCGA/flake8)
+
+##### About
+
+flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code. 
+
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.flake8 }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "flake8"`
+- `args = { "--stdin-display-name", "$FILENAME", "-" }`
+
+
 #### [hadolint](https://github.com/hadolint/hadolint)
 
 ##### About
@@ -981,6 +1002,25 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - `filetypes = { "markdown" }`
 - `command = "markdownlint"`
 - `args = { "--stdin" }`
+
+#### [pylint](https://github.com/PyCGA/pylint)
+
+##### About
+
+Pylint is a Python static code analysis tool which looks for programming errors, helps enforcing a coding standard, sniffs for code smells and offers simple refactoring suggestions.
+
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pylint }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "pylint"`
+- `args = {"--from-stdin", "$FILENAME", "-f", "json"}`
 
 #### [vale](https://docs.errata.ai/vale/about)
 
