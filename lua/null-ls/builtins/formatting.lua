@@ -82,7 +82,7 @@ M.clang_format = h.make_builtin({
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {
         command = "clang-format",
-        args = { "-assume-filename=" .. vim.fn.expand("%:t") },
+        args = { "-assume-filename", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -177,13 +177,16 @@ M.eslint = h.make_builtin({
         format = "json",
         on_output = function(params)
             local parsed = params.output[1]
-            return parsed and { {
-                row = 1,
-                col = 1,
-                end_row = #vim.split(parsed.output, "\n") + 1,
-                end_col = 1,
-                text = parsed.output,
-            } }
+            return parsed
+                and {
+                    {
+                        row = 1,
+                        col = 1,
+                        end_row = #vim.split(parsed.output, "\n") + 1,
+                        end_col = 1,
+                        text = parsed.output,
+                    },
+                }
         end,
     },
 })
