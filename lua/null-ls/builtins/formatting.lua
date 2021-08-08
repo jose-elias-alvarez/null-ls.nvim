@@ -35,6 +35,31 @@ local get_prettier_generator_args = function(common_args)
     end
 end
 
+local get_stylua_args = function(common_args)
+    return function(params)
+        local args = vim.deepcopy(common_args)
+
+        if params.method == FORMATTING then
+            return args
+        end
+
+        local range = params.range
+
+        local row, col = range.row, range.col
+        local end_row, end_col = range.end_row, range.end_col
+
+        local range_start = row <= 1 and 0 or vim.api.nvim_buf_get_offset(0, row - 1) + col - 1
+        local range_end = end_row <= 1 and 0 or vim.api.nvim_buf_get_offset(0, end_row - 1) + end_col
+
+        table.insert(args, "--range-start")
+        table.insert(args, range_start)
+        table.insert(args, "--range-end")
+        table.insert(args, range_end)
+
+        return args
+    end
+end
+
 local function get_uncrustify_args()
     local format_type = "-l " .. vim.bo.filetype:upper()
     return { "-q", format_type }
@@ -448,6 +473,17 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.prismaFmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "prisma" },
+    generator_opts = {
+        command = "prisma-fmt",
+        args = { "format", "-i", "$FILENAME" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rufo = h.make_builtin({
     method = FORMATTING,
     filetypes = { "ruby" },
@@ -505,9 +541,13 @@ M.shfmt = h.make_builtin({
 })
 
 M.stylua = h.make_builtin({
-    method = FORMATTING,
+    method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "lua" },
-    generator_opts = { command = "stylua", args = { "-s", "-" }, to_stdin = true },
+    generator_opts = {
+        command = "stylua",
+        args = get_stylua_args({ "-s", "-" }),
+        to_stdin = true,
+    },
     factory = h.formatter_factory,
 })
 

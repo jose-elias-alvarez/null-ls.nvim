@@ -24,6 +24,14 @@ for external processes.
 null-ls is in **beta status**. Please open an issue if something doesn't
 work the way you expect (or doesn't work at all).
 
+At the moment, null-is is compatible with Neovim 0.5 (stable) and 0.6 (head),
+but you'll get the best experience from the latest version you can run.
+
+Note that null-ls is built on macOS and Linux and may not work as expected (or
+at all) on Windows. Contributions to expand Windows support are welcome, but
+since I don't work on Windows, my ability to diagnose or fix Windows issues is
+nonexistent.
+
 ## Features
 
 null-ls sources are able to hook into the following LSP features:

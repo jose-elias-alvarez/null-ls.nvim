@@ -656,6 +656,24 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
+#### [prismaFmt](https://github.com/prisma/prisma-engines)
+
+##### About
+
+Formatter for prisma filetype.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prismaFmt }
+```
+
+##### Defaults
+
+- `filetypes = { "prisma" }`
+- `command = "prisma-fmt"`
+- `args = { "format", "-i", "$FILENAME" }`
+
 #### [formatR](https://github.com/yihui/formatR)
 
 ##### About
@@ -769,7 +787,8 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### About
 
-A fast and opinionated Lua formatter written in Rust. Highly recommended!
+- A fast and opinionated Lua formatter written in Rust. Highly recommended!
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
 
 ##### Usage
 
@@ -781,7 +800,7 @@ local sources = { null_ls.builtins.formatting.stylua }
 
 - `filetypes = { "lua" }`
 - `command = "stylua"`
-- `args = { "-" }`
+- `args = { "-s", "-" }`
 
 #### [swfitformat](https://github.com/nicklockwood/SwiftFormat)
 
@@ -932,7 +951,7 @@ local sources = {
 
 ##### About
 
-flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code. 
+flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of some python code.
 
 
 ##### Usage
