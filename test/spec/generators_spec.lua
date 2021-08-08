@@ -50,16 +50,17 @@ describe("generators", function()
             return { mock_result }
         end,
     }
-    local error_generator = {
-        filetypes = { "lua" },
-        fn = function()
-            error("something went wrong")
-        end,
-    }
 
-    local postprocess = stub.new()
+    local error_generator
     local mock_params
+    local postprocess = stub.new()
     before_each(function()
+        error_generator = {
+            filetypes = { "lua" },
+            fn = function()
+                error("something went wrong")
+            end,
+        }
         mock_params = { method = method, ft = "lua", generators = {} }
     end)
 
@@ -98,11 +99,12 @@ describe("generators", function()
             assert.equals(results[1].title, mock_result.title)
         end)
 
-        it("should echo error message when generator throws an error", function()
+        it("should echo error message and set failed flag when generator throws an error", function()
             local results = a.await(wrapped_run({ error_generator }, mock_params, postprocess))
 
             assert.equals(vim.tbl_count(results), 0)
             assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
+            assert.equals(error_generator._failed, true)
         end)
 
         it("should call postprocess with result, params, and generator", function()
@@ -267,6 +269,15 @@ describe("generators", function()
             local available = generators.get_available("lua", method)
 
             assert.same(available, { sync_generator })
+        end)
+
+        it("should exclude generator if failed flag is set", function()
+            error_generator._failed = true
+            register(method, error_generator, { "lua" })
+
+            local available = generators.get_available("lua", method)
+
+            assert.same(available, {})
         end)
     end)
 

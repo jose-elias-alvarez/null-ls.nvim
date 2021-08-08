@@ -30,6 +30,7 @@ M.run = function(generators, params, postprocess, callback)
 
                     if not ok then
                         u.echo("WarningMsg", "failed to run generator: " .. results)
+                        generator._failed = true
                     elseif type(results) == "table" then
                         for _, result in ipairs(results) do
                             if postprocess then
@@ -90,7 +91,7 @@ end
 
 M.get_available = function(filetype, method)
     return vim.tbl_filter(function(generator)
-        return u.filetype_matches(generator.filetypes, filetype)
+        return not generator._failed and u.filetype_matches(generator.filetypes, filetype)
     end, c.get()._generators[method] or {})
 end
 
