@@ -556,4 +556,17 @@ M.yapf = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.autopep8 = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "autopep8",
+        args = {
+            "-",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 return M
