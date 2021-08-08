@@ -40,6 +40,7 @@ M.handler = function(original_params)
     end
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CLOSE then
+        s.clear_cache(uri)
         return
     end
 
