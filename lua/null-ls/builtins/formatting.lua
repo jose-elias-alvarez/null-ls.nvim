@@ -473,6 +473,17 @@ M.prettier_d_slim = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.prismaFmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "prisma" },
+    generator_opts = {
+        command = "prisma-fmt",
+        args = { "format", "-i", "$FILENAME" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rufo = h.make_builtin({
     method = FORMATTING,
     filetypes = { "ruby" },

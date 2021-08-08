@@ -656,6 +656,24 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
+#### [prismaFmt](https://github.com/prisma/prisma-engines)
+
+##### About
+
+Formatter for prisma filetype.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prismaFmt }
+```
+
+##### Defaults
+
+- `filetypes = { "prisma" }`
+- `command = "prisma-fmt"`
+- `args = { "format", "-i", "$FILENAME" }`
+
 #### [formatR](https://github.com/yihui/formatR)
 
 ##### About
