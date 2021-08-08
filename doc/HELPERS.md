@@ -58,6 +58,9 @@ null-ls will transform the following special arguments before spawning:
 
 - `$TEXT`: replaced with the current buffer's content
 
+- `$FILEEXT`: replaced with the current buffer's file extension (e.g.
+  `my-file.lua` produces `"lua"`)
+
 ### on_output
 
 A callback function that receives a `params` object, which contains information

@@ -20,6 +20,9 @@ local parse_args = function(args, bufnr)
         if string.find(arg, "$TEXT") then
             arg = u.string.replace(arg, "$TEXT", u.buf.content(bufnr, true))
         end
+        if string.find(arg, "$FILEEXT") then
+            arg = u.string.replace(arg, "$FILEEXT", vim.fn.fnamemodify(api.nvim_buf_get_name(bufnr), ":e"))
+        end
 
         table.insert(parsed, arg)
     end

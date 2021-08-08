@@ -34,6 +34,15 @@ describe("loop", function()
             assert.equals(parsed[2], 'text=print("I am a test file!")\n')
         end)
 
+        it("should replace $FILEEXT with file extension", function()
+            local args = { "$FILEEXT" }
+            test_utils.edit_test_file("test-file.lua")
+
+            local parsed = loop._parse_args(args)
+
+            assert.equals(parsed[1], "lua")
+        end)
+
         it("should return unmodified argument", function()
             local args = { "--mock-flag", "mock-value" }
             test_utils.edit_test_file("test-file.lua")
