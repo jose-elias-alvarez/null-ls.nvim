@@ -52,12 +52,40 @@ M.run = function(generators, params, postprocess, callback)
     end)
 end
 
+M.run_sequentially = function(generators, make_params, postprocess, callback)
+    local generator_index, wrapped_callback = 1, nil
+    local run_next = function()
+        -- schedule to make sure params reflect current buffer state
+        vim.schedule(function()
+            M.run({ generators[generator_index] }, make_params(), postprocess, wrapped_callback)
+        end)
+    end
+
+    wrapped_callback = function(...)
+        callback(...)
+        generator_index = generator_index + 1
+        if generators[generator_index] then
+            run_next()
+        end
+    end
+
+    run_next()
+end
+
 M.run_registered = function(opts)
     local filetype, method, params, postprocess, callback =
         opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback
     local generators = M.get_available(filetype, method)
 
     M.run(generators, params, postprocess, callback)
+end
+
+M.run_registered_sequentially = function(opts)
+    local filetype, method, make_params, postprocess, callback =
+        opts.filetype, opts.method, opts.make_params, opts.postprocess, opts.callback
+    local generators = M.get_available(filetype, method)
+
+    M.run_sequentially(generators, make_params, postprocess, callback)
 end
 
 M.get_available = function(filetype, method)

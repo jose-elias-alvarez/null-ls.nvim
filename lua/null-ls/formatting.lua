@@ -74,12 +74,12 @@ M.apply_edits = function(edits, params, handler)
 
     handler(diffed_edits)
 
-    vim.defer_fn(function()
+    vim.schedule(function()
         restore_win_data(marks, views, bufnr)
         if c.get().save_after_format and not _G._TEST then
             vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
         end
-    end, 0)
+    end)
 
     u.debug_log("successfully applied edits")
 end
@@ -88,23 +88,18 @@ M.handler = function(method, original_params, handler)
     if not original_params.textDocument then
         return
     end
-    local uri = original_params.textDocument.uri
-    local bufnr = vim.uri_to_bufnr(uri)
 
-    local apply_edits = function(edits, params)
-        M.apply_edits(edits, params, handler)
-    end
-
-    if method == methods.lsp.FORMATTING then
-        original_params.bufnr = bufnr
-        generators.run_registered(u.make_params(original_params, methods.internal.FORMATTING), nil, apply_edits)
-
-        original_params._null_ls_handled = true
-    end
-
-    if method == methods.lsp.RANGE_FORMATTING then
-        original_params.bufnr = bufnr
-        generators.run_registered(u.make_params(original_params, methods.internal.RANGE_FORMATTING), nil, apply_edits)
+    if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
+        generators.run_registered_sequentially({
+            filetype = api.nvim_buf_get_option(vim.uri_to_bufnr(original_params.textDocument.uri), "filetype"),
+            method = methods.map[method],
+            make_params = function()
+                return u.make_params(original_params, methods.map[method])
+            end,
+            callback = function(edits, params)
+                M.apply_edits(edits, params, handler)
+            end,
+        })
 
         original_params._null_ls_handled = true
     end

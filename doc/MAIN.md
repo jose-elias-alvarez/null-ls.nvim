@@ -273,6 +273,6 @@ return { {
 null-ls applies formatting results to the matching buffer and, depending on the
 user's settings, will optionally write the buffer.
 
-Note that although null-ls supports an arbitrary number of formatting sources
-for a single filetype, it cannot guarantee the order in which formatters will
-apply their edits to the current buffer, so it's not recommended.
+Users can register an arbitrary number of formatters for a single filetype. To
+match expected behavior, formatters run _sequentially_ in the order in which the
+user has registered them (manually or via an integration).

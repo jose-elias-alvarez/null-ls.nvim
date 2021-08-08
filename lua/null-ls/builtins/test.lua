@@ -122,4 +122,26 @@ M.mock_diagnostics = {
     filetypes = { "markdown" },
 }
 
+M.first_formatter = {
+    method = methods.internal.FORMATTING,
+    generator = {
+        fn = function(_, done)
+            return done({ { text = "first" } })
+        end,
+        async = true,
+    },
+    filetypes = { "text" },
+}
+
+M.second_formatter = {
+    method = methods.internal.FORMATTING,
+    generator = {
+        fn = function(params, done)
+            return done({ { text = params.content[1] == "first" and "sequential" or "second" } })
+        end,
+        async = true,
+    },
+    filetypes = { "text" },
+}
+
 return M

@@ -299,4 +299,30 @@ describe("e2e", function()
         --     assert.equals(null_ls_action.title, "Not cached")
         -- end)
     end)
+
+    describe("sequential formatting", function()
+        it("should format file sequentially", function()
+            c.register(builtins._test.first_formatter)
+            c.register(builtins._test.second_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), "sequential\n")
+        end)
+
+        it("should format file according to source order", function()
+            c.register(builtins._test.second_formatter)
+            c.register(builtins._test.first_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), "first\n")
+        end)
+    end)
 end)

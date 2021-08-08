@@ -112,6 +112,72 @@ describe("generators", function()
         end)
     end)
 
+    describe("run_sequentially", function()
+        local first_generator = {
+            filetypes = { "lua" },
+            fn = function()
+                return { "first" }
+            end,
+        }
+        local second_generator = {
+            filetypes = { "lua" },
+            fn = function()
+                return { "second" }
+            end,
+        }
+
+        local callback, results
+        before_each(function()
+            results = {}
+            callback = function(generator_results)
+                table.insert(results, generator_results)
+            end
+        end)
+
+        it("should run generators sequentially", function()
+            generators.run_sequentially({ first_generator, second_generator }, function()
+                mock_params.count = mock_params.count and mock_params.count + 1 or 1
+                return mock_params
+            end, postprocess, callback)
+
+            vim.wait(50, function()
+                return #results == 2
+            end)
+
+            assert.equals(#results, 2)
+            assert.same(results[1], { "first" })
+            assert.same(results[2], { "second" })
+        end)
+
+        it("should run generators in order", function()
+            generators.run_sequentially({ second_generator, first_generator }, function()
+                return mock_params
+            end, postprocess, callback)
+
+            vim.wait(50, function()
+                return #results == 2
+            end)
+
+            assert.equals(#results, 2)
+            assert.same(results[1], { "second" })
+            assert.same(results[2], { "first" })
+        end)
+
+        it("should call make_params once for each run", function()
+            local count = 0
+            generators.run_sequentially({ first_generator, second_generator }, function()
+                count = count + 1
+                return mock_params
+            end, postprocess, callback)
+
+            vim.wait(50, function()
+                return #results == 2
+            end)
+
+            assert.equals(count, 2)
+        end)
+    end)
+
     describe("run_registered", function()
         local callback = stub.new()
 
@@ -124,18 +190,59 @@ describe("generators", function()
             run:revert()
         end)
 
-        it("should call run with available generators", function()
+        it("should call run with available generators and opts", function()
             register(method, sync_generator, { "lua" })
-
-            generators.run_registered({
+            local mock_opts = {
                 filetype = mock_params.ft,
                 method = mock_params.method,
                 params = mock_params,
                 postprocess = postprocess,
                 callback = callback,
-            })
+            }
 
-            assert.stub(run).was_called_with({ sync_generator }, mock_params, postprocess, callback)
+            generators.run_registered(mock_opts)
+
+            assert.stub(run).was_called_with(
+                { sync_generator },
+                mock_opts.params,
+                mock_opts.postprocess,
+                mock_opts.callback
+            )
+        end)
+    end)
+
+    describe("run_registered_sequentially", function()
+        local callback = stub.new()
+
+        local run_sequentially
+        before_each(function()
+            run_sequentially = stub.new(generators, "run_sequentially")
+        end)
+        after_each(function()
+            callback:clear()
+            run_sequentially:revert()
+        end)
+
+        it("should call run_sequentially with available generators and opts", function()
+            register(method, sync_generator, { "lua" })
+            local mock_opts = {
+                filetype = mock_params.ft,
+                method = mock_params.method,
+                make_params = function()
+                    return mock_params
+                end,
+                postprocess = postprocess,
+                callback = callback,
+            }
+
+            generators.run_registered_sequentially(mock_opts)
+
+            assert.stub(run_sequentially).was_called_with(
+                { sync_generator },
+                mock_opts.make_params,
+                mock_opts.postprocess,
+                mock_opts.callback
+            )
         end)
     end)
 
