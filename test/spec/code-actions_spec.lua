@@ -12,11 +12,14 @@ describe("code_actions", function()
     stub(s, "get")
     stub(s, "run_action")
     local mock_uri = "file:///mock-file"
-    local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
+    local mock_client_id = 999
     local mock_params
     before_each(function()
-        s.get.returns({ client_id = 99 })
-        mock_params = { textDocument = { uri = mock_uri }, client_id = mock_client_id }
+        mock_params = {
+            textDocument = { uri = mock_uri },
+            client_id = mock_client_id,
+        }
+        u.make_params.returns(mock_params)
     end)
 
     after_each(function()
@@ -51,13 +54,12 @@ describe("code_actions", function()
             it("should call make_params with original params and internal method", function()
                 code_actions.handler(method, mock_params, handler)
 
-                mock_params.bufnr = mock_bufnr
                 mock_params._null_ls_handled = nil
                 assert.stub(u.make_params).was_called_with(mock_params, methods.internal.CODE_ACTION)
             end)
 
             it("should set handled flag on params", function()
-                code_actions.handler(method, mock_params, handler, 1)
+                code_actions.handler(method, mock_params, handler)
 
                 assert.equals(mock_params._null_ls_handled, true)
             end)
@@ -65,7 +67,7 @@ describe("code_actions", function()
             it("should call handler with arguments", function()
                 code_actions.handler(method, mock_params, handler)
 
-                local callback = generators.run_registered.calls[1].refs[3]
+                local callback = generators.run_registered.calls[1].refs[1].callback
                 callback({ { title = "actions" } })
 
                 -- wait for schedule_wrap
@@ -91,7 +93,7 @@ describe("code_actions", function()
                         end,
                     }
                     code_actions.handler(method, mock_params, handler)
-                    postprocess = generators.run_registered.calls[1].refs[2]
+                    postprocess = generators.run_registered.calls[1].refs[1].postprocess
                 end)
 
                 it("should register action in state", function()

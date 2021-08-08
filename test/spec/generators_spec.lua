@@ -70,21 +70,18 @@ describe("generators", function()
 
     a.tests.describe("run", function()
         local echo = stub(u, "echo")
-        local filetype_matches_spy = spy(u.filetype_matches)
         after_each(function()
             echo:clear()
-            filetype_matches_spy:clear()
         end)
 
         local wrapped_run = a.wrap(generators.run, 4)
 
-        it("should immediately return when method has no registered generators", function()
+        it("should return empty table when method has no registered generators", function()
             mock_params.method = "someRandomMethod"
 
             local results = a.await(wrapped_run(nil, mock_params, postprocess))
 
             assert.equals(vim.tbl_count(results), 0)
-            assert.spy(filetype_matches_spy).was_not_called()
         end)
 
         it("should get result from sync generator", function()
@@ -99,12 +96,6 @@ describe("generators", function()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
-        end)
-
-        it("should not get result when filetype does not match", function()
-            local results = a.await(wrapped_run({ wrong_fileytpe_generator }, mock_params, postprocess))
-
-            assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should echo error message when generator throws an error", function()
@@ -133,12 +124,42 @@ describe("generators", function()
             run:revert()
         end)
 
-        it("should call run with registered generators", function()
+        it("should call run with available generators", function()
             register(method, sync_generator, { "lua" })
 
-            generators.run_registered(mock_params, postprocess, callback)
+            generators.run_registered({
+                filetype = mock_params.ft,
+                method = mock_params.method,
+                params = mock_params,
+                postprocess = postprocess,
+                callback = callback,
+            })
 
             assert.stub(run).was_called_with({ sync_generator }, mock_params, postprocess, callback)
+        end)
+    end)
+
+    describe("get_available", function()
+        it("should return empty table if no generators registered", function()
+            local available = generators.get_available("lua", method)
+
+            assert.same(available, {})
+        end)
+
+        it("should return empty table if no generators registered for filetype", function()
+            register(method, wrong_fileytpe_generator, { "txt" })
+
+            local available = generators.get_available("lua", method)
+
+            assert.same(available, {})
+        end)
+
+        it("should return generator if registered for filetype", function()
+            register(method, sync_generator, { "lua" })
+
+            local available = generators.get_available("lua", method)
+
+            assert.same(available, { sync_generator })
         end)
     end)
 

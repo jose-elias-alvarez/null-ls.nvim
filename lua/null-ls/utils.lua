@@ -5,7 +5,7 @@ local api = vim.api
 
 local M = {}
 
-local get_content_from_params = function(params)
+local resolve_content = function(params, bufnr)
     -- diagnostic notifications will send full buffer content on open and change
     -- so we can avoid unnecessary api calls
     if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
@@ -21,7 +21,22 @@ local get_content_from_params = function(params)
     end
 
     -- for other methods, fall back to manually getting content
-    return M.buf.content(params.bufnr)
+    return M.buf.content(bufnr)
+end
+
+local resolve_bufnr = function(params)
+    -- if already set, do nothing
+    if params.bufnr then
+        return params.bufnr
+    end
+
+    -- get from uri
+    if params.textDocument and params.textDocument.uri then
+        return vim.uri_to_bufnr(params.textDocument.uri)
+    end
+
+    -- fallback
+    return api.nvim_get_current_buf()
 end
 
 M.echo = function(hlgroup, message)
@@ -89,22 +104,20 @@ M.range = {
 }
 
 M.make_params = function(original_params, method)
-    local bufnr = original_params.bufnr
-    local lsp_method = original_params.method
+    local bufnr = resolve_bufnr(original_params)
+    local content = resolve_content(original_params, bufnr)
     local pos = api.nvim_win_get_cursor(0)
-    local content = get_content_from_params(original_params)
 
     local params = {
         client_id = original_params.client_id,
+        lsp_method = original_params.method,
         content = content,
-        lsp_method = lsp_method,
         method = method,
         row = pos[1],
         col = pos[2],
         bufnr = bufnr,
         bufname = api.nvim_buf_get_name(bufnr),
         ft = api.nvim_buf_get_option(bufnr, "filetype"),
-        generators = {},
     }
 
     if original_params.range then

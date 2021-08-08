@@ -153,10 +153,6 @@ M.reset_sources = function()
     config._filetypes = {}
 end
 
-M.generators = function(method)
-    return method and config._generators[method] or config._generators
-end
-
 local validate_config = function(user_config)
     local to_validate, validated = {}, {}
 

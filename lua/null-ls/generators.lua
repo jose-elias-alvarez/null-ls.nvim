@@ -9,40 +9,38 @@ M.run = function(generators, params, postprocess, callback)
     local runner = a.async(function()
         u.debug_log("running generators for method " .. params.method)
 
-        if not generators then
-            u.debug_log("no generators registered")
+        if not generators or vim.tbl_isempty(generators) then
+            u.debug_log("no generators available")
             return {}
         end
 
         local futures, all_results = {}, {}
         for _, generator in ipairs(generators) do
-            if u.filetype_matches(generator.filetypes, params.ft) then
-                table.insert(
-                    futures,
-                    a.future(function()
-                        local ok, results
-                        if generator.async then
-                            local wrapped = a.wrap(generator.fn, 2)
-                            ok, results = a.await(a.util.protected(wrapped(params)))
-                        else
-                            ok, results = pcall(generator.fn, params)
-                        end
-                        a.await(a.scheduler())
+            table.insert(
+                futures,
+                a.future(function()
+                    local ok, results
+                    if generator.async then
+                        local wrapped = a.wrap(generator.fn, 2)
+                        ok, results = a.await(a.util.protected(wrapped(params)))
+                    else
+                        ok, results = pcall(generator.fn, params)
+                    end
+                    a.await(a.scheduler())
 
-                        if not ok then
-                            u.echo("WarningMsg", "failed to run generator: " .. results)
-                        elseif type(results) == "table" then
-                            for _, result in ipairs(results) do
-                                if postprocess then
-                                    postprocess(result, params, generator)
-                                end
-
-                                table.insert(all_results, result)
+                    if not ok then
+                        u.echo("WarningMsg", "failed to run generator: " .. results)
+                    elseif type(results) == "table" then
+                        for _, result in ipairs(results) do
+                            if postprocess then
+                                postprocess(result, params, generator)
                             end
+
+                            table.insert(all_results, result)
                         end
-                    end)
-                )
-            end
+                    end
+                end)
+            )
         end
 
         a.await_all(futures)
@@ -54,22 +52,22 @@ M.run = function(generators, params, postprocess, callback)
     end)
 end
 
-M.run_registered = function(params, postprocess, callback)
-    local generators = c.generators(params.method)
+M.run_registered = function(opts)
+    local filetype, method, params, postprocess, callback =
+        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback
+    local generators = M.get_available(filetype, method)
+
     M.run(generators, params, postprocess, callback)
 end
 
+M.get_available = function(filetype, method)
+    return vim.tbl_filter(function(generator)
+        return u.filetype_matches(generator.filetypes, filetype)
+    end, c.get()._generators[method] or {})
+end
+
 M.can_run = function(filetype, method)
-    local generators = c.generators(method)
-    if not generators then
-        return false
-    end
-    for _, generator in ipairs(generators) do
-        if u.filetype_matches(generator.filetypes, filetype) then
-            return true
-        end
-    end
-    return false
+    return #M.get_available(filetype, method) > 0
 end
 
 return M

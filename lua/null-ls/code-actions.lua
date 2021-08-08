@@ -21,15 +21,14 @@ M.handler = function(method, original_params, handler)
             return
         end
 
-        local uri = original_params.textDocument.uri
-        local bufnr = vim.uri_to_bufnr(uri)
-        original_params.bufnr = bufnr
-
         s.clear_actions()
-        generators.run_registered(
-            u.make_params(original_params, methods.internal.CODE_ACTION),
-            postprocess,
-            function(actions)
+        local params = u.make_params(original_params, methods.map[method])
+        generators.run_registered({
+            filetype = params.ft,
+            method = methods.map[method],
+            params = params,
+            postprocess = postprocess,
+            callback = function(actions)
                 u.debug_log("received code actions from generators")
                 u.debug_log(actions)
 
@@ -38,8 +37,8 @@ M.handler = function(method, original_params, handler)
                     return a.title < b.title
                 end)
                 handler(actions)
-            end
-        )
+            end,
+        })
         original_params._null_ls_handled = true
     end
 
