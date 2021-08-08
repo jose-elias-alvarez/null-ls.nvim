@@ -3,6 +3,7 @@ local code_actions = require("null-ls.code-actions")
 local formatting = require("null-ls.formatting")
 local diagnostics = require("null-ls.diagnostics")
 local handlers = require("null-ls.handlers")
+local u = require("null-ls.utils")
 
 local rpc = require("vim.lsp.rpc")
 
@@ -88,10 +89,12 @@ function M.start(dispatchers)
     end
 
     local function request(method, params, callback)
+        u.debug_log("received LSP request for method " .. method)
         return handle(method, params, callback)
     end
 
     local function notify(method, params)
+        u.debug_log("received LSP notification for method " .. method)
         return handle(method, params, nil, true)
     end
 

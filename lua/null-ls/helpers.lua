@@ -99,7 +99,7 @@ M.generator_factory = function(opts)
                 function(v)
                     return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
                 end,
-                "type function or table",
+                "function or table",
             },
             on_output = { on_output, "function" },
             format = {
@@ -128,9 +128,8 @@ M.generator_factory = function(opts)
             end
 
             local wrapper = function(error_output, output)
-                local _ = error_output and u.debug_log("error output: " .. error_output)
-                    or u.debug_log("error output: nil")
-                local _ = output and u.debug_log("output: " .. output) or u.debug_log("output: nil")
+                u.debug_log("error output: " .. (error_output or "nil"))
+                u.debug_log("output: " .. (output or "nil"))
 
                 if to_stderr then
                     output = error_output
@@ -257,7 +256,13 @@ M.make_builtin = function(opts)
         local condition = user_opts.condition
         if condition then
             return function()
-                return condition(u.make_conditional_utils()) and builtin
+                local should_register = condition(u.make_conditional_utils())
+                if should_register then
+                    u.debug_log("registering conditional source " .. builtin.name)
+                    return builtin
+                end
+
+                u.debug_log("not registering conditional source " .. builtin.name)
             end
         end
 

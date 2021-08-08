@@ -475,6 +475,7 @@ describe("helpers", function()
     describe("make_builtin", function()
         local opts = {
             method = "mockMethod",
+            name = "mock-builtin",
             filetypes = { "lua" },
             factory = stub.new(),
             generator_opts = {

@@ -17,12 +17,12 @@ M.handler = function(method, original_params, handler)
         if not original_params.textDocument then
             return
         end
-        local uri = original_params.textDocument.uri
-        local bufnr = vim.uri_to_bufnr(uri)
         if original_params._null_ls_ignore then
             return
         end
 
+        local uri = original_params.textDocument.uri
+        local bufnr = vim.uri_to_bufnr(uri)
         original_params.bufnr = bufnr
 
         s.clear_actions()
@@ -30,7 +30,10 @@ M.handler = function(method, original_params, handler)
             u.make_params(original_params, methods.internal.CODE_ACTION),
             postprocess,
             function(actions)
-                -- sort actions on title
+                u.debug_log("received code actions from generators")
+                u.debug_log(actions)
+
+                -- sort actions by title
                 table.sort(actions, function(a, b)
                     return a.title < b.title
                 end)

@@ -96,8 +96,6 @@ M.handler = function(method, original_params, handler)
     end
 
     if method == methods.lsp.FORMATTING then
-        u.debug_log("received LSP formatting request")
-
         original_params.bufnr = bufnr
         generators.run_registered(u.make_params(original_params, methods.internal.FORMATTING), nil, apply_edits)
 
@@ -105,8 +103,6 @@ M.handler = function(method, original_params, handler)
     end
 
     if method == methods.lsp.RANGE_FORMATTING then
-        u.debug_log("received LSP rangeFormatting request")
-
         original_params.bufnr = bufnr
         generators.run_registered(u.make_params(original_params, methods.internal.RANGE_FORMATTING), nil, apply_edits)
 

@@ -52,6 +52,9 @@ M.handler = function(original_params)
         u.make_params(original_params, methods.internal.DIAGNOSTICS),
         postprocess,
         function(diagnostics)
+            u.debug_log("received diagnostics from generators")
+            u.debug_log(diagnostics)
+
             vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
                 diagnostics = diagnostics,
                 uri = uri,
