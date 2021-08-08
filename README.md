@@ -229,10 +229,12 @@ formatting.
 
 ### How do I format files?
 
-null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
-formatting by visually selecting part of the buffer and calling
-`vim.lsp.buf.range_formatting()`.
+null-ls formatters run when you call `vim.lsp.buf.formatting()`. If a source
+supports it, you can run range formatting by visually selecting part of the
+buffer and calling `vim.lsp.buf.range_formatting()`.
+
+Note that `vim.lsp.buf.formatting_sync()` will not work properly when running
+more than one formatter on a single filetype.
 
 If you have other language servers running that can format the current buffer,
 Neovim will prompt you to choose a formatter. You can prevent actual LSP clients
