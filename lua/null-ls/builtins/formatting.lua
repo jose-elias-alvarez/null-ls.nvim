@@ -178,6 +178,7 @@ M.eslint = h.make_builtin({
         on_output = function(params)
             local parsed = params.output[1]
             return parsed
+                and parsed.output
                 and {
                     {
                         row = 1,
