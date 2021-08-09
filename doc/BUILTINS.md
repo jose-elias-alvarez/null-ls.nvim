@@ -896,6 +896,24 @@ local sources = { null_ls.builtins.formatting.yapf }
 - `filetypes = { "python" }`
 - `command = "yapf"`
 - `args = { "--quiet" }`
+- 
+#### [autopep8](https://github.com/hhatto/autopep8)
+
+##### About
+
+Formatter for `python` files
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.autopep8 }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "autopep8"`
+- `args = { "-" }`
 
 ### Diagnostics
 
