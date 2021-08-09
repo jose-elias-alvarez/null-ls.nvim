@@ -58,11 +58,14 @@ M.run = function(generators, params, postprocess, callback)
     end)
 end
 
-M.run_sequentially = function(generators, make_params, postprocess, callback)
+M.run_sequentially = function(generators, make_params, postprocess, callback, after_all)
     local generator_index, wrapped_callback = 1, nil
     local run_next = function()
         local next_generator = generators[generator_index]
         if not next_generator then
+            if after_all then
+                after_all()
+            end
             return
         end
         -- schedule to make sure params reflect current buffer state
@@ -89,11 +92,11 @@ M.run_registered = function(opts)
 end
 
 M.run_registered_sequentially = function(opts)
-    local filetype, method, make_params, postprocess, callback =
-        opts.filetype, opts.method, opts.make_params, opts.postprocess, opts.callback
+    local filetype, method, make_params, postprocess, callback, after_all =
+        opts.filetype, opts.method, opts.make_params, opts.postprocess, opts.callback, opts.after_all
     local generators = M.get_available(filetype, method)
 
-    M.run_sequentially(generators, make_params, postprocess, callback)
+    M.run_sequentially(generators, make_params, postprocess, callback, after_all)
 end
 
 M.get_available = function(filetype, method)

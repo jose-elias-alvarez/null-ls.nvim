@@ -180,6 +180,19 @@ describe("generators", function()
             assert.equals(count, 2)
         end)
 
+        it("should call after_all after running all generators", function()
+            local after_all = stub.new()
+            generators.run_sequentially({ first_generator, second_generator }, function()
+                return mock_params
+            end, postprocess, callback, after_all)
+
+            vim.wait(50, function()
+                return #results == 2
+            end)
+
+            assert.stub(after_all).was_called(1)
+        end)
+
         it("should return no results when generators is empty", function()
             generators.run_sequentially({}, function()
                 return mock_params
@@ -226,6 +239,7 @@ describe("generators", function()
 
     describe("run_registered_sequentially", function()
         local callback = stub.new()
+        local after_all = stub.new()
 
         local run_sequentially
         before_each(function()
@@ -233,6 +247,7 @@ describe("generators", function()
         end)
         after_each(function()
             callback:clear()
+            after_all:clear()
             run_sequentially:revert()
         end)
 
@@ -246,6 +261,7 @@ describe("generators", function()
                 end,
                 postprocess = postprocess,
                 callback = callback,
+                after_all = after_all,
             }
 
             generators.run_registered_sequentially(mock_opts)
@@ -254,7 +270,8 @@ describe("generators", function()
                 { sync_generator },
                 mock_opts.make_params,
                 mock_opts.postprocess,
-                mock_opts.callback
+                mock_opts.callback,
+                mock_opts.after_all
             )
         end)
     end)

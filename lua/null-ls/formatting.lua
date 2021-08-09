@@ -48,9 +48,11 @@ end
 
 ---@param edits table[]
 ---@param params table
----@param handler fun(edits: table[]): nil
-M.apply_edits = function(edits, params, handler)
+M.apply_edits = function(edits, params)
     local bufnr = params.bufnr
+    -- directly use lsp handler, since formatting_sync uses a custom handler that won't work if called twice
+    -- formatting and rangeFormatting handlers are identical
+    local handler = lsp.handlers[params.lsp_method]
 
     u.debug_log("received edits from generators")
     u.debug_log(edits)
@@ -72,7 +74,8 @@ M.apply_edits = function(edits, params, handler)
 
     local marks, views = save_win_data(bufnr)
 
-    handler(diffed_edits)
+    ---@diagnostic disable-next-line: redundant-parameter
+    handler(nil, params.lsp_method, diffed_edits, params.client_id, bufnr)
 
     vim.schedule(function()
         restore_win_data(marks, views, bufnr)
@@ -90,14 +93,19 @@ M.handler = function(method, original_params, handler)
     end
 
     if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
+        local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
         generators.run_registered_sequentially({
-            filetype = api.nvim_buf_get_option(vim.uri_to_bufnr(original_params.textDocument.uri), "filetype"),
+            filetype = api.nvim_buf_get_option(bufnr, "filetype"),
             method = methods.map[method],
             make_params = function()
                 return u.make_params(original_params, methods.map[method])
             end,
             callback = function(edits, params)
-                M.apply_edits(edits, params, handler)
+                M.apply_edits(edits, params)
+            end,
+            after_all = function()
+                -- call original handler with empty response to avoid formatting_sync timeout
+                handler(nil, method, nil, original_params.client_id, bufnr)
             end,
         })
 
