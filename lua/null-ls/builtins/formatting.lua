@@ -361,6 +361,7 @@ M.mix = h.make_builtin({
     generator_opts = {
         command = "mix",
         args = { "format", "-" },
+        format = "raw",
         to_stdin = true,
     },
     factory = h.formatter_factory,
