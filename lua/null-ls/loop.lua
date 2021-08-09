@@ -37,9 +37,8 @@ M.spawn = function(cmd, args, opts)
     local handler, input, bufnr, check_exit_code, timeout, on_stdout_end =
         opts.handler, opts.input, opts.bufnr, opts.check_exit_code, opts.timeout, opts.on_stdout_end
 
-    local timer
-    local output, error_output, exit_ok = "", "", _G._TEST and true or nil
-    local handle_stdout = wrap(function(err, chunk)
+    local output, error_output = "", ""
+    local handle_stdout = function(err, chunk)
         if err then
             error("stdout error: " .. err)
         end
@@ -47,34 +46,7 @@ M.spawn = function(cmd, args, opts)
         if chunk then
             output = output .. chunk
         end
-        if not chunk then
-            if timer then
-                timer.stop(true)
-            end
-
-            -- wait for handler callback to check exit code
-            vim.wait(500, function()
-                return exit_ok ~= nil
-            end, 10)
-
-            -- convert empty strings to make nil checks easier
-            if output == "" then
-                output = nil
-            end
-            if error_output == "" then
-                error_output = nil
-            end
-
-            -- if exit code is not ok and program did not output to stderr,
-            -- assign output to error_output, so handler can process it as an error
-            if not exit_ok and not error_output then
-                error_output = output
-                output = nil
-            end
-
-            handler(error_output, output)
-        end
-    end)
+    end
 
     local handle_stderr = function(err, chunk)
         if err then
@@ -86,13 +58,38 @@ M.spawn = function(cmd, args, opts)
         end
     end
 
+    local timer
+    local done = wrap(function(exit_ok)
+        if timer then
+            timer.stop(true)
+        end
+
+        -- convert empty strings to make nil checks easier
+        if output == "" then
+            output = nil
+        end
+        if error_output == "" then
+            error_output = nil
+        end
+
+        -- if exit code is not ok and command did not output to stderr,
+        -- assign output to error_output, so handler can process it as an error
+        if not exit_ok and not error_output then
+            error_output = output
+            output = nil
+        end
+
+        handler(error_output, output)
+    end)
+
     local stdin = uv.new_pipe(false)
     local stdout = uv.new_pipe(false)
     local stderr = uv.new_pipe(false)
     local stdio = { stdin, stdout, stderr }
 
     local handle
-    local close = wrap(function(code)
+    local on_close = function(code)
+        local exit_ok
         if code == TIMEOUT_EXIT_CODE then
             exit_ok = false
         else
@@ -109,17 +106,20 @@ M.spawn = function(cmd, args, opts)
         close_handle(stdout)
         close_handle(stderr)
         close_handle(handle)
-    end)
+        done(exit_ok)
+    end
 
     handle = uv.spawn(
         vim.fn.exepath(cmd),
         { args = parse_args(args, bufnr), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
-        close
+        on_close
     )
+
     if timeout then
         timer = M.timer(timeout, nil, true, function()
-            close(TIMEOUT_EXIT_CODE)
-            handler()
+            u.debug_log("command timed out after " .. timeout .. " ms")
+
+            on_close(TIMEOUT_EXIT_CODE)
             timer.stop(true)
         end)
     end
