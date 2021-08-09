@@ -27,4 +27,14 @@ local lsp_to_internal_map = {
     [lsp_methods.DID_CHANGE] = internal_methods.DIAGNOSTICS,
 }
 
-return { lsp = lsp_methods, internal = internal_methods, map = lsp_to_internal_map }
+local M = {}
+M.lsp = lsp_methods
+M.internal = internal_methods
+M.map = lsp_to_internal_map
+
+M.supported_methods = {}
+vim.tbl_map(function(method)
+    M.supported_methods[method] = true
+end, lsp_methods)
+
+return M

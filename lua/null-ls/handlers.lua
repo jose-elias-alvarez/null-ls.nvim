@@ -39,12 +39,13 @@ M.setup_client = function(client)
         return
     end
 
-    local supports_method_original = client.supports_method
     client.supports_method = function(method)
-        if methods.map[method] then
-            return generators.can_run(vim.bo.filetype, methods.map[method])
+        local internal_method = methods.map[method]
+        if internal_method then
+            return generators.can_run(vim.bo.filetype, internal_method)
         end
-        return supports_method_original(method)
+
+        return methods.supported_methods[method]
     end
 
     client._null_ls_setup = true
