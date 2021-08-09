@@ -77,10 +77,8 @@ describe("generators", function()
 
         local wrapped_run = a.wrap(generators.run, 4)
 
-        it("should return empty table when method has no registered generators", function()
-            mock_params.method = "someRandomMethod"
-
-            local results = a.await(wrapped_run(nil, mock_params, postprocess))
+        it("should return empty table when generators is empty", function()
+            local results = a.await(wrapped_run({}, mock_params, postprocess))
 
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -99,13 +97,16 @@ describe("generators", function()
             assert.equals(results[1].title, mock_result.title)
         end)
 
-        it("should echo error message and set failed flag when generator throws an error", function()
-            local results = a.await(wrapped_run({ error_generator }, mock_params, postprocess))
+        it(
+            "should echo error message, set failed flag, and return empty table when generator throws an error",
+            function()
+                local results = a.await(wrapped_run({ error_generator }, mock_params, postprocess))
 
-            assert.equals(vim.tbl_count(results), 0)
-            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
-            assert.equals(error_generator._failed, true)
-        end)
+                assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
+                assert.equals(error_generator._failed, true)
+                assert.equals(vim.tbl_count(results), 0)
+            end
+        )
 
         it("should call postprocess with result, params, and generator", function()
             a.await(wrapped_run({ sync_generator }, mock_params, postprocess))
@@ -177,6 +178,16 @@ describe("generators", function()
             end)
 
             assert.equals(count, 2)
+        end)
+
+        it("should return no results when generators is empty", function()
+            generators.run_sequentially({}, function()
+                return mock_params
+            end, postprocess, callback)
+
+            vim.wait(50)
+
+            assert.equals(#results, 0)
         end)
     end)
 
