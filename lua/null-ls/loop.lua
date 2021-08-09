@@ -86,7 +86,7 @@ M.spawn = function(cmd, args, opts)
         end
     end
 
-    local stdin = uv.new_pipe(true)
+    local stdin = uv.new_pipe(false)
     local stdout = uv.new_pipe(false)
     local stderr = uv.new_pipe(false)
     local stdio = { stdin, stdout, stderr }
@@ -111,7 +111,11 @@ M.spawn = function(cmd, args, opts)
         close_handle(handle)
     end)
 
-    handle = uv.spawn(cmd, { args = parse_args(args, bufnr), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() }, close)
+    handle = uv.spawn(
+        vim.fn.exepath(cmd),
+        { args = parse_args(args, bufnr), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        close
+    )
     if timeout then
         timer = M.timer(timeout, nil, true, function()
             close(TIMEOUT_EXIT_CODE)

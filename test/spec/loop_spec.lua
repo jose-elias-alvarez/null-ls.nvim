@@ -138,7 +138,7 @@ describe("loop", function()
             loop.spawn(mock_cmd, mock_args, mock_opts)
 
             assert.stub(uv.spawn).was_called()
-            assert.equals(uv.spawn.calls[1].refs[1], mock_cmd)
+            assert.equals(uv.spawn.calls[1].refs[1], vim.fn.exepath(mock_cmd))
             assert.same(uv.spawn.calls[1].refs[2].args, mock_args)
         end)
 
