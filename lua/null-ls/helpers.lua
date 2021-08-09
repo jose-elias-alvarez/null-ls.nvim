@@ -70,14 +70,14 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, ignore_errors, check_exit_code, timeout, to_temp_file, use_cache =
+    local command, args, on_output, format, to_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, use_cache =
         opts.command,
         opts.args,
         opts.on_output,
         opts.format,
         opts.to_stderr,
         opts.to_stdin,
-        opts.ignore_errors,
+        opts.suppress_errors,
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
@@ -111,7 +111,7 @@ M.generator_factory = function(opts)
             },
             to_stderr = { to_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
-            ignore_errors = { ignore_errors, "boolean", true },
+            suppress_errors = { suppress_errors, "boolean", true },
             check_exit_code = { check_exit_code, "function", true },
             timeout = { timeout, "number", true },
             to_temp_file = { to_temp_file, "boolean", true },
@@ -137,7 +137,7 @@ M.generator_factory = function(opts)
                 end
 
                 if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
-                    if not ignore_errors then
+                    if not suppress_errors then
                         error("error in generator output: " .. error_output)
                     end
                     done()
@@ -205,8 +205,8 @@ M.generator_factory = function(opts)
 end
 
 M.formatter_factory = function(opts)
-    if opts.ignore_errors == nil then
-        opts.ignore_errors = true
+    if opts.suppress_errors == nil then
+        opts.suppress_errors = true
     end
     opts.on_output = function(params, done)
         local output = params.output

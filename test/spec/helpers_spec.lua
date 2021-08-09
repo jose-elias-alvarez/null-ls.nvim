@@ -420,19 +420,19 @@ describe("helpers", function()
             helpers.generator_factory:revert()
         end)
 
-        it("should call generator_factory with enriched opts", function()
+        it("should call generator_factory with opts", function()
             helpers.formatter_factory(opts)
 
             assert.stub(helpers.generator_factory).was_called_with(opts)
-            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_errors, true)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, true)
             assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
         end)
 
-        it("should not set ignore_errors when already set", function()
-            opts.ignore_errors = false
+        it("should not set suppress_errors when already set", function()
+            opts.suppress_errors = false
             helpers.formatter_factory(opts)
 
-            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_errors, false)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, false)
         end)
 
         describe("on_output", function()
