@@ -79,9 +79,6 @@ M.apply_edits = function(edits, params)
 
     vim.schedule(function()
         restore_win_data(marks, views, bufnr)
-        if c.get().save_after_format and not _G._TEST then
-            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
-        end
     end)
 
     u.debug_log("successfully applied edits")

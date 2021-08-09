@@ -2,7 +2,6 @@ local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
 local u = require("null-ls.utils")
-local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 
@@ -23,8 +22,6 @@ describe("formatting", function()
     local mock_params
     before_each(function()
         api = mock(vim.api, true)
-
-        c._set({ save_after_format = false })
         mock_params = {
             textDocument = { uri = mock_uri },
             client_id = mock_client_id,
@@ -38,12 +35,9 @@ describe("formatting", function()
         lsp.util.apply_text_edits:clear()
         lsp.util.compute_diff:clear()
         vim.cmd:clear()
-
         u.make_params:clear()
         generators.run_registered_sequentially:clear()
         handler:clear()
-
-        c.reset()
     end)
 
     local formatting = require("null-ls.formatting")
@@ -101,6 +95,7 @@ describe("formatting", function()
                 ["end"] = { line = 35, character = 1 },
             },
         }
+
         local lsp_handler = stub.new()
         local original_handler = vim.lsp.handlers[method]
         before_each(function()
@@ -125,28 +120,6 @@ describe("formatting", function()
                 mock_params.client_id,
                 mock_params.bufnr
             )
-        end)
-
-        it("should not save buffer if config option is not set", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
-
-            local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
-            callback(mock_edits, mock_params)
-            -- wait for schedule
-            vim.wait(0)
-
-            assert.stub(vim.cmd).was_not_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
-        end)
-
-        it("should save buffer if config option is set", function()
-            c.setup({ save_after_format = true })
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
-
-            local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
-            callback(mock_edits, mock_params)
-            vim.wait(0)
-
-            assert.stub(vim.cmd).was_called_with(mock_bufnr .. "bufdo! silent keepjumps noautocmd update")
         end)
     end)
 

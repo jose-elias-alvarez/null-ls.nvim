@@ -3,7 +3,6 @@ local validate = vim.validate
 local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
-    save_after_format = true,
     default_timeout = 5000,
     debug = false,
     _generators = {},
