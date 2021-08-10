@@ -612,7 +612,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "html", "json", "yaml", "markdown" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
 
@@ -652,7 +652,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "html", "json", "yaml", "markdown" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
