@@ -353,6 +353,7 @@ M.shellcheck = h.make_builtin({
             return code <= 1
         end,
         on_output = from_json({
+            attributes = { code = "code" },
             severities = {
                 info = default_severities["information"],
                 style = default_severities["hint"],
