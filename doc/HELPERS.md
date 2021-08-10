@@ -33,7 +33,7 @@ null_ls.helpers.generator_factory({
     format, -- "raw", "line", "json", or "json_raw" (optional)
     to_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
-    ignore_errors, -- boolean (optional)
+    suppress_errors, -- boolean (optional)
     check_exit_code, -- function or table of numbers (optional)
     timeout, -- number (optional)
     to_temp_file, -- boolean (optional)
@@ -84,7 +84,7 @@ Supports the following options:
   [MAIN](MAIN.md) for details).
 
 - `nil`: same as `raw`, but does not receive error output. Instead, error output
-  will cause the generator to throw an error, unless `ignore_errors` is also
+  will cause the generator to throw an error, unless `suppress_errors` is also
   enabled (see below).
 
 - `"line"`: splits generator output into lines and calls `on_output(line, params)`
@@ -112,12 +112,12 @@ for linters that output to `stderr`.
 
 Sends the current buffer's content to the spawned command via `stdin`.
 
-### ignore_errors
+### suppress_errors
 
 Suppresses errors, regardless of `stderr` output or the command's exit code.
 
 Note that most formats won't call `on_output` if there is an error. To handle
-errors manually, use `format = "raw"`.
+errors manually or ignore them entirely, use `format = "raw"`.
 
 ### check_exit_code
 
@@ -161,7 +161,7 @@ the process of capturing a formatter's output and replacing a buffer's entire
 content with that output. It supports the same options as `generator_factory`
 but will always override the following two options:
 
-- `ignore_errors`: will always be `true`.
+- `suppress_errors`: will always be `true`.
 
 - `on_output`: will always return an edit object to replace the current buffer's
   content with formatter output. As a result, other options that depend on

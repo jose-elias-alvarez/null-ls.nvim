@@ -370,7 +370,6 @@ M.selene = h.make_builtin({
         args = { "--display-style", "quiet", "-" },
         to_stdin = true,
         to_stderr = false,
-        ignore_errors = true,
         format = "line",
         check_exit_code = function(code)
             return code <= 1
