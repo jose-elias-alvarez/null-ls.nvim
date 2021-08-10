@@ -73,21 +73,22 @@ describe("utils", function()
 
     describe("make_params", function()
         local mock_method = "mockMethod"
+        local mock_content = "I am some other content"
+        before_each(function()
+            test_utils.edit_test_file("test-file.lua")
+        end)
         after_each(function()
             vim.cmd("bufdo! bwipeout!")
         end)
 
         it("should return params from minimal original params", function()
-            test_utils.edit_test_file("test-file.lua")
-
             local params = u.make_params({
-                bufnr = vim.api.nvim_get_current_buf(),
                 method = methods.lsp.CODE_ACTION,
             }, mock_method)
 
             assert.equals(params.bufname, test_utils.test_dir .. "/files/test-file.lua")
             assert.equals(params.lsp_method, methods.lsp.CODE_ACTION)
-            assert.equals(params.bufnr, 1)
+            assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
             assert.equals(params.col, 0)
             assert.equals(params.row, 1)
             assert.equals(params.ft, "lua")
@@ -95,28 +96,42 @@ describe("utils", function()
             assert.same(params.content, { 'print("I am a test file!")', "" })
         end)
 
-        it("should get content from params on DID_OPEN", function()
-            test_utils.edit_test_file("test-file.lua")
+        describe("resolve_content", function()
+            it("should resolve content from params on DID_OPEN", function()
+                local params = u.make_params({
+                    method = methods.lsp.DID_OPEN,
+                    textDocument = { text = mock_content },
+                }, mock_method)
 
-            local mock_content = "I am some other content"
-            local params = u.make_params({
-                method = methods.lsp.DID_OPEN,
-                textDocument = { text = mock_content },
-            }, "mockMethod")
+                assert.same(params.content, { mock_content })
+            end)
 
-            assert.same(params.content, { mock_content })
+            it("should resolve content from params on DID_CHANGE", function()
+                local params = u.make_params({
+                    method = methods.lsp.DID_CHANGE,
+                    contentChanges = { { text = mock_content } },
+                }, mock_method)
+
+                assert.same(params.content, { mock_content })
+            end)
         end)
 
-        it("should get content from params on DID_CHANGE", function()
-            test_utils.edit_test_file("test-file.lua")
+        describe("resolve_bufnr", function()
+            it("should resolve bufnr from params", function()
+                local params = u.make_params({
+                    bufnr = vim.api.nvim_get_current_buf(),
+                }, mock_method)
 
-            local mock_content = "I am some other content"
-            local params = u.make_params({
-                method = methods.lsp.DID_CHANGE,
-                contentChanges = { { text = mock_content } },
-            }, "mockMethod")
+                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
+            end)
 
-            assert.same(params.content, { mock_content })
+            it("should resolve bufnr from uri", function()
+                local params = u.make_params({
+                    textDocument = { uri = vim.uri_from_bufnr(vim.api.nvim_get_current_buf()) },
+                }, mock_method)
+
+                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
+            end)
         end)
     end)
 

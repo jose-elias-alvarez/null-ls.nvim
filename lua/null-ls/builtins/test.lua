@@ -88,7 +88,7 @@ M.slow_code_action = h.make_builtin({
 
 M.cached_code_action = h.make_builtin({
     method = methods.internal.CODE_ACTION,
-    filetypes = { "lua" },
+    filetypes = { "text" },
     generator_opts = {
         command = "ls",
         on_output = function(params, done)
@@ -120,6 +120,28 @@ M.mock_diagnostics = {
         end,
     },
     filetypes = { "markdown" },
+}
+
+M.first_formatter = {
+    method = methods.internal.FORMATTING,
+    generator = {
+        fn = function(_, done)
+            return done({ { text = "first" } })
+        end,
+        async = true,
+    },
+    filetypes = { "text" },
+}
+
+M.second_formatter = {
+    method = methods.internal.FORMATTING,
+    generator = {
+        fn = function(params, done)
+            return done({ { text = params.content[1] == "first" and "sequential" or "second" } })
+        end,
+        async = true,
+    },
+    filetypes = { "text" },
 }
 
 return M

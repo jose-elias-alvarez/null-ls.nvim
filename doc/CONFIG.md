@@ -1,3 +1,10 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false,
+  "no-duplicate-header": false
+}
+-->
+
 # Installing and configuring null-ls
 
 You can install null-ls using any package manager. Here is a simple example
@@ -42,7 +49,6 @@ The following code block shows the available options and their defaults.
 local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
-    save_after_format = true,
     default_timeout = 5000,
     sources = nil,
 }
@@ -82,24 +88,6 @@ Lowering `debounce` will result in more frequent diagnostic refreshes at the
 cost of running diagnostic sources more frequently. The default value should be
 enough to provide near-instantaneous feedback from most sources without
 unnecessary resource usage.
-
-### save_after_format (boolean)
-
-By default, null-ls will save modified buffers after applying edits from
-formatting sources. This makes it simple to enable asynchronous formatting on
-save with the following snippet:
-
-```lua
--- add to your lspconfig on_attach function
-on_attach = function(client)
-    if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
-    end
-end
-```
-
-Setting `save_after_format = false` will leave the buffer in a modified state
-after formatting, which is consistent with default LSP behavior.
 
 ### default_timeout (number)
 

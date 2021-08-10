@@ -39,28 +39,32 @@ M.handler = function(original_params)
         return
     end
     local method, uri = original_params.method, original_params.textDocument.uri
+    if method == methods.lsp.DID_CLOSE then
+        s.clear_cache(uri)
+        return
+    end
+
     if method == methods.lsp.DID_CHANGE then
         s.clear_cache(uri)
     end
 
-    if method == methods.lsp.DID_CLOSE then
-        return
-    end
-
-    original_params.bufnr = vim.uri_to_bufnr(uri)
-    generators.run_registered(
-        u.make_params(original_params, methods.internal.DIAGNOSTICS),
-        postprocess,
-        function(diagnostics)
+    local params = u.make_params(original_params, methods.map[method])
+    generators.run_registered({
+        filetype = params.ft,
+        method = methods.map[method],
+        params = params,
+        postprocess = postprocess,
+        callback = function(diagnostics)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
 
             vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
                 diagnostics = diagnostics,
                 uri = uri,
+                ---@diagnostic disable-next-line: redundant-parameter
             }, original_params.client_id, nil, {})
-        end
-    )
+        end,
+    })
 end
 
 return M

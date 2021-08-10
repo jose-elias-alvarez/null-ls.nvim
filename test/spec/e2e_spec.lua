@@ -22,6 +22,15 @@ require("lspconfig")["null-ls"].setup({
     },
 })
 
+local get_code_actions = function()
+    local current_bufnr = api.nvim_get_current_buf()
+    return lsp.buf_request_sync(
+        current_bufnr,
+        methods.lsp.CODE_ACTION,
+        { textDocument = { uri = vim.uri_from_bufnr(current_bufnr) } }
+    )
+end
+
 describe("e2e", function()
     _G._TEST = true
     after_each(function()
@@ -30,16 +39,14 @@ describe("e2e", function()
     end)
 
     describe("code actions", function()
-        local actions, null_ls_action, mock_params
+        local actions, null_ls_action
         before_each(function()
             c.register(builtins._test.toggle_line_comment)
 
             tu.edit_test_file("test-file.lua")
             lsp_wait()
-            mock_params = { textDocument = { uri = vim.uri_from_bufnr() } }
-            require("null-ls.state").clear_cache(vim.uri_from_bufnr())
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
 
+            actions = get_code_actions()
             null_ls_action = actions[1].result[1]
         end)
 
@@ -52,7 +59,7 @@ describe("e2e", function()
             assert.equals(vim.tbl_count(actions[1].result), 1)
 
             assert.equals(null_ls_action.title, "Comment line")
-            assert.equals(null_ls_action.command, methods.internal.CODE_ACTION, mock_params)
+            assert.equals(null_ls_action.command, methods.internal.CODE_ACTION)
         end)
 
         it("should apply code action", function()
@@ -64,7 +71,7 @@ describe("e2e", function()
         it("should adapt code action based on params", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+            actions = get_code_actions()
             null_ls_action = actions[1].result[1]
             assert.equals(null_ls_action.title, "Uncomment line")
 
@@ -75,7 +82,7 @@ describe("e2e", function()
         it("should combine actions from multiple sources", function()
             c.register(builtins._test.mock_code_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+            actions = get_code_actions()
 
             assert.equals(vim.tbl_count(actions[1].result), 2)
         end)
@@ -85,7 +92,7 @@ describe("e2e", function()
             -- but action timeout is 100 ms
             c.register(builtins._test.slow_code_action)
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+            actions = get_code_actions()
 
             assert.equals(vim.tbl_count(actions[1].result), 1)
         end)
@@ -265,38 +272,63 @@ describe("e2e", function()
 
     describe("cached generator", function()
         local actions, null_ls_action
-        local mock_params
-        -- local mock_bufnr
         before_each(function()
             c.register(builtins._test.cached_code_action)
-            tu.edit_test_file("test-file.lua")
+            tu.edit_test_file("test-file.txt")
             lsp_wait()
-            -- mock_bufnr = vim.api.nvim_get_current_buf()
-            mock_params = { textDocument = { uri = vim.uri_from_bufnr() } }
-            require("null-ls.state").clear_cache(vim.uri_from_bufnr())
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+
+            actions = get_code_actions()
             null_ls_action = actions[1].result[1]
+        end)
+        after_each(function()
+            actions = nil
+            null_ls_action = nil
         end)
 
         it("should cache results after running action once", function()
             assert.equals(null_ls_action.title, "Not cached")
 
-            actions = lsp.buf_request_sync(api.nvim_get_current_buf(), methods.lsp.CODE_ACTION, mock_params)
+            actions = get_code_actions()
             null_ls_action = actions[1].result[1]
 
             assert.equals(null_ls_action.title, "Cached")
         end)
 
-        -- temporarily disabled, but the functionality works
+        it("should reset cache when file is edited", function()
+            assert.equals(null_ls_action.title, "Not cached")
 
-        -- it("should reset cache when file is edited", function()
-        --     assert.equals(null_ls_action.title, "Not cached")
-        --     api.nvim_buf_set_lines(mock_bufnr, 0, 1, false, { "print('new content')" })
-        --     lsp_wait()
-        --     actions = lsp.buf_request_sync(mock_bufnr, methods.lsp.CODE_ACTION, mock_params)
-        --     null_ls_action = actions[1].result[1]
+            api.nvim_buf_set_lines(0, 0, 1, false, { "print('new content')" })
+            lsp_wait()
 
-        --     assert.equals(null_ls_action.title, "Not cached")
-        -- end)
+            actions = get_code_actions()
+            null_ls_action = actions[1].result[1]
+            assert.equals(null_ls_action.title, "Not cached")
+        end)
+    end)
+
+    describe("sequential formatting", function()
+        it("should format file sequentially", function()
+            c.register(builtins._test.first_formatter)
+            c.register(builtins._test.second_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), "sequential\n")
+        end)
+
+        it("should format file according to source order", function()
+            c.register(builtins._test.second_formatter)
+            c.register(builtins._test.first_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), "first\n")
+        end)
     end)
 end)

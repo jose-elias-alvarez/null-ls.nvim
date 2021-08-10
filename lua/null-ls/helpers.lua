@@ -93,7 +93,13 @@ M.generator_factory = function(opts)
     local _validated
     local validate_opts = function()
         validate({
-            command = { command, "string" },
+            command = {
+                command,
+                function(v)
+                    return type(v) == "string" and vim.fn.executable(command) > 0
+                end,
+                "string (executable)",
+            },
             args = {
                 args,
                 function(v)

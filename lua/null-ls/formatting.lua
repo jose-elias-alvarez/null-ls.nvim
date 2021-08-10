@@ -48,9 +48,11 @@ end
 
 ---@param edits table[]
 ---@param params table
----@param handler fun(edits: table[]): nil
-M.apply_edits = function(edits, params, handler)
+M.apply_edits = function(edits, params)
     local bufnr = params.bufnr
+    -- directly use lsp handler, since formatting_sync uses a custom handler that won't work if called twice
+    -- formatting and rangeFormatting handlers are identical
+    local handler = lsp.handlers[params.lsp_method]
 
     u.debug_log("received edits from generators")
     u.debug_log(edits)
@@ -72,14 +74,12 @@ M.apply_edits = function(edits, params, handler)
 
     local marks, views = save_win_data(bufnr)
 
-    handler(diffed_edits)
+    ---@diagnostic disable-next-line: redundant-parameter
+    handler(nil, params.lsp_method, diffed_edits, params.client_id, bufnr)
 
-    vim.defer_fn(function()
+    vim.schedule(function()
         restore_win_data(marks, views, bufnr)
-        if c.get().save_after_format and not _G._TEST then
-            vim.cmd(bufnr .. "bufdo! silent keepjumps noautocmd update")
-        end
-    end, 0)
+    end)
 
     u.debug_log("successfully applied edits")
 end
@@ -88,23 +88,23 @@ M.handler = function(method, original_params, handler)
     if not original_params.textDocument then
         return
     end
-    local uri = original_params.textDocument.uri
-    local bufnr = vim.uri_to_bufnr(uri)
 
-    local apply_edits = function(edits, params)
-        M.apply_edits(edits, params, handler)
-    end
-
-    if method == methods.lsp.FORMATTING then
-        original_params.bufnr = bufnr
-        generators.run_registered(u.make_params(original_params, methods.internal.FORMATTING), nil, apply_edits)
-
-        original_params._null_ls_handled = true
-    end
-
-    if method == methods.lsp.RANGE_FORMATTING then
-        original_params.bufnr = bufnr
-        generators.run_registered(u.make_params(original_params, methods.internal.RANGE_FORMATTING), nil, apply_edits)
+    if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
+        local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
+        generators.run_registered_sequentially({
+            filetype = api.nvim_buf_get_option(bufnr, "filetype"),
+            method = methods.map[method],
+            make_params = function()
+                return u.make_params(original_params, methods.map[method])
+            end,
+            callback = function(edits, params)
+                M.apply_edits(edits, params)
+            end,
+            after_all = function()
+                -- call original handler with empty response to avoid formatting_sync timeout
+                handler(nil, method, nil, original_params.client_id, bufnr)
+            end,
+        })
 
         original_params._null_ls_handled = true
     end

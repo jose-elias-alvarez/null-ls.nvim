@@ -3,7 +3,6 @@ local validate = vim.validate
 local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
-    save_after_format = true,
     default_timeout = 5000,
     debug = false,
     _generators = {},
@@ -151,10 +150,6 @@ M.reset_sources = function()
     config._generators = {}
     config._names = {}
     config._filetypes = {}
-end
-
-M.generators = function(method)
-    return method and config._generators[method] or config._generators
 end
 
 local validate_config = function(user_config)

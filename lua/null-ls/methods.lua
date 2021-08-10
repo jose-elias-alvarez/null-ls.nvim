@@ -23,6 +23,8 @@ local lsp_to_internal_map = {
     [lsp_methods.CODE_ACTION] = internal_methods.CODE_ACTION,
     [lsp_methods.FORMATTING] = internal_methods.FORMATTING,
     [lsp_methods.RANGE_FORMATTING] = internal_methods.RANGE_FORMATTING,
+    [lsp_methods.DID_OPEN] = internal_methods.DIAGNOSTICS,
+    [lsp_methods.DID_CHANGE] = internal_methods.DIAGNOSTICS,
 }
 
 local M = {}

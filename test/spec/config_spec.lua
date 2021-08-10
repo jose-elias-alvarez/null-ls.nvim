@@ -39,7 +39,7 @@ describe("config", function()
         it("should register single source", function()
             c.register(mock_source)
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
@@ -51,7 +51,7 @@ describe("config", function()
                 return mock_source
             end)
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
@@ -61,7 +61,7 @@ describe("config", function()
             c.register(mock_source)
             c.register(mock_source)
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
@@ -71,7 +71,7 @@ describe("config", function()
         it("should register multiple sources from simple list", function()
             c.register({ mock_source, mock_source })
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
@@ -84,7 +84,7 @@ describe("config", function()
                 sources = { mock_source, mock_source },
             })
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
@@ -98,27 +98,8 @@ describe("config", function()
 
             c.reset_sources()
 
-            assert.equals(vim.tbl_count(c.generators()), 0)
+            assert.equals(vim.tbl_count(c.get()._generators), 0)
             assert.equals(c.get().debounce, 500)
-        end)
-    end)
-
-    describe("generators", function()
-        before_each(function()
-            c.register(mock_source)
-        end)
-
-        it("should get generators matching method", function()
-            local generators = c.generators(mock_source.method)
-
-            assert.equals(vim.tbl_count(generators), 1)
-        end)
-
-        it("should get all generators", function()
-            local all_generators = c.generators()
-
-            assert.equals(vim.tbl_count(all_generators), 1)
-            assert.equals(vim.tbl_count(all_generators[mock_source.method]), 1)
         end)
     end)
 
@@ -181,7 +162,7 @@ describe("config", function()
         it("should register sources", function()
             c.setup({ sources = { mock_source } })
 
-            local generators = c.generators()
+            local generators = c.get()._generators
 
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)

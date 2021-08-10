@@ -255,7 +255,7 @@ See the following snippet:
 -- or to a common on_attach callback to enable for all supported filetypes
 on_attach = function(client)
     if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
+        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
     end
 end
 ```

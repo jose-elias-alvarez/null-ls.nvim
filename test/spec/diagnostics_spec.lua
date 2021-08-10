@@ -18,15 +18,15 @@ describe("diagnostics", function()
         stub(generators, "run_registered")
 
         local mock_uri = "file:///mock-file"
-        local mock_bufnr, mock_client_id = vim.uri_to_bufnr(mock_uri), 999
+        local mock_client_id = 999
         local mock_params
         before_each(function()
-            s.set({ client_id = mock_client_id })
             mock_params = {
                 textDocument = { uri = mock_uri },
                 client_id = mock_client_id,
-                generators = {},
+                method = methods.lsp.DID_OPEN,
             }
+            u.make_params.returns(mock_params)
         end)
 
         after_each(function()
@@ -49,22 +49,16 @@ describe("diagnostics", function()
         end)
 
         it("should call make_params with params and method", function()
-            s.set({ attached = { [mock_params.textDocument.uri] = mock_bufnr } })
             diagnostics.handler(mock_params)
 
-            assert.stub(u.make_params).was_called_with({
-                bufnr = mock_bufnr,
-                textDocument = mock_params.textDocument,
-                client_id = mock_client_id,
-                generators = {},
-            }, methods.internal.DIAGNOSTICS)
+            assert.stub(u.make_params).was_called_with(mock_params, methods.internal.DIAGNOSTICS)
         end)
 
         it("should send results of diagnostic generators to lsp handler", function()
             u.make_params.returns({ uri = mock_params.textDocument.uri })
 
             diagnostics.handler(mock_params)
-            local callback = generators.run_registered.calls[1].refs[3]
+            local callback = generators.run_registered.calls[1].refs[1].callback
             callback("diagnostics")
 
             assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, nil, {
@@ -89,7 +83,7 @@ describe("diagnostics", function()
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
-                postprocess = generators.run_registered.calls[1].refs[2]
+                postprocess = generators.run_registered.calls[1].refs[1].postprocess
             end)
 
             it("should convert range when all positions are defined", function()
