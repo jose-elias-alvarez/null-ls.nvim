@@ -161,7 +161,8 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
-                    row = 21, --
+                    code = 1091,
+                    row = 21,
                     end_row = 21,
                     col = 8,
                     end_col = 37,
@@ -186,7 +187,8 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
-                    row = 21, --
+                    code = 1091,
+                    row = 21,
                     end_row = 21,
                     col = 8,
                     end_col = 37,
