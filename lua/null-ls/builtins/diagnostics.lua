@@ -5,167 +5,6 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local M = {}
 
-local default_severities = {
-    ["error"] = 1,
-    ["warning"] = 2,
-    ["information"] = 3,
-    ["hint"] = 4,
-}
-
-local default_json_attributes = {
-    row = "line",
-    col = "column",
-    end_row = "endLine",
-    end_col = "endColumn",
-    code = "ruleId",
-    severity = "level",
-    message = "message",
-}
-
--- User defined diagnostic attribute adapters
-local diagnostic_adapters = {
-    end_col = {
-        from_quote = {
-            end_col = function(entries, line)
-                local end_col = entries["end_col"]
-                local quote = entries["_quote"]
-                if end_col or not quote or not line then
-                    return end_col
-                end
-
-                _, end_col = line:find(quote, 1, true)
-                return end_col and end_col > tonumber(entries["col"]) and end_col or nil
-            end,
-        },
-        from_length = {
-            end_col = function(entries)
-                local col = tonumber(entries["col"])
-                local length = tonumber(entries["_length"])
-                return col + length
-            end,
-        },
-    },
-}
-
-local make_attr_adapters = function(severities, user_adapters)
-    local adapters = {
-        severity = function(entries, _)
-            return severities[entries["severity"]]
-        end,
-    }
-    for _, adapter in ipairs(user_adapters) do
-        adapters = vim.tbl_extend("force", adapters, adapter)
-    end
-
-    return adapters
-end
-
-local make_diagnostic = function(entries, defaults, attr_adapters, params, offsets)
-    if not (entries["row"] and entries["message"]) then
-        return nil
-    end
-
-    local content_line = params.content and params.content[tonumber(entries["row"])] or nil
-    for attr, adapter in pairs(attr_adapters) do
-        entries[attr] = adapter(entries, content_line) or entries[attr]
-    end
-    entries["severity"] = entries["severity"] or default_severities["error"]
-
-    -- Unset private attributes
-    for k, _ in pairs(entries) do
-        if k:find("^_") then
-            entries[k] = nil
-        end
-    end
-
-    local diagnostic = vim.tbl_extend("keep", defaults, entries)
-    for k, offset in pairs(offsets) do
-        diagnostic[k] = diagnostic[k] and diagnostic[k] + offset
-    end
-    return diagnostic
-end
-
---- Parse a linter's output using a regex pattern
--- @param pattern The regex pattern
--- @param groups The groups defined by the pattern: {"line", "message", "col", ["end_col"], ["code"], ["severity"]}
--- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
--- @param overrides.diagnostic An optional table of diagnostic default values
--- @param overrides.severities An optional table of severity overrides (see default_severities)
--- @param overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
--- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
-local from_pattern = function(pattern, groups, overrides)
-    overrides = overrides or {}
-    local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
-    local defaults = overrides.diagnostic or {}
-    local offsets = overrides.offsets or {}
-    local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
-
-    return function(line, params)
-        local results = { line:match(pattern) }
-        local entries = {}
-
-        for i, match in ipairs(results) do
-            entries[groups[i]] = match
-        end
-
-        return make_diagnostic(entries, defaults, attr_adapters, params, offsets)
-    end
-end
-
---- Parse a linter's output using multiple regex patterns until one matches
--- @param matchers A table containing the parameters to use for each pattern
--- @param matchers.pattern The regex pattern
--- @param matchers.groups The groups defined by the pattern
--- @param matchers.overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
--- @param matchers.overrides.diagnostic An optional table of diagnostic default values
--- @param matchers.overrides.severities An optional table of severity overrides (see default_severities)
--- @param matchers.overrides.adapters An optional table of adapters from Regex matches to diagnostic attributes
--- @param matchers.overrides.offsets An optional table of offsets to apply to diagnostic ranges
-local from_patterns = function(matchers)
-    return function(line, params)
-        for _, matcher in ipairs(matchers) do
-            local diagnostic = from_pattern(matcher.pattern, matcher.groups, matcher.overrides)(line, params)
-            if diagnostic then
-                return diagnostic
-            end
-        end
-        return nil
-    end
-end
-
---- Parse a linter's output in JSON format
--- @param overrides A table providing overrides for {adapters, diagnostic, severities, offsets}
--- @param overrides.attributes An optional table of JSON to diagnostic attributes (see default_json_attributes)
--- @param overrides.diagnostic An optional table of diagnostic default values
--- @param overrides.severities An optional table of severity overrides (see default_severities)
--- @param overrides.adapters An optional table of adapters from JSON entries to diagnostic attributes
--- @param overrides.offsets An optional table of offsets to apply to diagnostic ranges
-local from_json = function(overrides)
-    overrides = overrides or {}
-    local attributes = vim.tbl_extend("force", default_json_attributes, overrides.attributes or {})
-    local severities = vim.tbl_extend("force", default_severities, overrides.severities or {})
-    local defaults = overrides.diagnostic or {}
-    local offsets = overrides.offsets or {}
-    local attr_adapters = make_attr_adapters(severities, overrides.adapters or {})
-
-    return function(params)
-        local diagnostics = {}
-        for _, json_diagnostic in ipairs(params.output) do
-            local entries = {}
-            for attr, json_key in pairs(attributes) do
-                entries[attr] = json_diagnostic[json_key]
-            end
-
-            local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params, offsets)
-            if diagnostic then
-                table.insert(diagnostics, diagnostic)
-            end
-        end
-
-        return diagnostics
-    end
-end
-
 M.chktex = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "tex" },
@@ -184,16 +23,16 @@ M.chktex = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+):(%d+):(%w+):(.+)]], --
             { "row", "col", "_length", "severity", "message" },
             {
                 adapters = {
-                    diagnostic_adapters.end_col.from_length,
+                    h.diagnostics.adapters.end_col.from_length,
                 },
                 severities = {
-                    Error = default_severities["error"],
-                    Warning = default_severities["warning"],
+                    Error = h.diagnostics.severities["error"],
+                    Warning = h.diagnostics.severities["warning"],
                 },
             }
         ),
@@ -218,16 +57,16 @@ M.luacheck = h.make_builtin({
             "-",
         },
         format = "line",
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[:(%d+):(%d+)-(%d+): %((%a)(%d+)%) (.*)]],
             { "row", "col", "end_col", "severity", "code", "message" },
             {
                 adapters = {
-                    diagnostic_adapters.end_col.from_quote,
+                    h.diagnostics.adapters.end_col.from_quote,
                 },
                 severities = {
-                    E = default_severities["error"],
-                    W = default_severities["warning"],
+                    E = h.diagnostics.severities["error"],
+                    W = h.diagnostics.severities["warning"],
                 },
             }
         ),
@@ -243,11 +82,11 @@ M.write_good = h.make_builtin({
         args = { "--text=$TEXT", "--parse" },
         format = "line",
         check_exit_code = { 0, 255 },
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+):("([%w%s]+)".*)]], --
             { "row", "col", "message", "_quote" },
             {
-                adapters = { diagnostic_adapters.end_col.from_quote },
+                adapters = { h.diagnostics.adapters.end_col.from_quote },
                 offsets = { col = 1, end_col = 1 },
             }
         ),
@@ -267,7 +106,7 @@ M.markdownlint = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_patterns({
+        on_output = h.diagnostics.from_patterns({
             {
                 pattern = [[:(%d+):(%d+) [%w-/]+ (.*)]],
                 groups = { "row", "col", "message" },
@@ -322,12 +161,12 @@ M.teal = h.make_builtin({
         end,
         to_stderr = true,
         to_temp_file = true,
-        on_output = from_patterns({
+        on_output = h.diagnostics.from_patterns({
             {
                 pattern = [[:(%d+):(%d+): (.* ['"]?([%w%.%-]+)['"]?)$]], --
                 groups = { "row", "col", "message", "_quote" },
                 overrides = {
-                    adapters = { diagnostic_adapters.end_col.from_quote },
+                    adapters = { h.diagnostics.adapters.end_col.from_quote },
                     diagnostic = { source = "tl check" },
                 },
             },
@@ -352,11 +191,11 @@ M.shellcheck = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_json({
+        on_output = h.diagnostics.from_json({
             attributes = { code = "code" },
             severities = {
-                info = default_severities["information"],
-                style = default_severities["hint"],
+                info = h.diagnostics.severities["information"],
+                style = h.diagnostics.severities["hint"],
             },
         }),
     },
@@ -375,10 +214,10 @@ M.selene = h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
             { "row", "col", "severity", "code", "message", "_quote" },
-            { adapters = { diagnostic_adapters.end_col.from_quote } }
+            { adapters = { h.diagnostics.adapters.end_col.from_quote } }
         ),
     },
     factory = h.generator_factory,
@@ -402,13 +241,13 @@ M.eslint = h.make_builtin({
                 table.insert(params.messages, { message = params.err })
             end
 
-            local parser = from_json({
+            local parser = h.diagnostics.from_json({
                 attributes = {
                     severity = "severity",
                 },
                 severities = {
-                    default_severities["warning"],
-                    default_severities["error"],
+                    h.diagnostics.severities["warning"],
+                    h.diagnostics.severities["error"],
                 },
             })
 
@@ -425,11 +264,11 @@ M.hadolint = h.make_builtin({
         command = "hadolint",
         format = "json",
         args = { "--no-fail", "--format=json", "$FILENAME" },
-        on_output = from_json({
+        on_output = h.diagnostics.from_json({
             attributes = { code = "code" },
             severities = {
-                info = default_severities["information"],
-                style = default_severities["hint"],
+                info = h.diagnostics.severities["information"],
+                style = h.diagnostics.severities["hint"],
             },
         }),
     },
@@ -448,14 +287,14 @@ M.flake8 = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 255
         end,
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
             { "row", "col", "code", "severity", "message" },
             {
                 severities = {
-                    E = default_severities["error"],
-                    W = default_severities["warning"],
-                    F = default_severities["information"],
+                    E = h.diagnostics.severities["error"],
+                    W = h.diagnostics.severities["warning"],
+                    F = h.diagnostics.severities["information"],
                 },
             }
         ),
@@ -475,7 +314,7 @@ M.pylint = h.make_builtin({
         check_exit_code = function(code)
             return not (code == 0 or code == 32)
         end,
-        on_output = from_json({
+        on_output = h.diagnostics.from_json({
             attributes = {
                 row = "line",
                 col = "column",
@@ -485,8 +324,8 @@ M.pylint = h.make_builtin({
                 source = "pylint",
             },
             severities = {
-                convention = default_severities["information"],
-                refactor = default_severities["information"],
+                convention = h.diagnostics.severities["information"],
+                refactor = h.diagnostics.severities["information"],
             },
         }),
     },
@@ -501,10 +340,10 @@ M.misspell = h.make_builtin({
         to_stdin = true,
         args = {},
         format = "line",
-        on_output = from_pattern(
+        on_output = h.diagnostics.from_pattern(
             [[:(%d+):(%d+): (.*)]],
             { "row", "col", "message" },
-            { diagnostic = { severity = default_severities["information"] } }
+            { diagnostic = { severity = h.diagnostics.severities["information"] } }
         ),
     },
     factory = h.generator_factory,
@@ -522,7 +361,7 @@ M.vint = h.make_builtin({
         check_exit_code = function(code)
             return code == 0 or code == 1
         end,
-        on_output = from_json({
+        on_output = h.diagnostics.from_json({
             attributes = {
                 row = "line_number",
                 col = "column_number",
@@ -531,7 +370,7 @@ M.vint = h.make_builtin({
                 message = "description",
             },
             severities = {
-                style_problem = default_severities["information"],
+                style_problem = h.diagnostics.severities["information"],
             },
         }),
     },
