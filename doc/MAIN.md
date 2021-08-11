@@ -250,6 +250,7 @@ return { {
     end_row, -- number, optional (defaults to row)
     end_col, -- number, optional (defaults to end of line),
     source, -- string, optional (defaults to "null-ls")
+    code, -- number, optional
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
 } }

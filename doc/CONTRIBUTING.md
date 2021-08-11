@@ -24,3 +24,26 @@
 
 - Make sure to add your built-in source to [BUILTINS](BUILTINS.md). Check other
   examples and follow the existing style.
+
+## Sources
+
+### Diagnostics
+
+- Include all the information provided by the source. These are the available
+  fields:
+
+```lua
+-- make sure ranges are 1-indexed (and offset if not)
+local diagnostic = {
+    message, -- string
+    severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
+    row, -- number, optional (defaults to first line)
+    col, -- number, optional (defaults to beginning of line)
+    end_row, -- number, optional (defaults to row)
+    end_col, -- number, optional (defaults to end of line),
+    source, -- string, optional (defaults to "null-ls")
+    code, -- number, optional
+}
+```
+
+- Do not include the source's name or code in the message.
