@@ -802,7 +802,7 @@ local sources = { null_ls.builtins.formatting.stylua }
 - `command = "stylua"`
 - `args = { "-s", "-" }`
 
-#### [swfitformat](https://github.com/nicklockwood/SwiftFormat)
+#### [swiftformat](https://github.com/nicklockwood/SwiftFormat)
 
 ##### About
 
