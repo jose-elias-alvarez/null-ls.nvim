@@ -47,3 +47,7 @@ local diagnostic = {
 ```
 
 - Do not include the source's name or code in the message.
+
+- If at all possible, please add one or more tests to check whether your source
+  produces the correct output given an actual raw diagnostic. See [the
+  existing tests](../test/spec/builtins/diagnostics_spec.lua) for examples.
