@@ -267,6 +267,11 @@ possible, so it should work seamlessly with most LSP-related plugins. If you run
 into problems, please try to determine which plugin is causing them and open an
 issue.
 
+[This wiki
+page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
+mentions plugins that require specific configuration options / tweaks to work
+with null-ls.
+
 ### How does it work?
 
 Thanks to hard work by @folke, the plugin wraps the mechanism Neovim uses to
