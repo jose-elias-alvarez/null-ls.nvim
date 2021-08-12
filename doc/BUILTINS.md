@@ -790,7 +790,10 @@ local sources = { null_ls.builtins.formatting.shfmt }
 ##### About
 
 - A fast and opinionated Lua formatter written in Rust. Highly recommended!
-- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
+  Note that as of now, the range must include a top-level statement for range
+  formatting to work (see [this
+  issue](https://github.com/JohnnyMorganz/StyLua/issues/239) for details).
 
 ##### Usage
 
