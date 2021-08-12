@@ -2,7 +2,6 @@ local stub = require("luassert.stub")
 
 local config = require("null-ls.config")
 local handlers = require("null-ls.handlers")
-local s = require("null-ls.state")
 
 describe("init", function()
     local null_ls = require("null-ls")
