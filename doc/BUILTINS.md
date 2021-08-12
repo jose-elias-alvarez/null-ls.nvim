@@ -641,8 +641,10 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ##### About
 
-Another "`prettier`, but faster" formatter, with better support for non-JavaScript
-filetypes.
+- Another "`prettier`, but faster" formatter, with better support for non-JavaScript
+  filetypes.
+
+- Does not support `textDocument/rangeFormatting`.
 
 ##### Usage
 
@@ -896,7 +898,7 @@ local sources = { null_ls.builtins.formatting.yapf }
 - `filetypes = { "python" }`
 - `command = "yapf"`
 - `args = { "--quiet" }`
-- 
+
 #### [autopep8](https://github.com/hhatto/autopep8)
 
 ##### About

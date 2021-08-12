@@ -277,3 +277,13 @@ user's settings, will optionally write the buffer.
 Users can register an arbitrary number of formatters for a single filetype. To
 match expected behavior, formatters run _sequentially_ in the order in which the
 user has registered them (manually or via an integration).
+
+#### Range Formatting
+
+Same as formatting.
+
+Note that getting range-formatted output requires converting the visually
+selected range into the required format and modifying the spawn arguments
+accordingly. See `range_formatting_args_factory` in [HELPERS](HELPERS.md) for an
+example of how null-ls handles this for built-in
+sources.

@@ -218,3 +218,33 @@ valid generator will work.
 
 A simple generator function. Either `factory` or `generator` must be a valid
 function, and setting `factory` will override `generator`.
+
+## range_formatting_args_factory
+
+Converts the visually-selected range into character offsets and adds the
+converted range to the spawn arguments. Used for sources that provide both
+formatting and range formatting.
+
+```lua
+null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag)
+```
+
+- `base_args`: the base arguments required to get formatted output. Formatting
+  requests will use `base_args` as-is, and range formatting requests will append
+  the range arguments.
+
+- `start_arg` (optional): the name of the argument that indicates the start of
+  the range. Defaults to `"--range-start"`.
+
+- `end_arg` (optional): the name of the argument that indicates the end of the
+  range. Defaults to `"--range-end"`.
+
+## conditional
+
+Used to conditionally register sources. See [HELPERS](HELPERS.md) for
+more information.
+
+## diagnostics
+
+Helpers used to convert CLI output into diagnostics. See the source for details
+and the built-in diagnostics sources for examples.

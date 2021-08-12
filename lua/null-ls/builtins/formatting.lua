@@ -6,65 +6,6 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 local M = {}
 
-local get_prettier_generator_args = function(common_args)
-    return function(params)
-        local args = vim.deepcopy(common_args)
-
-        if params.method == FORMATTING then
-            return args
-        end
-
-        local content, range = params.content, params.range
-
-        local row, col = range.row, range.col
-        local range_start = row == 1 and 0
-            or vim.fn.strchars(table.concat({ unpack(content, 1, row - 1) }, "\n") .. "\n", true)
-        range_start = range_start + vim.fn.strchars(vim.fn.strcharpart(unpack(content, row, row), 0, col), true)
-
-        local end_row, end_col = range.end_row, range.end_col
-        local range_end = end_row == 1 and 0
-            or vim.fn.strchars(table.concat({ unpack(content, 1, end_row - 1) }, "\n") .. "\n", true)
-        range_end = range_end + vim.fn.strchars(vim.fn.strcharpart(unpack(content, end_row, end_row), 0, end_col), true)
-
-        table.insert(args, "--range-start")
-        table.insert(args, range_start)
-        table.insert(args, "--range-end")
-        table.insert(args, range_end)
-
-        return args
-    end
-end
-
-local get_stylua_args = function(common_args)
-    return function(params)
-        local args = vim.deepcopy(common_args)
-
-        if params.method == FORMATTING then
-            return args
-        end
-
-        local range = params.range
-
-        local row, col = range.row, range.col
-        local end_row, end_col = range.end_row, range.end_col
-
-        local range_start = row <= 1 and 0 or vim.api.nvim_buf_get_offset(0, row - 1) + col - 1
-        local range_end = end_row <= 1 and 0 or vim.api.nvim_buf_get_offset(0, end_row - 1) + end_col
-
-        table.insert(args, "--range-start")
-        table.insert(args, range_start)
-        table.insert(args, "--range-end")
-        table.insert(args, range_end)
-
-        return args
-    end
-end
-
-local function get_uncrustify_args()
-    local format_type = "-l " .. vim.bo.filetype:upper()
-    return { "-q", format_type }
-end
-
 M.asmfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "asm" },
@@ -428,7 +369,7 @@ M.prettier = h.make_builtin({
     },
     generator_opts = {
         command = "prettier",
-        args = get_prettier_generator_args({ "--stdin-filepath", "$FILENAME" }),
+        args = h.range_formatting_args_factory({ "--stdin-filepath", "$FILENAME" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -452,7 +393,7 @@ M.prettierd = h.make_builtin({
     },
     generator_opts = {
         command = "prettierd",
-        args = get_prettier_generator_args({ "$FILENAME" }),
+        args = { "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -470,7 +411,7 @@ M.prettier_d_slim = h.make_builtin({
     },
     generator_opts = {
         command = "prettier_d_slim",
-        args = get_prettier_generator_args({ "--stdin", "--stdin-filepath", "$FILENAME" }),
+        args = h.range_formatting_args_factory({ "--stdin", "--stdin-filepath", "$FILENAME" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -548,7 +489,7 @@ M.stylua = h.make_builtin({
     filetypes = { "lua" },
     generator_opts = {
         command = "stylua",
-        args = get_stylua_args({ "-s", "-" }),
+        args = h.range_formatting_args_factory({ "-s", "-" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -594,7 +535,10 @@ M.uncrustify = h.make_builtin({
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {
         command = "uncrustify",
-        args = get_uncrustify_args(),
+        args = function(params)
+            local format_type = "-l " .. params.ft:upper()
+            return { "-q", format_type }
+        end,
         to_stdin = true,
     },
     factory = h.formatter_factory,

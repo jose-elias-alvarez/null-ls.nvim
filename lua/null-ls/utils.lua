@@ -93,11 +93,13 @@ M.range = {
     ---@param lsp_range table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
     ---@return table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
     from_lsp = function(lsp_range)
+        local start_range = lsp_range["start"]
+        local end_range = lsp_range["end"]
         local range = {
-            row = lsp_range["start"].line + 1,
-            col = lsp_range["start"].character + 1,
-            end_row = lsp_range["end"].line + 1,
-            end_col = lsp_range["end"].character + 1,
+            row = start_range.line >= 0 and start_range.line + 1 or 1,
+            col = start_range.character >= 0 and start_range.character + 1 or 1,
+            end_row = end_range.line >= 0 and end_range.line + 1 or 1,
+            end_col = end_range.character >= 0 and end_range.character + 1 or 1,
         }
         return range
     end,

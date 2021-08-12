@@ -224,6 +224,28 @@ describe("e2e", function()
         end)
     end)
 
+    describe("range formatting", function()
+        -- only first line should be formatted
+        local formatted = 'import { User } from "./test-types";\nimport {Other} from "./test-types"\n'
+
+        before_each(function()
+            c.register(builtins.formatting.prettier)
+            tu.edit_test_file("range-formatting.js")
+            assert.is_not.equals(u.buf.content(nil, true), formatted)
+
+            lsp_wait()
+        end)
+
+        it("should format specified range", function()
+            vim.cmd("normal ggV")
+
+            lsp.buf.range_formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), formatted)
+        end)
+    end)
+
     describe("temp file source", function()
         before_each(function()
             api.nvim_exec(
