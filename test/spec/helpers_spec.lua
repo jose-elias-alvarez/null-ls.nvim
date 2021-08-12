@@ -20,6 +20,41 @@ describe("helpers", function()
     end)
 
     local helpers = require("null-ls.helpers")
+
+    describe("parse_args", function()
+        it("should replace $FILENAME with buffer name", function()
+            local args = { "--stdin-filename", "$FILENAME" }
+
+            local parsed = helpers._parse_args(args, { bufname = "/files/test-file.lua" })
+
+            assert.equals(parsed[2], "/files/test-file.lua")
+        end)
+
+        it("should replace $TEXT with buffer content", function()
+            local args = { "--stdin", "text=$TEXT" }
+
+            local parsed = helpers._parse_args(args, { content = { "content" } })
+
+            assert.equals(parsed[2], "text=content")
+        end)
+
+        it("should replace $FILEEXT with file extension", function()
+            local args = { "$FILEEXT" }
+
+            local parsed = helpers._parse_args(args, { bufname = "/files/test-file.lua" })
+
+            assert.equals(parsed[1], "lua")
+        end)
+
+        it("should return unmodified argument", function()
+            local args = { "--mock-flag", "mock-value" }
+
+            local parsed = helpers._parse_args(args, {})
+
+            assert.same(parsed, args)
+        end)
+    end)
+
     describe("json_output_wrapper", function()
         describe("format == json", function()
             local format = "json"

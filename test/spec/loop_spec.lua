@@ -3,55 +3,13 @@ local mock = require("luassert.mock")
 
 local uv = mock(vim.loop, true)
 
-local test_utils = require("test.utils")
-
 describe("loop", function()
-    _G._TEST = true
-
     stub(vim, "schedule_wrap")
     after_each(function()
         vim.schedule_wrap:clear()
     end)
 
     local loop = require("null-ls.loop")
-
-    describe("parse_args", function()
-        it("should replace $FILENAME with buffer name", function()
-            local args = { "--stdin-filename", "$FILENAME" }
-            test_utils.edit_test_file("test-file.lua")
-
-            local parsed = loop._parse_args(args)
-
-            assert.equals(parsed[2], test_utils.test_dir .. "/files/test-file.lua")
-        end)
-
-        it("should replace $TEXT with buffer content", function()
-            local args = { "--stdin", "text=$TEXT" }
-            test_utils.edit_test_file("test-file.lua")
-
-            local parsed = loop._parse_args(args)
-
-            assert.equals(parsed[2], 'text=print("I am a test file!")\n')
-        end)
-
-        it("should replace $FILEEXT with file extension", function()
-            local args = { "$FILEEXT" }
-            test_utils.edit_test_file("test-file.lua")
-
-            local parsed = loop._parse_args(args)
-
-            assert.equals(parsed[1], "lua")
-        end)
-
-        it("should return unmodified argument", function()
-            local args = { "--mock-flag", "mock-value" }
-            test_utils.edit_test_file("test-file.lua")
-
-            local parsed = loop._parse_args(args)
-
-            assert.same(parsed, args)
-        end)
-    end)
 
     describe("spawn", function()
         local mock_cmd = "cat"
@@ -304,7 +262,7 @@ describe("loop", function()
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local on_close = uv.spawn.calls[1].refs[3]
-                on_close(loop._TIMEOUT_EXIT_CODE)
+                on_close(7451)
 
                 assert.stub(check_exit_code).was_not_called()
                 assert.stub(done).was_called_with(false)

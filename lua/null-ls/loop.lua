@@ -1,6 +1,5 @@
 local u = require("null-ls.utils")
 
-local api = vim.api
 local uv = vim.loop
 local wrap = vim.schedule_wrap
 
@@ -10,32 +9,13 @@ local close_handle = function(handle)
     end
 end
 
-local parse_args = function(args, bufnr)
-    bufnr = bufnr or api.nvim_get_current_buf()
-    local parsed = {}
-    for _, arg in pairs(args) do
-        if string.find(arg, "$FILENAME") then
-            arg = u.string.replace(arg, "$FILENAME", api.nvim_buf_get_name(bufnr))
-        end
-        if string.find(arg, "$TEXT") then
-            arg = u.string.replace(arg, "$TEXT", u.buf.content(bufnr, true))
-        end
-        if string.find(arg, "$FILEEXT") then
-            arg = u.string.replace(arg, "$FILEEXT", vim.fn.fnamemodify(api.nvim_buf_get_name(bufnr), ":e"))
-        end
-
-        table.insert(parsed, arg)
-    end
-    return parsed
-end
-
 local TIMEOUT_EXIT_CODE = 7451
 
 local M = {}
 
 M.spawn = function(cmd, args, opts)
-    local handler, input, bufnr, check_exit_code, timeout, on_stdout_end =
-        opts.handler, opts.input, opts.bufnr, opts.check_exit_code, opts.timeout, opts.on_stdout_end
+    local handler, input, check_exit_code, timeout, on_stdout_end =
+        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end
 
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
@@ -109,11 +89,7 @@ M.spawn = function(cmd, args, opts)
         done(exit_ok)
     end
 
-    handle = uv.spawn(
-        vim.fn.exepath(cmd),
-        { args = parse_args(args, bufnr), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
-        on_close
-    )
+    handle = uv.spawn(vim.fn.exepath(cmd), { args = args, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() }, on_close)
 
     if timeout then
         timer = M.timer(timeout, nil, true, function()
@@ -178,11 +154,6 @@ M.temp_file = function(content)
     return tmp_path, function()
         uv.fs_unlink(tmp_path)
     end
-end
-
-if _G._TEST then
-    M._parse_args = parse_args
-    M._TIMEOUT_EXIT_CODE = TIMEOUT_EXIT_CODE
 end
 
 return M

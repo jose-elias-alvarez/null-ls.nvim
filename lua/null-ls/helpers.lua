@@ -25,6 +25,24 @@ local get_content = function(params)
     return u.buf.content(params.bufnr, true)
 end
 
+local parse_args = function(args, params)
+    local parsed = {}
+    for _, arg in pairs(args) do
+        if string.find(arg, "$FILENAME") then
+            arg = u.string.replace(arg, "$FILENAME", params.bufname)
+        end
+        if string.find(arg, "$TEXT") then
+            arg = u.string.replace(arg, "$TEXT", get_content(params))
+        end
+        if string.find(arg, "$FILEEXT") then
+            arg = u.string.replace(arg, "$FILEEXT", vim.fn.fnamemodify(params.bufname, ":e"))
+        end
+
+        table.insert(parsed, arg)
+    end
+    return parsed
+end
+
 local json_output_wrapper = function(params, done, on_output, format)
     local ok, decoded = pcall(vim.fn.json_decode, params.output)
     if decoded == vim.NIL or decoded == "" then
@@ -188,7 +206,6 @@ M.generator_factory = function(opts)
                 cwd = client and client.config.root_dir or vim.fn.getcwd(),
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
-                bufnr = params.bufnr,
                 check_exit_code = check_exit_code,
                 timeout = timeout or c.get().default_timeout,
             }
@@ -199,6 +216,8 @@ M.generator_factory = function(opts)
                 spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = cleanup
             end
+
+            spawn_args = parse_args(spawn_args, params)
 
             u.debug_log("spawning command " .. command .. " with args:")
             u.debug_log(spawn_args)
@@ -456,6 +475,7 @@ M.diagnostics = (function()
 end)()
 
 if _G._TEST then
+    M._parse_args = parse_args
     M._json_output_wrapper = json_output_wrapper
     M._line_output_wrapper = line_output_wrapper
 end
