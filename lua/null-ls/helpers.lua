@@ -454,7 +454,9 @@ M.diagnostics = (function()
             for _, json_diagnostic in ipairs(params.output) do
                 local entries = {}
                 for attr, json_key in pairs(attributes) do
-                    entries[attr] = json_diagnostic[json_key]
+                    if json_diagnostic[json_key] ~= vim.NIL then
+                        entries[attr] = json_diagnostic[json_key]
+                    end
                 end
 
                 local diagnostic = make_diagnostic(entries, defaults, attr_adapters, params, offsets)
