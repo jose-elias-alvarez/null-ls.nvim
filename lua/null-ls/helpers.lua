@@ -278,6 +278,21 @@ M.make_builtin = function(opts)
 
     builtin.with = function(user_opts)
         builtin.filetypes = user_opts.filetypes or builtin.filetypes
+
+        -- Extend args manually as vim.tbl_deep_extend overwrites the list
+        if user_opts.args then
+            local builtin_args = builtin._opts.args
+            local user_args = user_opts.args
+
+            user_opts.args = nil
+            builtin._opts.args = function(params)
+                return vim.list_extend(
+                    user_args,
+                    type(builtin_args) == "function" and builtin_args(params) or builtin_args
+                )
+            end
+        end
+
         builtin._opts = vim.tbl_deep_extend("force", builtin._opts, user_opts)
 
         local condition = user_opts.condition

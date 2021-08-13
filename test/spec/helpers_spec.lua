@@ -517,6 +517,7 @@ describe("helpers", function()
                 key = "val",
                 other_key = "other_val",
                 nested = { nested_key = "nested_val", other_nested = "original_val" },
+                args = { "first", "second" },
             },
         }
         local mock_generator = {
@@ -560,6 +561,13 @@ describe("helpers", function()
 
                 assert.equals(builtin._opts.nested.nested_key, "new_val")
                 assert.equals(builtin._opts.nested.other_nested, "original_val")
+            end)
+
+            it("should extend the argument list", function()
+                builtin.with({ args = { "user_first", "user_second" } })
+
+                assert.equals(type(builtin._opts.args), "function")
+                assert.are.same(builtin._opts.args(), { "user_first", "user_second", "first", "second" })
             end)
 
             it("should wrap builtin with condition", function()
