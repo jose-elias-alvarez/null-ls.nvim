@@ -38,7 +38,7 @@ describe("diagnostics", function()
                 code = "011",
                 row = "2",
                 col = "1",
-                end_col = "1",
+                end_col = 2,
                 severity = 1,
                 message = "expected expression near <eof>",
             }, diagnostic)
