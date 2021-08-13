@@ -1,7 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
-local c = require("null-ls.config")
 
 local lsp = vim.lsp
 local api = vim.api
