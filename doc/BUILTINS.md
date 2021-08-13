@@ -303,7 +303,7 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - `command = "elm-format"`
 - `args = { "--stdin", "--elm-version=0.19" }`
 
-#### [eslint](https://github.com/mantoni/eslint_d.js)
+#### [ESLint](https://github.com/eslint/eslint)
 
 ##### About
 
@@ -329,8 +329,6 @@ local sources = { null_ls.builtins.formatting.eslint }
 ##### About
 
 An absurdly fast formatter (and linter).
-
-- For full integration, check out [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
 
 ##### Usage
 
@@ -946,21 +944,36 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 
 A linter for the `javascript` ecosystem.
 
-- Note that the `null-ls` builtin requires your `eslint` executable to be available
-  on your `$PATH`.
-- To use local (project) executables, use the integration in [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+- Note that the `null-ls` builtin requires your `eslint` executable to be
+  available on your `$PATH`.
+- To use local (project) executables, use the
+  integration in
+  [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
 
 ##### Usage
 
 ```lua
 local sources = { null_ls.builtins.diagnostics.eslint }
+```
 
--- If you want to use `eslint_d`
-local sources = {
-    null_ls.builtins.diagnostics.eslint.with({
-        command = "eslint_d"
-    })
-}
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `command = "eslint"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
+#### [eslint_d](https://github.com/mantoni/eslint_d.js/)
+
+##### About
+
+An absurdly fast linter (and formatter).
+
+- See the notes re: ESLint above.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.eslint_d }
 ```
 
 ##### Defaults
