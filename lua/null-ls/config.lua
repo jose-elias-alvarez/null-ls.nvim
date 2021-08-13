@@ -8,6 +8,7 @@ local defaults = {
     _generators = {},
     _filetypes = {},
     _names = {},
+    _methods = {},
     _setup = false,
 }
 
@@ -37,21 +38,6 @@ end
 
 local config = vim.deepcopy(defaults)
 
--- allow plugins to call register multiple times without duplicating sources
-local is_registered = function(name, insert)
-    if not name then
-        return false
-    end
-    if vim.tbl_contains(config._names, name) then
-        return true
-    end
-
-    if insert then
-        table.insert(config._names, name)
-    end
-    return false
-end
-
 local register_filetypes = function(filetypes)
     for _, filetype in pairs(filetypes) do
         if not vim.tbl_contains(config._filetypes, filetype) then
@@ -59,6 +45,25 @@ local register_filetypes = function(filetypes)
         end
     end
     require("null-ls.lspconfig").on_register_filetypes()
+end
+
+local should_register = function(source, filetypes, methods)
+    local name = source.name
+    -- can't do anything without a name
+    if not source.name then
+        return true
+    end
+
+    for _, method in ipairs(methods) do
+        config._methods[method] = config._methods[method] or {}
+        if config._methods[method][name] then
+            return false
+        end
+
+        config._methods[method][name] = filetypes
+    end
+
+    return true
 end
 
 local register_source = function(source, filetypes)
@@ -70,20 +75,22 @@ local register_source = function(source, filetypes)
     end
 
     local generator, name = source.generator, source.name
+    local methods = type(source.method) == "table" and source.method or { source.method }
     filetypes = filetypes or source.filetypes
 
-    if is_registered(name, true) then
+    validate({
+        generator = { generator, "table" },
+        filetypes = { filetypes, "table" },
+        name = { name, "string", true },
+    })
+
+    if not should_register(source, filetypes, methods) then
         return
     end
-
-    local methods = type(source.method) == "table" and source.method or { source.method }
 
     for _, method in pairs(methods) do
         validate({
             method = { method, "string" },
-            generator = { generator, "table" },
-            filetypes = { filetypes, "table" },
-            name = { name, "string", true },
         })
 
         local fn, async, opts = generator.fn, generator.async, generator.opts
@@ -105,6 +112,11 @@ local register_source = function(source, filetypes)
     require("null-ls.lspconfig").on_register_source(methods)
 end
 
+-- allow integrations to check if source is registered
+local is_registered = function(name)
+    return config._names[name] ~= nil
+end
+
 local register = function(to_register)
     -- register a single source
     if type(to_register) == "function" or (type(to_register) == "table" and to_register.method) then
@@ -122,11 +134,15 @@ local register = function(to_register)
 
     -- register multiple sources with shared configuration
     local sources, filetypes, name = to_register.sources, to_register.filetypes, to_register.name
-    if is_registered(name, true) then
-        return
+    validate({ sources = { sources, "table" }, name = { name, "string", true } })
+
+    if name then
+        if is_registered(name) then
+            return
+        end
+        config._names[name] = true
     end
 
-    validate({ sources = { sources, "table" }, name = { name, "string", true } })
     for _, source in pairs(sources) do
         register_source(source, filetypes)
     end
@@ -149,6 +165,7 @@ M.register = register
 M.reset_sources = function()
     config._generators = {}
     config._names = {}
+    config._methods = {}
     config._filetypes = {}
 end
 
