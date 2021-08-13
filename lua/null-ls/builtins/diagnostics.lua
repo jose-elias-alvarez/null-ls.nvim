@@ -68,6 +68,7 @@ M.luacheck = h.make_builtin({
                     E = h.diagnostics.severities["error"],
                     W = h.diagnostics.severities["warning"],
                 },
+                offsets = { end_col = 1 },
             }
         ),
     },
