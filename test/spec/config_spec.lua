@@ -148,6 +148,16 @@ describe("config", function()
         end)
     end)
 
+    describe("register_name", function()
+        local mock_name = "mock-name"
+
+        it("should register name", function()
+            c.register_name(mock_name)
+
+            assert.equals(c.is_registered(mock_name), true)
+        end)
+    end)
+
     describe("reset_sources", function()
         it("should reset source-related values only", function()
             c.setup({ debounce = 500, sources = { mock_source } })

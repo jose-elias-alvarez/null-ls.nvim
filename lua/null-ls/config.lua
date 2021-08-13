@@ -161,7 +161,12 @@ M.reset = function()
 end
 
 M.is_registered = is_registered
+M.register_name = function(name)
+    config._names[name] = true
+end
+
 M.register = register
+
 M.reset_sources = function()
     config._generators = {}
     config._names = {}

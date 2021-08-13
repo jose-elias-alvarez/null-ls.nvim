@@ -11,6 +11,8 @@ local M = {}
 
 M.register = c.register
 M.is_registered = c.is_registered
+M.register_name = c.register_name
+
 M.methods = methods.internal
 M.generator = helpers.generator_factory
 M.formatter = helpers.formatter_factory
