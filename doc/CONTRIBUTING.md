@@ -49,6 +49,14 @@ local diagnostic = {
 }
 ```
 
+- Try to make sure `col` and `end_col` match the precise range of the
+  diagnostic. If you're using our diagnostic helpers, you can use the `offset`
+  override to adjust the range.
+
+  An easy way to check the range is to use a theme like
+  [tokyonight](https://github.com/folke/tokyonight.nvim) or
+  [sonokai](https://github.com/sainnhe/sonokai) that underlines LSP diagnostics.
+
 - Do not include the source's name or code in the message.
 
 - If at all possible, please add one or more tests to check whether your source
