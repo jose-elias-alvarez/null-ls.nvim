@@ -25,6 +25,9 @@
 - Make sure to add your built-in source to [BUILTINS](BUILTINS.md). Check other
   examples and follow the existing style.
 
+- A built-in source's arguments are the minimal arguments required for the
+  source to work. Leave out non-essential arguments.
+
 ## Sources
 
 ### Diagnostics
