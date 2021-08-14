@@ -285,8 +285,16 @@ M.make_builtin = function(opts)
             local extra_args = user_opts.extra_args
 
             builtin._opts.args = function(params)
-                local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params) or builtin_args
-                return vim.list_extend(builtin_args_cpy, extra_args)
+                local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params)
+                    or vim.deepcopy(builtin_args)
+                local extra_args_cpy = vim.deepcopy(extra_args)
+
+                if builtin_args_cpy[#builtin_args_cpy] == "-" then
+                    table.remove(builtin_args_cpy)
+                    table.insert(extra_args_cpy, "-")
+                end
+
+                return vim.list_extend(builtin_args_cpy, extra_args_cpy)
             end
             user_opts.extra_args = nil
         end
