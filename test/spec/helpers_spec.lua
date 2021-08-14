@@ -567,7 +567,7 @@ describe("helpers", function()
                 builtin.with({ extra_args = { "user_first", "user_second" } })
 
                 assert.equals(type(builtin._opts.args), "function")
-                assert.are.same(builtin._opts.args(), { "user_first", "user_second", "first", "second" })
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 
             it("should wrap builtin with condition", function()

@@ -260,13 +260,13 @@ end
 
 M.make_builtin = function(opts)
     local method, filetypes, factory, generator_opts, generator =
-        opts.method, opts.filetypes, opts.factory, opts.generator_opts, opts.generator
+        opts.method, opts.filetypes, opts.factory, opts.generator_opts or {}, opts.generator
 
     local builtin = {
         method = method,
         filetypes = filetypes,
         generator = generator,
-        _opts = generator_opts or {},
+        _opts = generator_opts,
         name = opts.name,
     }
 
@@ -282,14 +282,11 @@ M.make_builtin = function(opts)
         -- Extend args manually as vim.tbl_deep_extend overwrites the list
         if user_opts.extra_args and vim.tbl_count(user_opts.extra_args) > 0 then
             local builtin_args = builtin._opts.args
-            local user_args = user_opts.extra_args
+            local extra_args = user_opts.extra_args
 
             builtin._opts.args = function(params)
-                local user_args_cpy = user_args
-                return vim.list_extend(
-                    user_args_cpy,
-                    type(builtin_args) == "function" and builtin_args(params) or builtin_args
-                )
+                local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params) or builtin_args
+                return vim.list_extend(builtin_args_cpy, extra_args)
             end
             user_opts.extra_args = nil
         end
