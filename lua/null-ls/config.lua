@@ -1,3 +1,5 @@
+local methods = require("null-ls.methods")
+
 local validate = vim.validate
 
 local defaults = {
@@ -47,14 +49,14 @@ local register_filetypes = function(filetypes)
     require("null-ls.lspconfig").on_register_filetypes()
 end
 
-local should_register = function(source, filetypes, methods)
+local should_register = function(source, filetypes, source_methods)
     local name = source.name
     -- can't do anything without a name
     if not source.name then
         return true
     end
 
-    for _, method in ipairs(methods) do
+    for _, method in ipairs(source_methods) do
         config._methods[method] = config._methods[method] or {}
         if config._methods[method][name] then
             return false
@@ -75,7 +77,7 @@ local register_source = function(source, filetypes)
     end
 
     local generator, name = source.generator, source.name
-    local methods = type(source.method) == "table" and source.method or { source.method }
+    local source_methods = type(source.method) == "table" and source.method or { source.method }
     filetypes = filetypes or source.filetypes
 
     validate({
@@ -84,13 +86,19 @@ local register_source = function(source, filetypes)
         name = { name, "string", true },
     })
 
-    if not should_register(source, filetypes, methods) then
+    if not should_register(source, filetypes, source_methods) then
         return
     end
 
-    for _, method in pairs(methods) do
+    for _, method in pairs(source_methods) do
         validate({
-            method = { method, "string" },
+            method = {
+                method,
+                function(m)
+                    return methods.internal[m] ~= nil
+                end,
+                "supported null-ls method",
+            },
         })
 
         local fn, async, opts = generator.fn, generator.async, generator.opts
@@ -109,7 +117,8 @@ local register_source = function(source, filetypes)
         generator.opts = opts or {}
         table.insert(config._generators[method], generator)
     end
-    require("null-ls.lspconfig").on_register_source(methods)
+
+    require("null-ls.lspconfig").on_register_source(source_methods)
 end
 
 -- allow integrations to check if source is registered

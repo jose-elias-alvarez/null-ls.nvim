@@ -45,7 +45,7 @@ M.setup_client = function(client)
             return generators.can_run(vim.bo.filetype, internal_method)
         end
 
-        return methods.supported_methods[method]
+        return methods.lsp[method] ~= nil
     end
 
     client._null_ls_setup = true

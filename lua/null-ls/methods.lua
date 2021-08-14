@@ -11,6 +11,7 @@ local lsp_methods = {
     DID_OPEN = "textDocument/didOpen",
     DID_CLOSE = "textDocument/didClose",
 }
+vim.tbl_add_reverse_lookup(lsp_methods)
 
 local internal_methods = {
     CODE_ACTION = "NULL_LS_CODE_ACTION",
@@ -18,6 +19,7 @@ local internal_methods = {
     FORMATTING = "NULL_LS_FORMATTING",
     RANGE_FORMATTING = "NULL_LS_RANGE_FORMATTING",
 }
+vim.tbl_add_reverse_lookup(internal_methods)
 
 local lsp_to_internal_map = {
     [lsp_methods.CODE_ACTION] = internal_methods.CODE_ACTION,
@@ -31,10 +33,5 @@ local M = {}
 M.lsp = lsp_methods
 M.internal = internal_methods
 M.map = lsp_to_internal_map
-
-M.supported_methods = {}
-vim.tbl_map(function(method)
-    M.supported_methods[method] = true
-end, lsp_methods)
 
 return M

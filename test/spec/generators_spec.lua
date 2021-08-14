@@ -1,8 +1,8 @@
 local match = require("luassert.match")
 local stub = require("luassert.stub")
-local spy = require("luassert.spy")
 local a = require("plenary.async_lib")
 
+local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
 
@@ -18,7 +18,7 @@ end
 
 describe("generators", function()
     local generators = require("null-ls.generators")
-    local method = "textDocument/codeAction"
+    local method = methods.internal.CODE_ACTION
 
     local mock_result = {
         title = "Mock action",

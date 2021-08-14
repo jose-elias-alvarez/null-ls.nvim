@@ -1,3 +1,4 @@
+local methods = require("null-ls.methods")
 local stub = require("luassert.stub")
 
 describe("config", function()
@@ -6,7 +7,7 @@ describe("config", function()
     local mock_source
     before_each(function()
         mock_source = {
-            method = "mockMethod",
+            method = methods.internal.CODE_ACTION,
             filetypes = { "txt", "markdown" },
             generator = {
                 fn = function()
@@ -48,15 +49,24 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
         end)
 
+        it("should throw if source method is invalid", function()
+            mock_source.method = "badMethod"
+
+            local ok, err = pcall(c.register, mock_source)
+
+            assert.equals(ok, false)
+            assert.matches("expected supported null%-ls method", err)
+        end)
+
         it("should register source filetypes under methods if name is defined", function()
             mock_source.name = "mock-source"
 
             c.register(mock_source)
 
-            local methods = c.get()._methods
-            assert.truthy(methods[mock_source.method])
-            assert.truthy(methods[mock_source.method][mock_source.name])
-            assert.equals(methods[mock_source.method][mock_source.name], mock_source.filetypes)
+            local source_methods = c.get()._methods
+            assert.truthy(source_methods[mock_source.method])
+            assert.truthy(source_methods[mock_source.method][mock_source.name])
+            assert.equals(source_methods[mock_source.method][mock_source.name], mock_source.filetypes)
         end)
 
         it("should not register source with same name twice", function()
