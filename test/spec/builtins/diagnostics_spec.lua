@@ -213,7 +213,7 @@ describe("diagnostics", function()
             assert.are.same({
                 row = "1", --
                 col = "1",
-                end_col = 3,
+                end_col = 4,
                 severity = 1,
                 code = "undefined_variable",
                 message = "`vim` is not defined",
@@ -226,7 +226,7 @@ describe("diagnostics", function()
             assert.are.same({
                 row = "2", --
                 col = "1",
-                end_col = 10,
+                end_col = 11,
                 severity = 2,
                 code = "unused_variable",
                 message = "CACHE_PATH is defined, but never used",
