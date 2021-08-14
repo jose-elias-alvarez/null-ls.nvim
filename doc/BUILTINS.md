@@ -58,6 +58,16 @@ local sources = {
 See the descriptions below or the relevant `builtins` source file to see the
 default options passed to each built-in source.
 
+Additionally, while it is possible to overwrite `args` using `with({args = your_args})`, it is recommended to use `extra_args` if your goal is to provide additional flags.
+
+``` lua
+local sources = {
+    null_ls.builtins.formatting.shfmt.with({
+        extra_args = { "-i", "2", "-ci" }
+      })
+  }
+```
+
 For diagnostics sources, you can change the format of diagnostic messages by
 setting `diagnostics_format`:
 

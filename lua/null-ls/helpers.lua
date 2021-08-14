@@ -260,13 +260,13 @@ end
 
 M.make_builtin = function(opts)
     local method, filetypes, factory, generator_opts, generator =
-        opts.method, opts.filetypes, opts.factory, opts.generator_opts, opts.generator
+        opts.method, opts.filetypes, opts.factory, opts.generator_opts or {}, opts.generator
 
     local builtin = {
         method = method,
         filetypes = filetypes,
         generator = generator,
-        _opts = generator_opts or {},
+        _opts = vim.deepcopy(generator_opts),
         name = opts.name,
     }
 
@@ -278,6 +278,27 @@ M.make_builtin = function(opts)
 
     builtin.with = function(user_opts)
         builtin.filetypes = user_opts.filetypes or builtin.filetypes
+
+        -- Extend args manually as vim.tbl_deep_extend overwrites the list
+        if user_opts.extra_args and vim.tbl_count(user_opts.extra_args) > 0 then
+            local builtin_args = builtin._opts.args
+            local extra_args = user_opts.extra_args
+
+            builtin._opts.args = function(params)
+                local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params)
+                    or vim.deepcopy(builtin_args)
+                local extra_args_cpy = vim.deepcopy(extra_args)
+
+                if builtin_args_cpy[#builtin_args_cpy] == "-" then
+                    table.remove(builtin_args_cpy)
+                    table.insert(extra_args_cpy, "-")
+                end
+
+                return vim.list_extend(builtin_args_cpy, extra_args_cpy)
+            end
+            user_opts.extra_args = nil
+        end
+
         builtin._opts = vim.tbl_deep_extend("force", builtin._opts, user_opts)
 
         local condition = user_opts.condition

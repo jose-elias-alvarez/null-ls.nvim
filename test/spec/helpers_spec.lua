@@ -517,6 +517,7 @@ describe("helpers", function()
                 key = "val",
                 other_key = "other_val",
                 nested = { nested_key = "nested_val", other_nested = "original_val" },
+                args = { "first", "second" },
             },
         }
         local mock_generator = {
@@ -538,7 +539,7 @@ describe("helpers", function()
         it("should return builtin with assigned opts", function()
             assert.equals(builtin.method, opts.method)
             assert.equals(builtin.filetypes, opts.filetypes)
-            assert.equals(builtin._opts, opts.generator_opts)
+            assert.are.same(builtin._opts, opts.generator_opts)
         end)
 
         describe("with", function()
@@ -560,6 +561,34 @@ describe("helpers", function()
 
                 assert.equals(builtin._opts.nested.nested_key, "new_val")
                 assert.equals(builtin._opts.nested.other_nested, "original_val")
+            end)
+
+            it("should extend args with extra_args", function()
+                builtin.with({ extra_args = { "user_first", "user_second" } })
+
+                assert.equals(type(builtin._opts.args), "function")
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+                -- Multiple calls should yield the same results
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+            end)
+
+            it("should extend args with extra_args, but keep '-' arg last", function()
+                -- local test_opts = vim.deep_copy(opts) stack overflows
+                local test_opts = {
+                    method = "mockMethod",
+                    name = "mock-builtin",
+                    filetypes = { "lua" },
+                    generator_opts = {
+                        args = { "first", "second", "-" },
+                    },
+                }
+                builtin = helpers.make_builtin(test_opts)
+                builtin.with({ extra_args = { "user_first", "user_second" } })
+
+                assert.equals(type(builtin._opts.args), "function")
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+                -- Multiple calls should yield the same results
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second", "-" })
             end)
 
             it("should wrap builtin with condition", function()
