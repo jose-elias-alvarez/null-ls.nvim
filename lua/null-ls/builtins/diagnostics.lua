@@ -363,7 +363,7 @@ M.misspell = h.make_builtin({
         on_output = h.diagnostics.from_pattern(
             [[:(%d+):(%d+): (.*)]],
             { "row", "col", "message" },
-            { diagnostic = { severity = h.diagnostics.severities["information"] } }
+            { diagnostic = { severity = h.diagnostics.severities["information"] }, offsets = { col = 1 } }
         ),
     },
     factory = h.generator_factory,

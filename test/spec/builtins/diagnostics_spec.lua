@@ -397,8 +397,8 @@ describe("diagnostics", function()
             local output = [[stdin:1:15: "langauge" is a misspelling of "language"]]
             local diagnostic = parser(output, { content = file })
             assert.are.same({
-                row = "1", --
-                col = "15",
+                row = "1",
+                col = 16,
                 severity = 3,
                 message = [["langauge" is a misspelling of "language"]],
             }, diagnostic)
