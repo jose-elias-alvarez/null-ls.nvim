@@ -358,7 +358,6 @@ M.misspell = h.make_builtin({
     generator_opts = {
         command = "misspell",
         to_stdin = true,
-        args = {},
         format = "line",
         on_output = h.diagnostics.from_pattern(
             [[:(%d+):(%d+): (.*)]],

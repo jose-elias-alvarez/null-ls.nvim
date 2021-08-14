@@ -11,7 +11,6 @@ M.asmfmt = h.make_builtin({
     filetypes = { "asm" },
     generator_opts = {
         command = "asmfmt",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -22,7 +21,6 @@ M.bean_format = h.make_builtin({
     filetypes = { "beancount" },
     generator_opts = {
         command = "bean-format",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -81,7 +79,6 @@ M.dfmt = h.make_builtin({
     filetypes = { "d" },
     generator_opts = {
         command = "dfmt",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -192,7 +189,6 @@ M.fish_indent = h.make_builtin({
     filetypes = { "fish" },
     generator_opts = {
         command = "fish_indent",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -230,7 +226,6 @@ M.goimports = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "goimports",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -241,7 +236,6 @@ M.gofmt = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "gofmt",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -252,7 +246,6 @@ M.gofumpt = h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "gofumpt",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -500,7 +493,6 @@ M.swiftformat = h.make_builtin({
     filetypes = { "swift" },
     generator_opts = {
         command = "swiftformat",
-        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
