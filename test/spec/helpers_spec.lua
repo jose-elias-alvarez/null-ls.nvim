@@ -572,6 +572,22 @@ describe("helpers", function()
                 assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 
+            it("should set args to extra_args if args is nil", function()
+                local test_opts = {
+                    method = "mockMethod",
+                    name = "mock-builtin",
+                    filetypes = { "lua" },
+                    generator_opts = {
+                        args = nil,
+                    },
+                }
+                builtin = helpers.make_builtin(test_opts)
+                builtin.with({ extra_args = { "user_first", "user_second" } })
+
+                assert.equals(type(builtin._opts.args), "function")
+                assert.are.same(builtin._opts.args(), { "user_first", "user_second" })
+            end)
+
             it("should extend args with extra_args, but keep '-' arg last", function()
                 -- local test_opts = vim.deep_copy(opts) stack overflows
                 local test_opts = {

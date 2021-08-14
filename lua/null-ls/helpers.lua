@@ -287,6 +287,7 @@ M.make_builtin = function(opts)
             builtin._opts.args = function(params)
                 local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params)
                     or vim.deepcopy(builtin_args)
+                    or {}
                 local extra_args_cpy = vim.deepcopy(extra_args)
 
                 if builtin_args_cpy[#builtin_args_cpy] == "-" then
