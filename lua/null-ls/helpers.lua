@@ -266,7 +266,7 @@ M.make_builtin = function(opts)
         method = method,
         filetypes = filetypes,
         generator = generator,
-        _opts = generator_opts,
+        _opts = vim.deepcopy(generator_opts),
         name = opts.name,
     }
 

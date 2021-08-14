@@ -539,7 +539,7 @@ describe("helpers", function()
         it("should return builtin with assigned opts", function()
             assert.equals(builtin.method, opts.method)
             assert.equals(builtin.filetypes, opts.filetypes)
-            assert.equals(builtin._opts, opts.generator_opts)
+            assert.are.same(builtin._opts, opts.generator_opts)
         end)
 
         describe("with", function()
