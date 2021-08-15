@@ -14,8 +14,6 @@ M.chktex = h.make_builtin({
         args = {
             -- Disable printing version information to stderr
             "-q",
-            -- Disable executing \input statements
-            "-I0",
             -- Format output
             "-f%l:%c:%d:%k:%m\n",
         },
@@ -374,7 +372,7 @@ M.vint = h.make_builtin({
     generator_opts = {
         command = "vint",
         format = "json",
-        args = { "-s", "-j", "$FILENAME" },
+        args = { "--style-problem", "--json", "$FILENAME" },
         to_stdin = false,
         to_temp_file = true,
         check_exit_code = function(code)

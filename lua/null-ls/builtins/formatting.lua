@@ -33,7 +33,6 @@ M.black = h.make_builtin({
         command = "black",
         args = {
             "--quiet",
-            "--fast",
             "-",
         },
         to_stdin = true,
@@ -116,7 +115,7 @@ M.elm_format = h.make_builtin({
     filetypes = { "elm" },
     generator_opts = {
         command = "elm-format",
-        args = { "--stdin", "--elm-version=0.19" },
+        args = { "--stdin" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -140,17 +139,15 @@ M.eslint = h.make_builtin({
         format = "json",
         on_output = function(params)
             local parsed = params.output[1]
-            return parsed
-                and parsed.output
-                and {
-                    {
-                        row = 1,
-                        col = 1,
-                        end_row = #vim.split(parsed.output, "\n") + 1,
-                        end_col = 1,
-                        text = parsed.output,
-                    },
-                }
+            return parsed and parsed.output and {
+                {
+                    row = 1,
+                    col = 1,
+                    end_row = #vim.split(parsed.output, "\n") + 1,
+                    end_col = 1,
+                    text = parsed.output,
+                },
+            }
         end,
     },
 })
@@ -258,8 +255,6 @@ M.isort = h.make_builtin({
         command = "isort",
         args = {
             "--stdout",
-            "--profile",
-            "black",
             "-",
         },
         to_stdin = true,
@@ -338,7 +333,7 @@ M.phpcbf = h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "phpcbf",
-        args = { "--standard=PSR12", "-" },
+        args = { "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -437,7 +432,7 @@ M.rustfmt = h.make_builtin({
     filetypes = { "rust" },
     generator_opts = {
         command = "rustfmt",
-        args = { "--emit=stdout", "--edition=2018" },
+        args = { "--emit=stdout" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -448,7 +443,7 @@ M.sqlformat = h.make_builtin({
     filetypes = { "sql" },
     generator_opts = {
         command = "sqlformat",
-        args = { "--reindent", "-" },
+        args = { "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -482,7 +477,7 @@ M.stylua = h.make_builtin({
     filetypes = { "lua" },
     generator_opts = {
         command = "stylua",
-        args = h.range_formatting_args_factory({ "-s", "-" }),
+        args = h.range_formatting_args_factory({ "--search-parent-directories", "-" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
