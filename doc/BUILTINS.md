@@ -738,6 +738,24 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 - `command = "rustfmt"`
 - `args = { "--emit=stdout", "--edition=2018" }`
 
+#### [shellcheck](https://www.shellcheck.net)
+
+##### About
+
+A shell script static analysis tool.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.shellcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "sh" }`
+- `command = "shellcheck"`
+- args = { "--format", "json", "-" },
+
 #### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
 ##### About
