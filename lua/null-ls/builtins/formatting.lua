@@ -139,15 +139,17 @@ M.eslint = h.make_builtin({
         format = "json",
         on_output = function(params)
             local parsed = params.output[1]
-            return parsed and parsed.output and {
-                {
-                    row = 1,
-                    col = 1,
-                    end_row = #vim.split(parsed.output, "\n") + 1,
-                    end_col = 1,
-                    text = parsed.output,
-                },
-            }
+            return parsed
+                and parsed.output
+                and {
+                    {
+                        row = 1,
+                        col = 1,
+                        end_row = #vim.split(parsed.output, "\n") + 1,
+                        end_col = 1,
+                        text = parsed.output,
+                    },
+                }
         end,
     },
 })
