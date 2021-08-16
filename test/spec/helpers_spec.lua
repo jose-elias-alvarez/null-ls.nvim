@@ -563,12 +563,24 @@ describe("helpers", function()
                 assert.equals(builtin._opts.nested.other_nested, "original_val")
             end)
 
-            it("should extend args with extra_args", function()
+            it("should extend args with extra_args table", function()
                 builtin.with({ extra_args = { "user_first", "user_second" } })
 
                 assert.equals(type(builtin._opts.args), "function")
                 assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
                 -- Multiple calls should yield the same results
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+            end)
+
+            it("should extend args with extra_args function", function()
+                builtin.with({
+                    extra_args = function()
+                        return { "user_first", "user_second" }
+                    end,
+                })
+
+                assert.equals(type(builtin._opts.args), "function")
+                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
                 assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 

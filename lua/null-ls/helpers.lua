@@ -281,8 +281,8 @@ M.make_builtin = function(opts)
 
         -- Extend args manually as vim.tbl_deep_extend overwrites the list
         if
-            user_opts.extra_args and type(user_opts.extra_args) == "function"
-            or vim.tbl_count(user_opts.extra_args) > 0
+            user_opts.extra_args
+            and (type(user_opts.extra_args) == "function" or vim.tbl_count(user_opts.extra_args) > 0)
         then
             local builtin_args = builtin._opts.args
             local extra_args = user_opts.extra_args
