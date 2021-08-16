@@ -479,7 +479,7 @@ M.stylua = h.make_builtin({
     filetypes = { "lua" },
     generator_opts = {
         command = "stylua",
-        args = h.range_formatting_args_factory({ "--search-parent-directories", "-" }),
+        args = h.range_formatting_args_factory({ "--search-parent-directories", "--stdin-filepath", "$FILENAME", "-" }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
