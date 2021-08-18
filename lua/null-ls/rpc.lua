@@ -53,6 +53,10 @@ function M.start(dispatchers)
         message_id = message_id + 1
         client = client or get_client(pid)
 
+        if type(params) ~= "table" then
+            params = { params }
+        end
+
         params.method = method
         if client then
             params.client_id = client.id
