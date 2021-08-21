@@ -60,7 +60,7 @@ default options passed to each built-in source.
 
 Additionally, while it is possible to overwrite `args` using `with({args = your_args})`, it is recommended to use `extra_args` if your goal is to provide additional flags.
 
-``` lua
+```lua
 local sources = {
     null_ls.builtins.formatting.shfmt.with({
         extra_args = { "-i", "2", "-ci" }
@@ -399,6 +399,25 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 - `filetypes: { "fennel", "fnl" }`
 - `command: "fnlfmt"`
 - `args: { "--fix" }`
+
+
+#### [golines](https://pkg.go.dev/github.com/segmentio/golines)
+
+##### About
+
+Applies a base formatter (eg. `goimports` or `gofmt`), then shorten long lines of code 
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.golines }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "golines"`
+- `args = {}`
 
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
@@ -810,6 +829,24 @@ local sources = { null_ls.builtins.formatting.shfmt }
 - `filetypes = { "sh" }`
 - `command = "shfmt"`
 - `args = {}`
+
+#### [shellharden](https://github.com/anordal/shellharden)
+
+##### About
+
+Hardens shell scripts by quoting variables, replacing `` `function_call` `` with `$(function_call)`, and more
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.shellharden }
+```
+
+##### Defaults
+
+- `filetypes = { "sh" }`
+- `command = "shellharden"`
+- `args = { "--transform", "$FILENAME" }`
 
 #### [StyLua](https://github.com/JohnnyMorganz/StyLua)
 
