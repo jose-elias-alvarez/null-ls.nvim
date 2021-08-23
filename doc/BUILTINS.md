@@ -398,7 +398,7 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 
 - `filetypes: { "fennel", "fnl" }`
 - `command: "fnlfmt"`
-- `arguments: { "--fix" }`
+- `args: { "--fix" }`
 
 #### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
 
