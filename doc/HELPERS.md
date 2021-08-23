@@ -6,9 +6,7 @@ output into LSP diagnostics, code actions, or formatting.
 The plugin exports available helpers under `null_ls.helpers`:
 
 ```lua
-local null_ls = require("null-ls")
-
-null_ls.helpers.generator_factory(my_opts)
+local helpers = require("null-ls.helpers")
 ```
 
 Please see the [built-in files](../lua/null-ls/builtins/) for examples of how to
@@ -24,9 +22,9 @@ argument, `opts`, which is a table with the following structure.
 All options are **required** unless specified otherwise.
 
 ```lua
-local null_ls = require("null-ls")
+local helpers = require("null-ls.helpers")
 
-null_ls.helpers.generator_factory({
+helpers.generator_factory({
     command, -- string
     args, -- table (optional)
     on_output, -- function
@@ -181,9 +179,9 @@ The method accepts a single argument, `opts`, which contains the following
 options. All options are **required** unless specified otherwise.
 
 ```lua
-local null_ls = require("null-ls")
+local helpers = require("null-ls.helpers")
 
-null_ls.helpers.make_builtin({
+helpers.make_builtin({
     method, -- internal null-ls method (string)
     filetypes, -- table
     generator_opts, -- table
