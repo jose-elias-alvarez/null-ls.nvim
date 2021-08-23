@@ -306,13 +306,14 @@ M.flake8 = h.make_builtin({
             return code == 0 or code == 255
         end,
         on_output = h.diagnostics.from_pattern(
-            [[:(%d+):(%d+): (([EFW])%w+) (.*)]], --
+            [[:(%d+):(%d+): (([DEFW])%w+) (.*)]], --
             { "row", "col", "code", "severity", "message" },
             {
                 severities = {
                     E = h.diagnostics.severities["error"],
                     W = h.diagnostics.severities["warning"],
                     F = h.diagnostics.severities["information"],
+                    D = h.diagnostics.severities["information"],
                 },
             }
         ),
