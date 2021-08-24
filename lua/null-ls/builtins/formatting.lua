@@ -220,6 +220,16 @@ M.format_r = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.golines = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "golines",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.goimports = h.make_builtin({
     method = FORMATTING,
     filetypes = { "go" },
@@ -470,6 +480,19 @@ M.shfmt = h.make_builtin({
     generator_opts = {
         command = "shfmt",
         to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.shellharden = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "sh",
+    },
+    generator_opts = {
+        command = "shellharden",
+        args = { "--transform", "$FILENAME" },
+        to_stdin = false,
     },
     factory = h.formatter_factory,
 })
