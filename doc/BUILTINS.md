@@ -388,6 +388,24 @@ local sources = { null_ls.builtins.formatting.fish_indent }
 - `command = "fish_indent"`
 - `args = {}`
 
+#### [fixjson](https://github.com/rhysd/fixjson)
+
+##### About
+
+`fixjson` is a JSON file fixer/formatter for humans using (relaxed) JSON5.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.fixjson }
+```
+
+##### Defaults
+
+- `filetypes = { "json" }`
+- `command = "fixjson"`
+- `args = {}`
+
 #### [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
 
 ```lua
@@ -400,12 +418,11 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 - `command: "fnlfmt"`
 - `args: { "--fix" }`
 
-
 #### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
 ##### About
 
-Applies a base formatter (eg. `goimports` or `gofmt`), then shorten long lines of code 
+Applies a base formatter (eg. `goimports` or `gofmt`), then shorten long lines of code
 
 ##### Usage
 
@@ -1002,6 +1019,24 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - `filetypes = { "tex" }`
 - `command = "chktex"`
 - `args = { "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
+
+#### [codespell](https://github.com/codespell-project/codespell)
+
+##### About
+
+`codespell` fix common misspellings in text files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.codespell }
+```
+
+##### Defaults
+
+- `filetypes = { "*" }`
+- `command = "codespell"`
+- `args = { "$FILENAME" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
