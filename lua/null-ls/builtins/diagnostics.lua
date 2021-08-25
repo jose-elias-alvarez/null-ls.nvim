@@ -403,7 +403,7 @@ M.codespell = h.make_builtin({
         args = { "$FILENAME" },
         to_stderr = true,
         format = "line",
-        on_output = h.diagnostics.from_pattern([[:(%d+): [%w-/]+ (.*)]],{ "row", "message" },{
+        on_output = h.diagnostics.from_pattern([[:(%d+): [%w-/]+ (.*)]], { "row", "message" }, {
             adapters = { h.diagnostics.adapters.end_col.from_quote },
         }),
     },
