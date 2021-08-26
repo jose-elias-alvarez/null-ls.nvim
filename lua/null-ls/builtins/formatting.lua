@@ -220,6 +220,19 @@ M.format_r = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.fprettify = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "fortran" },
+    generator_opts = {
+        command = "fprettify",
+        args = {
+            "--silent",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.golines = h.make_builtin({
     method = FORMATTING,
     filetypes = { "go" },
