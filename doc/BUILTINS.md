@@ -400,6 +400,23 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 - `command: "fnlfmt"`
 - `args: { "--fix" }`
 
+#### [fprettify](https://github.com/pseewald/fprettify)
+
+##### About
+
+`fprettify` is an auto-formatter for modern Fortran code that imposes strict whitespace formattin.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.fprettify }
+```
+
+##### Defaults
+
+- `filetypes = { "fortran" }`
+- `command = "fprettify"`
+- `args = { "--silent" }`
 
 #### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
