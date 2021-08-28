@@ -418,6 +418,24 @@ local sources = {null_ls.builtins.formatting.fnlfmt}
 - `command: "fnlfmt"`
 - `args: { "--fix" }`
 
+#### [fprettify](https://github.com/pseewald/fprettify)
+
+##### About
+
+`fprettify` is an auto-formatter for modern Fortran code that imposes strict whitespace formattin.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.fprettify }
+```
+
+##### Defaults
+
+- `filetypes = { "fortran" }`
+- `command = "fprettify"`
+- `args = { "--silent" }`
+
 #### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
 ##### About
@@ -567,6 +585,24 @@ local sources = { null_ls.builtins.formatting.mix }
 - `filetypes = { "elixir" }`
 - `command = "mix"`
 - `args = { "format", "-" }`
+
+#### [Surface](https://hexdocs.pm/surface_formatter/readme.html)
+
+##### About
+
+A code formatter for Surface, the server-side rendering component library for Phoenix.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.surface }
+```
+
+##### Defaults
+
+- `filetypes = { "elixir", "surface" }`
+- `command = "mix"`
+- `args = { "surface.format", "-" }`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 

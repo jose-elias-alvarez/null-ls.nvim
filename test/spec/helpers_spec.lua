@@ -202,6 +202,16 @@ describe("helpers", function()
             assert.stub(vim.validate).was_called(1)
         end)
 
+        it("should throw error if command is not executable", function()
+            generator_args.command = "nonexistent"
+            local generator = helpers.generator_factory(generator_args)
+
+            local _, err = pcall(generator.fn, {})
+
+            assert.truthy(err)
+            assert.truthy(err:match("command nonexistent is not executable"))
+        end)
+
         it("should set async to true", function()
             local generator = helpers.generator_factory(generator_args)
 

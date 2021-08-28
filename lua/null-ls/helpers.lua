@@ -115,10 +115,7 @@ M.generator_factory = function(opts)
         validate({
             command = {
                 command,
-                function(v)
-                    return type(v) == "string" and vim.fn.executable(command) > 0
-                end,
-                "string (executable)",
+                "string",
             },
             args = {
                 args,
@@ -143,6 +140,11 @@ M.generator_factory = function(opts)
             to_temp_file = { to_temp_file, "boolean", true },
             use_cache = { use_cache, "boolean", true },
         })
+
+        assert(
+            vim.fn.executable(command) > 0,
+            string.format("command %s is not executable (make sure it's installed and on your $PATH)", command)
+        )
 
         _validated = true
     end

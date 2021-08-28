@@ -344,7 +344,7 @@ M.flake8 = h.make_builtin({
         command = "flake8",
         to_stdin = true,
         to_stderr = true,
-        args = { "--stdin-display-name", "$FILENAME", "-" },
+        args = { "--format", "default", "--stdin-display-name", "$FILENAME", "-" },
         format = "line",
         check_exit_code = function(code)
             return code == 0 or code == 255
