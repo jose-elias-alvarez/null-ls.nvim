@@ -568,6 +568,24 @@ local sources = { null_ls.builtins.formatting.mix }
 - `command = "mix"`
 - `args = { "format", "-" }`
 
+#### [Surface](https://hexdocs.pm/surface_formatter/readme.html)
+
+##### About
+
+A code formatter for Surface, the server-side rendering component library for Phoenix.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.surface }
+```
+
+##### Defaults
+
+- `filetypes = { "elixir", "surface" }`
+- `command = "mix"`
+- `args = { "surface.format", "-" }`
+
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
 ##### About
