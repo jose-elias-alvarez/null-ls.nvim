@@ -230,6 +230,19 @@ M.format_r = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.fprettify = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "fortran" },
+    generator_opts = {
+        command = "fprettify",
+        args = {
+            "--silent",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.golines = h.make_builtin({
     method = FORMATTING,
     filetypes = { "go" },
@@ -312,6 +325,18 @@ M.mix = h.make_builtin({
     generator_opts = {
         command = "mix",
         args = { "format", "-" },
+        format = "raw",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.surface = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "elixir", "surface" },
+    generator_opts = {
+        command = "mix",
+        args = { "surface.format", "-" },
         format = "raw",
         to_stdin = true,
     },
