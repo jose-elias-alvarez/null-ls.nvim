@@ -5,50 +5,6 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local M = {}
 
-local function mysplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t = {}
-    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        table.insert(t, str)
-    end
-    return t
-end
-local handle_output = function(params)
-    local output_error = params.err
-    local split_table = mysplit(output_error, '\n')
-    local table_output = {}
-
-    for _, str in ipairs(split_table) do
-        local row_n = mysplit(str, '#')
-        table.insert(table_output, row_n[1])
-    end
-    print(vim.inspect(table_output))
-
-    local length = 0
-    for _, _ in ipairs(table_output) do
-        length = length + 1
-    end
-    print(length)
-end
-
-M.codespell = h.make_builtin({
-    method = DIAGNOSTICS,
-    filetypes = { "*" },
-    generator_opts = {
-        command = "codespell",
-        args = { "-" },
-        to_stdin = true,
-        format = "raw",
-        -- on_output = h.diagnostics.from_pattern([[:(%d+): [%w-/]+ (.*)]], { "row", "message" }, {
-        --     adapters = { h.diagnostics.adapters.end_col.from_quote },
-        -- }),
-        on_output = handle_output,
-    },
-    factory = h.generator_factory,
-})
-
 M.chktex = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "tex" },
@@ -435,6 +391,43 @@ M.vint = h.make_builtin({
                 style_problem = h.diagnostics.severities["information"],
             },
         }),
+    },
+    factory = h.generator_factory,
+})
+
+M.codespell = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "*" },
+    generator_opts = {
+        command = "codespell",
+        args = { "-" },
+        to_stdin = true,
+        format = "raw",
+        on_output = function(params, done)
+            if params.err then
+                local diagnostics = {}
+                local final_table = {}
+                local raw_table = vim.split(params.err, "\n")
+
+                for _, str in ipairs(raw_table) do
+                    local tmp_table = vim.split(str, ":")
+                    tmp_table[1] = string.gsub(tmp_table[1], "\t", "")
+                    if tmp_table[1] ~= "" then
+                        table.insert(final_table, tmp_table[1])
+                    end
+                end
+
+                for l = #final_table, 1, -2 do
+                    table.insert(diagnostics, {
+                        row = final_table[l - 1],
+                        source = "codespell",
+                        message = final_table[l],
+                        severity = 2,
+                    })
+                end
+                return done(diagnostics)
+            end
+        end,
     },
     factory = h.generator_factory,
 })
