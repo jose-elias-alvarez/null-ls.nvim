@@ -25,6 +25,9 @@ Each source must have a **method**, which defines when it runs, a **generator**,
 which runs in response to a request matching the source's method, and a list of
 **filetypes**, which determines when the method is active.
 
+To see a list of active sources for the current buffer, use the command
+`:NullLsInfo`.
+
 Sources must be
 **registered**, either by the user or by an integration, before they are active.
 

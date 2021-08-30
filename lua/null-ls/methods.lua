@@ -29,9 +29,17 @@ local lsp_to_internal_map = {
     [lsp_methods.DID_CHANGE] = internal_methods.DIAGNOSTICS,
 }
 
+local readable_map = {
+    [internal_methods.CODE_ACTION] = "Code actions",
+    [internal_methods.DIAGNOSTICS] = "Diagnostics",
+    [internal_methods.FORMATTING] = "Formatting",
+    [internal_methods.RANGE_FORMATTING] = "Range formatting",
+}
+
 local M = {}
 M.lsp = lsp_methods
 M.internal = internal_methods
 M.map = lsp_to_internal_map
+M.readable = readable_map
 
 return M
