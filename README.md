@@ -296,7 +296,7 @@ with an alternative, please open an issue!
    })
    ```
 
-2. When the error occurs, use `:messages` to see the debug output.
+2. Use `:NullLsInfo` to get the path to your debug log.
 
 ## Tests
 

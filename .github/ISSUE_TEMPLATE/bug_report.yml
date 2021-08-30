@@ -2,7 +2,6 @@ name: Bug Report
 description: Report a problem in null-ls
 labels: [bug]
 body:
-
   - type: checkboxes
     id: faq-prerequisite
     attributes:
@@ -49,7 +48,7 @@ body:
   - type: textarea
     attributes:
       label: "Debug log"
-      description: "Debug output from `:messages`"
+      description: "Debug log output (get path from `:NullLsInfo`)"
     validations:
       required: true
 

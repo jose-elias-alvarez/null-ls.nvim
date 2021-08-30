@@ -43,17 +43,7 @@ M.echo = function(hlgroup, message)
     api.nvim_echo({ { "null-ls: " .. message, hlgroup } }, true, {})
 end
 
-M.debug_log = function(target, force)
-    if not c.get().debug and not force then
-        return
-    end
-
-    if type(target) == "table" then
-        print(vim.inspect(target))
-    else
-        print(target)
-    end
-end
+M.debug_log = require("null-ls.logger").debug
 
 M.filetype_matches = function(filetypes, ft)
     if not filetypes then

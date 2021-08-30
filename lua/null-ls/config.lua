@@ -1,4 +1,5 @@
 local methods = require("null-ls.methods")
+local logger = require("null-ls.logger")
 
 local validate = vim.validate
 
@@ -212,6 +213,8 @@ M.setup = function(user_config)
     if config.sources then
         register(config.sources)
     end
+
+    logger.level = config.debug and "debug" or "info"
     config._setup = true
 end
 

@@ -16,10 +16,14 @@ return function()
         return
     end
 
-    local ft = api.nvim_buf_get_option(bufnr, "filetype")
-
     local lines = {}
-    table.insert(lines, "Detected filetype: " .. ft)
+
+    local separator = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
+    local log_path = vim.fn.stdpath("cache") .. separator .. "null-ls.log"
+    table.insert(lines, "null-ls log: " .. log_path)
+
+    local ft = api.nvim_buf_get_option(bufnr, "filetype")
+    vim.list_extend(lines, { "Detected filetype: " .. ft, "" })
 
     local registered, source_count = {}, 0
     for method, source in pairs(c.get()._methods) do
