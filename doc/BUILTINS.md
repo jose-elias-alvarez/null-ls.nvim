@@ -58,7 +58,8 @@ local sources = {
 See the descriptions below or the relevant `builtins` source file to see the
 default options passed to each built-in source.
 
-Additionally, while it is possible to overwrite `args` using `with({args = your_args})`, it is recommended to use `extra_args` if your goal is to provide additional flags.
+You can override `args` using `with({ args = your_args })`, but if you want to
+add more flags, you should use `extra_args` instead:
 
 ```lua
 local sources = {
@@ -66,6 +67,17 @@ local sources = {
         extra_args = { "-i", "2", "-ci" }
       })
   }
+```
+
+Note that environment variables and `~` aren't expanded in arguments. As a
+workaround, you can use `vim.fn.expand`:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.stylua.with({
+        extra_args = { "--config-path", vim.fn.expand("~/.config/stylua.toml") },
+    }),
+}
 ```
 
 For diagnostics sources, you can change the format of diagnostic messages by
@@ -422,7 +434,7 @@ local sources = { null_ls.builtins.formatting.fprettify }
 
 ##### About
 
-Applies a base formatter (eg. `goimports` or `gofmt`), then shorten long lines of code 
+Applies a base formatter (eg. `goimports` or `gofmt`), then shorten long lines of code
 
 ##### Usage
 
