@@ -219,12 +219,13 @@ M.format_r = h.make_builtin({
     filetypes = { "r", "rmd" },
     generator_opts = {
         command = "R",
-        args = {
+        args = h.range_formatting_args_factory({
             "--slave",
             "--no-restore",
             "--no-save",
-            '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"',
-        },
+            "-e",
+            'formatR::tidy_source(source="stdin")',
+        }),
         to_stdin = true,
     },
     factory = h.formatter_factory,
@@ -528,6 +529,23 @@ M.shellharden = h.make_builtin({
         command = "shellharden",
         args = { "--transform", "$FILENAME" },
         to_stdin = false,
+    },
+    factory = h.formatter_factory,
+})
+
+M.styler = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "r", "rmd" },
+    generator_opts = {
+        command = "R",
+        args = h.range_formatting_args_factory({
+            "--slave",
+            "--no-restore",
+            "--no-save",
+            "-e",
+            'con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)',
+        }),
+        to_stdin = true,
     },
     factory = h.formatter_factory,
 })
