@@ -395,4 +395,44 @@ M.vint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.codespell = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "*" },
+    generator_opts = {
+        command = "codespell",
+        args = { "-" },
+        to_stdin = true,
+        to_stderr = true,
+        on_output = function(params, done)
+            local output = params.output
+            if not output then
+                return done()
+            end
+
+            local diagnostics = {}
+            local final_table = {}
+            local raw_table = vim.split(output, "\n")
+
+            for _, str in ipairs(raw_table) do
+                local tmp_table = vim.split(str, ":")
+                tmp_table[1] = string.gsub(tmp_table[1], "\t", "")
+                if tmp_table[1] ~= "" then
+                    table.insert(final_table, tmp_table[1])
+                end
+            end
+
+            for l = #final_table, 1, -2 do
+                table.insert(diagnostics, {
+                    row = final_table[l - 1],
+                    source = "codespell",
+                    message = final_table[l],
+                    severity = 2,
+                })
+            end
+            return done(diagnostics)
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M

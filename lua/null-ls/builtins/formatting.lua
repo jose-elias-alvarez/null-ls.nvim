@@ -193,6 +193,16 @@ M.fish_indent = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.fixjson = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "json" },
+    generator_opts = {
+        command = "fixjson",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.fnlfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "fennel", "fnl" },
