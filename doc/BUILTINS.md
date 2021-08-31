@@ -754,7 +754,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 ##### About
 
-Format R code automatically.
+- Format R code automatically.
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
 
 ##### Usage
 
@@ -766,7 +767,7 @@ local sources = { null_ls.builtins.formatting.format_r }
 
 - `filetypes = { "r", "rmd" }`
 - `command = "R"`
-- `args = { "--slave", "--no-restore", "--no-save", '-e "formatR::tidy_source(text=readr::read_file(file(\\"stdin\\")), arrow=FALSE)"' }`
+- `args = { "--slave", "--no-restore", "--no-save", "-e", 'formatR::tidy_source(source="stdin")' }`
 
 #### [rufo](https://github.com/ruby-formatter/rufo)
 
@@ -894,6 +895,25 @@ local sources = { null_ls.builtins.formatting.shellharden }
 - `filetypes = { "sh" }`
 - `command = "shellharden"`
 - `args = { "--transform", "$FILENAME" }`
+
+#### [styler](https://github.com/r-lib/styler)
+
+##### About
+
+- Non-invasive pretty printing of R code.
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.styler }
+```
+
+##### Defaults
+
+- `filetypes = { "r", "rmd" }`
+- `command = "R"`
+- `args = { "--slave", "--no-restore", "--no-save", "-e", 'con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)' }`
 
 #### [StyLua](https://github.com/JohnnyMorganz/StyLua)
 
