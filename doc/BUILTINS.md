@@ -1084,7 +1084,7 @@ local sources = { null_ls.builtins.diagnostics.codespell }
 
 - `filetypes = { "*" }`
 - `command = "codespell"`
-- `args = { "$FILENAME" }`
+- `args = { "-" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
