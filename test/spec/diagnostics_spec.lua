@@ -54,17 +54,59 @@ describe("diagnostics", function()
             assert.stub(u.make_params).was_called_with(mock_params, methods.internal.DIAGNOSTICS)
         end)
 
-        it("should send results of diagnostic generators to lsp handler", function()
-            u.make_params.returns({ uri = mock_params.textDocument.uri })
+        describe("handler", function()
+            local has = stub(vim.fn, "has")
+            after_each(function()
+                has:clear()
+            end)
 
-            diagnostics.handler(mock_params)
-            local callback = generators.run_registered.calls[1].refs[1].callback
-            callback("diagnostics")
+            describe("0.5", function()
+                before_each(function()
+                    has.returns(0)
+                end)
 
-            assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, nil, {
-                diagnostics = "diagnostics",
-                uri = mock_params.textDocument.uri,
-            }, mock_client_id, nil, {})
+                it("should send results of diagnostic generators to lsp handler", function()
+                    u.make_params.returns({ uri = mock_params.textDocument.uri })
+
+                    diagnostics.handler(mock_params)
+                    local callback = generators.run_registered.calls[1].refs[1].callback
+                    callback("diagnostics")
+
+                    assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(
+                        nil,
+                        methods.lsp.PUBLISH_DIAGNOSTICS,
+                        {
+                            diagnostics = "diagnostics",
+                            uri = mock_params.textDocument.uri,
+                        },
+                        mock_client_id,
+                        vim.uri_to_bufnr(mock_uri)
+                    )
+                end)
+            end)
+
+            describe("0.5.1", function()
+                before_each(function()
+                    has.returns(1)
+                end)
+
+                it("should send results of diagnostic generators to lsp handler", function()
+                    u.make_params.returns({ uri = mock_params.textDocument.uri })
+
+                    diagnostics.handler(mock_params)
+                    local callback = generators.run_registered.calls[1].refs[1].callback
+                    callback("diagnostics")
+
+                    assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called_with(nil, {
+                        diagnostics = "diagnostics",
+                        uri = mock_params.textDocument.uri,
+                    }, {
+                        method = methods.lsp.PUBLISH_DIAGNOSTICS,
+                        client_id = mock_client_id,
+                        bufnr = vim.uri_to_bufnr(mock_uri),
+                    })
+                end)
+            end)
         end)
 
         describe("postprocess", function()

@@ -49,6 +49,7 @@ M.handler = function(original_params)
     end
 
     local params = u.make_params(original_params, methods.map[method])
+    local handler = vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]
     generators.run_registered({
         filetype = params.ft,
         method = methods.map[method],
@@ -58,11 +59,20 @@ M.handler = function(original_params)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
 
-            vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS](nil, nil, {
-                diagnostics = diagnostics,
-                uri = uri,
-                ---@diagnostic disable-next-line: redundant-parameter
-            }, original_params.client_id, nil, {})
+            local bufnr = vim.uri_to_bufnr(uri)
+            if vim.fn.has("nvim-0.5.1") > 0 then
+                handler(nil, { diagnostics = diagnostics, uri = uri }, {
+                    method = methods.lsp.PUBLISH_DIAGNOSTICS,
+                    client_id = original_params.client_id,
+                    bufnr = bufnr,
+                })
+            else
+                handler(nil, methods.lsp.PUBLISH_DIAGNOSTICS, {
+                    diagnostics = diagnostics,
+                    uri = uri,
+                    ---@diagnostic disable-next-line: redundant-parameter
+                }, original_params.client_id, bufnr)
+            end
         end,
     })
 end

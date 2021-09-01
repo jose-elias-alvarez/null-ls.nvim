@@ -107,19 +107,51 @@ describe("formatting", function()
             vim.lsp.handlers[method] = original_handler
         end)
 
-        it("should call lsp_handler with text edit response", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+        describe("handler", function()
+            local has = stub(vim.fn, "has")
+            after_each(function()
+                has:clear()
+            end)
 
-            local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
-            callback(mock_edits, mock_params)
+            describe("0.5", function()
+                before_each(function()
+                    has.returns(0)
+                end)
 
-            assert.stub(lsp_handler).was_called_with(
-                nil,
-                mock_params.lsp_method,
-                { { newText = mock_diffed.text, range = mock_diffed.range } },
-                mock_params.client_id,
-                mock_params.bufnr
-            )
+                it("should call lsp_handler with text edit response", function()
+                    formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+
+                    local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
+                    callback(mock_edits, mock_params)
+
+                    assert.stub(lsp_handler).was_called_with(
+                        nil,
+                        mock_params.lsp_method,
+                        { { newText = mock_diffed.text, range = mock_diffed.range } },
+                        mock_params.client_id,
+                        mock_params.bufnr
+                    )
+                end)
+            end)
+
+            describe("0.5.1", function()
+                before_each(function()
+                    has.returns(1)
+                end)
+
+                it("should call lsp_handler with text edit response", function()
+                    formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+
+                    local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
+                    callback(mock_edits, mock_params)
+
+                    assert.stub(lsp_handler).was_called_with(
+                        nil,
+                        { { newText = mock_diffed.text, range = mock_diffed.range } },
+                        { method = mock_params.lsp_method, client_id = mock_params.client_id, bufnr = mock_params.bufnr }
+                    )
+                end)
+            end)
         end)
     end)
 
