@@ -8,6 +8,7 @@ local M = {}
 
 M.toggle_line_comment = {
     method = methods.internal.CODE_ACTION,
+    name = "toggle_line_comment",
     filetypes = { "*" },
     generator = {
         fn = function(params)

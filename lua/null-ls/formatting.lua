@@ -1,6 +1,5 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
-local generators = require("null-ls.generators")
 
 local lsp = vim.lsp
 local api = vim.api
@@ -90,7 +89,7 @@ M.handler = function(method, original_params, handler)
 
     if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
         local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
-        generators.run_registered_sequentially({
+        require("null-ls.generators").run_registered_sequentially({
             filetype = api.nvim_buf_get_option(bufnr, "filetype"),
             method = methods.map[method],
             make_params = function()

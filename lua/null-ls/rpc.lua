@@ -1,11 +1,5 @@
 local methods = require("null-ls.methods")
-local code_actions = require("null-ls.code-actions")
-local formatting = require("null-ls.formatting")
-local diagnostics = require("null-ls.diagnostics")
-local handlers = require("null-ls.handlers")
 local u = require("null-ls.utils")
-
-local rpc = require("vim.lsp.rpc")
 
 local M = {}
 
@@ -23,6 +17,8 @@ local capabilities = {
 local lastpid = 5000
 
 function M.setup()
+    local rpc = require("vim.lsp.rpc")
+
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
         if cmd == "nvim" then
@@ -60,7 +56,7 @@ function M.start(dispatchers)
         params.method = method
         if client then
             params.client_id = client.id
-            handlers.setup_client(client)
+            require("null-ls.handlers").setup_client(client)
         end
 
         local send = function(result)
@@ -80,10 +76,10 @@ function M.start(dispatchers)
             end
         else
             if is_notify then
-                diagnostics.handler(params)
+                require("null-ls.diagnostics").handler(params)
             end
-            code_actions.handler(method, params, send)
-            formatting.handler(method, params, send)
+            require("null-ls.code-actions").handler(method, params, send)
+            require("null-ls.formatting").handler(method, params, send)
             if not params._null_ls_handled then
                 send()
             end

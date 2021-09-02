@@ -1,8 +1,6 @@
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
 local s = require("null-ls.state")
-local methods = require("null-ls.methods")
-local loop = require("null-ls.loop")
 
 local api = vim.api
 local validate = vim.validate
@@ -151,6 +149,8 @@ M.generator_factory = function(opts)
 
     return {
         fn = function(params, done)
+            local loop = require("null-ls.loop")
+
             if not _validated then
                 validate_opts()
             end
@@ -269,7 +269,7 @@ M.make_builtin = function(opts)
         filetypes = filetypes,
         generator = generator,
         _opts = vim.deepcopy(generator_opts),
-        name = opts.name,
+        name = opts.name or generator_opts.command,
     }
 
     setmetatable(builtin, {
@@ -511,7 +511,7 @@ M.range_formatting_args_factory = function(base_args, start_arg, end_arg)
 
     return function(params)
         local args = vim.deepcopy(base_args)
-        if params.method == methods.internal.FORMATTING then
+        if params.method == require("null-ls.methods").internal.FORMATTING then
             return args
         end
 
