@@ -7,6 +7,7 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 local M = {}
 
 M.gitsigns = h.make_builtin({
+    name = "gitsigns",
     method = CODE_ACTION,
     filetypes = { "*" },
     generator = {

@@ -269,7 +269,7 @@ M.make_builtin = function(opts)
         filetypes = filetypes,
         generator = generator,
         _opts = vim.deepcopy(generator_opts),
-        name = opts.name,
+        name = opts.name or generator_opts.command,
     }
 
     setmetatable(builtin, {
