@@ -260,6 +260,10 @@ on_attach = function(client)
 end
 ```
 
+### How do I stop Neovim from asking me which server I want to use for formatting?
+
+See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
+
 ### Does it work with (other plugin)?
 
 In most cases, yes. null-ls tries to act like an actual LSP server as much as
