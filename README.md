@@ -88,53 +88,11 @@ welcome. See [CONTRIBUTING](doc/CONTRIBUTING.md) for guidelines.
 
 ## Examples
 
-### Code actions
+### Parsing buffer content
 
-The following example demonstrates a (naive) filetype-independent source that
-provides a code action to comment the current line using `commentstring`.
-
-```lua
-local null_ls = require("null-ls")
-local api = vim.api
-
-local comment_line = {
-    method = null_ls.methods.CODE_ACTION,
-    filetypes = {"*"},
-    generator = {
-        fn = function(params)
-            -- sources have access to a params object
-            -- containing info about the current file and editor state
-            local bufnr = params.bufnr
-            local line = params.content[params.row]
-
-            -- all nvim api functions are safe to call
-            local commentstring =
-                api.nvim_buf_get_option(bufnr, "commentstring")
-
-            -- null-ls combines and stores returned actions in its state
-            -- and will call action() on execute
-            return {
-                {
-                    title = "Comment line",
-                    action = function()
-                        api.nvim_buf_set_lines(bufnr, params.row - 1,
-                                               params.row, false, {
-                            string.format(commentstring, line)
-                        })
-                    end
-                }
-            }
-        end
-    }
-}
-
-null_ls.register(comment_line)
-```
-
-### Diagnostics
-
-The following example demonstrates a diagnostic source that will show instances
-of the word `really` in the current text as LSP warnings.
+The following example demonstrates a diagnostic source that will parse the
+current buffer's content and show instances of the word `really` as LSP
+warnings.
 
 ```lua
 local null_ls = require("null-ls")
@@ -142,88 +100,85 @@ local api = vim.api
 
 local no_really = {
     method = null_ls.methods.DIAGNOSTICS,
-    filetypes = {"markdown", "txt"},
+    filetypes = { "markdown", "txt" },
     generator = {
         fn = function(params)
             local diagnostics = {}
+            -- sources have access to a params object
+            -- containing info about the current file and editor state
             for i, line in ipairs(params.content) do
-                local col, end_col = string.find(line, "really")
+                local col, end_col = line:find("really")
                 if col and end_col then
                     -- null-ls fills in undefined positions
                     -- and converts source diagnostics into the required format
                     table.insert(diagnostics, {
                         row = i,
-                        col = col - 1,
+                        col = col,
                         end_col = end_col,
                         source = "no-really",
                         message = "Don't use 'really!'",
-                        severity = 2
+                        severity = 2,
                     })
                 end
             end
             return diagnostics
-        end
-    }
+        end,
+    },
 }
 
 null_ls.register(no_really)
 ```
 
-### Code actions (asynchronous)
+### Parsing CLI program output
 
-Asynchronous sources have access to a `done()` callback that, when called, will
-signal their completion. The client uses plenary.nvim's async library to run
-asynchronous sources concurrently and wait for all results before sending them
-to Neovim's LSP client.
-
-The following example demonstrates an asynchronous source that provides a code
-action to insert a comment at the top of the current file containing its size,
-which it gets asynchronously via `luv`.
+null-ls includes helpers to simplify the process of spawning and capturing the
+output of CLI programs. This example shows how to pass the content of the
+current buffer to `markdownlint` via `stdin` and convert its output (which it
+sends to `stderr`) into LSP diagnostics:
 
 ```lua
-local uv = vim.loop
-local file_size_comment = {
-    method = null_ls.methods.CODE_ACTION,
-    filetypes = {"*"},
-    generator = {
-        -- must be explicitly defined
-        async = true,
-        fn = function(params, done)
-            local bufnr = params.bufnr
-            local commentstring =
-                api.nvim_buf_get_option(bufnr, "commentstring")
+local null_ls = require("null-ls")
+local helpers = require("null-ls.helpers")
 
-            uv.fs_open(params.bufname, "r", 438, function(_, fd)
-                if not fd then return done() end
-
-                uv.fs_fstat(fd, function(_, stat)
-                    return done({
-                        {
-                            title = "Insert file size",
-                            action = function()
-                                api.nvim_buf_set_lines(bufnr, 0, 0, false, {
-                                    string.format(commentstring,
-                                                  "size: " .. stat.size)
-                                })
-                            end
-                        }
-                    })
-                end)
-            end)
-        end
-    }
+local markdownlint = {
+    method = null_ls.methods.DIAGNOSTICS,
+    filetypes = { "markdown" },
+    -- null_ls.generator creates an async source
+    -- that spawns the command with the given arguments and options
+    generator = null_ls.generator({
+        command = "markdownlint",
+        args = { "--stdin" },
+        to_stdin = true,
+        to_stderr = true,
+        -- choose an output format (raw, json, or line)
+        format = "line",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        -- use helpers to parse the output from string matchers,
+        -- or parse it manually with a function
+        on_output = helpers.diagnostics.from_patterns({
+            {
+                pattern = [[:(%d+):(%d+) [%w-/]+ (.*)]],
+                groups = { "row", "col", "message" },
+            },
+            {
+                pattern = [[:(%d+) [%w-/]+ (.*)]],
+                groups = { "row", "message" },
+            },
+        }),
+    }),
 }
 
-null_ls.register(file_size_comment)
+null_ls.register(markdownlint)
 ```
 
-### Real-world usage
+### Advanced usage
 
 This [ESLint
 integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/develop/lua/nvim-lsp-ts-utils/null-ls.lua)
-from one of my plugins demonstrates a more elaborate example of parsing JSON
-output from a command to generate sources for code actions, diagnostics, and
-formatting.
+from one of my plugins demonstrates an advanced example of parsing JSON output
+from a command to generate code actions.
 
 ## FAQ
 
@@ -234,17 +189,9 @@ null-ls formatters run when you call `vim.lsp.buf.formatting()` or
 formatting by visually selecting part of the buffer and calling
 `vim.lsp.buf.range_formatting()`.
 
-If you have other language servers running that can format the current buffer,
-Neovim will prompt you to choose a formatter. You can prevent actual LSP clients
-from providing formatting by adding the following snippet to your LSP
-`on_attach` callback:
+### How do I stop Neovim from asking me which server I want to use for formatting?
 
-```lua
--- add to the on_attach callback for the server you want to disable
-on_attach = function(client)
-    client.resolved_capabilities.document_formatting = false
-end
-```
+See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
 
 ### How do I format files on save?
 

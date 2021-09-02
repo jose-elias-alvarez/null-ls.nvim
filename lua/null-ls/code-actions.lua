@@ -1,7 +1,6 @@
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
-local generators = require("null-ls.generators")
 
 local M = {}
 
@@ -23,7 +22,7 @@ M.handler = function(method, original_params, handler)
 
         s.clear_actions()
         local params = u.make_params(original_params, methods.map[method])
-        generators.run_registered({
+        require("null-ls.generators").run_registered({
             filetype = params.ft,
             method = methods.map[method],
             params = params,

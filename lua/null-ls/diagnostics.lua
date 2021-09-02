@@ -2,7 +2,6 @@ local u = require("null-ls.utils")
 local s = require("null-ls.state")
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
-local generators = require("null-ls.generators")
 
 local M = {}
 
@@ -50,7 +49,7 @@ M.handler = function(original_params)
 
     local params = u.make_params(original_params, methods.map[method])
     local handler = vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]
-    generators.run_registered({
+    require("null-ls.generators").run_registered({
         filetype = params.ft,
         method = methods.map[method],
         params = params,
