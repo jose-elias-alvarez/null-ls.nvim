@@ -234,17 +234,9 @@ null-ls formatters run when you call `vim.lsp.buf.formatting()` or
 formatting by visually selecting part of the buffer and calling
 `vim.lsp.buf.range_formatting()`.
 
-If you have other language servers running that can format the current buffer,
-Neovim will prompt you to choose a formatter. You can prevent actual LSP clients
-from providing formatting by adding the following snippet to your LSP
-`on_attach` callback:
+### How do I stop Neovim from asking me which server I want to use for formatting?
 
-```lua
--- add to the on_attach callback for the server you want to disable
-on_attach = function(client)
-    client.resolved_capabilities.document_formatting = false
-end
-```
+See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
 
 ### How do I format files on save?
 
@@ -259,10 +251,6 @@ on_attach = function(client)
     end
 end
 ```
-
-### How do I stop Neovim from asking me which server I want to use for formatting?
-
-See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
 
 ### Does it work with (other plugin)?
 
