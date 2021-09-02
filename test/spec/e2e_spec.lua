@@ -86,16 +86,6 @@ describe("e2e", function()
 
             assert.equals(vim.tbl_count(actions[1].result), 2)
         end)
-
-        it("should handle code action timeout", function()
-            -- action calls a script that waits for 250 ms,
-            -- but action timeout is 100 ms
-            c.register(builtins._test.slow_code_action)
-
-            actions = get_code_actions()
-
-            assert.equals(vim.tbl_count(actions[1].result), 1)
-        end)
     end)
 
     describe("diagnostics", function()
