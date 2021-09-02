@@ -43,9 +43,20 @@ local sources = {
 null_ls.config({ sources = sources })
 ```
 
-Built-in sources also have access to a special method, `with()`, which modifies
-the source's default options. For example, you can alter a source's file types
-as follows:
+To run built-in sources, the command specified below must be available on your
+`$PATH` and visible to Neovim. For example, to check if `eslint` is available,
+run the following (Vim, not Lua) command:
+
+```vim
+" should echo 1 if available (and 0 if not)
+:echo executable("eslint")
+```
+
+## Configuration
+
+Built-in sources have access to a special method, `with()`, which modifies the
+source's default options. For example, you can alter a source's file types as
+follows:
 
 ```lua
 local sources = {
