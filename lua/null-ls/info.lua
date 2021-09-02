@@ -1,5 +1,3 @@
-local windows = require("lspconfig.ui.windows")
-
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
@@ -8,6 +6,8 @@ local lsp = vim.lsp
 local api = vim.api
 
 return function()
+    local windows = require("lspconfig.ui.windows")
+
     local client = u.get_client()
 
     local bufnr = api.nvim_get_current_buf()

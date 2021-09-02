@@ -1,6 +1,5 @@
-local utils = require("null-ls.utils")
+local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
-local generators = require("null-ls.generators")
 
 local M = {}
 
@@ -20,7 +19,7 @@ function M.combine(method, ms)
 
     local results = {}
 
-    local handler = utils.debounce(ms, function()
+    local handler = u.debounce(ms, function()
         if #results > 0 then
             pcall(orig, nil, nil, results)
             results = {}
@@ -42,7 +41,7 @@ M.setup_client = function(client)
     client.supports_method = function(method)
         local internal_method = methods.map[method]
         if internal_method then
-            return generators.can_run(vim.bo.filetype, internal_method)
+            return require("null-ls.generators").can_run(vim.bo.filetype, internal_method)
         end
 
         return methods.lsp[method] ~= nil
