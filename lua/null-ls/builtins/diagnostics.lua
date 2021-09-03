@@ -346,6 +346,9 @@ M.pylint = h.make_builtin({
                 convention = h.diagnostics.severities["information"],
                 refactor = h.diagnostics.severities["information"],
             },
+            offsets = {
+                col = 1,
+            },
         }),
     },
     factory = h.generator_factory,
