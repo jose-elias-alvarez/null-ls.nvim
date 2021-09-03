@@ -1,12 +1,12 @@
-local a = require("plenary.async_lib")
-
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 
 local M = {}
 
 M.run = function(generators, params, postprocess, callback)
-    local runner = a.async(function()
+    local a = require("plenary.async")
+
+    local runner = function()
         u.debug_log("running generators for method " .. params.method)
 
         if vim.tbl_isempty(generators) then
@@ -16,44 +16,36 @@ M.run = function(generators, params, postprocess, callback)
 
         local futures, all_results = {}, {}
         for _, generator in ipairs(generators) do
-            table.insert(
-                futures,
-                a.future(function()
-                    local ok, results
-                    if generator.async then
-                        local wrapped = a.wrap(generator.fn, 2)
-                        ok, results = a.await(a.util.protected(wrapped(params)))
-                    else
-                        ok, results = pcall(generator.fn, params)
-                    end
-                    a.await(a.scheduler())
+            table.insert(futures, function()
+                local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
+                local ok, results = pcall(to_run, params)
+                a.util.scheduler()
 
-                    if not ok then
-                        u.echo("WarningMsg", "failed to run generator: " .. results)
-                        generator._failed = true
-                        return
-                    end
+                if not ok then
+                    u.echo("WarningMsg", "failed to run generator: " .. results)
+                    generator._failed = true
+                    return
+                end
 
-                    if not results then
-                        return
+                if not results then
+                    return
+                end
+
+                for _, result in ipairs(results) do
+                    if postprocess then
+                        postprocess(result, params, generator)
                     end
 
-                    for _, result in ipairs(results) do
-                        if postprocess then
-                            postprocess(result, params, generator)
-                        end
-
-                        table.insert(all_results, result)
-                    end
-                end)
-            )
+                    table.insert(all_results, result)
+                end
+            end)
         end
 
-        a.await_all(futures)
+        a.util.join(futures)
         return all_results
-    end)
+    end
 
-    a.run(runner(), function(results)
+    a.run(runner, function(results)
         callback(results, params)
     end)
 end
