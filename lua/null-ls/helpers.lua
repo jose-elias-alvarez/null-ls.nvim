@@ -37,6 +37,9 @@ local parse_args = function(args, params)
         if string.find(arg, "$FILEEXT") then
             arg = u.string.replace(arg, "$FILEEXT", vim.fn.fnamemodify(params.bufname, ":e"))
         end
+        if string.find(arg, "$ROOT") then
+            arg = u.string.replace(arg, "$ROOT", vim.lsp.get_client_by_id(params.client_id).config.root_dir)
+        end
 
         table.insert(parsed, arg)
     end
