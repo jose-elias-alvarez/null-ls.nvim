@@ -29,7 +29,7 @@ helpers.generator_factory({
     args, -- table (optional)
     on_output, -- function
     format, -- "raw", "line", "json", or "json_raw" (optional)
-    to_stderr, -- boolean (optional)
+    from_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
     suppress_errors, -- boolean (optional)
     check_exit_code, -- function or table of numbers (optional)
@@ -101,10 +101,12 @@ Supports the following options:
   `stderr` or from `json_decode`. Instead, it'll pass errors to `on_output` via
   `params.err`.
 
-### to_stderr
+### from_stderr
 
 Captures a command's `stderr` output and assigns it to `params.output`. Useful
 for linters that output to `stderr`.
+
+Note that setting `from_stderr = true` will discard `stdin` output.
 
 ### to_stdin
 

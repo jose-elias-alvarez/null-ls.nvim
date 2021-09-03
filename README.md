@@ -149,7 +149,7 @@ local markdownlint = {
         command = "markdownlint",
         args = { "--stdin" },
         to_stdin = true,
-        to_stderr = true,
+        from_stderr = true,
         -- choose an output format (raw, json, or line)
         format = "line",
         check_exit_code = function(code)

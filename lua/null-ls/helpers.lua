@@ -88,12 +88,12 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, to_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, use_cache =
+    local command, args, on_output, format, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, use_cache =
         opts.command,
         opts.args,
         opts.on_output,
         opts.format,
-        opts.to_stderr,
+        opts.from_stderr,
         opts.to_stdin,
         opts.suppress_errors,
         opts.check_exit_code,
@@ -130,7 +130,7 @@ M.generator_factory = function(opts)
                 end,
                 "raw, line, json, or json_raw",
             },
-            to_stderr = { to_stderr, "boolean", true },
+            from_stderr = { from_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
             suppress_errors = { suppress_errors, "boolean", true },
             check_exit_code = { check_exit_code, "function", true },
@@ -159,7 +159,7 @@ M.generator_factory = function(opts)
                 u.debug_log("error output: " .. (error_output or "nil"))
                 u.debug_log("output: " .. (output or "nil"))
 
-                if to_stderr then
+                if from_stderr then
                     output = error_output
                     error_output = nil
                 end
@@ -198,7 +198,7 @@ M.generator_factory = function(opts)
                 local cached = s.get_cache(params.bufnr, command)
                 if cached then
                     params._null_ls_cached = true
-                    wrapper(to_stderr and cached, to_stderr and nil or cached)
+                    wrapper(from_stderr and cached, from_stderr and nil or cached)
                     return
                 end
             end

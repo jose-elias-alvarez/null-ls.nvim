@@ -330,10 +330,10 @@ describe("helpers", function()
                     assert.equals(on_output.calls[1].refs[1]._null_ls_cached, true)
                 end)
 
-                it("should pass cached output as error when to_stderr is true", function()
+                it("should pass cached output as output when from_stderr is true", function()
                     s.get_cache.returns("cached")
                     generator_args.use_cache = true
-                    generator_args.to_stderr = true
+                    generator_args.from_stderr = true
 
                     helpers.generator_factory(generator_args).fn({})
 
@@ -364,8 +364,8 @@ describe("helpers", function()
                 assert.stub(on_output).was_called_with({ output = "output" }, done)
             end)
 
-            it("should set output to error_output and error_output to nil if to_stderr = true", function()
-                generator_args.to_stderr = true
+            it("should set output to error_output and error_output to nil if from_stderr = true", function()
+                generator_args.from_stderr = true
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
