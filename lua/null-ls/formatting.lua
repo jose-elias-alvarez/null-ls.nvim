@@ -52,7 +52,7 @@ M.apply_edits = function(edits, params)
     -- formatting and rangeFormatting handlers are identical
     local handler = lsp.handlers[params.lsp_method]
 
-    u.debug_log("received edits from generators")
+    u.debug_log("received edits from generators:")
     u.debug_log(edits)
 
     local diffed_edits = {}
@@ -79,7 +79,8 @@ M.apply_edits = function(edits, params)
         restore_win_data(marks, views, bufnr)
     end)
 
-    u.debug_log("successfully applied edits")
+    u.debug_log("successfully applied edits:")
+    u.debug_log(diffed_edits)
 end
 
 M.handler = function(method, original_params, handler)
