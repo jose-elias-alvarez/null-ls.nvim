@@ -76,8 +76,8 @@ function M.try_add(bufnr)
     bufnr = bufnr or api.nvim_get_current_buf()
     local ft, buftype = api.nvim_buf_get_option(bufnr, "filetype"), api.nvim_buf_get_option(bufnr, "buftype")
 
-    -- disabled completely until upstream bug is fixed
-    if ft == "gitcommit" then
+    -- writing and immediately deleting a buffer (e.g. :wq from a git commit) triggers a bug on 0.5, but it's fixed on master
+    if vim.fn.has("nvim-0.6") == 0 and ft == "gitcommit" then
         return
     end
 

@@ -353,7 +353,7 @@ M.pylint = h.make_builtin({
 
 M.misspell = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "*" },
+    filetypes = {},
     generator_opts = {
         command = "misspell",
         to_stdin = true,
@@ -397,7 +397,7 @@ M.vint = h.make_builtin({
 
 M.codespell = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "*" },
+    filetypes = {},
     generator_opts = {
         command = "codespell",
         args = { "-" },

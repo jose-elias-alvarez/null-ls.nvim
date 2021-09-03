@@ -176,7 +176,7 @@ null_ls.register(markdownlint)
 ### Advanced usage
 
 This [ESLint
-integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/develop/lua/nvim-lsp-ts-utils/null-ls.lua)
+integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/main/lua/nvim-lsp-ts-utils/null-ls.lua)
 from one of my plugins demonstrates an advanced example of parsing JSON output
 from a command to generate code actions.
 
