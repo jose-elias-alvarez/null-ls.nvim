@@ -245,6 +245,9 @@ with an alternative, please open an issue!
 
 2. Use `:NullLsInfo` to get the path to your debug log.
 
+As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
+option after you've collected the information you're looking for.
+
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
