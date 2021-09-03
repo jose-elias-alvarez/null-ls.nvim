@@ -52,10 +52,7 @@ M.debug_log = function(...)
 end
 
 M.filetype_matches = function(filetypes, ft)
-    if not filetypes then
-        return true
-    end
-    return vim.tbl_contains(filetypes, "*") or vim.tbl_contains(filetypes, ft)
+    return vim.tbl_isempty(filetypes) or vim.tbl_contains(filetypes, ft)
 end
 
 M.get_client = function()

@@ -69,6 +69,9 @@ local sources = {
 See the descriptions below or the relevant `builtins` source file to see the
 default options passed to each built-in source.
 
+Note that setting `filetypes = {}` will enable the source for all filetypes,
+which isn't recommended for most sources.
+
 You can override `args` using `with({ args = your_args })`, but if you want to
 add more flags, you should use `extra_args` instead:
 
@@ -1113,7 +1116,7 @@ local sources = { null_ls.builtins.diagnostics.codespell }
 
 ##### Defaults
 
-- `filetypes = { "*" }`
+- `filetypes = {}`
 - `command = "codespell"`
 - `args = { "-" }`
 
@@ -1328,7 +1331,7 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 
 ##### Defaults
 
-- `filetypes = { "*" }`
+- `filetypes = {}`
 - `command = "misspell"`
 - `args = { "$FILENAME" }`
 
