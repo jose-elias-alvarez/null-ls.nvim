@@ -26,7 +26,7 @@
   examples and follow the existing style.
 
 - A built-in source's arguments are the minimal arguments required for the
-  source to work. Leave out non-essential arguments.
+  source to work. Leave out non-essential arguments.
 
 ## Sources
 
