@@ -60,7 +60,7 @@ my_source.method = null_ls.methods.FORMATTING
 ### Filetypes
 
 A source has a list of filetypes, which define when the source is active. The
-list can contain a single filetype, more than one filetype, or the string `"*"`,
+list can contain a single filetype, more than one filetype, or nothing,
 which indicates that the source should activate for all filetypes.
 
 ```lua
@@ -72,8 +72,8 @@ my_source.filetypes = {"lua"}
 -- more than one
 my_source.filetypes = {"lua", "teal"}
 
--- all
-my_source.filetypes = {"*"}
+-- all filetypes
+my_source.filetypes = {}
 ```
 
 ### Registration

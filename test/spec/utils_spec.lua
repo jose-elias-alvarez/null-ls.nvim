@@ -25,8 +25,8 @@ describe("utils", function()
     end)
 
     describe("filetype_matches", function()
-        it("should return true when filetypes is nil", function()
-            local filetypes = nil
+        it("should return true when filetypes is empty", function()
+            local filetypes = {}
             local ft = "lua"
 
             local matches = u.filetype_matches(filetypes, ft)
@@ -43,25 +43,7 @@ describe("utils", function()
             assert.equals(matches, true)
         end)
 
-        it("should return true when filetypes includes ft", function()
-            local filetypes = { "lua" }
-            local ft = "lua"
-
-            local matches = u.filetype_matches(filetypes, ft)
-
-            assert.equals(matches, true)
-        end)
-
-        it("should return true when filetypes includes *", function()
-            local filetypes = { "*" }
-            local ft = "lua"
-
-            local matches = u.filetype_matches(filetypes, ft)
-
-            assert.equals(matches, true)
-        end)
-
-        it("should return false when filetypes does not include ft", function()
+        it("should return false when filetypes is not empty and does not include ft", function()
             local filetypes = { "javascript" }
             local ft = "lua"
 
