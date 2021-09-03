@@ -47,6 +47,16 @@ describe("config", function()
             assert.equals(vim.tbl_count(generators), 1)
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
+            assert.equals(c.get()._all_filetypes, false)
+        end)
+
+        it("should set all_filetypes if filetypes is empty table", function()
+            mock_source.filetypes = {}
+
+            c.register(mock_source)
+
+            assert.equals(vim.tbl_count(c.get()._filetypes), 0)
+            assert.equals(c.get()._all_filetypes, true)
         end)
 
         it("should throw if source method is invalid", function()

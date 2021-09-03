@@ -82,7 +82,11 @@ function M.try_add(bufnr)
     end
 
     -- lspconfig checks if buftype == "nofile", but we want to be defensive, since (if configured) null-ls will try attaching to any buffer
-    if buftype ~= "" or not u.filetype_matches(c.get()._filetypes, ft) then
+    if buftype ~= "" then
+        return
+    end
+
+    if not c.get()._all_filetypes and not u.filetype_matches(c.get()._filetypes, ft) then
         return
     end
 

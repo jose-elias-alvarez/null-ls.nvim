@@ -9,6 +9,7 @@ local defaults = {
     debug = false,
     _generators = {},
     _filetypes = {},
+    _all_filetypes = false,
     _names = {},
     _methods = {},
     _setup = false,
@@ -41,6 +42,11 @@ end
 local config = vim.deepcopy(defaults)
 
 local register_filetypes = function(filetypes)
+    if vim.tbl_isempty(filetypes) then
+        config._all_filetypes = true
+        return
+    end
+
     for _, filetype in pairs(filetypes) do
         if not vim.tbl_contains(config._filetypes, filetype) then
             table.insert(config._filetypes, filetype)
