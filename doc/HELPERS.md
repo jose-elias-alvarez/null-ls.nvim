@@ -59,7 +59,7 @@ null-ls will transform the following special arguments before spawning:
 - `$FILEEXT`: replaced with the current buffer's file extension (e.g.
   `my-file.lua` produces `"lua"`)
 
-- `$ROOT`: replaced with the project root path detected by the LSP
+- `$ROOT`: replaced with the LSP workspace root path
 
 ### on_output
 
