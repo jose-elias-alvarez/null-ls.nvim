@@ -78,20 +78,20 @@ describe("generators", function()
         local wrapped_run = a.wrap(generators.run, 4)
 
         it("should return empty table when generators is empty", function()
-            local results = a.await(wrapped_run({}, mock_params, postprocess))
+            local results = wrapped_run({}, mock_params, postprocess)()
 
             assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should get result from sync generator", function()
-            local results = a.await(wrapped_run({ sync_generator }, mock_params, postprocess))
+            local results = wrapped_run({ sync_generator }, mock_params, postprocess)()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should get result from async generator", function()
-            local results = a.await(wrapped_run({ async_generator }, mock_params, postprocess))
+            local results = wrapped_run({ async_generator }, mock_params, postprocess)()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
@@ -100,7 +100,7 @@ describe("generators", function()
         it(
             "should echo error message, set failed flag, and return empty table when generator throws an error",
             function()
-                local results = a.await(wrapped_run({ error_generator }, mock_params, postprocess))
+                local results = wrapped_run({ error_generator }, mock_params, postprocess)()
 
                 assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
                 assert.equals(error_generator._failed, true)
@@ -109,7 +109,7 @@ describe("generators", function()
         )
 
         it("should call postprocess with result, params, and generator", function()
-            a.await(wrapped_run({ sync_generator }, mock_params, postprocess))
+            wrapped_run({ sync_generator }, mock_params, postprocess)()
 
             assert.stub(postprocess).was_called_with(mock_result, mock_params, sync_generator)
         end)
