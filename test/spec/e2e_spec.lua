@@ -35,7 +35,7 @@ describe("e2e", function()
     _G._TEST = true
     after_each(function()
         vim.cmd("bufdo! bdelete!")
-        c.reset_sources()
+        c.reset()
     end)
 
     describe("code actions", function()
