@@ -107,6 +107,11 @@ describe("e2e", function()
     end)
 
     describe("diagnostics", function()
+        if vim.fn.executable("write-good") == 0 then
+            print("skipping diagnostic tests (write-good not installed)")
+            return
+        end
+
         before_each(function()
             c.register(builtins.diagnostics.write_good)
 
@@ -172,6 +177,11 @@ describe("e2e", function()
     end)
 
     describe("formatting", function()
+        if vim.fn.executable("prettier") == 0 then
+            print("skipping formatting tests (prettier not installed)")
+            return
+        end
+
         local formatted = 'import { User } from "./test-types";\n'
 
         local bufnr
@@ -233,6 +243,11 @@ describe("e2e", function()
     end)
 
     describe("range formatting", function()
+        if vim.fn.executable("prettier") == 0 then
+            print("skipping range formatting tests (prettier not installed)")
+            return
+        end
+
         -- only first line should be formatted
         local formatted = 'import { User } from "./test-types";\nimport {Other} from "./test-types"\n'
 
@@ -255,6 +270,11 @@ describe("e2e", function()
     end)
 
     describe("temp file source", function()
+        if vim.fn.executable("tl") == 0 then
+            print("skipping temp file source tests (teal not installed)")
+            return
+        end
+
         before_each(function()
             api.nvim_exec(
                 [[
