@@ -14,6 +14,14 @@
 
 - Mark your PR as WIP until it's ready to merge.
 
+- Make sure tests are passing by running `make test` in the root of the project.
+  Smaller features / fixes should have unit test coverage, and larger features
+  should have E2E coverage.
+
+- We use Plenary's test suite, which uses a stripped-down version of
+  [busted](https://github.com/Olivine-Labs/busted). If you're unsure how to
+  write tests for your PR, please let us know and we can help.
+
 ## Contributing built-ins
 
 - Check if there is an open issue requesting the built-in you are adding and
