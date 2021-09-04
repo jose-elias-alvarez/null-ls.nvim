@@ -1254,6 +1254,24 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - `command = "markdownlint"`
 - `args = { "--stdin" }`
 
+#### [mypy](http://mypy-lang.org)
+
+##### About
+
+mypy is a static type checker for Python.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mypy }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "mypy"`
+- `args = { "--hide-error-codes", "--hide-error-context", "--no-color-output", "--no-error-summary", "--no-pretty", "$FILENAME" }`
+
 #### [pylint](https://github.com/PyCGA/pylint)
 
 ##### About

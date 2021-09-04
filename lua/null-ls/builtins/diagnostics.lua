@@ -320,6 +320,40 @@ M.flake8 = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.mypy = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "mypy",
+        to_stdin = true,
+        from_stderr = true,
+        args = {
+            "--hide-error-codes",
+            "--hide-error-context",
+            "--no-color-output",
+            "--no-error-summary",
+            "--no-pretty",
+            "$FILENAME",
+        },
+        format = "line",
+        check_exit_code = function(code)
+            return code == 0 or code == 255
+        end,
+        on_output = h.diagnostics.from_pattern(
+            [[([^:]+):(%d+):(%d+): (%a+): (.*)]], --
+            { "filename", "row", "col", "severity", "message" },
+            {
+                severities = {
+                    error = h.diagnostics.severities["error"],
+                    warning = h.diagnostics.severities["warning"],
+                    note = h.diagnostics.severities["information"],
+                },
+            }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
 M.pylint = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "python" },
