@@ -46,6 +46,28 @@ describe("helpers", function()
             assert.equals(parsed[1], "lua")
         end)
 
+        it("should replace $ROOT with LSP workspace", function()
+            local args = { "$ROOT" }
+
+            stub(vim.lsp, "get_client_by_id")
+            local cwd = "/test-dir/"
+            vim.lsp.get_client_by_id.returns({ config = { root_dir = cwd } })
+
+            local parsed = helpers._parse_args(args, { client_id = 1 })
+
+            assert.equals(parsed[1], cwd)
+        end)
+
+        it("should replace $ROOT with cwd", function()
+            local args = { "$ROOT" }
+
+            vim.lsp.get_client_by_id.returns(nil)
+
+            local parsed = helpers._parse_args(args, { client_id = nil })
+
+            assert.equals(parsed[1], vim.fn.getcwd())
+        end)
+
         it("should return unmodified argument", function()
             local args = { "--mock-flag", "mock-value" }
 
