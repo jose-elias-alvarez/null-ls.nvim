@@ -72,8 +72,12 @@ M.apply_edits = function(edits, params)
 
     local marks, views = save_win_data(bufnr)
 
-    ---@diagnostic disable-next-line: redundant-parameter
-    handler(nil, params.lsp_method, diffed_edits, params.client_id, bufnr)
+    if vim.fn.has("nvim-0.5.1") > 0 then
+        handler(nil, diffed_edits, { method = params.lsp_method, client_id = params.client_id, bufnr = bufnr })
+    else
+        ---@diagnostic disable-next-line: redundant-parameter
+        handler(nil, params.lsp_method, diffed_edits, params.client_id, bufnr)
+    end
 
     vim.schedule(function()
         restore_win_data(marks, views, bufnr)
