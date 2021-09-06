@@ -146,13 +146,29 @@ M.timer = function(timeout, interval, should_start, callback)
 end
 
 M.temp_file = function(content, extension)
-    local tmp_path = os.tmpname()
-    if extension then
-        uv.fs_unlink(tmp_path)
-        tmp_path = tmp_path .. "." .. extension
+    local fd, tmp_path
+    if uv.fs_mkstemp then
+        -- prefer fs_mkstemp, which should work cross-platform
+        fd, tmp_path = uv.fs_mkstemp("null-ls_XXXXXX")
+    else
+        -- fall back to os.tmpname, which is Unix-only
+        tmp_path = os.tmpname()
     end
-    -- open with (0700) permissions
-    local fd = uv.fs_open(tmp_path, "w", 384)
+
+    -- close handle if open and rename temp file to add extension
+    if extension then
+        if fd then
+            uv.fs_close(fd)
+            fd = nil
+        end
+
+        local path_with_ext = tmp_path .. "." .. extension
+        uv.fs_rename(tmp_path, path_with_ext)
+        tmp_path = path_with_ext
+    end
+
+    -- if not open, open with (0700) permissions
+    fd = fd or uv.fs_open(tmp_path, "w", 384)
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 

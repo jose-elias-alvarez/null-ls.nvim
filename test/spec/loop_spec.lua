@@ -496,9 +496,12 @@ describe("loop", function()
         local mock_content = "write me to a temp file"
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
 
+        local fs_mkstemp = uv.fs_mkstemp
         before_each(function()
             stub(os, "tmpname")
             os.tmpname.returns(mock_path)
+            uv.fs_mkstemp.returns(mock_fd, mock_path)
+
             uv.fs_open.returns(mock_fd)
         end)
         after_each(function()
@@ -506,20 +509,69 @@ describe("loop", function()
             uv.fs_write:clear()
             uv.fs_close:clear()
             uv.fs_unlink:clear()
+            uv.fs_mkstemp = fs_mkstemp
+            uv.fs_mkstemp:clear()
+            uv.fs_rename:clear()
         end)
 
-        it("should call uv.fs_open with args", function()
+        it("should call uv.fs_mkstemp with pattern", function()
+            loop.temp_file(mock_content)
+
+            assert.stub(uv.fs_mkstemp).was_called_with("null-ls_XXXXXX")
+        end)
+
+        it("should not call uv.fs_open if fd from fs_mkstemp is already open", function()
+            loop.temp_file(mock_content)
+
+            assert.stub(uv.fs_open).was_not_called()
+        end)
+
+        it("should call os.tmpname if no uv.fs_mkstemp", function()
+            uv.fs_mkstemp = nil
+
             loop.temp_file(mock_content)
 
             assert.stub(os.tmpname).was_called()
+        end)
+
+        it("should call uv.fs_open with path and permissions", function()
+            loop.temp_file(mock_content)
+
             assert.stub(uv.fs_open).was_called_with(mock_path, "w", 384)
         end)
 
-        it("should add extension to tmp_path and unlink original path", function()
-            loop.temp_file(mock_content, "lua")
+        describe("extension", function()
+            local mock_extension = "lua"
 
-            assert.stub(uv.fs_unlink).was_called()
-            assert.stub(uv.fs_open).was_called_with(mock_path .. ".lua", "w", 384)
+            it("should call uv.fs_close on original handle", function()
+                local original_handle = 19
+                uv.fs_mkstemp.returns(original_handle, mock_path)
+
+                loop.temp_file(mock_content, mock_extension)
+
+                assert.stub(uv.fs_close).was_called_with(original_handle)
+            end)
+
+            it("should set original handle to nil and get new handle from fs_open", function()
+                local original_handle = 19
+                uv.fs_mkstemp.returns(original_handle, mock_path)
+
+                loop.temp_file(mock_content, mock_extension)
+
+                assert.stub(uv.fs_open).was_called()
+            end)
+
+            it("should call fs_rename with original path and path with extension", function()
+                loop.temp_file(mock_content, mock_extension)
+
+                assert.stub(uv.fs_rename).was_called_with(mock_path, mock_path .. ".lua")
+            end)
+
+            it("should set tmp_path to path with extension", function()
+                loop.temp_file(mock_content, mock_extension)
+
+                assert.stub(uv.fs_open).was_called_with(mock_path .. ".lua", "w", 384)
+            end)
         end)
 
         it("should call fs_write and fs_close with fd and content", function()
