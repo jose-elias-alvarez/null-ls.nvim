@@ -315,7 +315,7 @@ describe("helpers", function()
                 before_each(function()
                     loop.temp_file.returns("temp-path", cleanup)
 
-                    local params = { content = { "buffer content" } }
+                    local params = { content = { "buffer content" }, bufname = "mock-file.lua" }
                     generator_args.to_temp_file = true
                     generator_args.args = { "$FILENAME" }
 
@@ -327,8 +327,8 @@ describe("helpers", function()
                     cleanup:clear()
                 end)
 
-                it("should call loop.temp_file with content", function()
-                    assert.stub(loop.temp_file).was_called_with("buffer content")
+                it("should call loop.temp_file with content and file extension", function()
+                    assert.stub(loop.temp_file).was_called_with("buffer content", "lua")
                 end)
 
                 it("should replace $FILENAME arg with temp path", function()

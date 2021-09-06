@@ -512,7 +512,14 @@ describe("loop", function()
             loop.temp_file(mock_content)
 
             assert.stub(os.tmpname).was_called()
-            assert.stub(uv.fs_open).was_called_with(mock_path, "w", 0)
+            assert.stub(uv.fs_open).was_called_with(mock_path, "w", 384)
+        end)
+
+        it("should add extension to tmp_path and unlink original path", function()
+            loop.temp_file(mock_content, "lua")
+
+            assert.stub(uv.fs_unlink).was_called()
+            assert.stub(uv.fs_open).was_called_with(mock_path .. ".lua", "w", 384)
         end)
 
         it("should call fs_write and fs_close with fd and content", function()
