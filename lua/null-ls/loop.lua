@@ -145,9 +145,14 @@ M.timer = function(timeout, interval, should_start, callback)
     }
 end
 
-M.temp_file = function(content)
+M.temp_file = function(content, extension)
     local tmp_path = os.tmpname()
-    local fd = uv.fs_open(tmp_path, "w", 0)
+    if extension then
+        uv.fs_unlink(tmp_path)
+        tmp_path = tmp_path .. "." .. extension
+    end
+    -- open with (0700) permissions
+    local fd = uv.fs_open(tmp_path, "w", 384)
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 

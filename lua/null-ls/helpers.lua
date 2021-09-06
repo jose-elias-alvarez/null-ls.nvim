@@ -220,7 +220,8 @@ M.generator_factory = function(opts)
             }
 
             if to_temp_file then
-                local temp_path, cleanup = loop.temp_file(get_content(params))
+                local filename = vim.fn.fnamemodify(params.bufname, ":e")
+                local temp_path, cleanup = loop.temp_file(get_content(params), filename)
 
                 spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = cleanup
