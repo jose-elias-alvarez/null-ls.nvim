@@ -475,6 +475,17 @@ M.rufo = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.rubocop = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "ruby" },
+    generator_opts = {
+        command = "rubocop",
+        args = { "--auto-correct", "--stdin", "$FILENAME", "2>/dev/null", "|", "awk 'f; /^====================$/{f=1}'" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rustfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "rust" },

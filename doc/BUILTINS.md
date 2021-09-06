@@ -801,6 +801,26 @@ local sources = { null_ls.builtins.formatting.format_r }
 - `command = "R"`
 - `args = { "--slave", "--no-restore", "--no-save", "-e", 'formatR::tidy_source(source="stdin")' }`
 
+#### [rubocop](https://github.com/ruby-formatter/rubocop)
+
+##### About
+
+Ruby static code analyzer and formatter, based on the community Ruby style guide.
+This formatter will need [awk](https://en.wikipedia.org/wiki/AWK) to be installed on the host system to work.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rubocop }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "rubocop"`
+- `args = { "--auto-correct", "--stdin", "$FILENAME", "2>/dev/null", "|", "awk 'f; /^====================$/{f=1}'" }`
+
+
 #### [rufo](https://github.com/ruby-formatter/rufo)
 
 ##### About
