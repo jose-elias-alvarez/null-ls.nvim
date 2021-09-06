@@ -312,10 +312,11 @@ describe("helpers", function()
 
             describe("to_temp_file", function()
                 local cleanup = stub.new()
+                local params
                 before_each(function()
                     loop.temp_file.returns("temp-path", cleanup)
 
-                    local params = { content = { "buffer content" }, bufname = "mock-file.lua" }
+                    params = { content = { "buffer content" }, bufname = "mock-file.lua" }
                     generator_args.to_temp_file = true
                     generator_args.args = { "$FILENAME" }
 
@@ -333,6 +334,10 @@ describe("helpers", function()
 
                 it("should replace $FILENAME arg with temp path", function()
                     assert.same(loop.spawn.calls[1].refs[2], { "temp-path" })
+                end)
+
+                it("should assign temp_path to params", function()
+                    assert.equals(params.temp_path, "temp-path")
                 end)
 
                 it("should pass cleanup callback as on_stdout_end", function()

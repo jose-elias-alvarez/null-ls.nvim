@@ -225,6 +225,7 @@ M.generator_factory = function(opts)
 
                 spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = cleanup
+                params.temp_path = temp_path
             end
 
             spawn_args = parse_args(spawn_args, params)

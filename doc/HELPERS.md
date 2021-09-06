@@ -143,6 +143,9 @@ Writes the current buffer's content to a temporary file and replaces the special
 argument `$FILENAME` with the path to the temporary file. Useful for formatters
 and linters that don't accept input via `stdin`.
 
+Setting `to_temp_file = true` will also assign the path to the temp file to
+`params.temp_path`.
+
 ### use_cache
 
 Caches command output on run. When available, the generator will use cached
