@@ -1390,3 +1390,25 @@ local sources = { null_ls.builtins.diagnostics.selene }
 - `filetypes = { "lua" }`
 - `command = "selene"`
 - `args = { "--display-style", "quiet", "-" }`
+
+#### [phpstan](https://github.com/phpstan/phpstan)
+
+##### About
+
+PHP Static Analysis Tool
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.phpstan }
+```
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "phpstan"`
+- `args = { "analyze", "--error-format", "json", "--no-progress", "$FILENAME" }`
+
+##### Requirements
+
+A valid `phpstan.neon` at root.
