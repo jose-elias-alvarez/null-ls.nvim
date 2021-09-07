@@ -1412,3 +1412,25 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 ##### Requirements
 
 A valid `phpstan.neon` at root.
+
+#### [psalm](https://psalm.dev)
+
+##### About
+
+A static analysis tool for finding errors in PHP applications 
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.psalm }
+```
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "psalm"`
+- `args = { "--output-format=json", "--no-progress", "$FILENAME" },`
+
+##### Requirements
+
+A valid `psalm.xml` at root.
