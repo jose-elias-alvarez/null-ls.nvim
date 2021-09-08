@@ -646,4 +646,21 @@ M.autopep8 = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.phpcsfixer = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "php" },
+    generator_opts = {
+        command = "php-cs-fixer",
+        args = {
+            "--no-interaction",
+            "--quiet",
+            "fix",
+            "$FILENAME",
+        },
+        to_stdin = false,
+        to_temp_file = true,
+    },
+    factory = h.formatter_factory,
+})
+
 return M
