@@ -312,6 +312,7 @@ describe("helpers", function()
 
             describe("to_temp_file", function()
                 local cleanup = stub.new()
+
                 local params
                 before_each(function()
                     loop.temp_file.returns("temp-path", cleanup)
@@ -323,7 +324,6 @@ describe("helpers", function()
                     local generator = helpers.generator_factory(generator_args)
                     generator.fn(params)
                 end)
-
                 after_each(function()
                     cleanup:clear()
                 end)
@@ -340,8 +340,61 @@ describe("helpers", function()
                     assert.equals(params.temp_path, "temp-path")
                 end)
 
-                it("should pass cleanup callback as on_stdout_end", function()
-                    assert.equals(loop.spawn.calls[1].refs[3].on_stdout_end, cleanup)
+                it("should call cleanup callback in on_stdout_end", function()
+                    local on_stdout_end = loop.spawn.calls[1].refs[3].on_stdout_end
+
+                    on_stdout_end()
+
+                    assert.stub(cleanup).was_called()
+                end)
+            end)
+
+            describe("from_temp_file", function()
+                local cleanup = stub.new()
+                stub(vim.loop, "fs_open")
+                stub(vim.loop, "fs_fstat")
+                stub(vim.loop, "fs_read")
+                stub(vim.loop, "fs_close")
+
+                local mock_fd = 99
+                local mock_stat = { size = 100 }
+
+                local params
+                local on_stdout_end
+                before_each(function()
+                    loop.temp_file.returns("temp-path", cleanup)
+                    vim.loop.fs_open.returns(99)
+                    vim.loop.fs_fstat.returns(mock_stat)
+
+                    generator_args.to_temp_file = true
+                    generator_args.from_temp_file = true
+
+                    local generator = helpers.generator_factory(generator_args)
+                    params = {}
+                    generator.fn(params)
+                    on_stdout_end = loop.spawn.calls[1].refs[3].on_stdout_end
+                end)
+                after_each(function()
+                    vim.loop.fs_open:clear()
+                    vim.loop.fs_fstat:clear()
+                    cleanup:clear()
+                end)
+
+                it("should call vim.loop methods", function()
+                    on_stdout_end()
+
+                    assert.stub(vim.loop.fs_open).was_called_with("temp-path", "r", 438)
+                    assert.stub(vim.loop.fs_fstat).was_called_with(mock_fd)
+                    assert.stub(vim.loop.fs_read).was_called_with(mock_fd, mock_stat.size, 0)
+                    assert.stub(vim.loop.fs_close).was_called_with(mock_fd)
+                end)
+
+                it("should set params.output to temp file content", function()
+                    vim.loop.fs_read.returns("content")
+
+                    on_stdout_end()
+
+                    assert.equals(params.output, "content")
                 end)
             end)
 
@@ -400,6 +453,17 @@ describe("helpers", function()
                 wrapper("error output", nil)
 
                 assert.stub(on_output).was_called_with({ output = "error output" }, done)
+            end)
+
+            it("should not override params.output if already set", function()
+                local params = { output = "original output" }
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn(params, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper(nil, "new output")
+
+                assert.stub(on_output).was_called_with({ output = "original output" }, done)
             end)
 
             it("should throw error if error_output exists and format ~= raw", function()
@@ -502,9 +566,18 @@ describe("helpers", function()
 
         it("should not set suppress_errors when already set", function()
             opts.suppress_errors = false
+
             helpers.formatter_factory(opts)
 
             assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, false)
+        end)
+
+        it("should set from_temp_file if to_temp_file = true", function()
+            opts.to_temp_file = true
+
+            helpers.formatter_factory(opts)
+
+            assert.equals(helpers.generator_factory.calls[1].refs[1].from_temp_file, true)
         end)
 
         describe("on_output", function()

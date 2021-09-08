@@ -240,6 +240,29 @@ describe("e2e", function()
 
             assert.same(api.nvim_win_get_cursor(split_win), pos)
         end)
+
+        describe("from_temp_file", function()
+            local prettier = builtins.formatting.prettier
+            local original_args = prettier._opts.args
+            before_each(function()
+                c.reset()
+
+                prettier._opts.args = { "--write", "$FILENAME" }
+                prettier._opts.to_temp_file = true
+                c.register(prettier)
+            end)
+            after_each(function()
+                prettier._opts.args = original_args
+                prettier._opts.to_temp_file = false
+            end)
+
+            it("should format file", function()
+                lsp.buf.formatting()
+                lsp_wait()
+
+                assert.equals(u.buf.content(nil, true), formatted)
+            end)
+        end)
     end)
 
     describe("range formatting", function()
