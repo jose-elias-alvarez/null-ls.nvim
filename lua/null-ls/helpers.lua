@@ -228,11 +228,18 @@ M.generator_factory = function(opts)
                 spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = function()
                     if from_temp_file then
-                        local fd = vim.loop.fs_open(temp_path, "r", 438)
-                        local stat = vim.loop.fs_fstat(fd)
-                        params.output = vim.loop.fs_read(fd, stat.size, 0)
-                        vim.loop.fs_close(fd)
+                        -- wrap to make sure temp file is always cleaned up
+                        local ok, err = pcall(function()
+                            local fd = vim.loop.fs_open(temp_path, "r", 438)
+                            local stat = vim.loop.fs_fstat(fd)
+                            params.output = vim.loop.fs_read(fd, stat.size, 0)
+                            vim.loop.fs_close(fd)
+                        end)
+                        if not ok then
+                            u.echo("WarningMsg", "failed to read from temp file: " .. err)
+                        end
                     end
+
                     cleanup()
                 end
                 params.temp_path = temp_path
