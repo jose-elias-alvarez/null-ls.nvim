@@ -76,8 +76,8 @@ M.range = {
                 character = range.col - 1,
             },
             ["end"] = {
-                line = range.end_row - 1,
-                character = range.end_col - 1,
+                line = range.end_col > 0 and range.end_row - 1 or range.end_row,
+                character = range.end_col > 0 and range.end_col - 1 or 0,
             },
         }
         return lsp_range
