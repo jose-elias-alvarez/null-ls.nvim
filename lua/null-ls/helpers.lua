@@ -150,6 +150,7 @@ M.generator_factory = function(opts)
             vim.fn.executable(command) > 0,
             string.format("command %s is not executable (make sure it's installed and on your $PATH)", command)
         )
+        assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
         _validated = true
     end

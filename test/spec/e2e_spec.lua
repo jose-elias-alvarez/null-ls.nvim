@@ -253,7 +253,8 @@ describe("e2e", function()
             end)
             after_each(function()
                 prettier._opts.args = original_args
-                prettier._opts.to_temp_file = false
+                prettier._opts.from_temp_file = nil
+                prettier._opts.to_temp_file = nil
             end)
 
             it("should format file", function()

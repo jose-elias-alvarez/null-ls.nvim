@@ -234,6 +234,16 @@ describe("helpers", function()
             assert.truthy(err:match("command nonexistent is not executable"))
         end)
 
+        it("should throw error if from_temp_file = true but to_temp_file is not", function()
+            generator_args.from_temp_file = true
+            local generator = helpers.generator_factory(generator_args)
+
+            local _, err = pcall(generator.fn, {})
+
+            assert.truthy(err)
+            assert.truthy(err:match("from_temp_file requires to_temp_file"))
+        end)
+
         it("should set async to true", function()
             local generator = helpers.generator_factory(generator_args)
 
