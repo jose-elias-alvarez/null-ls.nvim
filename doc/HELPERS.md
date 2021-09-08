@@ -146,6 +146,12 @@ and linters that don't accept input via `stdin`.
 Setting `to_temp_file = true` will also assign the path to the temp file to
 `params.temp_path`.
 
+### from_temp_file
+
+Reads the contents of the temp file created by `to_temp_file` after running
+`command` and assigns it to `params.content`. Useful for formatters that don't
+output to `stdin` (see `formatter_factory`).
+
 ### use_cache
 
 Caches command output on run. When available, the generator will use cached
@@ -164,11 +170,14 @@ handler will always invalidate the buffer's cache before running generators.
 `formatter_factory` is a wrapper around `generator_factory` meant to streamline
 the process of capturing a formatter's output and replacing a buffer's entire
 content with that output. It supports the same options as `generator_factory`
-but will always override the following two options:
+with the following changes:
 
-- `suppress_errors`: will always be `true`.
+- `suppress_errors`: set to `true` unless specifically set to `false`.
 
-- `on_output`: will always return an edit object to replace the current buffer's
+- `from_temp_file`: always set to `true` if `to_temp_file` is `true` (since
+  formatting from a temp file won't work otherwise).
+
+- `on_output`: will always return an edit that will replace the current buffer's
   content with formatter output. As a result, other options that depend on
   `on_output`, such as `format`, will not have an effect.
 

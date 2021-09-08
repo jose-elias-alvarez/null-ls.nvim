@@ -93,7 +93,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, use_cache =
+    local command, args, on_output, format, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache =
         opts.command,
         opts.args,
         opts.on_output,
@@ -104,6 +104,7 @@ M.generator_factory = function(opts)
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
+        opts.from_temp_file,
         opts.use_cache
 
     if type(check_exit_code) == "table" then
@@ -141,6 +142,7 @@ M.generator_factory = function(opts)
             check_exit_code = { check_exit_code, "function", true },
             timeout = { timeout, "number", true },
             to_temp_file = { to_temp_file, "boolean", true },
+            from_temp_file = { from_temp_file, "boolean", true },
             use_cache = { use_cache, "boolean", true },
         })
 
@@ -177,7 +179,7 @@ M.generator_factory = function(opts)
                     return
                 end
 
-                params.output = output
+                params.output = params.output or output
                 if use_cache then
                     s.set_cache(params.bufnr, command, output)
                 end
@@ -224,7 +226,15 @@ M.generator_factory = function(opts)
                 local temp_path, cleanup = loop.temp_file(get_content(params), filename)
 
                 spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
-                spawn_opts.on_stdout_end = cleanup
+                spawn_opts.on_stdout_end = function()
+                    if from_temp_file then
+                        local fd = vim.loop.fs_open(temp_path, "r", 438)
+                        local stat = vim.loop.fs_fstat(fd)
+                        params.output = vim.loop.fs_read(fd, stat.size, 0)
+                        vim.loop.fs_close(fd)
+                    end
+                    cleanup()
+                end
                 params.temp_path = temp_path
             end
 
@@ -244,6 +254,11 @@ M.formatter_factory = function(opts)
     if opts.suppress_errors == nil then
         opts.suppress_errors = true
     end
+    -- assume this is what the author wanted, since it's the only way formatting will work
+    if opts.to_temp_file then
+        opts.from_temp_file = true
+    end
+
     opts.on_output = function(params, done)
         local output = params.output
         if not output then
