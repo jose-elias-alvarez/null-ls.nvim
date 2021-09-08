@@ -1102,6 +1102,24 @@ local sources = { null_ls.builtins.formatting.autopep8 }
 - `command = "autopep8"`
 - `args = { "-" }`
 
+#### [php-cs-fixer](https://github.com/FriendsOfPhp/PHP-CS-Fixer)
+
+##### About
+
+Formatter for `php` files
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.phpcsfixer }
+```
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "php-cs-fixer"`
+- `args = { '--no-interaction', '--quiet', 'fix', "$FILENAME" }`
+
 ### Diagnostics
 
 #### [chktex](https://www.nongnu.org/chktex/)
