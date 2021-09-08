@@ -7,12 +7,14 @@ local M = {}
 
 -- assume 1-indexed ranges
 local convert_range = function(diagnostic)
-    local row = u.string.to_number_safe(diagnostic.row, 1)
-    local col = u.string.to_number_safe(diagnostic.col, 1)
-    -- default end_row to row
-    local end_row = u.string.to_number_safe(diagnostic.end_row, row)
-    -- default end_col to -1, which wraps to the end of the line (after range.to_lsp conversion)
-    local end_col = u.string.to_number_safe(diagnostic.end_col, 0)
+    local row = tonumber(diagnostic.row or 1)
+    local col = tonumber(diagnostic.col or 1)
+    local end_row = tonumber(diagnostic.end_row or row)
+    local end_col = tonumber(diagnostic.end_col or 1)
+    -- wrap to next line
+    if end_row == row and end_col <= col then
+        end_row = end_row + 1
+    end
 
     return u.range.to_lsp({ row = row, col = col, end_row = end_row, end_col = end_col })
 end

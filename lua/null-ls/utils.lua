@@ -76,8 +76,8 @@ M.range = {
                 character = range.col - 1,
             },
             ["end"] = {
-                line = range.end_col > 0 and range.end_row - 1 or range.end_row,
-                character = range.end_col > 0 and range.end_col - 1 or 0,
+                line = range.end_row - 1,
+                character = range.end_col - 1,
             },
         }
         return lsp_range
@@ -171,15 +171,6 @@ M.string = {
         local second_half = string.sub(str, found_end + 1)
 
         return first_half .. replacement .. second_half
-    end,
-
-    to_number_safe = function(str, default, offset)
-        if not str then
-            return default
-        end
-
-        local number = tonumber(str)
-        return offset and number + offset or number
     end,
 
     to_start_case = function(str)

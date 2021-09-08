@@ -210,36 +210,6 @@ describe("utils", function()
                 assert.equals(replaced, "I am not a string")
             end)
         end)
-
-        describe("to_number_safe", function()
-            it("should return default when str is nil", function()
-                local str = nil
-                local default = 5
-
-                local num = u.string.to_number_safe(str, default)
-
-                assert.equals(num, default)
-            end)
-
-            it("should return str converted to number", function()
-                local str = "10"
-                local default = 5
-
-                local num = u.string.to_number_safe(str, default)
-
-                assert.equals(num, 10)
-            end)
-
-            it("should return str converted and modified by offset", function()
-                local str = "10"
-                local default = 5
-                local offset = 2
-
-                local num = u.string.to_number_safe(str, default, offset)
-
-                assert.equals(num, 12)
-            end)
-        end)
     end)
 
     describe("table", function()

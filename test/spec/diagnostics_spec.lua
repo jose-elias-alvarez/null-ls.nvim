@@ -198,7 +198,7 @@ describe("diagnostics", function()
                 postprocess(diagnostic, mock_params, mock_generator)
 
                 assert.same(diagnostic.range, {
-                    ["end"] = { character = 0, line = 2 },
+                    ["end"] = { character = 0, line = 1 },
                     start = { character = 4, line = 0 },
                 })
             end)
