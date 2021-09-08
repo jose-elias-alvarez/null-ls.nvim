@@ -1,7 +1,10 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
+local lspconfig_util = require("lspconfig.util")
+
 local uv = mock(vim.loop, true)
+local lsputil = mock(lspconfig_util, true)
 
 describe("loop", function()
     stub(vim, "schedule_wrap")
@@ -497,12 +500,17 @@ describe("loop", function()
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
 
         local fs_mkstemp = uv.fs_mkstemp
+        local separator = "/"
         before_each(function()
             stub(os, "tmpname")
             os.tmpname.returns(mock_path)
             uv.fs_mkstemp.returns(mock_fd, mock_path)
 
             uv.fs_open.returns(mock_fd)
+            lsputil.path.sep = separator
+            lsputil.path.join = function(...)
+                return table.concat({ ... }, separator)
+            end
         end)
         after_each(function()
             os.tmpname:revert()
@@ -514,10 +522,10 @@ describe("loop", function()
             uv.fs_rename:clear()
         end)
 
-        it("should call uv.fs_mkstemp with pattern", function()
+        it("should call uv.fs_mkstemp with path + pattern", function()
             loop.temp_file(mock_content)
 
-            assert.stub(uv.fs_mkstemp).was_called_with("null-ls_XXXXXX")
+            assert.stub(uv.fs_mkstemp).was_called_with("/tmp/null-ls_XXXXXX")
         end)
 
         it("should not call uv.fs_open if fd from fs_mkstemp is already open", function()
@@ -593,6 +601,31 @@ describe("loop", function()
             callback()
 
             assert.stub(uv.fs_unlink).was_called_with(mock_path)
+        end)
+
+        describe("windows", function()
+            separator = "\\"
+            local getenv = stub(vim.fn, "getenv")
+            local windows_temp_dir = "C:\\temp"
+
+            before_each(function()
+                getenv.returns(windows_temp_dir)
+            end)
+            after_each(function()
+                getenv:clear()
+            end)
+
+            it("should get TEMP env var", function()
+                loop.temp_file(mock_content)
+
+                assert.stub(getenv).was_called_with("TEMP")
+            end)
+
+            it("should call uv.fs_mkstemp with path + pattern", function()
+                loop.temp_file(mock_content)
+
+                assert.stub(uv.fs_mkstemp).was_called_with("C:\\temp\\null-ls_XXXXXX")
+            end)
         end)
     end)
 end)

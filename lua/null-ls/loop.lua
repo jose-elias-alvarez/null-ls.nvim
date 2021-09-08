@@ -146,10 +146,13 @@ M.timer = function(timeout, interval, should_start, callback)
 end
 
 M.temp_file = function(content, extension)
+    local lsputil = require("lspconfig.util")
+    local tmp_dir = lsputil.path.sep == "\\" and vim.fn.getenv("TEMP") or "/tmp"
+
     local fd, tmp_path
     if uv.fs_mkstemp then
-        -- prefer fs_mkstemp, which should work cross-platform
-        fd, tmp_path = uv.fs_mkstemp("null-ls_XXXXXX")
+        -- prefer fs_mkstemp, since we can modify the directory
+        fd, tmp_path = uv.fs_mkstemp(lsputil.path.join(tmp_dir, "null-ls_XXXXXX"))
     else
         -- fall back to os.tmpname, which is Unix-only
         tmp_path = os.tmpname()
