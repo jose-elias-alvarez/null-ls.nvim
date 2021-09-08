@@ -14,6 +14,7 @@ local convert_range = function(diagnostic)
     -- wrap to next line
     if end_row == row and end_col <= col then
         end_row = end_row + 1
+        end_col = 1
     end
 
     return u.range.to_lsp({ row = row, col = col, end_row = end_row, end_col = end_col })
