@@ -1447,8 +1447,28 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 
 - `filetypes = { "php" }`
 - `command = "psalm"`
-- `args = { "--output-format=json", "--no-progress", "$FILENAME" },`
+- `args = { "--output-format=json", "--no-progress", "$FILENAME" }`
 
 ##### Requirements
 
 A valid `psalm.xml` at root.
+
+
+#### [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
+
+##### About
+
+PHP_CodeSniffer is a script that tokenizes PHP, JavaScript and CSS files to detect violations of a defined coding standard.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.phpcs }
+```
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "phpcs"`
+- `args = { "--report=json", "-s", "-" }`
+

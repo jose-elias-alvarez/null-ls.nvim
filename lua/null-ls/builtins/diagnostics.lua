@@ -492,4 +492,30 @@ M.psalm = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.phpcs = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "php" },
+    generator_opts = {
+        command = "phpcs",
+        args = { "--report=json", "-s", "-" },
+        format = "json_raw",
+        to_stdin = true,
+        from_stderr = true,
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = function(params)
+            local parser = h.diagnostics.from_json({})
+            params.messages = params.output
+                    and params.output.files
+                    and params.output.files["STDIN"]
+                    and params.output.files["STDIN"].messages
+                or {}
+
+            return parser({ output = params.messages })
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 return M
