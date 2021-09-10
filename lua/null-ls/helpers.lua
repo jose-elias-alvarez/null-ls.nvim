@@ -157,6 +157,7 @@ M.generator_factory = function(opts)
 
     return {
         fn = function(params, done)
+            params = vim.deepcopy(params)
             local loop = require("null-ls.loop")
 
             if not _validated then
