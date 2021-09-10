@@ -1,5 +1,6 @@
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
+local c = require("null-ls.config")
 
 local M = {}
 
@@ -21,7 +22,7 @@ function M.setup()
 
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
-        if cmd == "nvim" then
+        if cmd == c.get().cmd then
             return M.start(dispatchers)
         end
         return rpc_start(cmd, cmd_args, dispatchers, ...)
