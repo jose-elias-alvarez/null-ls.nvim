@@ -184,19 +184,23 @@ M.shellcheck = h.make_builtin({
     filetypes = { "sh" },
     generator_opts = {
         command = "shellcheck",
-        args = { "--format", "json", "-" },
+        args = { "--format", "json1", "-" },
         to_stdin = true,
         format = "json",
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = h.diagnostics.from_json({
-            attributes = { code = "code" },
-            severities = {
-                info = h.diagnostics.severities["information"],
-                style = h.diagnostics.severities["hint"],
-            },
-        }),
+        on_output = function(params)
+            local parser = h.diagnostics.from_json({
+                attributes = { code = "code" },
+                severities = {
+                    info = h.diagnostics.severities["information"],
+                    style = h.diagnostics.severities["hint"],
+                },
+            })
+
+            return parser({ output = params.output.comments })
+        end,
     },
     factory = h.generator_factory,
 })

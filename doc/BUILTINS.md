@@ -873,7 +873,7 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
-- args = { "--format", "json", "-" },
+- args = { "--format", "json1", "-" },
 
 #### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
