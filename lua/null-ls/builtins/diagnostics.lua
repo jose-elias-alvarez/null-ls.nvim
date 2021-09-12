@@ -497,7 +497,7 @@ M.phpcs = h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "phpcs",
-        args = { "--report=json", "-s", "-" },
+        args = { "--report=json", "-q", "-s", "-" },
         format = "json_raw",
         to_stdin = true,
         from_stderr = false,
