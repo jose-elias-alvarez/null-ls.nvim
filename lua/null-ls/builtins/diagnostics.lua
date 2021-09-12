@@ -505,7 +505,16 @@ M.phpcs = h.make_builtin({
             return code <= 1
         end,
         on_output = function(params)
-            local parser = h.diagnostics.from_json({})
+            local parser = h.diagnostics.from_json({
+                attributes = {
+                    severity = "type",
+                    code = "source",
+                },
+                severities = {
+                    ERROR = h.diagnostics.severities["error"],
+                    WARNING = h.diagnostics.severities["warning"],
+                }
+            })
             params.messages = params.output
                     and params.output.files
                     and params.output.files["STDIN"]
