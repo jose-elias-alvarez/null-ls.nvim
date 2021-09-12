@@ -513,7 +513,7 @@ M.phpcs = h.make_builtin({
                 severities = {
                     ERROR = h.diagnostics.severities["error"],
                     WARNING = h.diagnostics.severities["warning"],
-                }
+                },
             })
             params.messages = params.output
                     and params.output.files
