@@ -500,7 +500,7 @@ M.phpcs = h.make_builtin({
         args = { "--report=json", "-s", "-" },
         format = "json_raw",
         to_stdin = true,
-        from_stderr = true,
+        from_stderr = false,
         check_exit_code = function(code)
             return code <= 1
         end,
