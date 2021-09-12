@@ -511,7 +511,7 @@ M.phpcs = h.make_builtin({
             "ignore_errors_on_exit",
             "1",
             -- process stdin
-            "-"
+            "-",
         },
         format = "json_raw",
         to_stdin = true,
