@@ -663,4 +663,15 @@ M.phpcsfixer = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.stylelint = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "scss", "less", "css", "sass" },
+    generator_opts = {
+        command = "stylelint",
+        args = { "--fix", "--stdin", "-" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 return M

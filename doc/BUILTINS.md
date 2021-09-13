@@ -1120,6 +1120,24 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 - `command = "php-cs-fixer"`
 - `args = { '--no-interaction', '--quiet', 'fix', "$FILENAME" }`
 
+#### [Stylelint](https://github.com/stylelint/stylelint)
+
+##### About
+
+A mighty, modern linter that helps you avoid errors and enforce conventions in your styles.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.stylelint }
+```
+
+##### Defaults
+
+- `filetypes = { "scss", "less", "css", "sass" }`
+- `command = "stylelint"`
+- `args = { "--fix", "--stdin", "-" }`
+
 ### Diagnostics
 
 #### [chktex](https://www.nongnu.org/chktex/)
