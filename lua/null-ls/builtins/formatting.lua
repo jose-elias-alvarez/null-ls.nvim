@@ -381,8 +381,17 @@ M.phpcbf = h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "phpcbf",
-        args = { "-" },
+        args = {
+            -- silence status messages during processing
+            "-q",
+            -- process stdin
+            "-",
+        },
         to_stdin = true,
+        check_exit_code = function(code)
+            -- phpcbf return a 1 or 2 exit code if it detects warnings or errors
+            return code <= 2
+        end,
     },
     factory = h.formatter_factory,
 })
