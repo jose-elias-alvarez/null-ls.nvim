@@ -1472,3 +1472,22 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - `command = "phpcs"`
 - `args = { "--report=json", "-s", "-" }`
 
+
+#### [Stylelint](https://github.com/stylelint/stylelint)
+
+##### About
+
+A mighty, modern linter that helps you avoid errors and enforce conventions in your styles.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.stylelint }
+```
+
+##### Defaults
+
+- `filetypes = { "scss", "less", "css", "sass" }`
+- `command = "stylelint"`
+- `args = { "--formatter", "json", "--stdin-filename", "$FILENAME" }`
+
