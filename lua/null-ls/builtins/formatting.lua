@@ -526,6 +526,7 @@ M.shfmt = h.make_builtin({
     },
     generator_opts = {
         command = "shfmt",
+        args = { "-filename", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
