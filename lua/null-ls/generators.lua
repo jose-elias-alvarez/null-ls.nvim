@@ -17,8 +17,9 @@ M.run = function(generators, params, postprocess, callback)
         local futures, all_results = {}, {}
         for _, generator in ipairs(generators) do
             table.insert(futures, function()
+                local copied_params = vim.deepcopy(params)
                 local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
-                local ok, results = pcall(to_run, params)
+                local ok, results = pcall(to_run, copied_params)
                 a.util.scheduler()
 
                 if not ok then
@@ -33,7 +34,7 @@ M.run = function(generators, params, postprocess, callback)
 
                 for _, result in ipairs(results) do
                     if postprocess then
-                        postprocess(result, params, generator)
+                        postprocess(result, copied_params, generator)
                     end
 
                     table.insert(all_results, result)

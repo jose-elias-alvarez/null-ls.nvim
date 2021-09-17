@@ -140,38 +140,42 @@ describe("e2e", function()
             assert.equals(vim.tbl_count(lsp.diagnostic.get()), 0)
         end)
 
-        it("should show diagnostics from multiple sources", function()
-            vim.cmd("bufdo! bdelete!")
-
-            c.register(builtins._test.mock_diagnostics)
-            tu.edit_test_file("test-file.md")
-            lsp_wait()
-
-            local diagnostics = lsp.diagnostic.get()
-            assert.equals(vim.tbl_count(diagnostics), 2)
-
-            local mock_source_diagnostic, write_good_diagnostic
-            for _, diagnostic in ipairs(diagnostics) do
-                if diagnostic.source == "mock-diagnostics" then
-                    mock_source_diagnostic = diagnostic
-                end
-                if diagnostic.source == "write-good" then
-                    write_good_diagnostic = diagnostic
-                end
+        describe("multiple diagnostics", function()
+            if vim.fn.executable("markdownlint") == 0 then
+                print("skipping multiple diagnostics tests (markdownlint not installed)")
+                return
             end
-            assert.truthy(mock_source_diagnostic)
-            assert.truthy(write_good_diagnostic)
+
+            it("should show diagnostics from multiple sources", function()
+                c.register(builtins.diagnostics.markdownlint)
+                vim.cmd("e")
+                lsp_wait()
+
+                local diagnostics = lsp.diagnostic.get()
+                assert.equals(vim.tbl_count(diagnostics), 2)
+
+                local markdownlint_diagnostic, write_good_diagnostic
+                for _, diagnostic in ipairs(diagnostics) do
+                    if diagnostic.source == "markdownlint" then
+                        markdownlint_diagnostic = diagnostic
+                    end
+                    if diagnostic.source == "write-good" then
+                        write_good_diagnostic = diagnostic
+                    end
+                end
+                assert.truthy(markdownlint_diagnostic)
+                assert.truthy(write_good_diagnostic)
+            end)
         end)
 
         it("should format diagnostics with source-specific diagnostics_format", function()
-            vim.cmd("bufdo! bdelete!")
             c.reset_sources()
-
             c.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
-            tu.edit_test_file("test-file.md")
+            vim.cmd("e")
             lsp_wait()
 
             local write_good_diagnostic = lsp.diagnostic.get()[1]
+
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
         end)
     end)
