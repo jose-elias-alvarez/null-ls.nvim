@@ -31,6 +31,9 @@ local parse_args = function(args, params)
         if string.find(arg, "$FILENAME") then
             arg = u.string.replace(arg, "$FILENAME", params.bufname)
         end
+        if string.find(arg, "$DIRNAME") then
+            arg = u.string.replace(arg, "$DIRNAME", vim.fn.fnamemodify(params.bufname, ":h"))
+        end
         if string.find(arg, "$TEXT") then
             arg = u.string.replace(arg, "$TEXT", get_content(params))
         end

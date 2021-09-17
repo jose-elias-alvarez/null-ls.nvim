@@ -184,7 +184,7 @@ M.shellcheck = h.make_builtin({
     filetypes = { "sh" },
     generator_opts = {
         command = "shellcheck",
-        args = { "--format", "json1", "-" },
+        args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" },
         to_stdin = true,
         format = "json",
         check_exit_code = function(code)
