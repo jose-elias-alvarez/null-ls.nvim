@@ -501,15 +501,39 @@ M.phpcs = h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "phpcs",
-        args = { "--report=json", "-s", "-" },
+        args = {
+            "--report=json",
+            -- silence status messages during processing as they are invalid JSON
+            "-q",
+            -- always report codes
+            "-s",
+            -- phpcs exits with a non-0 exit code when messages are reported but we only want to know if the command fails
+            "--runtime-set",
+            "ignore_warnings_on_exit",
+            "1",
+            "--runtime-set",
+            "ignore_errors_on_exit",
+            "1",
+            -- process stdin
+            "-",
+        },
         format = "json_raw",
         to_stdin = true,
-        from_stderr = true,
+        from_stderr = false,
         check_exit_code = function(code)
             return code <= 1
         end,
         on_output = function(params)
-            local parser = h.diagnostics.from_json({})
+            local parser = h.diagnostics.from_json({
+                attributes = {
+                    severity = "type",
+                    code = "source",
+                },
+                severities = {
+                    ERROR = h.diagnostics.severities["error"],
+                    WARNING = h.diagnostics.severities["warning"],
+                },
+            })
             params.messages = params.output
                     and params.output.files
                     and params.output.files["STDIN"]
