@@ -105,24 +105,6 @@ M.cached_code_action = h.make_builtin({
     factory = h.generator_factory,
 })
 
-M.mock_diagnostics = {
-    method = methods.internal.DIAGNOSTICS,
-    generator = {
-        fn = function()
-            return {
-                {
-                    col = 1,
-                    row = 1,
-                    message = "There is something wrong with this file!",
-                    severity = 1,
-                    source = "mock-diagnostics",
-                },
-            }
-        end,
-    },
-    filetypes = { "markdown" },
-}
-
 M.first_formatter = {
     method = methods.internal.FORMATTING,
     generator = {
