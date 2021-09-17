@@ -148,7 +148,11 @@ describe("formatting", function()
                     assert.stub(lsp_handler).was_called_with(
                         nil,
                         { { newText = mock_diffed.text, range = mock_diffed.range } },
-                        { method = mock_params.lsp_method, client_id = mock_params.client_id, bufnr = mock_params.bufnr }
+                        {
+                            method = mock_params.lsp_method,
+                            client_id = mock_params.client_id,
+                            bufnr = mock_params.bufnr,
+                        }
                     )
                 end)
             end)
