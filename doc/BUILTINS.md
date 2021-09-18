@@ -1036,16 +1036,21 @@ A simple wrapper around `awk` to remove trailing whitespace.
 ##### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.trim_whitespace.with({
-    filetypes = { ... }
-}) }
+local sources = { null_ls.builtins.formatting.trim_whitespace }
 ```
 
 ##### Usage
-
-- `filetypes = one (must specify in with(), as above)`
+- `filetypes = { }`
 - `command = "awk"`
 - `args = { '{ sub(/[ \t]+$/, ""); print }' }`
+
+if you want to use this with specific filetypes you can set using `with`
+
+```lua
+local sources = { null_ls.builtins.formatting.trim_whitespace.with({
+    filetypes = { "lua", "c", "cpp }
+}) }
+```
 
 #### [uncrustify](https://github.com/uncrustify/uncrustify)
 
