@@ -3,7 +3,6 @@ local methods = require("null-ls.methods")
 local validate = vim.validate
 
 local defaults = {
-    cmd = "nvim",
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
