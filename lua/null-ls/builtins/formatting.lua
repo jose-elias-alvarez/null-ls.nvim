@@ -615,6 +615,7 @@ M.terraform_fmt = h.make_builtin({
 
 M.trim_whitespace = h.make_builtin({
     method = FORMATTING,
+    filetypes = {},
     generator_opts = {
         command = "awk",
         args = { '{ sub(/[ \t]+$/, ""); print }' },
