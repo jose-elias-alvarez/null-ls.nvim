@@ -415,22 +415,20 @@ M.codespell = h.make_builtin({
             end
 
             local diagnostics = {}
-            local final_table = {}
-            local raw_table = vim.split(output, "\n")
-
-            for _, str in ipairs(raw_table) do
-                local tmp_table = vim.split(str, ":")
-                tmp_table[1] = string.gsub(tmp_table[1], "\t", "")
-                if tmp_table[1] ~= "" then
-                    table.insert(final_table, tmp_table[1])
-                end
-            end
-
-            for l = #final_table, 1, -2 do
+            local content = params.content
+            local pat_diag = "(%d+): - [^\n]+\n\t((%S+)[^\n]+)"
+            for row, message, misspelled in output:gmatch(pat_diag) do
+                row = tonumber(row)
+                -- Note: We cannot always get the misspelled columns directly from codespell (version 2.1.0) outputs,
+                -- where indents in the detected lines have been truncated.
+                local line = content[row]
+                local col, end_col = line:find(misspelled)
                 table.insert(diagnostics, {
-                    row = final_table[l - 1],
+                    row = row,
+                    col = col,
+                    end_col = end_col + 1,
                     source = "codespell",
-                    message = final_table[l],
+                    message = message,
                     severity = 2,
                 })
             end
