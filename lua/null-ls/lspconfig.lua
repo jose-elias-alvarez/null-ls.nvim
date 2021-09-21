@@ -73,6 +73,11 @@ function M.try_add(bufnr)
         return
     end
 
+    -- don't attach if no sources have been registered
+    if not c.get()._registered then
+        return
+    end
+
     bufnr = bufnr or api.nvim_get_current_buf()
     local ft, buftype = api.nvim_buf_get_option(bufnr, "filetype"), api.nvim_buf_get_option(bufnr, "buftype")
 

@@ -12,6 +12,7 @@ local defaults = {
     _all_filetypes = false,
     _names = {},
     _methods = {},
+    _registered = false,
     _setup = false,
 }
 
@@ -124,6 +125,7 @@ local register_source = function(source, filetypes)
         table.insert(config._generators[method], generator)
     end
 
+    config._registered = true
     require("null-ls.lspconfig").on_register_source(source_methods)
 end
 

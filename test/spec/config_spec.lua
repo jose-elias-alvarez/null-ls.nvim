@@ -48,6 +48,7 @@ describe("config", function()
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
             assert.equals(vim.tbl_count(c.get()._filetypes), 2)
             assert.equals(c.get()._all_filetypes, false)
+            assert.equals(c.get()._registered, true)
         end)
 
         it("should set all_filetypes if filetypes is empty table", function()
