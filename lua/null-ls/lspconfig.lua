@@ -11,7 +11,7 @@ function M.setup()
     local util = require("lspconfig/util")
 
     local config_def = {
-        cmd = { configs["null-ls"].cmd[1] or "nvim" },
+        cmd = { "nvim" },
         name = "null-ls",
         root_dir = function(fname)
             return util.root_pattern("Makefile", ".git")(fname) or util.path.dirname(fname)
