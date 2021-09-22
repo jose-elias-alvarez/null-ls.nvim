@@ -18,10 +18,10 @@ local lastpid = 5000
 
 function M.setup()
     local rpc = require("vim.lsp.rpc")
-    local config = require("lspconfig")["null-ls"]
 
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
+        local config = require("lspconfig")["null-ls"]
         if config and cmd == config.cmd[1] then
             return M.start(dispatchers)
         end
