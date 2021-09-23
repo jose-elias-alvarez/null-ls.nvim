@@ -182,6 +182,13 @@ from a command to generate code actions.
 
 ## FAQ
 
+### How do I set the path to neovim binary?
+
+Set it while calling lsp setup for null-ls.
+```lua
+require("lspconfig")["null-ls"].setup({ cmd = { "/path/to/nvim" }, ... })
+```
+
 ### How do I format files?
 
 null-ls formatters run when you call `vim.lsp.buf.formatting()` or
