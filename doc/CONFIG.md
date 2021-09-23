@@ -47,18 +47,12 @@ The following code block shows the available options and their defaults.
 
 ```lua
 local defaults = {
-    cmd = "nvim",
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
     sources = nil,
 }
 ```
-
-## cmd (string)
-
-Set the absolute path of the Neovim binary. Useful in case your Neovim installation
-directory is not in `PATH` environmental variable.
 
 ## diagnostics_format (string)
 
