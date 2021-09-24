@@ -507,7 +507,7 @@ M.rustfmt = h.make_builtin({
     filetypes = { "rust" },
     generator_opts = {
         command = "rustfmt",
-        args = { "--emit=stdout" },
+        args = { "--emit=stdout", "--edition=2018" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
