@@ -50,6 +50,19 @@ describe("generators", function()
             return { mock_result }
         end,
     }
+    local runtime_generator = function(runtime_result)
+        return {
+            filetypes = { "lua" },
+            opts = {
+                runtime_condition = function()
+                    return runtime_result
+                end,
+            },
+            fn = function()
+                return { mock_result }
+            end,
+        }
+    end
 
     local error_generator
     local mock_params
@@ -112,6 +125,28 @@ describe("generators", function()
             wrapped_run({ sync_generator }, mock_params, postprocess)()
 
             assert.stub(postprocess).was_called_with(mock_result, mock_params, sync_generator)
+        end)
+
+        it("should skip generators that fail runtime_condition", function()
+            local results =
+                wrapped_run(
+                    { runtime_generator(false), runtime_generator(true) },
+                    mock_params,
+                    postprocess
+                )()
+
+            assert.equals(vim.tbl_count(results), 1)
+            assert.equals(results[1].title, mock_result.title)
+        end)
+
+        it("should return an empty table if all runtime_conditions fail", function()
+            local results = wrapped_run(
+                { runtime_generator(false), runtime_generator(false) },
+                mock_params,
+                postprocess
+            )()
+
+            assert.equals(vim.tbl_count(results), 0)
         end)
     end)
 

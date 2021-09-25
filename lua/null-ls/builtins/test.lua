@@ -127,4 +127,20 @@ M.second_formatter = {
     filetypes = { "text" },
 }
 
+M.runtime_skipped_formatter = {
+    method = methods.internal.FORMATTING,
+    generator = {
+        fn = function(_, done)
+            return done({ { text = "runtime" } })
+        end,
+        opts = {
+            runtime_condition = function(_)
+                return false
+            end,
+        },
+        async = true,
+    },
+    filetypes = { "text" },
+}
+
 return M

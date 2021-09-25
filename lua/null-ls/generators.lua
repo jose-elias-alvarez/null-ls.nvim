@@ -18,6 +18,12 @@ M.run = function(generators, params, postprocess, callback)
         for _, generator in ipairs(generators) do
             table.insert(futures, function()
                 local copied_params = vim.deepcopy(params)
+
+                local runtime_condition = generator.opts and generator.opts.runtime_condition
+                if runtime_condition and not runtime_condition(copied_params) then
+                    return
+                end
+
                 local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
                 local ok, results = pcall(to_run, copied_params)
                 a.util.scheduler()
