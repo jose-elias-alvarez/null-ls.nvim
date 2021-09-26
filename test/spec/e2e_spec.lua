@@ -408,5 +408,17 @@ describe("e2e", function()
 
             assert.equals(u.buf.content(nil, true), "first\n")
         end)
+
+        it("should skip formatters that fail runtime conditions", function()
+            c.register(builtins._test.first_formatter)
+            c.register(builtins._test.runtime_skipped_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.equals(u.buf.content(nil, true), "first\n")
+        end)
     end)
 end)

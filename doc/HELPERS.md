@@ -36,6 +36,7 @@ helpers.generator_factory({
     timeout, -- number (optional)
     to_temp_file, -- boolean (optional)
     use_cache, -- boolean (optional)
+    runtime_condition, -- function (optional)
 })
 ```
 
@@ -166,6 +167,28 @@ Sources that rely on up-to-date buffer content should avoid using this option.
 
 Note that this option effectively does nothing for diagnostics, since the
 handler will always invalidate the buffer's cache before running generators.
+
+### runtime_condition
+
+Optional function that will be called when generating a list of sources to
+run for a given method. The calculations here must be conscious that this is
+called _every_ time a source is potentially run, and hence should avoid
+doing anything overly expensive.
+
+- Takes a single argument, `params`, which is a table of parameters containing
+  the following useful keys, amongst a few others (one can `print(vim.inspect(params))`
+  inside of the function to see more):
+    - `bufnr`: The buffer number being formatted
+    - `bufname`: The name of the above buffer number
+    - `client_id`: The ID of the attached client
+    - `content`: The contents of the buffer, potentially updated from formatters
+                 that have been run prior
+    - `ft`: The `filetype` of the aforementioned buffer
+- If the function returns `nil` or `false`, the associated source will be skipped,
+  otherwise it will be added to the set of valid sources to run upon meeting other
+  neccessary conditions (filetype, etc.) as well.
+- Defaults to `true`, hence any configured source will be run every time unless
+  this condition specifies otherwise.
 
 ## formatter_factory
 
