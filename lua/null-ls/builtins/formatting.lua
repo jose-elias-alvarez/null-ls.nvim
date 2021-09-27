@@ -580,7 +580,6 @@ M.standardrb = h.make_builtin({
     factory = h.formatter_factory,
 })
 
-
 M.styler = h.make_builtin({
     method = FORMATTING,
     filetypes = { "r", "rmd" },
