@@ -561,6 +561,26 @@ M.shellharden = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.standardrb = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "ruby" },
+    generator_opts = {
+        command = "standardrb",
+        args = {
+            "--fix",
+            "--quiet",
+            "--stdin",
+            "$FILENAME",
+            "2>/dev/null",
+            "|",
+            "awk 'f; /^====================$/{f=1}'",
+        },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+
 M.styler = h.make_builtin({
     method = FORMATTING,
     filetypes = { "r", "rmd" },
