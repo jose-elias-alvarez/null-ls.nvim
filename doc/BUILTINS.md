@@ -806,7 +806,6 @@ local sources = { null_ls.builtins.formatting.format_r }
 ##### About
 
 Ruby static code analyzer and formatter, based on the community Ruby style guide.
-This formatter will need [awk](https://en.wikipedia.org/wiki/AWK) to be installed on the host system to work.
 
 ##### Usage
 
@@ -818,7 +817,7 @@ local sources = { null_ls.builtins.formatting.rubocop }
 
 - `filetypes = { "ruby" }`
 - `command = "rubocop"`
-- `args = { "--auto-correct", "--stdin", "$FILENAME", "2>/dev/null", "|", "awk 'f; /^====================$/{f=1}'" }`
+- `args = { "--auto-correct", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
 
 #### [rufo](https://github.com/ruby-formatter/rufo)

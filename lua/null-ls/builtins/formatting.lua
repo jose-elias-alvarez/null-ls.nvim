@@ -491,13 +491,14 @@ M.rubocop = h.make_builtin({
         command = "rubocop",
         args = {
             "--auto-correct",
+            "-f",
+            "quiet",
+            "--stderr",
             "--stdin",
             "$FILENAME",
-            "2>/dev/null",
-            "|",
-            "awk 'f; /^====================$/{f=1}'",
         },
         to_stdin = true,
+        ignore_stderr = true,
     },
     factory = h.formatter_factory,
 })

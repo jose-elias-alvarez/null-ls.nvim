@@ -96,11 +96,12 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition =
         opts.command,
         opts.args,
         opts.on_output,
         opts.format,
+        opts.ignore_stderr,
         opts.from_stderr,
         opts.to_stdin,
         opts.suppress_errors,
@@ -141,6 +142,7 @@ M.generator_factory = function(opts)
                 "raw, line, json, or json_raw",
             },
             from_stderr = { from_stderr, "boolean", true },
+            ignore_stderr = { ignore_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
             suppress_errors = { suppress_errors, "boolean", true },
             check_exit_code = { check_exit_code, "function", true },
@@ -172,7 +174,9 @@ M.generator_factory = function(opts)
                 u.debug_log("error output: " .. (error_output or "nil"))
                 u.debug_log("output: " .. (output or "nil"))
 
-                if from_stderr then
+                if ignore_stderr then
+                    error_output = nil
+                elseif from_stderr then
                     output = error_output
                     error_output = nil
                 end
