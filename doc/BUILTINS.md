@@ -947,6 +947,24 @@ local sources = { null_ls.builtins.formatting.shellharden }
 - `command = "shellharden"`
 - `args = { "--transform", "$FILENAME" }`
 
+#### [standardrb](https://github.com/testdouble/standard)
+
+##### About
+
+Ruby Style Guide, with linter & automatic code fixer. Based on Rubocop.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.standardrb }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "standardrb"`
+- `args = { "--fix", "--format", "quiet", "--stderr", "--stdin", "$FILENAME" }`
+
 #### [styler](https://github.com/r-lib/styler)
 
 ##### About
