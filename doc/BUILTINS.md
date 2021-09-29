@@ -1449,6 +1449,24 @@ local sources = { null_ls.builtins.diagnostics.selene }
 - `command = "selene"`
 - `args = { "--display-style", "quiet", "-" }`
 
+#### [standardrb](https://github.com/testdouble/standard)
+
+##### About
+
+The Ruby Linter/Formatter that Serves and Protects.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.standardrb }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "standardrb"`
+- `args = { "--no-fix", "-f", "json", "--stdin", "$FILENAME" }`
+
 #### [phpstan](https://github.com/phpstan/phpstan)
 
 ##### About
@@ -1512,6 +1530,23 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - `command = "phpcs"`
 - `args = { "--report=json", "-s", "-" }`
 
+#### [Rubocop](https://rubocop.org/)
+
+##### About
+
+The Ruby Linter/Formatter that Serves and Protects.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.rubocop }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "rubocop"`
+- `args = { "-f", "json", "--stdin", "$FILENAME" }`
 
 #### [Stylelint](https://github.com/stylelint/stylelint)
 
