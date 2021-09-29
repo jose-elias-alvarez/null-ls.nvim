@@ -246,7 +246,7 @@ describe("loop", function()
                 on_close(255)
 
                 assert.stub(check_exit_code).was_not_called()
-                assert.stub(done).was_called_with(false)
+                assert.stub(done).was_called_with(false, false)
             end)
 
             it("should check exit code with check_exit_code callback", function()
@@ -257,10 +257,10 @@ describe("loop", function()
                 on_close(255)
 
                 assert.stub(check_exit_code).was_called_with(255)
-                assert.stub(done).was_called_with(false)
+                assert.stub(done).was_called_with(false, false)
             end)
 
-            it("should set exit_ok to false if exit code is TIMEOUT_EXIT_CODE", function()
+            it("should set did_timeout if exit code is TIMEOUT_EXIT_CODE", function()
                 mock_opts.check_exit_code = nil
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
@@ -268,7 +268,7 @@ describe("loop", function()
                 on_close(7451)
 
                 assert.stub(check_exit_code).was_not_called()
-                assert.stub(done).was_called_with(false)
+                assert.stub(done).was_called_with(false, true)
             end)
 
             it("should call close_handle on spawn handle", function()
