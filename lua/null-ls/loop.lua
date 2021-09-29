@@ -39,7 +39,7 @@ M.spawn = function(cmd, args, opts)
     end
 
     local timer
-    local done = wrap(function(exit_ok)
+    local done = wrap(function(exit_ok, did_timeout)
         if timer then
             timer.stop(true)
         end
@@ -54,7 +54,7 @@ M.spawn = function(cmd, args, opts)
 
         -- if exit code is not ok and command did not output to stderr,
         -- assign output to error_output, so handler can process it as an error
-        if not exit_ok and not error_output then
+        if not did_timeout and not exit_ok and not error_output then
             error_output = output
             output = nil
         end
@@ -72,8 +72,10 @@ M.spawn = function(cmd, args, opts)
         local exit_ok
         if code == TIMEOUT_EXIT_CODE then
             exit_ok = false
+        elseif check_exit_code then
+            exit_ok = check_exit_code(code)
         else
-            exit_ok = check_exit_code and check_exit_code(code) or code == 0
+            exit_ok = code == 0
         end
 
         stdout:read_stop()
@@ -86,7 +88,7 @@ M.spawn = function(cmd, args, opts)
         close_handle(stdout)
         close_handle(stderr)
         close_handle(handle)
-        done(exit_ok)
+        done(exit_ok, code == TIMEOUT_EXIT_CODE)
     end
 
     handle = uv.spawn(vim.fn.exepath(cmd), { args = args, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() }, on_close)
