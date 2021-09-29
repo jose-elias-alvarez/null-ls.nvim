@@ -1027,6 +1027,31 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 - `command = "terraform"`
 - `args = { "fmt", "-" }`
 
+#### trim_newlines
+
+##### About
+
+A simple wrapper around `awk` to remove trailing newlines.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.trim_newlines }
+```
+
+##### Usage
+- `filetypes = { }`
+- `command = "awk"`
+- `args = { 'NF{print s $0; s=""; next} {s=s ORS}' }`
+
+if you want to use this with specific filetypes you can set using `with`
+
+```lua
+local sources = { null_ls.builtins.formatting.trim_newlines.with({
+    filetypes = { "lua", "c", "cpp }
+}) }
+```
+
 #### trim_whitespace
 
 ##### About

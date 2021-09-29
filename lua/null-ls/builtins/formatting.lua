@@ -624,6 +624,17 @@ M.trim_whitespace = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.trim_newlines = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {},
+    generator_opts = {
+        command = "awk",
+        args = { 'NF{print s $0; s=""; next} {s=s ORS}' },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.uncrustify = h.make_builtin({
     method = FORMATTING,
     filetypes = { "c", "cpp", "cs", "java" },
