@@ -244,7 +244,7 @@ local handle_rubocop_output = function(params)
                     warning = h.diagnostics.severities.warning,
                     error = h.diagnostics.severities.error,
                     fatal = h.diagnostics.severities.fatal,
-                }
+                },
             })
             local offenses = {}
 
