@@ -29,6 +29,7 @@ helpers.generator_factory({
     args, -- table (optional)
     on_output, -- function
     format, -- "raw", "line", "json", or "json_raw" (optional)
+    ignore_stderr, -- boolean (optional)
     from_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
     suppress_errors, -- boolean (optional)
@@ -104,12 +105,25 @@ Supports the following options:
   `stderr` or from `json_decode`. Instead, it'll pass errors to `on_output` via
   `params.err`.
 
+### ignore_stderr
+
+Usually when a command outputs anything on `stderr` it would cause the command
+to fail (unless `from_stderr` is set to `true`, see below).
+
+This option tells the runner that the command's `stderr` output is irrelevant
+and should be discarded. This is similar to running a command with a
+`2>/dev/null` redirect, but the error output will still be logged in `debug`
+mode before being rejected.
+
+Note that setting `ignore_stderr = true` will make `from_stderr` not do anything.
+
 ### from_stderr
 
 Captures a command's `stderr` output and assigns it to `params.output`. Useful
 for linters that output to `stderr`.
 
-Note that setting `from_stderr = true` will discard `stdin` output.
+Note that setting `from_stderr = true` will discard `stdin` output. Will not
+work with `ignore_stderr` set.
 
 ### to_stdin
 

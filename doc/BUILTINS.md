@@ -826,7 +826,6 @@ local sources = { null_ls.builtins.formatting.format_r }
 ##### About
 
 Ruby static code analyzer and formatter, based on the community Ruby style guide.
-This formatter will need [awk](https://en.wikipedia.org/wiki/AWK) to be installed on the host system to work.
 
 ##### Usage
 
@@ -838,7 +837,7 @@ local sources = { null_ls.builtins.formatting.rubocop }
 
 - `filetypes = { "ruby" }`
 - `command = "rubocop"`
-- `args = { "--auto-correct", "--stdin", "$FILENAME", "2>/dev/null", "|", "awk 'f; /^====================$/{f=1}'" }`
+- `args = { "--auto-correct", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
 #### [rufo](https://github.com/ruby-formatter/rufo)
 
@@ -966,6 +965,24 @@ local sources = { null_ls.builtins.formatting.shellharden }
 - `filetypes = { "sh" }`
 - `command = "shellharden"`
 - `args = { "--transform", "$FILENAME" }`
+
+#### [standardrb](https://github.com/testdouble/standard)
+
+##### About
+
+Ruby Style Guide, with linter & automatic code fixer. Based on Rubocop.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.standardrb }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "standardrb"`
+- `args = { "--fix", "--format", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
 #### [styler](https://github.com/r-lib/styler)
 
@@ -1477,6 +1494,24 @@ local sources = { null_ls.builtins.diagnostics.selene }
 - `command = "selene"`
 - `args = { "--display-style", "quiet", "-" }`
 
+#### [standardrb](https://github.com/testdouble/standard)
+
+##### About
+
+The Ruby Linter/Formatter that Serves and Protects.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.standardrb }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "standardrb"`
+- `args = { "--no-fix", "-f", "json", "--stdin", "$FILENAME" }`
+
 #### [phpstan](https://github.com/phpstan/phpstan)
 
 ##### About
@@ -1538,6 +1573,24 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - `filetypes = { "php" }`
 - `command = "phpcs"`
 - `args = { "--report=json", "-s", "-" }`
+
+#### [Rubocop](https://rubocop.org/)
+
+##### About
+
+The Ruby Linter/Formatter that Serves and Protects.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.rubocop }
+```
+
+##### Defaults
+
+- `filetypes = { "ruby" }`
+- `command = "rubocop"`
+- `args = { "-f", "json", "--stdin", "$FILENAME" }`
 
 #### [Stylelint](https://github.com/stylelint/stylelint)
 

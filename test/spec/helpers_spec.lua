@@ -473,6 +473,17 @@ describe("helpers", function()
                 assert.stub(on_output).was_called_with({ output = "error output" }, done)
             end)
 
+            it("should ignore error output if ignore_stderr = true", function()
+                generator_args.ignore_stderr = true
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper("error output", "normal output")
+
+                assert.stub(on_output).was_called_with({ output = "normal output" }, done)
+            end)
+
             it("should not override params.output if already set", function()
                 local params = { output = "original output" }
                 local generator = helpers.generator_factory(generator_args)

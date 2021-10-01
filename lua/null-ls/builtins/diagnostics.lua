@@ -225,6 +225,64 @@ M.selene = h.make_builtin({
     factory = h.generator_factory,
 })
 
+local handle_rubocop_output = function(params)
+    if params.output and params.output.files then
+        local file
+        for _, file_output in ipairs(params.output.files) do
+            if file_output.path == vim.fn.fnamemodify(params.bufname, ":.") then
+                file = file_output
+                break
+            end
+        end
+
+        if file and file.offenses then
+            local parser = h.diagnostics.from_json({
+                severities = {
+                    info = h.diagnostics.severities.information,
+                    refactor = h.diagnostics.severities.hint,
+                    convention = h.diagnostics.severities.warning,
+                    warning = h.diagnostics.severities.warning,
+                    error = h.diagnostics.severities.error,
+                    fatal = h.diagnostics.severities.fatal,
+                },
+            })
+            local offenses = {}
+
+            for _, offense in ipairs(file.offenses) do
+                table.insert(offenses, {
+                    message = offense.message,
+                    ruleId = offense.cop_name,
+                    level = offense.severity,
+                    line = offense.location.start_line,
+                    column = offense.start_column,
+                    endLine = offense.location.last_line,
+                    endColumn = offense.last_column,
+                })
+            end
+
+            return parser({ output = offenses })
+        end
+    end
+
+    return {}
+end
+
+M.standardrb = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "ruby" },
+    generator_opts = {
+        command = "standardrb",
+        args = { "--no-fix", "-f", "json", "--stdin", "$FILENAME" },
+        to_stdin = true,
+        format = "json",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = handle_rubocop_output,
+    },
+    factory = h.generator_factory,
+})
+
 local handle_eslint_output = function(params)
     params.messages = params.output and params.output[1] and params.output[1].messages or {}
     if params.err then
@@ -540,6 +598,22 @@ M.phpcs = h.make_builtin({
 
             return parser({ output = params.messages })
         end,
+    },
+    factory = h.generator_factory,
+})
+
+M.rubocop = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "ruby" },
+    generator_opts = {
+        command = "rubocop",
+        args = { "-f", "json", "--stdin", "$FILENAME" },
+        to_stdin = true,
+        format = "json",
+        check_exit_code = function(code)
+            return code <= 1
+        end,
+        on_output = handle_rubocop_output,
     },
     factory = h.generator_factory,
 })
