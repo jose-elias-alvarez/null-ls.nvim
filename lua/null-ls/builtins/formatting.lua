@@ -320,6 +320,17 @@ M.lua_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.markdownlint = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "markdown" },
+    generator_opts = {
+        command = "markdownlint",
+        args = { "--fix", "$FILENAME" },
+        to_temp_file = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.mix = h.make_builtin({
     method = FORMATTING,
     filetypes = { "elixir" },

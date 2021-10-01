@@ -590,8 +590,28 @@ local sources = { null_ls.builtins.formatting.lua_format }
 ##### Defaults
 
 - `filetypes = { "lua" }`
-- `command = lua-format`
+- `command = "lua-format"`
 - `args = { "-i" }`
+
+#### [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
+
+##### About
+
+Can fix some (but not all!) `markdownlint` issues. If possible, use
+[Prettier](https://github.com/prettier/prettier), which can also fix Markdown
+files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.markdownlint }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "markdownlint"`
+- `args = { "--fix", "$FILENAME" }`
 
 #### [Mix](https://hexdocs.pm/mix/1.12/Mix.html)
 
@@ -820,7 +840,6 @@ local sources = { null_ls.builtins.formatting.rubocop }
 - `command = "rubocop"`
 - `args = { "--auto-correct", "--stdin", "$FILENAME", "2>/dev/null", "|", "awk 'f; /^====================$/{f=1}'" }`
 
-
 #### [rufo](https://github.com/ruby-formatter/rufo)
 
 ##### About
@@ -1040,6 +1059,7 @@ local sources = { null_ls.builtins.formatting.trim_whitespace }
 ```
 
 ##### Usage
+
 - `filetypes = { }`
 - `command = "awk"`
 - `args = { '{ sub(/[ \t]+$/, ""); print }' }`
@@ -1458,7 +1478,7 @@ A valid `phpstan.neon` at root.
 
 ##### About
 
-A static analysis tool for finding errors in PHP applications 
+A static analysis tool for finding errors in PHP applications
 
 ##### Usage
 
@@ -1475,7 +1495,6 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 ##### Requirements
 
 A valid `psalm.xml` at root.
-
 
 #### [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
@@ -1495,7 +1514,6 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - `command = "phpcs"`
 - `args = { "--report=json", "-s", "-" }`
 
-
 #### [Stylelint](https://github.com/stylelint/stylelint)
 
 ##### About
@@ -1513,4 +1531,3 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 - `filetypes = { "scss", "less", "css", "sass" }`
 - `command = "stylelint"`
 - `args = { "--formatter", "json", "--stdin-filename", "$FILENAME" }`
-
