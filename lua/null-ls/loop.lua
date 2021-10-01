@@ -107,7 +107,7 @@ M.spawn = function(cmd, args, opts)
 
     if input then
         stdin:write(input, function()
-            stdin:close()
+            close_handle(stdin)
         end)
     end
 end
