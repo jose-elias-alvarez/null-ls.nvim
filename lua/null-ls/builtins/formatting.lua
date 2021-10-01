@@ -320,6 +320,17 @@ M.lua_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.markdownlint = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "markdown" },
+    generator_opts = {
+        command = "markdownlint",
+        args = { "--fix", "$FILENAME" },
+        to_temp_file = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.mix = h.make_builtin({
     method = FORMATTING,
     filetypes = { "elixir" },
@@ -639,6 +650,17 @@ M.trim_whitespace = h.make_builtin({
     generator_opts = {
         command = "awk",
         args = { '{ sub(/[ \t]+$/, ""); print }' },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.trim_newlines = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {},
+    generator_opts = {
+        command = "awk",
+        args = { 'NF{print s $0; s=""; next} {s=s ORS}' },
         to_stdin = true,
     },
     factory = h.formatter_factory,

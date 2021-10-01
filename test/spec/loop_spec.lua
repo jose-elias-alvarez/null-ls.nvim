@@ -25,6 +25,7 @@ describe("loop", function()
         local mock_handle_close = stub.new()
         local mock_stdin = {}
         local mock_stdin_write = stub.new()
+        local mock_stdin_is_closing = stub.new()
         local mock_stdin_close = stub.new()
         local mock_stdout = {}
         local mock_stdout_read_stop = stub.new()
@@ -47,6 +48,9 @@ describe("loop", function()
 
             function mock_stdin:write(...)
                 mock_stdin_write(...)
+            end
+            function mock_stdin:is_closing()
+                return mock_stdin_is_closing()
             end
             function mock_stdin:close()
                 mock_stdin_close()
