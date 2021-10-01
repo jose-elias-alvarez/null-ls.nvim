@@ -333,7 +333,7 @@ M.pylint = h.make_builtin({
         args = { "--from-stdin", "$FILENAME", "-f", "json" },
         format = "json",
         check_exit_code = function(code)
-            return not (code == 0 or code == 32)
+            return code ~= 32
         end,
         on_output = h.diagnostics.from_json({
             attributes = {
