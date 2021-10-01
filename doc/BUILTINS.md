@@ -1039,7 +1039,7 @@ A simple wrapper around `awk` to remove trailing newlines.
 local sources = { null_ls.builtins.formatting.trim_newlines }
 ```
 
-##### Usage
+##### Defaults
 - `filetypes = { }`
 - `command = "awk"`
 - `args = { 'NF{print s $0; s=""; next} {s=s ORS}' }`
