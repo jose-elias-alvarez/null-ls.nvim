@@ -16,19 +16,31 @@ end
 function M.combine(method, ms)
     ms = ms or 100
     local orig = vim.lsp.handlers[method]
+    local is_new = vim.fn.has("nvim-0.5.1") > 0
 
-    local results = {}
+    local all_results = {}
 
     local handler = u.debounce(ms, function()
-        if #results > 0 then
-            pcall(orig, nil, nil, results)
-            results = {}
+        if #all_results > 0 then
+            if is_new then
+                pcall(orig, nil, all_results)
+            else
+                pcall(orig, nil, nil, all_results)
+            end
+            all_results = {}
         end
     end)
 
-    vim.lsp.handlers[method] = function(_, _, actions)
-        vim.list_extend(results, actions or {})
-        handler()
+    if is_new then
+        vim.lsp.handlers[method] = function(_, results)
+            vim.list_extend(all_results, results or {})
+            handler()
+        end
+    else
+        vim.lsp.handlers[method] = function(_, _, results)
+            vim.list_extend(all_results, results or {})
+            handler()
+        end
     end
     return vim.lsp.handlers[method]
 end
