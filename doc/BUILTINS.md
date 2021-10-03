@@ -821,7 +821,7 @@ local sources = { null_ls.builtins.formatting.format_r }
 - `command = "R"`
 - `args = { "--slave", "--no-restore", "--no-save", "-e", 'formatR::tidy_source(source="stdin")' }`
 
-#### [rubocop](https://github.com/ruby-formatter/rubocop)
+#### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
 
