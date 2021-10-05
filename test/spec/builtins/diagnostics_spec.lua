@@ -77,7 +77,8 @@ describe("diagnostics", function()
             local output = "rules.md:1:1 MD033/no-inline-html Inline HTML [Element: a]"
             local diagnostic = parser(output, { content = file })
             assert.are.same({
-                row = "1", --
+                code = "MD033/no-inline-html",
+                row = "1",
                 col = "1",
                 severity = 1,
                 message = "Inline HTML [Element: a]",
@@ -88,7 +89,8 @@ describe("diagnostics", function()
                 "rules.md:2 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]"
             local diagnostic = parser(output, { content = file })
             assert.are.same({
-                row = "2", --
+                row = "2",
+                code = "MD012/no-multiple-blanks",
                 severity = 1,
                 message = "Multiple consecutive blank lines [Expected: 1; Actual: 2]",
             }, diagnostic)
