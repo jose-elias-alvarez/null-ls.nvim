@@ -30,6 +30,14 @@ describe("helpers", function()
             assert.equals(parsed[2], "/files/test-file.lua")
         end)
 
+        it("should replace $FILENAME with temp file path", function()
+            local args = { "--stdin-filename", "$FILENAME" }
+
+            local parsed = helpers._parse_args(args, { temp_path = "/tmp/temp-file.lua" })
+
+            assert.equals(parsed[2], "/tmp/temp-file.lua")
+        end)
+
         it("should replace $DIRNAME with buffer's directory name", function()
             local args = { "--stdin-filename", "$DIRNAME" }
 

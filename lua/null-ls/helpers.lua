@@ -29,7 +29,7 @@ local parse_args = function(args, params)
     local parsed = {}
     for _, arg in pairs(args) do
         if string.find(arg, "$FILENAME") then
-            arg = u.string.replace(arg, "$FILENAME", params.bufname)
+            arg = u.string.replace(arg, "$FILENAME", params.temp_path or params.bufname)
         end
         if string.find(arg, "$DIRNAME") then
             arg = u.string.replace(arg, "$DIRNAME", vim.fn.fnamemodify(params.bufname, ":h"))
@@ -220,9 +220,7 @@ M.generator_factory = function(opts)
                 end
             end
 
-            local spawn_args = args or {}
             local client = vim.lsp.get_client_by_id(params.client_id)
-            spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             local spawn_opts = {
                 cwd = client and client.config.root_dir or vim.fn.getcwd(),
                 input = to_stdin and get_content(params) or nil,
@@ -235,7 +233,6 @@ M.generator_factory = function(opts)
                 local filename = vim.fn.fnamemodify(params.bufname, ":e")
                 local temp_path, cleanup = loop.temp_file(get_content(params), filename)
 
-                spawn_args = u.table.replace(spawn_args, "$FILENAME", temp_path)
                 spawn_opts.on_stdout_end = function()
                     if from_temp_file then
                         -- wrap to make sure temp file is always cleaned up
@@ -255,6 +252,8 @@ M.generator_factory = function(opts)
                 params.temp_path = temp_path
             end
 
+            local spawn_args = args or {}
+            spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             spawn_args = parse_args(spawn_args, params)
 
             u.debug_log("spawning command " .. command .. " with args:")
