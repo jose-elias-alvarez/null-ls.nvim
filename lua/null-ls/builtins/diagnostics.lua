@@ -107,12 +107,12 @@ M.markdownlint = h.make_builtin({
         end,
         on_output = h.diagnostics.from_patterns({
             {
-                pattern = [[:(%d+):(%d+) [%w-/]+ (.*)]],
-                groups = { "row", "col", "message" },
+                pattern = [[:(%d+):(%d+) ([%w-/]+) (.*)]],
+                groups = { "row", "col", "code", "message" },
             },
             {
-                pattern = [[:(%d+) [%w-/]+ (.*)]],
-                groups = { "row", "message" },
+                pattern = [[:(%d+) ([%w-/]+) (.*)]],
+                groups = { "row", "code", "message" },
             },
         }),
     },
