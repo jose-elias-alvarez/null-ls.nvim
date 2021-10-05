@@ -327,6 +327,7 @@ M.markdownlint = h.make_builtin({
         command = "markdownlint",
         args = { "--fix", "$FILENAME" },
         to_temp_file = true,
+        ignore_stderr = true,
     },
     factory = h.formatter_factory,
 })
