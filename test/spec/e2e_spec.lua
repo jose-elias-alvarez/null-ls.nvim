@@ -120,7 +120,7 @@ describe("e2e", function()
         end)
 
         it("should get buffer diagnostics on attach", function()
-            local buf_diagnostics = lsp.diagnostic.get()
+            local buf_diagnostics = lsp.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
             local write_good_diagnostic = buf_diagnostics[1]
@@ -137,7 +137,7 @@ describe("e2e", function()
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 6, 0, 13, {})
             lsp_wait()
 
-            assert.equals(vim.tbl_count(lsp.diagnostic.get()), 0)
+            assert.equals(vim.tbl_count(lsp.diagnostic.get(0)), 0)
         end)
 
         describe("multiple diagnostics", function()
@@ -151,7 +151,7 @@ describe("e2e", function()
                 vim.cmd("e")
                 lsp_wait()
 
-                local diagnostics = lsp.diagnostic.get()
+                local diagnostics = lsp.diagnostic.get(0)
                 assert.equals(vim.tbl_count(diagnostics), 2)
 
                 local markdownlint_diagnostic, write_good_diagnostic
@@ -174,7 +174,7 @@ describe("e2e", function()
             vim.cmd("e")
             lsp_wait()
 
-            local write_good_diagnostic = lsp.diagnostic.get()[1]
+            local write_good_diagnostic = lsp.diagnostic.get(0)[1]
 
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
         end)
@@ -335,7 +335,7 @@ describe("e2e", function()
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 52, 0, 53, { ".." })
             lsp_wait()
 
-            local buf_diagnostics = lsp.diagnostic.get()
+            local buf_diagnostics = lsp.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
             local tl_check_diagnostic = buf_diagnostics[1]
