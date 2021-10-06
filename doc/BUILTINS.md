@@ -1378,6 +1378,35 @@ local sources = {null_ls.builtins.diagnostics.write_good}
 - `command = "write"-good`
 - `args = { "--text=$TEXT", "--parse" }`
 
+#### [proselint](https://github.com/amperser/proselint)
+
+##### About
+
+An English prose linter.
+
+> proselint places the world’s greatest writers and editors by your side, where they whisper suggestions on how to
+> improve your prose.
+>
+> -- [Proselint](http://proselint.com)
+
+##### Usage
+
+Add diagnostics using:
+```lua
+local sources = {null_ls.builtins.diagnostics.proselint}
+```
+
+Add code actions using:
+```lua
+local source = {null_ls.builtins.code_actions.proselint}
+```
+
+##### Defaults
+
+- `filetypes = { "markdown", "tex" }`
+- `command = "proselint"`
+- `args = { "--json" }`
+
 #### [markdownlint](https://github.com/DavidAnson/markdownlint) via [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli)
 
 ##### About
