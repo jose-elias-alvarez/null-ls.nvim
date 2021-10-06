@@ -738,7 +738,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
 
@@ -750,6 +750,7 @@ local sources = { null_ls.builtins.formatting.prettier }
   non-JavaScript filetypes.
 - Supports both `textDocument/formatting` and `textDocument/rangeFormatting`
 - May not work on some filetypes.
+- `prettierd` is more stable and recommended.
 
 ##### Usage
 
@@ -759,7 +760,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier_d_slim"`
 - `args = { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -780,7 +781,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "html", "json", "yaml", "markdown" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
