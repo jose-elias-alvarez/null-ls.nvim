@@ -52,15 +52,15 @@ M.proselint = h.make_builtin({
         on_output = function(params)
             local actions = {}
             for _, d in ipairs(params.output.data.errors) do
-                if d.replacements ~= vim.NIL then
+                if d.replacements ~= vim.NIL and params.row == d.line then
+                    local row = d.line - 1
+                    local col_beg = d.column - 1
+                    local col_end = d.column + d.extent - 2
+                    local cbuf = vim.api.nvim_get_current_buf()
                     table.insert(actions, {
-                        title = string.format("[%d] %s", d.line, d.message),
+                        title = d.message,
                         action = function()
-                            local line = d.line - 1
-                            local col_beg = d.column - 1
-                            local col_end = d.column + d.extent - 2
-                            local cbuf = vim.api.nvim_get_current_buf()
-                            vim.api.nvim_buf_set_text(cbuf, line, col_beg, line, col_end, { d.replacements })
+                            vim.api.nvim_buf_set_text(cbuf, row, col_beg, row, col_end, { d.replacements })
                         end,
                     })
                 end
