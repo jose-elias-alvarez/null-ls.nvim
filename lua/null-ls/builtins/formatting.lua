@@ -729,7 +729,7 @@ M.stylelint = h.make_builtin({
     filetypes = { "scss", "less", "css", "sass" },
     generator_opts = {
         command = "stylelint",
-        args = { "--fix", "--stdin", "-" },
+        args = { "--fix", "--stdin", "--stdin-filename", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
