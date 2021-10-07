@@ -25,8 +25,13 @@ Each source must have a **method**, which defines when it runs, a **generator**,
 which runs in response to a request matching the source's method, and a list of
 **filetypes**, which determines when the method is active.
 
-To see a list of active sources for the current buffer, use the command
-`:NullLsInfo`.
+To see a list of active sources for the current buffer in a human-readable
+format, use the command `:NullLsInfo`.
+
+You can also programatically get the same information using the Lua method
+`require("null-ls.info").get_active_sources()`, which returns a table where each
+key is a null-ls method (see below) and each value is a list containing the name
+of each active source.
 
 Sources must be
 **registered**, either by the user or by an integration, before they are active.

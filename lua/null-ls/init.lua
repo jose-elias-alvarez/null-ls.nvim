@@ -9,7 +9,7 @@ M.register_name = c.register_name
 
 M.methods = require("null-ls.methods").internal
 M.builtins = require("null-ls.builtins")
-M.null_ls_info = require("null-ls.info")
+M.null_ls_info = require("null-ls.info").show_window
 
 M.generator = helpers.generator_factory
 M.formatter = helpers.formatter_factory

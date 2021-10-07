@@ -5,7 +5,25 @@ local c = require("null-ls.config")
 local lsp = vim.lsp
 local api = vim.api
 
-return function()
+local M = {}
+
+M.get_active_sources = function(bufnr, ft)
+    bufnr = bufnr or api.nvim_get_current_buf()
+    ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
+
+    local active_sources = {}
+    for method, source in pairs(c.get()._methods) do
+        for name, filetypes in pairs(source) do
+            if u.filetype_matches(filetypes, ft) then
+                active_sources[method] = active_sources[method] or {}
+                table.insert(active_sources[method], name)
+            end
+        end
+    end
+    return active_sources
+end
+
+M.show_window = function()
     local windows = require("lspconfig.ui.windows")
 
     local client = u.get_client()
@@ -25,19 +43,14 @@ return function()
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
     vim.list_extend(lines, { "Detected filetype: " .. ft, "" })
 
-    local registered, source_count = {}, 0
-    for method, source in pairs(c.get()._methods) do
-        for name, filetypes in pairs(source) do
-            if u.filetype_matches(filetypes, ft) then
-                registered[method] = registered[method] or {}
-                table.insert(registered[method], name)
-                source_count = source_count + 1
-            end
-        end
+    local active_sources = M.get_active_sources(bufnr, ft)
+    local source_count = 0
+    for _, sources in pairs(active_sources) do
+        source_count = source_count + #sources
     end
 
     vim.list_extend(lines, { source_count .. " source(s) active for this buffer:", "" })
-    for method, sources in pairs(registered) do
+    for method, sources in pairs(active_sources) do
         table.insert(lines, methods.readable[method] .. ": " .. table.concat(sources, ", "))
     end
 
@@ -52,3 +65,5 @@ return function()
     api.nvim_buf_set_keymap(win_bufnr, "n", "<Esc>", "<cmd>bd<CR>", { noremap = true })
     lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
 end
+
+return M
