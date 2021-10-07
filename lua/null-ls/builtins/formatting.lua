@@ -526,6 +526,25 @@ M.rustfmt = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.rustywind = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+        "svelte",
+        "html",
+    },
+    generator_opts = {
+        command = "rustywind",
+        args = { "--stdin" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.sqlformat = h.make_builtin({
     method = FORMATTING,
     filetypes = { "sql" },

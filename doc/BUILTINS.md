@@ -875,6 +875,24 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 - `command = "rustfmt"`
 - `args = { "--emit=stdout", "--edition=2018" }`
 
+#### [rustywind](https://github.com/avencera/rustywind)
+
+##### About
+
+CLI for organizing Tailwind CSS classes.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rustywind }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "html", }`
+- `command = "rustywind"`
+- `args = { "--stdin" }`
+
 #### [shellcheck](https://www.shellcheck.net)
 
 ##### About
@@ -1076,6 +1094,7 @@ local sources = { null_ls.builtins.formatting.trim_newlines }
 ```
 
 ##### Defaults
+
 - `filetypes = { }`
 - `command = "awk"`
 - `args = { 'NF{print s $0; s=""; next} {s=s ORS}' }`
