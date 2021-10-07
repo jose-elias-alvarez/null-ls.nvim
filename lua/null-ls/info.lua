@@ -36,8 +36,8 @@ M.show_window = function()
 
     local lines = {}
 
-    local separator = vim.loop.os_uname().version:match("Windows") and "\\" or "/"
-    local log_path = vim.fn.stdpath("cache") .. separator .. "null-ls.log"
+    local log_path = c.get().debug and require("lspconfig.util").path.join(vim.fn.stdpath("cache"), "null-ls.log")
+        or "not enabled (this is normal; see the README if you need to enable logging)"
     table.insert(lines, "null-ls log: " .. log_path)
 
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
