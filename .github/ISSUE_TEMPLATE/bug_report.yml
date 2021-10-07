@@ -7,7 +7,7 @@ body:
     attributes:
       label: FAQ
       options:
-        - label: I have checked [FAQ](https://github.com/jose-elias-alvarez/null-ls.nvim#faq) and it didn't resolve my problem.
+        - label: I have checked the [FAQ](https://github.com/jose-elias-alvarez/null-ls.nvim#faq) and it didn't resolve my problem.
           required: true
 
   - type: checkboxes
@@ -27,14 +27,21 @@ body:
 
   - type: textarea
     attributes:
+      label: "null-ls config"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
       label: "Steps to reproduce"
+      description: "Full reproduction steps. Include a sample file if your issue relates to a specific filetype."
     validations:
       required: true
 
   - type: textarea
     attributes:
       label: "Expected behavior"
-      description: "A description of the behavior you expected. May optionally include logs, images, or videos."
+      description: "A description of the behavior you expected."
     validations:
       required: true
 
@@ -48,7 +55,7 @@ body:
   - type: textarea
     attributes:
       label: "Debug log"
-      description: "Debug log output (get path from `:NullLsInfo`)"
+      description: "Debug log output (see README for instructions)"
     validations:
       required: true
 
