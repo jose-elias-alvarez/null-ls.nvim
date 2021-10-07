@@ -1076,6 +1076,7 @@ local sources = { null_ls.builtins.formatting.trim_newlines }
 ```
 
 ##### Defaults
+
 - `filetypes = { }`
 - `command = "awk"`
 - `args = { 'NF{print s $0; s=""; next} {s=s ORS}' }`
@@ -1340,6 +1341,24 @@ local sources = { null_ls.builtins.diagnostics.luacheck }
 - `filetypes = { "lua" }`
 - `command = "luacheck"`
 - `args = { "--formatter", "plain", "--codes", "--ranges", "--filename", "$FILENAME", "-" }`
+
+#### [cppcheck](https://github.com/danmar/cppcheck)
+
+##### About
+
+A tool for fast static analysis of `C/C++` code
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cppcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "cpp" , "c" }`
+- `command = "cppcheck"`
+- `args = { "--enable=warning,style,performance,portability,information,missingInclude", "--template=gcc", "$FILENAME" }`
 
 #### [write-good](https://github.com/btford/write-good)
 
