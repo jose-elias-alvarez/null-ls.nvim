@@ -77,7 +77,7 @@ describe("config", function()
             local source_methods = c.get()._methods
             assert.truthy(source_methods[mock_source.method])
             assert.truthy(source_methods[mock_source.method][mock_source.name])
-            assert.equals(source_methods[mock_source.method][mock_source.name], mock_source.filetypes)
+            assert.same(source_methods[mock_source.method][mock_source.name], mock_source.filetypes)
         end)
 
         it("should not register source with same name twice", function()
@@ -88,6 +88,21 @@ describe("config", function()
 
             local generators = c.get()._generators
             assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
+        end)
+
+        it("should register sources with same name if they are copies", function()
+            mock_source.name = "mock-source"
+            mock_source._is_copy = true
+
+            local copy = vim.deepcopy(mock_source)
+            mock_source.filetypes = { "lua" }
+
+            c.register(mock_source)
+            c.register(copy)
+
+            local generators = c.get()._generators
+            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
+            assert.same(c.get()._methods[mock_source.method][mock_source.name], { "lua", "txt", "markdown" })
         end)
 
         it("should register function source", function()

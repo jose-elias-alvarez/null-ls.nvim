@@ -317,48 +317,53 @@ M.make_builtin = function(opts)
     })
 
     builtin.with = function(user_opts)
-        builtin.filetypes = user_opts.filetypes or builtin.filetypes
+        local builtin_copy = vim.deepcopy(builtin)
+        setmetatable(builtin_copy, getmetatable(builtin))
+        builtin_copy._is_copy = true
+
+        builtin_copy.filetypes = user_opts.filetypes or builtin_copy.filetypes
 
         -- Extend args manually as vim.tbl_deep_extend overwrites the list
         if
             user_opts.extra_args
             and (type(user_opts.extra_args) == "function" or vim.tbl_count(user_opts.extra_args) > 0)
         then
-            local builtin_args = builtin._opts.args
-            local extra_args = user_opts.extra_args
+            local original_args = builtin_copy._opts.args
+            local original_extra_args = user_opts.extra_args
 
-            builtin._opts.args = function(params)
-                local builtin_args_cpy = type(builtin_args) == "function" and builtin_args(params)
-                    or vim.deepcopy(builtin_args)
+            builtin_copy._opts.args = function(params)
+                local original_args_copy = type(original_args) == "function" and original_args(params)
+                    or vim.deepcopy(original_args)
                     or {}
-                local extra_args_cpy = type(extra_args) == "function" and extra_args(params) or vim.deepcopy(extra_args)
+                local extra_args_copy = type(original_extra_args) == "function" and original_extra_args(params)
+                    or vim.deepcopy(original_extra_args)
 
-                if builtin_args_cpy[#builtin_args_cpy] == "-" then
-                    table.remove(builtin_args_cpy)
-                    table.insert(extra_args_cpy, "-")
+                if original_args_copy[#original_args_copy] == "-" then
+                    table.remove(original_args_copy)
+                    table.insert(extra_args_copy, "-")
                 end
 
-                return vim.list_extend(builtin_args_cpy, extra_args_cpy)
+                return vim.list_extend(original_args_copy, extra_args_copy)
             end
             user_opts.extra_args = nil
         end
 
-        builtin._opts = vim.tbl_deep_extend("force", builtin._opts, user_opts)
+        builtin_copy._opts = vim.tbl_deep_extend("force", builtin_copy._opts, user_opts)
 
         local condition = user_opts.condition
         if condition then
             return function()
                 local should_register = condition(u.make_conditional_utils())
                 if should_register then
-                    u.debug_log("registering conditional source " .. builtin.name)
-                    return builtin
+                    u.debug_log("registering conditional source " .. builtin_copy.name)
+                    return builtin_copy
                 end
 
-                u.debug_log("not registering conditional source " .. builtin.name)
+                u.debug_log("not registering conditional source " .. builtin_copy.name)
             end
         end
 
-        return builtin
+        return builtin_copy
     end
 
     return builtin
