@@ -17,7 +17,7 @@ M.gitsigns = h.make_builtin({
             end
 
             local ok, gitsigns_actions = pcall(require("gitsigns").get_actions)
-            if not ok then
+            if not ok or not gitsigns_actions then
                 return
             end
 
