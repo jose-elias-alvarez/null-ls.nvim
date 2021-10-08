@@ -689,4 +689,29 @@ M.stylelint = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.cppcheck = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "cpp", "c" },
+    generator_opts = {
+        command = "cppcheck",
+        args = {
+            "--enable=warning,style,performance,portability,information,missingInclude",
+            "--template=gcc",
+            "$FILENAME",
+        },
+        to_stdin = true,
+        from_stderr = true,
+        format = "line",
+        on_output = h.diagnostics.from_pattern([[(%d+):(%d+): (%w+): (.*)]], { "row", "col", "severity", "message" }, {
+            severities = {
+                note = h.diagnostics.severities["information"],
+                style = h.diagnostics.severities["hint"],
+                performance = h.diagnostics.severities["warning"],
+                portability = h.diagnostics.severities["information"],
+            },
+        }),
+    },
+    factory = h.generator_factory,
+})
+
 return M

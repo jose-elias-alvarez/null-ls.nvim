@@ -1360,6 +1360,24 @@ local sources = { null_ls.builtins.diagnostics.luacheck }
 - `command = "luacheck"`
 - `args = { "--formatter", "plain", "--codes", "--ranges", "--filename", "$FILENAME", "-" }`
 
+#### [cppcheck](https://github.com/danmar/cppcheck)
+
+##### About
+
+A tool for fast static analysis of `C/C++` code
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cppcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "cpp" , "c" }`
+- `command = "cppcheck"`
+- `args = { "--enable=warning,style,performance,portability,information,missingInclude", "--template=gcc", "$FILENAME" }`
+
 #### [write-good](https://github.com/btford/write-good)
 
 ##### About
