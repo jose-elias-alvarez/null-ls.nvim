@@ -421,4 +421,26 @@ describe("e2e", function()
             assert.equals(u.buf.content(nil, true), "first\n")
         end)
     end)
+
+    describe("handlers", function()
+        local mock_handler = require("luassert.stub").new()
+        before_each(function()
+            local client = u.get_client()
+            client.handlers[methods.lsp.FORMATTING] = mock_handler
+
+            c.register(builtins._test.first_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait()
+        end)
+        after_each(function()
+            u.get_client().handlers[methods.lsp.CODE_ACTION] = nil
+        end)
+
+        it("should use client handler", function()
+            lsp.buf.formatting()
+            lsp_wait()
+
+            assert.stub(mock_handler).was_called()
+        end)
+    end)
 end)

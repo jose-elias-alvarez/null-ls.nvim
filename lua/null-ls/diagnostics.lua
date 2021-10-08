@@ -51,7 +51,7 @@ M.handler = function(original_params)
     end
 
     local params = u.make_params(original_params, methods.map[method])
-    local handler = vim.lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]
+    local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
     require("null-ls.generators").run_registered({
         filetype = params.ft,
         method = methods.map[method],

@@ -27,6 +27,7 @@ describe("diagnostics", function()
                 method = methods.lsp.DID_OPEN,
             }
             u.make_params.returns(mock_params)
+            lsp.get_active_clients.returns({})
         end)
 
         after_each(function()
