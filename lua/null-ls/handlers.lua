@@ -15,7 +15,7 @@ end
 -- this will override a handler, batch results and debounce them
 function M.combine(method, ms)
     ms = ms or 100
-    local orig = vim.lsp.handlers[method]
+    local orig = u.resolve_handler(method)
     local is_new = vim.fn.has("nvim-0.5.1") > 0
 
     local all_results = {}

@@ -28,6 +28,7 @@ describe("formatting", function()
             bufnr = mock_bufnr,
             lsp_method = method,
         }
+        lsp.get_active_clients.returns({})
     end)
 
     after_each(function()

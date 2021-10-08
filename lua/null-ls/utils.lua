@@ -188,6 +188,11 @@ M.table = {
     end,
 }
 
+M.resolve_handler = function(method)
+    local client = M.get_client()
+    return client and client.handlers[method] or vim.lsp.handlers[method]
+end
+
 function M.debounce(ms, fn)
     local timer = vim.loop.new_timer()
     return function(...)
