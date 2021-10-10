@@ -376,6 +376,7 @@ M.diagnostics = (function()
         ["warning"] = 2,
         ["information"] = 3,
         ["hint"] = 4,
+        ["_fallback"] = 1,
     }
 
     local default_json_attributes = {
@@ -416,7 +417,7 @@ M.diagnostics = (function()
     local make_attr_adapters = function(severities, user_adapters)
         local adapters = {
             severity = function(entries, _)
-                return severities[entries["severity"]]
+                return severities[entries["severity"]] or severities["_fallback"]
             end,
         }
         for _, adapter in ipairs(user_adapters) do
@@ -435,7 +436,7 @@ M.diagnostics = (function()
         for attr, adapter in pairs(attr_adapters) do
             entries[attr] = adapter(entries, content_line) or entries[attr]
         end
-        entries["severity"] = entries["severity"] or default_severities["error"]
+        entries["severity"] = entries["severity"] or default_severities["_fallback"]
 
         -- Unset private attributes
         for k, _ in pairs(entries) do
