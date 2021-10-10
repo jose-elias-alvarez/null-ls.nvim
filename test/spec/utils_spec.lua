@@ -53,6 +53,56 @@ describe("utils", function()
         end)
     end)
 
+    describe("range", function()
+        describe("to_lsp", function()
+            it("should convert lua-friendly range to lsp range", function()
+                local lua_range = { row = 5, col = 1, end_row = 6, end_col = 7 }
+
+                local lsp_range = u.range.to_lsp(lua_range)
+
+                assert.equals(lsp_range["start"].line, 4)
+                assert.equals(lsp_range["start"].character, 0)
+                assert.equals(lsp_range["end"].line, 5)
+                assert.equals(lsp_range["end"].character, 6)
+            end)
+
+            it("should clamp invalid range values to 0", function()
+                local lua_range = { row = -1, col = -4, end_row = -6, end_col = -7 }
+
+                local lsp_range = u.range.to_lsp(lua_range)
+
+                assert.equals(lsp_range["start"].line, 0)
+                assert.equals(lsp_range["start"].character, 0)
+                assert.equals(lsp_range["end"].line, 0)
+                assert.equals(lsp_range["end"].character, 0)
+            end)
+        end)
+
+        describe("from_lsp", function()
+            it("should convert lsp range to lua range", function()
+                local lsp_range = { ["start"] = { line = 4, character = 0 }, ["end"] = { line = 5, character = 6 } }
+
+                local lua_range = u.range.from_lsp(lsp_range)
+
+                assert.equals(lua_range.row, 5)
+                assert.equals(lua_range.col, 1)
+                assert.equals(lua_range.end_row, 6)
+                assert.equals(lua_range.end_col, 7)
+            end)
+
+            it("should clamp invalid range values to 1", function()
+                local lsp_range = { ["start"] = { line = -4, character = -1 }, ["end"] = { line = -5, character = -6 } }
+
+                local lua_range = u.range.from_lsp(lsp_range)
+
+                assert.equals(lua_range.row, 1)
+                assert.equals(lua_range.col, 1)
+                assert.equals(lua_range.end_row, 1)
+                assert.equals(lua_range.end_col, 1)
+            end)
+        end)
+    end)
+
     describe("make_params", function()
         local mock_method = "mockMethod"
         local mock_content = "I am some other content"

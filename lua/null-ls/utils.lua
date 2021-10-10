@@ -72,12 +72,12 @@ M.range = {
     to_lsp = function(range)
         local lsp_range = {
             ["start"] = {
-                line = range.row - 1,
-                character = range.col - 1,
+                line = range.row >= 1 and range.row - 1 or 0,
+                character = range.col >= 1 and range.col - 1 or 0,
             },
             ["end"] = {
-                line = range.end_row - 1,
-                character = range.end_col - 1,
+                line = range.end_row >= 1 and range.end_row - 1 or 0,
+                character = range.end_col >= 1 and range.end_col - 1 or 0,
             },
         }
         return lsp_range
