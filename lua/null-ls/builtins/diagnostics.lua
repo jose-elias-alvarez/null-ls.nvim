@@ -401,7 +401,7 @@ M.flake8 = h.make_builtin({
             return code == 0 or code == 255
         end,
         on_output = h.diagnostics.from_pattern(
-            [[:(%d+):(%d+): (([DEFW])%w+) (.*)]], --
+            [[:(%d+):(%d+): ((%u)%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
             {
                 severities = {
