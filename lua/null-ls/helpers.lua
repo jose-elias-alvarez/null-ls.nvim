@@ -376,7 +376,6 @@ M.diagnostics = (function()
         ["warning"] = 2,
         ["information"] = 3,
         ["hint"] = 4,
-        ["_fallback"] = 1,
     }
 
     local default_json_attributes = {
@@ -436,7 +435,7 @@ M.diagnostics = (function()
         for attr, adapter in pairs(attr_adapters) do
             entries[attr] = adapter(entries, content_line) or entries[attr]
         end
-        entries["severity"] = entries["severity"] or default_severities["_fallback"]
+        entries["severity"] = entries["severity"] or default_severities["error"]
 
         -- Unset private attributes
         for k, _ in pairs(entries) do
