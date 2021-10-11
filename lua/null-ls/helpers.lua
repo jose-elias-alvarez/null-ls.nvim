@@ -416,7 +416,7 @@ M.diagnostics = (function()
     local make_attr_adapters = function(severities, user_adapters)
         local adapters = {
             severity = function(entries, _)
-                return severities[entries["severity"]]
+                return severities[entries["severity"]] or severities["_fallback"]
             end,
         }
         for _, adapter in ipairs(user_adapters) do
