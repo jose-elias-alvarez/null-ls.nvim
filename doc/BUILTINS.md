@@ -25,6 +25,9 @@ null_ls.builtins.diagnostics
 
 -- formatting sources
 null_ls.builtins.formatting
+
+-- hover sources
+null_ls.builtins.hover
 ```
 
 You can then register sources by passing a `sources` list into your `config`
@@ -1410,13 +1413,15 @@ An English prose linter.
 ##### Usage
 
 Add diagnostics using:
+
 ```lua
-local sources = {null_ls.builtins.diagnostics.proselint}
+local sources = { null_ls.builtins.diagnostics.proselint }
 ```
 
 Add code actions using:
+
 ```lua
-local source = {null_ls.builtins.code_actions.proselint}
+local source = { null_ls.builtins.code_actions.proselint }
 ```
 
 ##### Defaults
@@ -1675,3 +1680,49 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 - `filetypes = { "scss", "less", "css", "sass" }`
 - `command = "stylelint"`
 - `args = { "--formatter", "json", "--stdin-filename", "$FILENAME" }`
+
+### Code actions
+
+#### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
+
+##### About
+
+Injects code actions for Git operations at the current cursor position (stage /
+preview / reset hunks, blame, etc.).
+
+##### Usage
+
+- Requires installing gitsigns.nvim.
+- Works in files under Git version control.
+
+```lua
+local sources = { null_ls.builtins.code_actions.gitsigns }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+
+### Hover
+
+#### Dictionary definitions via [dictionaryapi.dev](https://dictionaryapi.dev)
+
+##### About
+
+Shows the first available definition for the current word under the cursor.
+
+##### Usage
+
+- Proof-of-concept for hover functionality. PRs to add more info (e.g. more than
+  one definition, part of speech) are welcome.
+- Depends on Plenary's `curl` module, which itself depends on having `curl`
+  installed and available on your `$PATH`.
+- See the Hover section of [the documentation](MAIN.md) for limitations.
+
+```lua
+local sources = { null_ls.builtins.hover.dictionary }
+```
+
+##### Defaults
+
+- `filetypes = { "txt", "markdown" }`

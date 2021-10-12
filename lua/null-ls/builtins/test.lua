@@ -143,4 +143,14 @@ M.runtime_skipped_formatter = {
     filetypes = { "text" },
 }
 
+M.mock_hover = {
+    method = methods.internal.HOVER,
+    generator = {
+        fn = function()
+            return { "test" }
+        end,
+    },
+    filetypes = { "text" },
+}
+
 return M

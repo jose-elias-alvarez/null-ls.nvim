@@ -60,6 +60,9 @@ my_source.method = null_ls.methods.DIAGNOSTICS
 
 -- source will run on LSP formatting request
 my_source.method = null_ls.methods.FORMATTING
+
+-- source will run on LSP hover request
+my_source.method = null_ls.methods.HOVER
 ```
 
 ### Filetypes
@@ -125,10 +128,10 @@ about duplicate registration.
 local null_ls = require("null-ls")
 
 -- registered
-null_ls.register({ name = "my-sources", ... )
+null_ls.register({ name = "my-sources", ... })
 
 -- not registered
-null_ls.register({ name = "my-sources", ... )
+null_ls.register({ name = "my-sources", ... })
 ```
 
 null-ls also exposes a method, `is_registered()`, that returns a
@@ -140,7 +143,7 @@ local null_ls = require("null-ls")
 local name = "my_sources"
 print(null_ls.is_registered(name)) -- false
 
-null_ls.register({ name = "my-sources", ... )
+null_ls.register({ name = "my-sources", ... })
 print(null_ls.is_registered(name)) -- true
 ```
 
@@ -295,3 +298,17 @@ selected range into the required format and modifying the spawn arguments
 accordingly. See `range_formatting_args_factory` in [HELPERS](HELPERS.md) for an
 example of how null-ls handles this for built-in
 sources.
+
+#### Hover
+
+```lua
+return { "First line", "Second line", "And so on" }
+```
+
+Hover sources should return a list of plaintext strings, where each element
+represents a single line.
+
+null-ls will combine the results of each of its hover sources when calling the
+handler, so 2+ _null-ls_ hover sources are okay, but note that running more than
+one LSP server with hover capabilities **is not well-supported** (by default,
+the second popup will wipe out the first).

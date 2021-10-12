@@ -42,6 +42,8 @@ null-ls sources are able to hook into the following LSP features:
 
 - Formatting (including range formatting)
 
+- Hover
+
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
 how to set up sources and a list of available sources.
@@ -185,6 +187,7 @@ from a command to generate code actions.
 ### How do I set the path to neovim binary?
 
 Set it while calling lsp setup for null-ls.
+
 ```lua
 require("lspconfig")["null-ls"].setup({ cmd = { "/path/to/nvim" }, ... })
 ```
