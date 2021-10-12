@@ -433,7 +433,7 @@ M.diagnostics = (function()
 
         local content_line = params.content and params.content[tonumber(entries["row"])] or nil
         for attr, adapter in pairs(attr_adapters) do
-            entries[attr] = adapter(entries, content_line) or entries[attr]
+            entries[attr] = adapter(entries, content_line)
         end
         entries["severity"] = entries["severity"] or default_severities["error"]
 
