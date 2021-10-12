@@ -2,6 +2,7 @@ local paths = {
     diagnostics = "null-ls.builtins.diagnostics",
     formatting = "null-ls.builtins.formatting",
     code_actions = "null-ls.builtins.code-actions",
+    hover = "null-ls.builtins.hover",
     _test = "null-ls.builtins.test",
 }
 

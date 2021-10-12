@@ -81,6 +81,7 @@ function M.start(dispatchers)
             end
             require("null-ls.code-actions").handler(method, params, send)
             require("null-ls.formatting").handler(method, params, send)
+            require("null-ls.hover").handler(method, params, send)
             if not params._null_ls_handled then
                 send()
             end
