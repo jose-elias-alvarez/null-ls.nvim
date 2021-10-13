@@ -96,7 +96,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
         opts.command,
         opts.args,
         opts.on_output,
@@ -110,7 +110,8 @@ M.generator_factory = function(opts)
         opts.to_temp_file,
         opts.from_temp_file,
         opts.use_cache,
-        opts.runtime_condition
+        opts.runtime_condition,
+        opts.cwd
 
     if type(check_exit_code) == "table" then
         local codes = vim.deepcopy(check_exit_code)
@@ -147,6 +148,7 @@ M.generator_factory = function(opts)
             from_temp_file = { from_temp_file, "boolean", true },
             use_cache = { use_cache, "boolean", true },
             runtime_condition = { runtime_condition, "function", true },
+            cwd = { cwd, "function", true },
         })
 
         if type(command) == "function" then
@@ -221,8 +223,9 @@ M.generator_factory = function(opts)
             end
 
             local client = vim.lsp.get_client_by_id(params.client_id)
+            params.root = client and client.config.root_dir or vim.fn.getcwd()
             local spawn_opts = {
-                cwd = client and client.config.root_dir or vim.fn.getcwd(),
+                cwd = opts.cwd and opts.cwd(params) or params.root,
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
                 check_exit_code = check_exit_code,
