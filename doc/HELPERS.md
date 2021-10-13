@@ -25,7 +25,7 @@ All options are **required** unless specified otherwise.
 local helpers = require("null-ls.helpers")
 
 helpers.generator_factory({
-    command, -- string
+    command, -- string or function
     args, -- table (optional)
     on_output, -- function
     format, -- "raw", "line", "json", or "json_raw" (optional)
@@ -46,7 +46,13 @@ the first time.
 
 ### command
 
-A string containing the command that the generator will spawn.
+A string containing the command that the generator will spawn or a function that
+takes one argument, `params` (an object containing information about the current
+editor status) and returns a command string.
+
+If `command` is a function, it will run once when the generator first runs and
+keep the same return value as long as the same Neovim instance is running,
+making it suitable for resolving executables based on the current project.
 
 ### args
 
@@ -192,12 +198,12 @@ doing anything overly expensive.
 - Takes a single argument, `params`, which is a table of parameters containing
   the following useful keys, amongst a few others (one can `print(vim.inspect(params))`
   inside of the function to see more):
-    - `bufnr`: The buffer number being formatted
-    - `bufname`: The name of the above buffer number
-    - `client_id`: The ID of the attached client
-    - `content`: The contents of the buffer, potentially updated from formatters
-                 that have been run prior
-    - `ft`: The `filetype` of the aforementioned buffer
+  - `bufnr`: The buffer number being formatted
+  - `bufname`: The name of the above buffer number
+  - `client_id`: The ID of the attached client
+  - `content`: The contents of the buffer, potentially updated from formatters
+    that have been run prior
+  - `ft`: The `filetype` of the aforementioned buffer
 - If the function returns `nil` or `false`, the associated source will be skipped,
   otherwise it will be added to the set of valid sources to run upon meeting other
   neccessary conditions (filetype, etc.) as well.

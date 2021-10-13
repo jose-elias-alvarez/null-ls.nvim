@@ -120,12 +120,8 @@ M.generator_factory = function(opts)
     end
 
     local _validated
-    local validate_opts = function()
+    local validate_opts = function(params)
         validate({
-            command = {
-                command,
-                "string",
-            },
             args = {
                 args,
                 function(v)
@@ -153,6 +149,10 @@ M.generator_factory = function(opts)
             runtime_condition = { runtime_condition, "function", true },
         })
 
+        if type(command) == "function" then
+            command = command(params)
+        end
+
         assert(
             vim.fn.executable(command) > 0,
             string.format("command %s is not executable (make sure it's installed and on your $PATH)", command)
@@ -167,7 +167,7 @@ M.generator_factory = function(opts)
             local loop = require("null-ls.loop")
 
             if not _validated then
-                validate_opts()
+                validate_opts(params)
             end
 
             local wrapper = function(error_output, output)

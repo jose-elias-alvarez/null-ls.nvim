@@ -250,6 +250,31 @@ describe("helpers", function()
             assert.truthy(err:match("command nonexistent is not executable"))
         end)
 
+        it("should call command function with params ", function()
+            local params
+            generator_args.command = function(_params)
+                params = _params
+                return "cat"
+            end
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({ test_key = "test_val" })
+
+            assert.same(params, { test_key = "test_val" })
+        end)
+
+        it("should set command from function return value", function()
+            generator_args.command = function()
+                return "cat"
+            end
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({})
+
+            assert.stub(loop.spawn).was_called()
+            assert.equals(loop.spawn.calls[1].refs[1], "cat")
+        end)
+
         it("should throw error if from_temp_file = true but to_temp_file is not", function()
             generator_args.from_temp_file = true
             local generator = helpers.generator_factory(generator_args)
