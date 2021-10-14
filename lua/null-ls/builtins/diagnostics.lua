@@ -263,7 +263,7 @@ local handle_rubocop_output = function(params)
     if params.output and params.output.files then
         local file
         for _, file_output in ipairs(params.output.files) do
-            if file_output.path == vim.fn.fnamemodify(params.bufname, ":.") then
+            if file_output.path == vim.fn.fnamemodify(params.bufname, ":t") then
                 file = file_output
                 break
             end
