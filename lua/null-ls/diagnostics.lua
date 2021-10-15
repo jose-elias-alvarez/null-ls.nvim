@@ -22,7 +22,7 @@ end
 
 local postprocess = function(diagnostic, _, generator)
     diagnostic.range = convert_range(diagnostic)
-    diagnostic.source = diagnostic.source or generator.opts.command or "null-ls"
+    diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
     -- avoid unnecessary gsub if using default

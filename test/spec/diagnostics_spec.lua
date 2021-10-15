@@ -226,6 +226,14 @@ describe("diagnostics", function()
                 assert.equals(mock_diagnostic.source, "source")
             end)
 
+            it("should set source from generator name", function()
+                mock_diagnostic.source = nil
+
+                postprocess(mock_diagnostic, mock_params, { opts = { name = "generator-source" } })
+
+                assert.equals(mock_diagnostic.source, "generator-source")
+            end)
+
             it("should set source from generator command", function()
                 mock_diagnostic.source = nil
 
