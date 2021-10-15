@@ -157,6 +157,8 @@ M.generator_factory = function(opts)
 
         if type(command) == "function" then
             command = command(params)
+            -- prevent issues displaying / attempting to serialize generator.opts.command
+            opts.command = command
         end
 
         assert(

@@ -262,6 +262,17 @@ describe("helpers", function()
             assert.equals(loop.spawn.calls[1].refs[1], "cat")
         end)
 
+        it("should set generator.opts.command to function return value", function()
+            generator_args.command = function()
+                return "cat"
+            end
+            local generator = helpers.generator_factory(generator_args)
+
+            generator.fn({})
+
+            assert.equals(generator.opts.command, "cat")
+        end)
+
         it("should throw error if from_temp_file = true but to_temp_file is not", function()
             generator_args.from_temp_file = true
             local generator = helpers.generator_factory(generator_args)
