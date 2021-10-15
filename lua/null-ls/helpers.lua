@@ -26,25 +26,29 @@ local get_content = function(params)
 end
 
 local parse_args = function(args, params)
+    local vars = {
+        ["FILENAME"] = function()
+            return params.temp_path or params.bufname
+        end,
+        ["DIRNAME"] = function()
+            return vim.fn.fnamemodify(params.bufname, ":h")
+        end,
+        ["TEXT"] = function()
+            return get_content(params)
+        end,
+        ["FILEEXT"] = function()
+            return vim.fn.fnamemodify(params.bufname, ":e")
+        end,
+        ["ROOT"] = function()
+            return params.root
+        end,
+    }
+
     local parsed = {}
     for _, arg in pairs(args) do
-        if string.find(arg, "$FILENAME") then
-            arg = u.string.replace(arg, "$FILENAME", params.temp_path or params.bufname)
-        end
-        if string.find(arg, "$DIRNAME") then
-            arg = u.string.replace(arg, "$DIRNAME", vim.fn.fnamemodify(params.bufname, ":h"))
-        end
-        if string.find(arg, "$TEXT") then
-            arg = u.string.replace(arg, "$TEXT", get_content(params))
-        end
-        if string.find(arg, "$FILEEXT") then
-            arg = u.string.replace(arg, "$FILEEXT", vim.fn.fnamemodify(params.bufname, ":e"))
-        end
-        if string.find(arg, "$ROOT") then
-            local client = vim.lsp.get_client_by_id(params.client_id)
-            local cwd = client and client.config.root_dir or vim.fn.getcwd()
-            arg = u.string.replace(arg, "$ROOT", cwd)
-        end
+        arg = tostring(arg):gsub("$(%w+)", function(v)
+            return vars[v] and vars[v]() or ""
+        end)
 
         table.insert(parsed, arg)
     end

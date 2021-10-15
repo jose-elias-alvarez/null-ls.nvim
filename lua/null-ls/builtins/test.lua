@@ -1,4 +1,3 @@
-local u = require("null-ls.utils")
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
@@ -14,17 +13,17 @@ M.toggle_line_comment = {
         fn = function(params)
             local bufnr = api.nvim_get_current_buf()
             local commentstring = api.nvim_buf_get_option(bufnr, "commentstring")
-            local raw_commentstring = u.string.replace(commentstring, "%s", "")
+            local raw_commentstring = commentstring:gsub(vim.pesc("%s"), "")
             local line = params.content[params.row]
 
-            local has_comment = string.find(line, raw_commentstring, nil, true)
-            if has_comment then
+            if line:find(raw_commentstring, nil, true) then
+                local uncommented = line:gsub(vim.pesc(raw_commentstring), "")
                 return {
                     {
                         title = "Uncomment line",
                         action = function()
                             api.nvim_buf_set_lines(bufnr, params.row - 1, params.row, false, {
-                                u.string.replace(line, raw_commentstring, ""),
+                                uncommented,
                             })
                         end,
                     },

@@ -208,60 +208,6 @@ describe("utils", function()
         end)
     end)
 
-    describe("string", function()
-        describe("replace", function()
-            it("should return nil if string does not contain original", function()
-                local str = "I am a string"
-                local original = "xxxx"
-                local replacement = "doesn't matter"
-
-                local replaced = u.string.replace(str, original, replacement)
-
-                assert.equals(replaced, nil)
-            end)
-
-            it("should return replacement when string and original are identical", function()
-                local str = "I am a string"
-                local original = "I am a string"
-                local replacement = "I am something else"
-
-                local replaced = u.string.replace(str, original, replacement)
-
-                assert.equals(replaced, replacement)
-            end)
-
-            it("should replace original from start of string", function()
-                local str = "I am a string"
-                local original = "I am"
-                local replacement = "You are"
-
-                local replaced = u.string.replace(str, original, replacement)
-
-                assert.equals(replaced, "You are a string")
-            end)
-
-            it("should replace original from end of string", function()
-                local str = "I am a string"
-                local original = "string"
-                local replacement = "table"
-
-                local replaced = u.string.replace(str, original, replacement)
-
-                assert.equals(replaced, "I am a table")
-            end)
-
-            it("should replace original from middle of string", function()
-                local str = "I am a string"
-                local original = "am"
-                local replacement = "am not"
-
-                local replaced = u.string.replace(str, original, replacement)
-
-                assert.equals(replaced, "I am not a string")
-            end)
-        end)
-    end)
-
     describe("table", function()
         describe("replace", function()
             it("should replace matching list element", function()
