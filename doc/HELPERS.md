@@ -38,6 +38,7 @@ helpers.generator_factory({
     to_temp_file, -- boolean (optional)
     use_cache, -- boolean (optional)
     runtime_condition, -- function (optional)
+    cwd, -- function (optional)
 })
 ```
 
@@ -209,6 +210,15 @@ doing anything overly expensive.
   neccessary conditions (filetype, etc.) as well.
 - Defaults to `true`, hence any configured source will be run every time unless
   this condition specifies otherwise.
+
+### cwd
+
+Optional function to set the working directory for the process being spawned.
+
+- Takes a single argument, `params`, which has the `root` key added of the project
+  root
+- With no function or no return, the working directory remains set to the project
+  root
 
 ## formatter_factory
 

@@ -349,6 +349,29 @@ describe("helpers", function()
                 assert.same(loop.spawn.calls[1].refs[3].timeout, c.get().default_timeout)
             end)
 
+            it("should call loop.spawn with the result of the specified cwd function", function()
+                root = vim.fn.getcwd()
+                generator_args.cwd = function(params)
+                    assert.same(params.root, root)
+                    return "foo"
+                end
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({})
+
+                assert.same(loop.spawn.calls[1].refs[3].cwd, "foo")
+            end)
+
+            it("should call loop.spawn with default root as cwd if no cwd given", function()
+                root = vim.fn.getcwd()
+                generator_args.cwd = nil
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({})
+
+                assert.same(loop.spawn.calls[1].refs[3].cwd, root)
+            end)
+
             it("should call loop.spawn with buffer content as string when to_stdin = true", function()
                 test_utils.edit_test_file("test-file.lua")
                 local params = { bufnr = vim.api.nvim_get_current_buf() }
