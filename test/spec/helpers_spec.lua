@@ -7,6 +7,7 @@ local test_utils = require("test.utils")
 
 describe("helpers", function()
     _G._TEST = true
+    local root = vim.fn.getcwd()
 
     stub(vim, "validate")
 
@@ -260,7 +261,7 @@ describe("helpers", function()
 
             generator.fn({ test_key = "test_val" })
 
-            assert.same(params, { test_key = "test_val" })
+            assert.same(params, { test_key = "test_val", root = root })
         end)
 
         it("should set command from function return value", function()
@@ -350,7 +351,6 @@ describe("helpers", function()
             end)
 
             it("should call loop.spawn with the result of the specified cwd function", function()
-                root = vim.fn.getcwd()
                 generator_args.cwd = function(params)
                     assert.same(params.root, root)
                     return "foo"
@@ -363,7 +363,6 @@ describe("helpers", function()
             end)
 
             it("should call loop.spawn with default root as cwd if no cwd given", function()
-                root = vim.fn.getcwd()
                 generator_args.cwd = nil
                 local generator = helpers.generator_factory(generator_args)
 
@@ -515,7 +514,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(on_output).was_called_with({ output = "output" }, done)
+                assert.equals(on_output.calls[1].refs[1].output, "output")
+                assert.equals(on_output.calls[1].refs[2], done)
             end)
 
             it("should set output to error_output and error_output to nil if from_stderr = true", function()
@@ -526,7 +526,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ output = "error output" }, done)
+                assert.equals(on_output.calls[1].refs[1].output, "error output")
+                assert.equals(on_output.calls[1].refs[2], done)
             end)
 
             it("should ignore error output if ignore_stderr = true", function()
@@ -537,7 +538,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", "normal output")
 
-                assert.stub(on_output).was_called_with({ output = "normal output" }, done)
+                assert.equals(on_output.calls[1].refs[1].output, "normal output")
+                assert.equals(on_output.calls[1].refs[2], done)
             end)
 
             it("should not override params.output if already set", function()
@@ -548,7 +550,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "new output")
 
-                assert.stub(on_output).was_called_with({ output = "original output" }, done)
+                assert.equals(on_output.calls[1].refs[1].output, "original output")
+                assert.equals(on_output.calls[1].refs[2], done)
             end)
 
             it("should throw error if error_output exists and format ~= raw", function()
@@ -569,7 +572,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ err = "error output" }, done)
+                assert.equals(on_output.calls[1].refs[1].err, "error output")
+                assert.equals(on_output.calls[1].refs[2], done)
             end)
 
             it("should set params.err if format == json_raw", function()
@@ -580,7 +584,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.stub(on_output).was_called_with({ err = "error output" })
+                assert.equals(on_output.calls[1].refs[1].err, "error output")
             end)
 
             it("should call json_output_wrapper and return if format == json", function()
@@ -591,7 +595,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, vim.fn.json_encode({ key = "val" }))
 
-                assert.stub(on_output).was_called_with({ output = { key = "val" } })
+                assert.same(on_output.calls[1].refs[1].output, { key = "val" })
             end)
 
             it("should call json_output_wrapper and return if format == json_raw", function()
@@ -602,7 +606,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, vim.fn.json_encode({ key = "val" }))
 
-                assert.stub(on_output).was_called_with({ output = { key = "val" } })
+                assert.same(on_output.calls[1].refs[1].output, { key = "val" })
             end)
 
             it("should call line_output_wrapper and return if format == line", function()
@@ -613,7 +617,8 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper(nil, "output")
 
-                assert.stub(on_output).was_called_with("output", { output = "output" })
+                assert.equals(on_output.calls[1].refs[1], "output")
+                assert.equals(on_output.calls[1].refs[2].output, "output")
             end)
 
             it("should call set_cache with bufnr, command, and output if use_cache is true", function()
