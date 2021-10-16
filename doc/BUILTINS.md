@@ -251,6 +251,26 @@ local sources = { null_ls.builtins.formatting.cmake_format }
 - `command = "cmake-format"`
 - `args = { "-" }`
 
+#### [credo](https://hexdocs.pm/credo)
+
+##### About
+
+Static analysis for `elixir` files for enforcing code consistency.
+
+- Searches _downward_ from the project root, so it should work for most projects, including umbrella projects with a single credo config. The `cwd` parameter may be overwritten for other project structures such as to search upwards for umbrella projects with per-application configurations.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.credo }
+```
+
+##### Defaults
+
+- `filetypes = { "elixir" }`
+- `command = "mix"`
+- `args = { "credo", "suggest", "--format", "json", "$FILENAME" }`
+
 #### [crystal-format](https://crystal-lang.org/2015/10/16/crystal-0.9.0-released.html)
 
 ##### About

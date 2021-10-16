@@ -24,6 +24,126 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("credo", function()
+        local linter = diagnostics.credo
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with error severity", function()
+            local output = vim.fn.json_decode([[
+            {
+              "issues": [
+                {
+                  "category": "consistency",
+                  "check": "Credo.Check.Consistency.SpaceInParentheses",
+                  "column": null,
+                  "column_end": null,
+                  "filename": "lib/todo_web/controllers/page_controller.ex",
+                  "line_no": 4,
+                  "message": "There is no whitespace around parentheses/brackets most of the time, but here there is.",
+                  "priority": 12,
+                  "scope": "TodoWeb.PageController.index",
+                  "trigger": "( c"
+                }
+              ]
+            } ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = "There is no whitespace around parentheses/brackets most of the time, but here there is.",
+                    row = 4,
+                    col = nil,
+                    end_col = nil,
+                    severity = 1,
+                },
+            }, diagnostic)
+        end)
+        it("should create a diagnostic with warning severity", function()
+            local output = vim.fn.json_decode([[
+            {
+              "issues": [{
+                "category": "readability",
+                "check": "Credo.Check.Readability.ImplTrue",
+                "column": 3,
+                "column_end": 13,
+                "filename": "./foo.ex",
+                "line_no": 3,
+                "message": "@impl true should be @impl MyBehaviour",
+                "priority": 8,
+                "scope": null,
+                "trigger": "@impl true"
+              }]
+            } ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = "@impl true should be @impl MyBehaviour",
+                    row = 3,
+                    col = 3,
+                    end_col = 13,
+                    severity = 2,
+                },
+            }, diagnostic)
+        end)
+        it("should create a diagnostic with information severity", function()
+            local output = vim.fn.json_decode([[
+            {
+              "issues": [{
+                "category": "design",
+                "check": "Credo.Check.Design.TagTODO",
+                "column": null,
+                "column_end": null,
+                "filename": "./foo.ex",
+                "line_no": 8,
+                "message": "Found a TODO tag in a comment: \"TODO: implement check\"",
+                "priority": -5,
+                "scope": null,
+                "trigger": "TODO: implement check"
+              }]
+            } ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = 'Found a TODO tag in a comment: "TODO: implement check"',
+                    row = 8,
+                    col = nil,
+                    end_col = nil,
+                    severity = 3,
+                },
+            }, diagnostic)
+        end)
+        it("should create a diagnostic falling back to hint severity", function()
+            local output = vim.fn.json_decode([[
+            {
+              "issues": [{
+                "category": "refactor",
+                "check": "Credo.Check.Refactor.FilterFilter",
+                "column": null,
+                "column_end": null,
+                "filename": "./foo.ex",
+                "line_no": 12,
+                "message": "One `Enum.filter/2` is more efficient than `Enum.filter/2 |> Enum.filter/2`",
+                "priority": -15,
+                "scope": null,
+                "trigger": "|>"
+              }]
+            } ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = "One `Enum.filter/2` is more efficient than `Enum.filter/2 |> Enum.filter/2`",
+                    row = 12,
+                    col = nil,
+                    end_col = nil,
+                    severity = 4,
+                },
+            }, diagnostic)
+        end)
+    end)
+
     describe("luacheck", function()
         local linter = diagnostics.luacheck
         local parser = linter._opts.on_output

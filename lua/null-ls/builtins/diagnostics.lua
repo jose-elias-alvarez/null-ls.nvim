@@ -38,6 +38,60 @@ M.chktex = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.credo = h.make_builtin({
+    name = "credo",
+    method = DIAGNOSTICS,
+    filetypes = { "elixir" },
+    generator_opts = {
+        command = "mix",
+        cwd = function(params)
+            mix_file = vim.fn.findfile("mix.exs", params.root .. "/**")
+            if mix_file then
+                return vim.fn.fnamemodify(mix_file, ":p:h")
+            end
+        end,
+        args = { "credo", "suggest", "--format", "json", "$FILENAME" },
+        format = "json",
+        from_stderr = true,
+        on_output = function(params)
+            issues = {}
+
+            for _, issue in ipairs(params.output.issues) do
+                err = {
+                    message = issue.message,
+                    row = issue.line_no,
+                    source = "credo",
+                }
+
+                --NOTE: priority is dynamic, ranges are from credo source
+                --could use `from_json` helper if mapped to same severity
+                if issue.priority >= 10 then
+                    err.severity = h.diagnostics.severities.error
+                elseif issue.priority >= 0 then
+                    err.severity = h.diagnostics.severities.warning
+                elseif issue.priority >= -10 then
+                    err.severity = h.diagnostics.severities.information
+                else
+                    err.severity = h.diagnostics.severities.hint
+                end
+
+                if issue.column and issue.column ~= vim.NIL then
+                    err.col = issue.column
+                end
+
+                if issue.column_end and issue.column_end ~= vim.NIL then
+                    err.end_col = issue.column_end
+                end
+
+                table.insert(issues, err)
+            end
+
+            return issues
+        end,
+    },
+    factory = h.generator_factory,
+})
+
 M.luacheck = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "lua" },
