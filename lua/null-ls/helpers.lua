@@ -47,7 +47,7 @@ local parse_args = function(args, params)
     local parsed = {}
     for _, arg in pairs(args) do
         arg = tostring(arg):gsub("$(%w+)", function(v)
-            return vars[v] and vars[v]() or ""
+            return vars[v] and vars[v]()
         end)
 
         table.insert(parsed, arg)

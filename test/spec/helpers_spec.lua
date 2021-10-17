@@ -71,6 +71,14 @@ describe("helpers", function()
             assert.equals(parsed[1], "root")
         end)
 
+        it("should not modify non-matching variable", function()
+            local args = { "echo $0" }
+
+            local parsed = helpers._parse_args(args, {})
+
+            assert.equals(parsed[1], "echo $0")
+        end)
+
         it("should return unmodified argument", function()
             local args = { "--mock-flag", "mock-value" }
 
