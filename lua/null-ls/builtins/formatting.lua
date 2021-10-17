@@ -677,6 +677,7 @@ M.terraform_fmt = h.make_builtin({
 })
 
 M.trim_whitespace = h.make_builtin({
+    name = "trim_whitespace",
     method = FORMATTING,
     filetypes = {},
     generator_opts = {
@@ -688,6 +689,7 @@ M.trim_whitespace = h.make_builtin({
 })
 
 M.trim_newlines = h.make_builtin({
+    name = "trim_newlines",
     method = FORMATTING,
     filetypes = {},
     generator_opts = {
