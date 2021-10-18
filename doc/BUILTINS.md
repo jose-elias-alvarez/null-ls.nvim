@@ -1294,9 +1294,10 @@ A linter for the `javascript` ecosystem.
 
 - Note that the `null-ls` builtin requires your `eslint` executable to be
   available on your `$PATH`.
-- To use local (project) executables, use the
-  integration in
-  [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils).
+- To use local (project) executables, use the integration in
+  [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils)
+  or try the [ESLint language
+  server](https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#eslint).
 
 ##### Usage
 
