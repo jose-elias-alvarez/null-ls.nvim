@@ -37,6 +37,7 @@ local readable_map = {
     [internal_methods.DIAGNOSTICS] = "Diagnostics",
     [internal_methods.FORMATTING] = "Formatting",
     [internal_methods.RANGE_FORMATTING] = "Range formatting",
+    [internal_methods.HOVER] = "Hover",
 }
 
 local M = {}
