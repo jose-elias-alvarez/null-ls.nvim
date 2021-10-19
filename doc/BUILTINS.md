@@ -1703,6 +1703,24 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 - `command = "stylelint"`
 - `args = { "--formatter", "json", "--stdin-filename", "$FILENAME" }`
 
+#### [yamllint](https://github.com/adrienverge/yamllint)
+
+##### About
+
+A linter for YAML files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.yamllint }
+```
+
+##### Defaults
+
+- `filetypes = { "yaml" }`
+- `command = "yamllint"`
+- `args = { "--format", "parsable", "-" }`
+
 ### Code actions
 
 #### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
