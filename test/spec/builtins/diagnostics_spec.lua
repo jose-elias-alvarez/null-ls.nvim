@@ -559,4 +559,24 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("yamllint", function()
+        local linter = diagnostics.yamllint
+        local parser = linter._opts.on_output
+        local file = {
+            [[true]],
+        }
+
+        it("should create a diagnostic with warning severity", function()
+            local output = [[stdin:1:1: [warning] missing document start "---" (document-start)]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "1",
+                severity = 2,
+                code = "document-start",
+                message = 'missing document start "---"',
+            }, diagnostic)
+        end)
+    end)
 end)
