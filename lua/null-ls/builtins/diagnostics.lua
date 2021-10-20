@@ -315,14 +315,7 @@ M.selene = h.make_builtin({
 
 local handle_rubocop_output = function(params)
     if params.output and params.output.files then
-        local file
-        for _, file_output in ipairs(params.output.files) do
-            if file_output.path == vim.fn.fnamemodify(params.bufname, ":t") then
-                file = file_output
-                break
-            end
-        end
-
+        local file = params.output.files[1]
         if file and file.offenses then
             local parser = h.diagnostics.from_json({
                 severities = {
