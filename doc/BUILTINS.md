@@ -1401,7 +1401,7 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 
 - `filetypes = { "cpp" , "c" }`
 - `command = "cppcheck"`
-- `args = { "--enable=warning,style,performance,portability,information,missingInclude", "--template=gcc", "$FILENAME" }`
+- `args = { "--enable=warning,style,performance,portability", "--template=gcc", "$FILENAME" }`
 
 #### [write-good](https://github.com/btford/write-good)
 

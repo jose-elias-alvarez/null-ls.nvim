@@ -749,7 +749,7 @@ M.cppcheck = h.make_builtin({
     generator_opts = {
         command = "cppcheck",
         args = {
-            "--enable=warning,style,performance,portability,information,missingInclude",
+            "--enable=warning,style,performance,portability",
             "--template=gcc",
             "$FILENAME",
         },
