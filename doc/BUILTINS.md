@@ -1363,7 +1363,7 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 
 ##### Defaults
 
-- `filetypes = { "dockerfile" }`
+- `filetypes = { "Dockerfile", "dockerfile" }`
 - `command = "hadolint"`
 - `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
