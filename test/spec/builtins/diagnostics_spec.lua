@@ -142,6 +142,18 @@ describe("diagnostics", function()
                 },
             }, diagnostic)
         end)
+        it("returns errors as diagnostics", function()
+            local error =
+                [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
+            local diagnostic = parser({ err = error })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = error,
+                    row = 1,
+                },
+            }, diagnostic)
+        end)
     end)
 
     describe("luacheck", function()

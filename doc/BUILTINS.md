@@ -257,7 +257,8 @@ local sources = { null_ls.builtins.formatting.cmake_format }
 
 Static analysis for `elixir` files for enforcing code consistency.
 
-- Searches _downward_ from the project root, so it should work for most projects, including umbrella projects with a single credo config. The `cwd` parameter may be overwritten for other project structures such as to search upwards for umbrella projects with per-application configurations.
+- Searches upwards from the buffer to the project root and tries to find the first `.credo.exs` file in case nested credo configs are used.
+- When not using a global credo install, the diagnostic can be disable with a conditional checking for the config file with `utils.root_has_file('.credo.exs')`
 
 ##### Usage
 
@@ -269,7 +270,7 @@ local sources = { null_ls.builtins.diagnostics.credo }
 
 - `filetypes = { "elixir" }`
 - `command = "mix"`
-- `args = { "credo", "suggest", "--format", "json", "$FILENAME" }`
+- `args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }`
 
 #### [crystal-format](https://crystal-lang.org/2015/10/16/crystal-0.9.0-released.html)
 
