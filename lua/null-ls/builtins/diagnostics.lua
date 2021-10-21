@@ -419,7 +419,7 @@ M.eslint_d = h.make_builtin({
 
 M.hadolint = h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "dockerfile" },
+    filetypes = { "Dockerfile", "dockerfile" },
     generator_opts = {
         command = "hadolint",
         format = "json",
