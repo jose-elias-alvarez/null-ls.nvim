@@ -251,6 +251,24 @@ local sources = { null_ls.builtins.formatting.cmake_format }
 - `command = "cmake-format"`
 - `args = { "-" }`
 
+#### [codespell](https://github.com/codespell-project/codespell)
+
+##### About
+
+`codespell` fix common misspellings in text files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.codespell }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "codespell"`
+- `args = { "--write-changes", "$FILENAME" }`
+
 #### [credo](https://hexdocs.pm/credo)
 
 ##### About

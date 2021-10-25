@@ -62,6 +62,18 @@ M.cmake_format = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.codespell = h.make_builtin({
+    method = FORMATTING,
+    filetypes = {},
+    generator_opts = {
+        command = "codespell",
+        args = { "--write-changes", "$FILENAME" },
+        to_temp_file = true,
+        ignore_stderr = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.crystal_format = h.make_builtin({
     method = FORMATTING,
     filetypes = { "crystal" },
