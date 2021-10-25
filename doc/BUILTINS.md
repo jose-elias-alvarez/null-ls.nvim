@@ -881,6 +881,24 @@ local sources = { null_ls.builtins.formatting.rufo }
 - `command = "rufo"`
 - `args = { "-x" }`
 
+#### [zigfmt](https://github.com/ziglang/zig)
+
+##### About
+
+Reformat Zig source into canonical form
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.zigfmt }
+```
+
+##### Defaults
+
+- `filetypes = { "zig" }`
+- `command = "zig"`
+- `args = { "fmt", "--stdin" }`
+
 #### [rustfmt](https://github.com/rust-lang/rustfmt)
 
 ##### About

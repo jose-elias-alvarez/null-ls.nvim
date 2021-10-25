@@ -527,6 +527,17 @@ M.rubocop = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.zigfmt = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "zig" },
+    generator_opts = {
+        command = "zig",
+        args = { "fmt", "--stdin" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.rustfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "rust" },
