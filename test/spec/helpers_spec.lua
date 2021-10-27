@@ -856,6 +856,15 @@ describe("helpers", function()
 
                 assert.equals(opts.factory.calls[1].refs[1].timeout, 5000)
             end)
+
+            it("should use default factory function to assign opts to generator", function()
+                local default_opts = { generator = {}, generator_opts = { test_key = "test-val" } }
+                builtin = helpers.make_builtin(default_opts)
+
+                local generator = builtin.generator
+
+                assert.same(generator, default_opts.generator)
+            end)
         end)
     end)
 end)

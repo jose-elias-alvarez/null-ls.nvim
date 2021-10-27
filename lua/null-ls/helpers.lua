@@ -309,19 +309,23 @@ end
 
 M.make_builtin = function(opts)
     local method, filetypes, factory, generator_opts, generator =
-        opts.method, opts.filetypes, opts.factory, opts.generator_opts or {}, opts.generator
+        opts.method, opts.filetypes, opts.factory, opts.generator_opts or {}, opts.generator or {}
 
     local builtin = {
         method = method,
         filetypes = filetypes,
-        generator = generator,
         _opts = vim.deepcopy(generator_opts),
         name = opts.name or generator_opts.command,
     }
 
+    factory = factory or function(_opts)
+        generator.opts = _opts
+        return generator
+    end
+
     setmetatable(builtin, {
         __index = function(tab, key)
-            return (key == "generator" and factory and factory(tab._opts)) or rawget(tab, key)
+            return key == "generator" and factory(tab._opts) or rawget(tab, key)
         end,
     })
 
