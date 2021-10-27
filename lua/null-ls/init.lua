@@ -14,13 +14,8 @@ M.null_ls_info = require("null-ls.info").show_window
 M.generator = helpers.generator_factory
 M.formatter = helpers.formatter_factory
 
-local should_setup = function()
-    return not vim.g.null_ls_disable and not c.get()._setup
-end
-
--- preferred method
 M.config = function(user_config)
-    if not should_setup() then
+    if vim.g.null_ls_disable or c.get()._setup then
         return
     end
 
@@ -30,17 +25,6 @@ M.config = function(user_config)
     require("null-ls.handlers").setup()
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
-end
-
--- here for backwards compatibility, but deprecated
-M.setup = function(user_config)
-    if not should_setup() then
-        return
-    end
-
-    user_config = user_config or {}
-    M.config(user_config)
-    require("lspconfig")["null-ls"].setup({ on_attach = user_config.on_attach })
 end
 
 return M

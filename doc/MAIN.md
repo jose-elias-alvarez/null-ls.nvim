@@ -75,10 +75,10 @@ which indicates that the source should activate for all filetypes.
 local my_source = {}
 
 -- single
-my_source.filetypes = {"lua"}
+my_source.filetypes = { "lua" }
 
 -- more than one
-my_source.filetypes = {"lua", "teal"}
+my_source.filetypes = { "lua", "teal" }
 
 -- all filetypes
 my_source.filetypes = {}
@@ -86,17 +86,18 @@ my_source.filetypes = {}
 
 ### Registration
 
-null-ls can register sources on setup when defined by the user or dynamically
-when defined by integrations.
+null-ls can register sources via the `config` method (intended for a user's
+configuration) or via the `register` method (intended for integrations or
+advanced use cases).
 
 ```lua
 local null_ls = require("null-ls")
 
--- on setup
-null_ls.setup {sources = my_sources}
+-- using config method
+null_ls.config({ sources = my_sources })
 
--- dynamic
-null_ls.register {my_sources}
+-- using register method
+null_ls.register({ my_sources })
 ```
 
 Both options accept a single source, a list of sources, or a table containing
@@ -106,10 +107,10 @@ more than one source with shared configuration.
 local null_ls = require("null-ls")
 
 -- single source
-null_ls.register {my_source}
+null_ls.register({ my_source })
 
 -- list of sources with independent configuration
-null_ls.register {my_source, my_other_source}
+null_ls.register({ my_source, my_other_source })
 
 -- more than one source with shared configuration
 null_ls.register({ name = "my-sources", filetypes = { "lua" }, sources = { my_source, my_other_source } })

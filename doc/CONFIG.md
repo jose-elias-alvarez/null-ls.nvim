@@ -108,12 +108,12 @@ integration will register them independently.
 
 ## Disabling null-ls
 
-You can conditionally block null-ls setup on Neovim startup by setting
-`vim.g.null_ls_disable = true` before `config()` runs.
+You can conditionally block null-ls from setting itself up on Neovim startup by
+setting `vim.g.null_ls_disable = true` before `config` runs.
 
 For example, you can use the following snippet to disable null-ls when using
 [firenvim](https://github.com/glacambre/firenvim), as long as the module
-containing the snippet loads before `config()`:
+containing the snippet loads before `config`:
 
 ```lua
 if vim.g.started_by_firenvim then
