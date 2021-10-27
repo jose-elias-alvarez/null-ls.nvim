@@ -65,11 +65,11 @@ local should_register = function(source, filetypes, source_methods)
 
     for _, method in ipairs(source_methods) do
         config._methods[method] = config._methods[method] or {}
-        if config._methods[method][name] then
+        if config._methods[method][name] and not source._is_copy then
             return false
         end
 
-        config._methods[method][name] = filetypes
+        config._methods[method][name] = vim.list_extend(config._methods[method][name] or {}, filetypes)
     end
 
     return true

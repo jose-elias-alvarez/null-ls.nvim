@@ -748,45 +748,51 @@ describe("helpers", function()
         end)
 
         describe("with", function()
-            it("should override filetypes and return", function()
-                local result = builtin.with({ filetypes = { "txt" } })
+            it("should create copy", function()
+                local copy = builtin.with({ filetypes = { "txt" } })
 
-                assert.same(builtin.filetypes, { "txt" })
-                assert.equals(result, builtin)
+                assert.not_same(builtin, copy)
+                assert.equals(copy._is_copy, true)
+            end)
+
+            it("should override filetypes", function()
+                local copy = builtin.with({ filetypes = { "txt" } })
+
+                assert.same(copy.filetypes, { "txt" })
             end)
 
             it("should override values on opts", function()
-                builtin.with({ timeout = 5000 })
+                local copy = builtin.with({ timeout = 5000 })
 
-                assert.equals(builtin._opts.timeout, 5000)
+                assert.equals(copy._opts.timeout, 5000)
             end)
 
             it("should override single nested value", function()
-                builtin.with({ nested = { nested_key = "new_val" } })
+                local copy = builtin.with({ nested = { nested_key = "new_val" } })
 
-                assert.equals(builtin._opts.nested.nested_key, "new_val")
-                assert.equals(builtin._opts.nested.other_nested, "original_val")
+                assert.equals(copy._opts.nested.nested_key, "new_val")
+                assert.equals(copy._opts.nested.other_nested, "original_val")
             end)
 
             it("should extend args with extra_args table", function()
-                builtin.with({ extra_args = { "user_first", "user_second" } })
+                local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
-                assert.equals(type(builtin._opts.args), "function")
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
                 -- Multiple calls should yield the same results
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 
             it("should extend args with extra_args function", function()
-                builtin.with({
+                local copy = builtin.with({
                     extra_args = function()
                         return { "user_first", "user_second" }
                     end,
                 })
 
-                assert.equals(type(builtin._opts.args), "function")
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second" })
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 
             it("should set args to extra_args if args is nil", function()
@@ -799,10 +805,10 @@ describe("helpers", function()
                     },
                 }
                 builtin = helpers.make_builtin(test_opts)
-                builtin.with({ extra_args = { "user_first", "user_second" } })
+                local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
-                assert.equals(type(builtin._opts.args), "function")
-                assert.are.same(builtin._opts.args(), { "user_first", "user_second" })
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "user_first", "user_second" })
             end)
 
             it("should extend args with extra_args, but keep '-' arg last", function()
@@ -816,23 +822,22 @@ describe("helpers", function()
                     },
                 }
                 builtin = helpers.make_builtin(test_opts)
-                builtin.with({ extra_args = { "user_first", "user_second" } })
+                local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
-                assert.equals(type(builtin._opts.args), "function")
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
                 -- Multiple calls should yield the same results
-                assert.are.same(builtin._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+                assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
             end)
 
             it("should wrap builtin with condition", function()
-                local wrapped = builtin.with({
+                local wrapped_copy = builtin.with({
                     condition = function()
                         return true
                     end,
                 })
 
-                assert.equals(type(wrapped), "function")
-                assert.equals(wrapped(), builtin)
+                assert.equals(type(wrapped_copy), "function")
             end)
         end)
 
