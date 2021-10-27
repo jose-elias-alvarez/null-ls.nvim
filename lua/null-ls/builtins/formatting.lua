@@ -609,7 +609,7 @@ M.shfmt = h.make_builtin({
     },
     generator_opts = {
         command = "shfmt",
-        args = { "-filename", "$FILENAME" },
+        args = {},
         to_stdin = true,
     },
     factory = h.formatter_factory,
