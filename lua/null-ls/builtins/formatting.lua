@@ -606,6 +606,7 @@ M.shfmt = h.make_builtin({
     method = FORMATTING,
     filetypes = {
         "sh",
+        "zsh",
     },
     generator_opts = {
         command = "shfmt",
