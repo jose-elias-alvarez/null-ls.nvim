@@ -716,6 +716,28 @@ M.rubocop = h.make_builtin({
     factory = h.generator_factory,
 })
 
+M.statix = h.make_builtin({
+    method = DIAGNOSTICS,
+    filetypes = { "nix" },
+    generator_opts = {
+        command = "statix",
+        args = { "check", "--format=errfmt", "--", "$FILENAME" },
+        format = "line",
+        to_temp_file = true,
+        on_output = h.diagnostics.from_pattern(
+            [[>(%d+):(%d+):(.):(%d+):(.*)]],
+            { "row", "col", "severity", "code", "message" },
+            {
+                severities = {
+                    E = h.diagnostics.severities["error"],
+                    W = h.diagnostics.severities["warning"],
+                },
+            }
+        ),
+    },
+    factory = h.generator_factory,
+})
+
 M.stylelint = h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "scss", "less", "css", "sass" },

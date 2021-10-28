@@ -1547,6 +1547,24 @@ local sources = {null_ls.builtins.diagnostics.vale}
 - `command = "vale"`
 - `args = { "--no-exit", "--output=JSON", "$FILENAME" }`
 
+#### [statix](https://github.com/nerdypepper/statix)
+
+##### About
+
+Lints and suggestions for the nix programming language
+
+##### Usage
+
+```lua
+local sources = {null_ls.builtins.diagnostics.statix}
+```
+
+##### Defaults
+
+- `filetypes = { "nix" }`
+- `command = "statix"`
+- `args = { "check", "--format=errfmt", "--", "$FILENAME" }`
+
 #### [teal](https://github.com/teal-language/tl)
 
 ##### About
@@ -1779,6 +1797,24 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 ##### Defaults
 
 - `filetypes = {}`
+
+#### [statix](https://github.com/nerdypepper/statix)
+
+##### About
+
+Lints and suggestions for the nix programming language
+
+##### Usage
+
+```lua
+local sources = {null_ls.builtins.code_actions.statix}
+```
+
+##### Defaults
+
+- `filetypes = { "nix" }`
+- `command = "statix"`
+- `args = { "check", "--format=json", "--", "$FILENAME" }`
 
 ### Hover
 
