@@ -28,6 +28,7 @@ body:
   - type: textarea
     attributes:
       label: "null-ls config"
+      description: "The minimal configuration required to reproduce your bug. Do not post or link to your entire Neovim configuration!"
     validations:
       required: true
 
