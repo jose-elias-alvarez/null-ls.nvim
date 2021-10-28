@@ -7,22 +7,20 @@ local api = vim.api
 local M = {}
 
 function M.setup()
-    local configs = require("lspconfig/configs")
-    local util = require("lspconfig/util")
-
-    local config_def = {
+    local lsputil = require("lspconfig.util")
+    local default_config = {
         cmd = { "nvim" },
         name = "null-ls",
         root_dir = function(fname)
-            return util.root_pattern("Makefile", ".git")(fname) or util.path.dirname(fname)
+            return lsputil.root_pattern("Makefile", ".git")(fname) or lsputil.path.dirname(fname)
         end,
         flags = { debounce_text_changes = c.get().debounce },
         filetypes = c.get()._filetypes,
         autostart = false,
     }
 
-    configs["null-ls"] = {
-        default_config = config_def,
+    require("lspconfig/configs")["null-ls"] = {
+        default_config = default_config,
     }
 
     -- listen on FileType and try attaching
