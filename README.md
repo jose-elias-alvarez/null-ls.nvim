@@ -21,8 +21,8 @@ for external processes.
 
 ## Status
 
-null-ls is in **beta status**. Please open an issue if something doesn't
-work the way you expect (or doesn't work at all).
+null-ls is in **beta status**. Please see below for steps to follow if something
+doesn't work the way you expect (or doesn't work at all).
 
 At the moment, null-is is compatible with Neovim 0.5 (stable) and 0.6 (head),
 but you'll get the best experience from the latest version you can run.
