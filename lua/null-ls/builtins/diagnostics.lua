@@ -724,6 +724,7 @@ M.statix = h.make_builtin({
         args = { "check", "--format=errfmt", "--", "$FILENAME" },
         format = "line",
         to_temp_file = true,
+        ignore_stderr = true,
         on_output = h.diagnostics.from_pattern(
             [[>(%d+):(%d+):(.):(%d+):(.*)]],
             { "row", "col", "severity", "code", "message" },
