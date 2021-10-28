@@ -434,6 +434,7 @@ M.prettier = h.make_builtin({
         "less",
         "html",
         "json",
+        "toml",
         "yaml",
         "markdown",
         "graphql",
