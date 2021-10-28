@@ -25,31 +25,71 @@ describe("utils", function()
     end)
 
     describe("filetype_matches", function()
-        it("should return true when filetypes is empty", function()
-            local filetypes = {}
-            local ft = "lua"
+        describe("list", function()
+            it("should return true when filetypes is empty", function()
+                local filetypes = {}
+                local ft = "lua"
 
-            local matches = u.filetype_matches(filetypes, ft)
+                local matches = u.filetype_matches(filetypes, ft)
 
-            assert.equals(matches, true)
+                assert.equals(matches, true)
+            end)
+
+            it("should return true when filetypes includes ft", function()
+                local filetypes = { "lua" }
+                local ft = "lua"
+
+                local matches = u.filetype_matches(filetypes, ft)
+
+                assert.equals(matches, true)
+            end)
+
+            it("should return false when filetypes is not empty and does not include ft", function()
+                local filetypes = { "javascript" }
+                local ft = "lua"
+
+                local matches = u.filetype_matches(filetypes, ft)
+
+                assert.equals(matches, false)
+            end)
         end)
 
-        it("should return true when filetypes includes ft", function()
-            local filetypes = { "lua" }
-            local ft = "lua"
+        describe("table", function()
+            it("should return false when filetype is specifically disabled", function()
+                local filetypes = { lua = false }
+                local ft = "lua"
 
-            local matches = u.filetype_matches(filetypes, ft)
+                local matches = u.filetype_matches(filetypes, ft)
 
-            assert.equals(matches, true)
-        end)
+                assert.equals(matches, false)
+            end)
 
-        it("should return false when filetypes is not empty and does not include ft", function()
-            local filetypes = { "javascript" }
-            local ft = "lua"
+            it("should handle mixed table", function()
+                local filetypes = { tl = false, "lua" }
+                local ft = "tl"
 
-            local matches = u.filetype_matches(filetypes, ft)
+                local matches = u.filetype_matches(filetypes, ft)
 
-            assert.equals(matches, false)
+                assert.equals(matches, false)
+            end)
+
+            it("should return true when mixed table doesn't specifically disable filetype", function()
+                local filetypes = { tl = false, "lua" }
+                local ft = "other_ft"
+
+                local matches = u.filetype_matches(filetypes, ft)
+
+                assert.equals(matches, true)
+            end)
+
+            it("should return true when filetype is not specifically disabled", function()
+                local filetypes = { tl = false }
+                local ft = "lua"
+
+                local matches = u.filetype_matches(filetypes, ft)
+
+                assert.equals(matches, true)
+            end)
         end)
     end)
 

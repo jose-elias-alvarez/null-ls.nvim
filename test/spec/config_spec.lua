@@ -60,6 +60,24 @@ describe("config", function()
             assert.equals(c.get()._all_filetypes, true)
         end)
 
+        it("should set all_filetypes if filetypes only contains disabled filetypes", function()
+            mock_source.filetypes = { lua = false }
+
+            c.register(mock_source)
+
+            assert.equals(vim.tbl_count(c.get()._filetypes), 0)
+            assert.equals(c.get()._all_filetypes, true)
+        end)
+
+        it("should handle mixed table", function()
+            mock_source.filetypes = { lua = false, "tl" }
+
+            c.register(mock_source)
+
+            assert.equals(vim.tbl_count(c.get()._filetypes), 0)
+            assert.equals(c.get()._all_filetypes, true)
+        end)
+
         it("should throw if source method is invalid", function()
             mock_source.method = "badMethod"
 
@@ -78,6 +96,26 @@ describe("config", function()
             assert.truthy(source_methods[mock_source.method])
             assert.truthy(source_methods[mock_source.method][mock_source.name])
             assert.same(source_methods[mock_source.method][mock_source.name], mock_source.filetypes)
+        end)
+
+        it("should register table of disabled filetypes under methods", function()
+            mock_source.name = "mock-source"
+            mock_source.filetypes = { lua = false }
+
+            c.register(mock_source)
+
+            local source_methods = c.get()._methods
+            assert.same(source_methods[mock_source.method][mock_source.name], { lua = false })
+        end)
+
+        it("should register mixed table of filetypes under methods", function()
+            mock_source.name = "mock-source"
+            mock_source.filetypes = { lua = false, "tl" }
+
+            c.register(mock_source)
+
+            local source_methods = c.get()._methods
+            assert.same(source_methods[mock_source.method][mock_source.name], { lua = false, "tl" })
         end)
 
         it("should not register source with same name twice", function()

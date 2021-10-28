@@ -72,8 +72,26 @@ local sources = {
 See the descriptions below or the relevant `builtins` source file to see the
 default options passed to each built-in source.
 
-Note that setting `filetypes = {}` will enable the source for all filetypes,
-which isn't recommended for most sources.
+### Filetypes
+
+If you see `filetypes = {}` in a source's description, that means the source is
+active for all filetypes by default. In this case, you can specifically disable
+a filetype by setting its value to `false`, e.g.:
+
+```lua
+local sources = {
+    null_ls.builtins.code_actions.gitsigns.with({
+        -- active for all filetypes except Lua
+        filetypes = { lua = false },
+    }),
+}
+```
+
+Note that mixing these two structures is not allowed; a source is either active
+for a specified list of filetypes, or active for all filetypes except those
+disabled.
+
+### Arguments
 
 You can override `args` using `with({ args = your_args })`, but if you want to
 add more flags, you should use `extra_args` instead:
@@ -86,6 +104,8 @@ local sources = {
   }
 ```
 
+### Expansion
+
 Note that environment variables and `~` aren't expanded in arguments. As a
 workaround, you can use `vim.fn.expand`:
 
@@ -96,6 +116,8 @@ local sources = {
     }),
 }
 ```
+
+### Diagnostics Format
 
 For diagnostics sources, you can change the format of diagnostic messages by
 setting `diagnostics_format`:

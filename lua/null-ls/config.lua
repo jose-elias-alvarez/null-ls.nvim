@@ -43,7 +43,10 @@ end
 local config = vim.deepcopy(defaults)
 
 local register_filetypes = function(filetypes)
-    if vim.tbl_isempty(filetypes) then
+    if
+        vim.tbl_isempty(filetypes) -- empty list
+        or not vim.tbl_islist(filetypes) -- disabled filetypes, e.g. { lua = false }
+    then
         config._all_filetypes = true
         return
     end
@@ -69,7 +72,9 @@ local should_register = function(source, filetypes, source_methods)
             return false
         end
 
-        config._methods[method][name] = vim.list_extend(config._methods[method][name] or {}, filetypes)
+        config._methods[method][name] = vim.tbl_islist(filetypes)
+                and vim.list_extend(config._methods[method][name] or {}, filetypes)
+            or vim.tbl_extend("force", config._methods[method][name] or {}, filetypes)
     end
 
     return true

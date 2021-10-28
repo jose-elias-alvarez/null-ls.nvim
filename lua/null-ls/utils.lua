@@ -52,7 +52,19 @@ M.debug_log = function(...)
 end
 
 M.filetype_matches = function(filetypes, ft)
-    return vim.tbl_isempty(filetypes) or vim.tbl_contains(filetypes, ft)
+    -- simple list of enabled filetypes, e.g. { "lua", "tl" }
+    if vim.tbl_islist(filetypes) then
+        return vim.tbl_isempty(filetypes) or vim.tbl_contains(filetypes, ft)
+    end
+
+    -- allow specifically disabling filetypes with a table, e.g. { lua = "false" }
+    for key, val in pairs(filetypes) do
+        if key == ft and val == false then
+            return false
+        end
+    end
+
+    return true
 end
 
 M.get_client = function()
