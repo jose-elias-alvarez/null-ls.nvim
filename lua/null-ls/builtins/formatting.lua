@@ -434,7 +434,6 @@ M.prettier = h.make_builtin({
         "less",
         "html",
         "json",
-        "toml",
         "yaml",
         "markdown",
         "graphql",
@@ -683,6 +682,21 @@ M.swiftformat = h.make_builtin({
     generator_opts = {
         command = "swiftformat",
         to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
+M.taplo = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "toml" },
+    generator_opts = {
+        command = "taplo",
+        args = {
+            "format",
+            "-",
+        },
+        to_stdin = true,
+        ignore_stderr = true,
     },
     factory = h.formatter_factory,
 })
