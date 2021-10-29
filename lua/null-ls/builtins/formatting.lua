@@ -687,6 +687,16 @@ M.swiftformat = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.taplo = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "toml" },
+    generator_opts = {
+        command = "taplo format -",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.terraform_fmt = h.make_builtin({
     method = FORMATTING,
     filetypes = { "terraform", "tf" },
