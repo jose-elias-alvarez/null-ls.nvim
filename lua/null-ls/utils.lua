@@ -119,6 +119,13 @@ M.make_params = function(original_params, method)
         params.range = M.range.from_lsp(original_params.range)
     end
 
+    if params.lsp_method == methods.lsp.COMPLETION then
+        local pos = vim.api.nvim_win_get_cursor(0)
+        local line = vim.api.nvim_get_current_line()
+        local line_to_cursor = line:sub(1, pos[2])
+        params.word_to_complete = line:sub(vim.fn.match(line_to_cursor, "\\k*$") + 1, params.col)
+    end
+
     return params
 end
 
@@ -197,6 +204,19 @@ function M.throttle(ms, fn)
             running = true
         end
     end
+end
+
+function M.tbl_uniq(t)
+    local new_table = {}
+    local hash = {}
+    for _, v in pairs(t) do
+        if not hash[v] then
+            table.insert(new_table, v)
+            hash[v] = true
+        end
+    end
+
+    return new_table
 end
 
 return M

@@ -8,6 +8,7 @@ local capabilities = {
     executeCommandProvider = true,
     documentFormattingProvider = true,
     documentRangeFormattingProvider = true,
+    completionProvider = true,
     textDocumentSync = {
         change = 1, -- prompt LSP client to send full document text on didOpen and didChange
         openClose = true,
@@ -82,6 +83,7 @@ function M.start(dispatchers)
             require("null-ls.code-actions").handler(method, params, send)
             require("null-ls.formatting").handler(method, params, send)
             require("null-ls.hover").handler(method, params, send)
+            require("null-ls.completion").handler(method, params, send)
             if not params._null_ls_handled then
                 send()
             end
