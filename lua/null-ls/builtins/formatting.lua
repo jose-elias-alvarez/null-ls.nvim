@@ -557,6 +557,7 @@ M.rustfmt = h.make_builtin({
         command = "rustfmt",
         args = { "--emit=stdout", "--edition=2018" },
         to_stdin = true,
+        ignore_stderr = true,
     },
     factory = h.formatter_factory,
 })
