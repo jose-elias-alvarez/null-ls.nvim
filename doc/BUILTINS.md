@@ -1471,16 +1471,8 @@ An English prose linter.
 
 ##### Usage
 
-Add diagnostics using:
-
 ```lua
 local sources = { null_ls.builtins.diagnostics.proselint }
-```
-
-Add code actions using:
-
-```lua
-local source = { null_ls.builtins.code_actions.proselint }
 ```
 
 ##### Defaults
@@ -1787,9 +1779,6 @@ preview / reset hunks, blame, etc.).
 
 ##### Usage
 
-- Requires installing gitsigns.nvim.
-- Works in files under Git version control.
-
 ```lua
 local sources = { null_ls.builtins.code_actions.gitsigns }
 ```
@@ -1822,12 +1811,12 @@ local sources = { null_ls.builtins.code_actions.refactoring }
 
 ##### About
 
-Lints and suggestions for the nix programming language
+Lints and suggestions for the nix programming language.
 
 ##### Usage
 
 ```lua
-local sources = {null_ls.builtins.code_actions.statix}
+local sources = { null_ls.builtins.code_actions.statix }
 ```
 
 ##### Defaults
@@ -1835,6 +1824,24 @@ local sources = {null_ls.builtins.code_actions.statix}
 - `filetypes = { "nix" }`
 - `command = "statix"`
 - `args = { "check", "--format=json", "--", "$FILENAME" }`
+
+#### [proselint](https://github.com/amperser/proselint)
+
+##### About
+
+An English prose linter. Can fix some issues via code actions.
+
+##### Usage
+
+```lua
+local source = { null_ls.builtins.code_actions.proselint }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown", "tex" }`
+- `command = "proselint"`
+- `args = { "--json" }`
 
 ### Hover
 
