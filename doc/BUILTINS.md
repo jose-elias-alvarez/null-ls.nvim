@@ -1798,6 +1798,26 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 
 - `filetypes = {}`
 
+#### [refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim)
+
+##### About
+
+The Refactoring library based off the Refactoring book by Martin Fowler.
+
+##### Usage
+
+- Requires visually selecting the code you want to refactor and calling
+  `:'<,'>lua vim.lsp.buf.range_code_action()` (for the default handler) or
+  `:'<,'>Telescope lsp_range_code_actions` (for Telescope).
+
+```lua
+local sources = { null_ls.builtins.code_actions.refactoring }
+```
+
+##### Defaults
+
+- `filetypes = { "go", "javascript", "lua", "python", "typescript" }`
+
 #### [statix](https://github.com/nerdypepper/statix)
 
 ##### About
