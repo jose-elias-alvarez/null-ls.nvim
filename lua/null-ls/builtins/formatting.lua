@@ -808,4 +808,16 @@ M.stylelint = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.qmlformat = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "qml" },
+    generator_opts = {
+        command = "qmlformat",
+        args = { "-i", "$FILENAME" },
+        to_stdin = false,
+        to_temp_file = true,
+    },
+    factory = h.formatter_factory,
+})
+
 return M

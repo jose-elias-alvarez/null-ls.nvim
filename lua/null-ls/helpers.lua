@@ -496,6 +496,39 @@ M.diagnostics = (function()
         end
     end
 
+    --- Parse a linter's output using a errorformat
+    -- @param efm A comma separated list of errorformats
+    -- @param source Source name.
+    local from_errorformat = function(efm, source)
+        return function(params, done)
+            local output = params.output
+            if not output then
+                return done()
+            end
+
+            local diagnostics = {}
+            local lines = vim.split(output, "\n")
+
+            local qflist = vim.fn.getqflist({ efm = efm, lines = lines })
+            local severities = { e = 1, w = 2, i = 3, n = 4 }
+
+            for _, item in pairs(qflist.items) do
+                if item.valid == 1 then
+                    local col = item.col > 0 and item.col - 1 or 0
+                    table.insert(diagnostics, {
+                        row = item.lnum,
+                        col = col,
+                        source = source,
+                        message = item.text,
+                        severity = severities[item.type],
+                    })
+                end
+            end
+
+            return done(diagnostics)
+        end
+    end
+
     --- Parse a linter's output using multiple regex patterns until one matches
     -- @param matchers A table containing the parameters to use for each pattern
     -- @param matchers.pattern The regex pattern
@@ -557,6 +590,7 @@ M.diagnostics = (function()
         severities = default_severities,
         from_pattern = from_pattern,
         from_patterns = from_patterns,
+        from_errorformat = from_errorformat,
         from_json = from_json,
     }
 end)()
