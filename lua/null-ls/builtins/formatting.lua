@@ -32,6 +32,8 @@ M.black = h.make_builtin({
     generator_opts = {
         command = "black",
         args = {
+            "--stdin-filename",
+            "$FILENAME",
             "--quiet",
             "-",
         },
