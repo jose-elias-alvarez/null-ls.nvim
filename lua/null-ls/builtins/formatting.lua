@@ -222,7 +222,7 @@ M.fnlfmt = h.make_builtin({
     filetypes = { "fennel", "fnl" },
     generator_opts = {
         command = "fnlfmt",
-        args = { "--fix" },
+        args = { "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
