@@ -312,6 +312,17 @@ M.isort = h.make_builtin({
     factory = h.formatter_factory,
 })
 
+M.reorder_python_imports = h.make_builtin({
+    method = FORMATTING,
+    filetypes = { "python" },
+    generator_opts = {
+        command = "reorder-python-imports",
+        args = { "-", "--exit-zero-even-if-changed" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
+})
+
 M.json_tool = h.make_builtin({
     method = FORMATTING,
     filetypes = { "json" },
