@@ -1,27 +1,33 @@
 local c = require("null-ls.config")
-local methods = require("null-ls.methods")
+-- local methods = require("null-ls.methods")
 
 local api = vim.api
 
 local M = {}
 
-local resolve_content = function(params, bufnr)
+local resolve_content = function(_, bufnr)
+    -- NOTE: getting content from params is temporarily disabled until Neovim handles CLRF
+
     -- diagnostic notifications will send full buffer content on open and change
     -- so we can avoid unnecessary api calls
-    if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
-        return vim.split(params.textDocument.text, "\n")
-    end
-    if
-        params.method == methods.lsp.DID_CHANGE
-        and params.contentChanges
-        and params.contentChanges[1]
-        and params.contentChanges[1].text
-    then
-        return vim.split(params.contentChanges[1].text, "\n")
-    end
+    -- if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
+    --     return M.split_at_newline(params.bufnr, params.textDocument.text)
+    -- end
+    -- if
+    --     params.method == methods.lsp.DID_CHANGE
+    --     and params.contentChanges
+    --     and params.contentChanges[1]
+    --     and params.contentChanges[1].text
+    -- then
+    --     return M.split_at_newline(params.bufnr, params.contentChanges[1].text)
+    -- end
 
     -- for other methods, fall back to manually getting content
     return M.buf.content(bufnr)
+end
+
+local get_eol_char = function(bufnr)
+    return api.nvim_buf_get_option(bufnr, "fileformat") == "dos" and "\r\n" or "\n"
 end
 
 local resolve_bufnr = function(params)
@@ -41,6 +47,14 @@ end
 
 M.echo = function(hlgroup, message)
     api.nvim_echo({ { "null-ls: " .. message, hlgroup } }, true, {})
+end
+
+M.join_at_newline = function(bufnr, text)
+    return table.concat(text, get_eol_char(bufnr))
+end
+
+M.split_at_newline = function(bufnr, text)
+    return vim.split(text, get_eol_char(bufnr))
 end
 
 M.debug_log = function(...)
@@ -138,21 +152,21 @@ end
 
 M.buf = {
     content = function(bufnr, to_string)
-        if not bufnr then
-            bufnr = api.nvim_get_current_buf()
-        end
-        local eol = api.nvim_buf_get_option(bufnr, "eol")
+        bufnr = bufnr or api.nvim_get_current_buf()
 
-        local split = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+        local eol = api.nvim_buf_get_option(bufnr, "eol")
+        local eol_char = get_eol_char(bufnr)
+
+        local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
         if to_string then
-            local text = table.concat(split, "\n")
-            return eol and text .. "\n" or text
+            local text = table.concat(lines, eol_char)
+            return eol and text .. eol_char or text
         end
 
         if eol then
-            table.insert(split, "")
+            table.insert(lines, "")
         end
-        return split
+        return lines
     end,
 }
 

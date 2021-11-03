@@ -57,7 +57,7 @@ M.apply_edits = function(edits, params)
 
     local diffed_edits = {}
     for _, edit in ipairs(edits) do
-        local diffed = lsp.util.compute_diff(params.content, vim.split(edit.text, "\n"))
+        local diffed = lsp.util.compute_diff(params.content, u.split_at_newline(params.bufnr, edit.text))
         -- check if the computed diff is an actual edit
         if
             not (
