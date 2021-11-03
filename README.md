@@ -188,7 +188,7 @@ from a command to generate code actions.
 
 1. Make sure your configuration is in line with the latest version of this
    document.
-2. Enable debug mode (see below) and check your the output of your source(s). If
+2. Enable debug mode (see below) and check the output of your source(s). If
    the CLI program is not properly configured or is otherwise not running as
    expected, that's an issue with the program, not null-ls.
 3. Check the documentation for available configuration options that might solve
