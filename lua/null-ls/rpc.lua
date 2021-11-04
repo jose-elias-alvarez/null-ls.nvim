@@ -8,7 +8,15 @@ local capabilities = {
     executeCommandProvider = true,
     documentFormattingProvider = true,
     documentRangeFormattingProvider = true,
-    completionProvider = true,
+    completionProvider = {
+        -- FIXME: How do we decide what trigger characters are?
+        triggerCharacters = { ".", ":", "-" },
+        allCommitCharacters = {},
+        resolveProvider = false,
+        completionItem = {
+            labelDetailsSupport = true,
+        },
+    },
     textDocumentSync = {
         change = 1, -- prompt LSP client to send full document text on didOpen and didChange
         openClose = true,
