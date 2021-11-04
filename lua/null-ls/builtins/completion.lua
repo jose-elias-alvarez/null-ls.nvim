@@ -10,6 +10,9 @@ M.tags = h.make_builtin({
     method = COMPLETION,
     filetypes = {},
     name = "tags",
+    runtime_condition = function(_)
+        return #vim.fn.tagfiles() > 0
+    end,
     generator = {
         fn = function(params, done)
             local tags = vim.fn.taglist(params.word_to_complete)
