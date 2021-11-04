@@ -10,9 +10,6 @@ M.spell = h.make_builtin({
     method = COMPLETION,
     filetypes = {},
     name = "spell",
-    runtime_condition = function(_)
-        return vim.opt_local.spell:get()
-    end,
     generator = {
         fn = function(params, done)
             local candidates = function(entries)

@@ -1903,6 +1903,11 @@ If you are using a completion plugin, they can also leverage these custom comple
 local sources = { null_ls.builtins.completion.spell }
 ```
 
-##### Defaults
+If you want to disable spell suggestions when `spell` options is not set, you can use the
+following snippet:
 
-- `null_ls.builtins.completion.spell` requires `spell` option to be set.
+```lua
+runtime_condition = function(_)
+    return vim.opt_local.spell:get()
+end
+```
