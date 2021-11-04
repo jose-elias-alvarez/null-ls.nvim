@@ -19,6 +19,8 @@ M.handler = function(method, original_params, handler)
                     for index, item in ipairs(results) do
                         if type(item) == "string" then
                             results[index] = { label = item, insertText = item }
+                        else
+                            break
                         end
                     end
 
