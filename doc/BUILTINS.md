@@ -1884,3 +1884,26 @@ local sources = { null_ls.builtins.hover.dictionary }
 ##### Defaults
 
 - `filetypes = { "txt", "markdown" }`
+
+### Completion
+
+##### About
+
+Completion sources provide an easy way for you to add custom completion to your project. When
+Neovim runs `omnifunc`, the null-ls will return completion item from registered sources.
+
+If you are using a completion plugin, they can also leverage these custom completion sources.
+
+##### Usage
+
+- Proof-of-concept for completion functionality.
+- See the completion section of [the documentation](MAIN.md) for details.
+
+```lua
+local sources = { null_ls.builtins.completion.tags, null_ls.builtins.completion.spell }
+```
+
+##### Defaults
+
+- `null_ls.builtins.completion.tags` requires `tags` option to be set.
+- `null_ls.builtins.completion.spell` requires `spell` option to be set.
