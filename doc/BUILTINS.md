@@ -1900,10 +1900,9 @@ If you are using a completion plugin, they can also leverage these custom comple
 - See the completion section of [the documentation](MAIN.md) for details.
 
 ```lua
-local sources = { null_ls.builtins.completion.tags, null_ls.builtins.completion.spell }
+local sources = { null_ls.builtins.completion.spell }
 ```
 
 ##### Defaults
 
-- `null_ls.builtins.completion.tags` requires `tags` option to be set.
 - `null_ls.builtins.completion.spell` requires `spell` option to be set.
