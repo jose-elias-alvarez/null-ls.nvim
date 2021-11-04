@@ -318,11 +318,14 @@ the second popup will wipe out the first).
 #### Completion
 
 ```lua
-return { { label = "Item #1", insertText = "Item #1", documentation = "A test completion item" } }
+return {
+    items = { label = "Item #1", insertText = "Item #1", documentation = "A test completion item" },
+    isIncomplete = true,
+}
 ```
 
-Completion sources must return a list of
-[CompletionItems](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionItem).
+Completion sources must return a
+[CompletionList](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionList).
 You can leverage the full attributes of `CompletionItem` from LSP specification. They can be used
 by other plugins (e.g completion plugins) to provide additional context about the highlighted
 completion item.

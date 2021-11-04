@@ -170,6 +170,13 @@ M.table = {
         end
         return replaced
     end,
+    extend = function(source, target)
+        for _, v in ipairs(target) do
+            table.insert(source, v)
+        end
+
+        return source
+    end,
 }
 
 M.resolve_handler = function(method)

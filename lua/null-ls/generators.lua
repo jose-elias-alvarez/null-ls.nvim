@@ -1,5 +1,6 @@
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
+local methods = require("null-ls.methods")
 
 local M = {}
 
@@ -38,12 +39,20 @@ M.run = function(generators, params, postprocess, callback)
                     return
                 end
 
-                for _, result in ipairs(results) do
+                if params.method == methods.internal.COMPLETION then
                     if postprocess then
-                        postprocess(result, copied_params, generator)
+                        postprocess(results, copied_params, generator)
                     end
 
-                    table.insert(all_results, result)
+                    table.insert(all_results, results)
+                else
+                    for _, result in ipairs(results) do
+                        if postprocess then
+                            postprocess(result, copied_params, generator)
+                        end
+
+                        table.insert(all_results, result)
+                    end
                 end
             end)
         end

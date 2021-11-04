@@ -16,15 +16,30 @@ M.handler = function(method, original_params, handler)
                 if #results == 0 then
                     handler({})
                 else
-                    for index, item in ipairs(results) do
-                        if type(item) == "string" then
-                            results[index] = { label = item, insertText = item }
-                        else
-                            break
+                    local items = {}
+                    local isIncomplete = false
+                    for _, result in ipairs(results) do
+                        isIncomplete = isIncomplete or result.isIncomplete
+
+                        vim.validate({
+                            items = { result.items, "table" },
+                            isIncomplete = { result.isIncomplete, "boolean" },
+                        })
+                        for index, item in ipairs(result.items) do
+                            if type(item) == "string" then
+                                result.items[index] = { label = item, insertText = item }
+                            else
+                                vim.validate({
+                                    item = { item, "table" },
+                                })
+                                break
+                            end
                         end
+
+                        u.table.extend(items, result.items)
                     end
 
-                    handler({ isIncomplete = false, items = results })
+                    handler({ isIncomplete = isIncomplete, items = items })
                 end
             end,
         })
