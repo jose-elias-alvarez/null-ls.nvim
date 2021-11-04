@@ -21,7 +21,7 @@ M.spell = h.make_builtin({
                 return items
             end
 
-            done({ items = candidates(vim.fn.spellsuggest(params.word_to_complete)), isIncomplete = true })
+            done({ items = candidates(vim.fn.spellsuggest(params.word_to_complete)), isIncomplete = false })
         end,
         async = true,
     },
