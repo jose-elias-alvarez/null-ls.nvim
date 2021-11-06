@@ -1900,8 +1900,10 @@ If you are using a completion plugin, they can also leverage these custom comple
 - See the completion section of [the documentation](MAIN.md) for details.
 
 ```lua
-local sources = { null_ls.builtins.completion.spell }
+local sources = { null_ls.builtins.completion.spell, null_ls.builtins.completion.tags }
 ```
+
+Tags source won't be available if you don't have the `tags` option set for Neovim,
 
 If you want to disable spell suggestions when `spell` options is not set, you can use the
 following snippet:
