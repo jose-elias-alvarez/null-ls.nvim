@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local utils = require("null-ls.utils")
 
 local COMPLETION = methods.internal.COMPLETION
 
@@ -16,9 +17,15 @@ M.tags = h.make_builtin({
     },
     generator = {
         fn = function(params, done)
+            -- Tags look up can be expensive.
+            if #params.word_to_complete < 4 then
+                done({ { items = {}, isIncomplete = false } })
+                return
+            end
+
             local tags = vim.fn.taglist(params.word_to_complete)
             if tags == 0 then
-                done({ items = {}, isIncomplete = false })
+                done({ { items = {}, isIncomplete = false } })
                 return
             end
 
@@ -36,7 +43,7 @@ M.tags = h.make_builtin({
                 })
             end
 
-            done({ items = items, isIncomplete = false })
+            done({ { items = items, isIncomplete = #items == 0 } })
         end,
         async = true,
     },
@@ -48,7 +55,7 @@ M.spell = h.make_builtin({
     name = "spell",
     generator = {
         fn = function(params, done)
-            local candidates = function(entries)
+            local get_candidates = function(entries)
                 local items = {}
                 for k, v in ipairs(entries) do
                     items[k] = { label = v, kind = vim.lsp.protocol.CompletionItemKind["Text"] }
@@ -57,7 +64,8 @@ M.spell = h.make_builtin({
                 return items
             end
 
-            done({ items = candidates(vim.fn.spellsuggest(params.word_to_complete)), isIncomplete = false })
+            local canditates = get_candidates(vim.fn.spellsuggest(params.word_to_complete))
+            done({ { items = canditates, isIncomplete = #canditates } })
         end,
         async = true,
     },

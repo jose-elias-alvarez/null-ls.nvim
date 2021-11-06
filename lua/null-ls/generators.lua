@@ -39,20 +39,12 @@ M.run = function(generators, params, postprocess, callback)
                     return
                 end
 
-                if params.method == methods.internal.COMPLETION then
+                for _, result in ipairs(results) do
                     if postprocess then
-                        postprocess(results, copied_params, generator)
+                        postprocess(result, copied_params, generator)
                     end
 
-                    table.insert(all_results, results)
-                else
-                    for _, result in ipairs(results) do
-                        if postprocess then
-                            postprocess(result, copied_params, generator)
-                        end
-
-                        table.insert(all_results, result)
-                    end
+                    table.insert(all_results, result)
                 end
             end)
         end

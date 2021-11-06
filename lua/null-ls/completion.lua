@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
+local config = require("null-ls.config").get()
 
 local M = {}
 
@@ -21,22 +22,18 @@ M.handler = function(method, original_params, handler)
                     for _, result in ipairs(results) do
                         isIncomplete = isIncomplete or result.isIncomplete
 
-                        vim.validate({
-                            items = { result.items, "table" },
-                            isIncomplete = { result.isIncomplete, "boolean" },
-                        })
-                        for index, item in ipairs(result.items) do
-                            if type(item) == "string" then
-                                result.items[index] = { label = item, insertText = item }
-                            else
-                                vim.validate({
-                                    item = { item, "table" },
-                                })
-                                break
-                            end
+                        if config.debug then
+                            vim.validate({
+                                items = { result.items, "table" },
+                                isIncomplete = { result.isIncomplete, "boolean" },
+                            })
+
+                            vim.validate({
+                                item = { result.items[1], "table" },
+                            })
                         end
 
-                        u.table.extend(items, result.items)
+                        vim.list_extend(items, result.items)
                     end
 
                     handler({ isIncomplete = isIncomplete, items = items })
