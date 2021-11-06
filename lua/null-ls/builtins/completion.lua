@@ -27,7 +27,8 @@ M.tags = h.make_builtin({
             for _, tag in ipairs(tags) do
                 table.insert(words, tag.name)
             end
-            words = table.uniq(words)
+
+            words = utils.table.uniq(words)
             for _, word in ipairs(words) do
                 table.insert(items, {
                     label = word,

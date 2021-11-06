@@ -170,12 +170,17 @@ M.table = {
         end
         return replaced
     end,
-    extend = function(source, target)
-        for _, v in ipairs(target) do
-            table.insert(source, v)
+    uniq = function(t)
+        local new_table = {}
+        local hash = {}
+        for _, v in pairs(t) do
+            if not hash[v] then
+                table.insert(new_table, v)
+                hash[v] = true
+            end
         end
 
-        return source
+        return new_table
     end,
 }
 
@@ -210,19 +215,6 @@ function M.throttle(ms, fn)
             running = true
         end
     end
-end
-
-function M.tbl_uniq(t)
-    local new_table = {}
-    local hash = {}
-    for _, v in pairs(t) do
-        if not hash[v] then
-            table.insert(new_table, v)
-            hash[v] = true
-        end
-    end
-
-    return new_table
 end
 
 return M
