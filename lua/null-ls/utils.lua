@@ -122,7 +122,9 @@ M.make_params = function(original_params, method)
     if params.lsp_method == methods.lsp.COMPLETION then
         local line = vim.api.nvim_get_current_line()
         local line_to_cursor = line:sub(1, pos[2])
-        params.word_to_complete = line:sub(vim.fn.match(line_to_cursor, "\\k*$") + 1, params.col)
+        local regex = vim.regex("\\k*$")
+
+        params.word_to_complete = line:sub(regex:match_str(line_to_cursor) + 1, params.col)
     end
 
     return params
