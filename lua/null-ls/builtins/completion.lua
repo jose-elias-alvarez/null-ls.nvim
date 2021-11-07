@@ -64,8 +64,8 @@ M.spell = h.make_builtin({
                 return items
             end
 
-            local canditates = get_candidates(vim.fn.spellsuggest(params.word_to_complete))
-            done({ { items = canditates, isIncomplete = #canditates } })
+            local candidates = get_candidates(vim.fn.spellsuggest(params.word_to_complete))
+            done({ { items = candidates, isIncomplete = #candidates } })
         end,
         async = true,
     },
