@@ -1887,23 +1887,29 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 ### Completion
 
+#### Tags
+
 ##### About
 
-Completion sources provide an easy way for you to add custom completion to your project. When
-Neovim runs `omnifunc`, the null-ls will return completion item from registered sources.
+Tags source for completion. Only works if you have `tags` options set.
 
-If you are using a completion plugin, they can also leverage these custom completion sources.
-
-##### Usage
-
-- Proof-of-concept for completion functionality.
-- See the completion section of [the documentation](MAIN.md) for details.
+###### Usage
 
 ```lua
-local sources = { null_ls.builtins.completion.spell, null_ls.builtins.completion.tags }
+local sources = { null_ls.builtins.completion.tags }
 ```
 
-Tags source won't be available if you don't have the `tags` option set for Neovim,
+#### Spell
+
+##### About
+
+Spell suggestions completion source.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.spell }
+```
 
 If you want to disable spell suggestions when `spell` options is not set, you can use the
 following snippet:
