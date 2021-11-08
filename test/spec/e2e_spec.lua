@@ -11,9 +11,10 @@ local api = vim.api
 
 -- need to wait for most LSP commands to pass through the client
 -- setting this lower reduces testing time but is more likely to cause failures
-local lsp_wait = function()
-    vim.wait(400)
+local lsp_wait = function(wait_time)
+    vim.wait(wait_time or 400)
 end
+
 main.config()
 require("lspconfig")["null-ls"].setup({
     flags = {
@@ -202,7 +203,7 @@ describe("e2e", function()
 
         it("should format file", function()
             lsp.buf.formatting()
-            lsp_wait()
+            lsp_wait(500)
 
             assert.equals(u.buf.content(nil, true), formatted)
         end)
@@ -263,7 +264,7 @@ describe("e2e", function()
 
             it("should format file", function()
                 lsp.buf.formatting()
-                lsp_wait()
+                lsp_wait(500)
 
                 assert.equals(u.buf.content(nil, true), formatted)
             end)
@@ -291,7 +292,7 @@ describe("e2e", function()
             vim.cmd("normal ggV")
 
             lsp.buf.range_formatting()
-            lsp_wait()
+            lsp_wait(500)
 
             assert.equals(u.buf.content(nil, true), formatted)
         end)
