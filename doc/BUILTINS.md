@@ -72,8 +72,8 @@ local sources = {
 }
 ```
 
-See the descriptions below or the relevant `builtins` source file to see the
-default options passed to each built-in source.
+See the descriptions below or the relevant source file to see the default
+options passed to each built-in source.
 
 Note that setting `filetypes = {}` will enable the source for all filetypes,
 which isn't recommended for most sources.

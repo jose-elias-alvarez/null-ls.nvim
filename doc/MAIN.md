@@ -1,3 +1,9 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false
+}
+-->
+
 # null-ls Documentation
 
 Splits into the following documents:
@@ -63,6 +69,9 @@ my_source.method = null_ls.methods.FORMATTING
 
 -- source will run on LSP hover request
 my_source.method = null_ls.methods.HOVER
+
+-- source will run on LSP completion request
+my_source.method = null_ls.methods.completion
 ```
 
 ### Filetypes
@@ -190,6 +199,7 @@ local params = {
     bufnr, -- current buffer's number (number)
     bufname, -- current buffer's full path (string)
     ft, -- current buffer's filetype (string)
+    root, -- current buffer's root directory (string)
 }
 ```
 
@@ -314,7 +324,6 @@ handler, so 2+ _null-ls_ hover sources are okay, but note that running more than
 one LSP server with hover capabilities **is not well-supported** (by default,
 the second popup will wipe out the first).
 
-
 #### Completion
 
 ```lua
@@ -326,8 +335,8 @@ return {
 }
 ```
 
-Completion sources must return a list of
+Completion sources must return a
 [CompletionList](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionList).
-You can leverage the full attributes of `CompletionItem` from LSP specification. They can be used
-by other plugins (e.g completion plugins) to provide additional context about the highlighted
-completion item.
+You can leverage the full attributes of `CompletionItem` from the LSP
+specification. Other plugins (e.g completion plugins) can then use these
+attributes to provide more context about the highlighted completion item.
