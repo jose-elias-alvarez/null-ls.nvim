@@ -128,23 +128,135 @@ describe("utils", function()
             assert.same(params.content, { 'print("I am a test file!")', "" })
         end)
 
-        describe("resolve_content", function()
-            it("should resolve content from params on DID_OPEN", function()
-                local params = u.make_params({
-                    method = methods.lsp.DID_OPEN,
-                    textDocument = { text = mock_content },
-                }, mock_method)
-
-                assert.same(params.content, { mock_content })
+        describe("join_at_newline", function()
+            after_each(function()
+                vim.bo.fileformat = "unix"
             end)
 
-            it("should resolve content from params on DID_CHANGE", function()
-                local params = u.make_params({
-                    method = methods.lsp.DID_CHANGE,
-                    contentChanges = { { text = mock_content } },
-                }, mock_method)
+            it("should join text with unix line ending", function()
+                vim.bo.fileformat = "unix"
 
-                assert.same(params.content, { mock_content })
+                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+                assert.equals(joined, "line1\nline2\nline3")
+            end)
+
+            it("should join text with dos line ending", function()
+                vim.bo.fileformat = "dos"
+
+                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+                assert.equals(joined, "line1\r\nline2\r\nline3")
+            end)
+
+            it("should join text with mac line ending", function()
+                vim.bo.fileformat = "mac"
+
+                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+                assert.equals(joined, "line1\rline2\rline3")
+            end)
+        end)
+
+        describe("split_at_newline", function()
+            after_each(function()
+                vim.bo.fileformat = "unix"
+            end)
+
+            it("should split text with unix line ending", function()
+                vim.bo.fileformat = "unix"
+
+                local split = u.split_at_newline(0, "line1\nline2\nline3")
+
+                assert.same(split, { "line1", "line2", "line3" })
+            end)
+
+            it("should split text with dos line ending", function()
+                vim.bo.fileformat = "dos"
+
+                local split = u.split_at_newline(0, "line1\r\nline2\r\nline3")
+
+                assert.same(split, { "line1", "line2", "line3" })
+            end)
+
+            it("should split text with mac line ending", function()
+                vim.bo.fileformat = "mac"
+
+                local split = u.split_at_newline(0, "line1\rline2\rline3")
+
+                assert.same(split, { "line1", "line2", "line3" })
+            end)
+        end)
+
+        describe("resolve_content", function()
+            before_each(function()
+                stub(vim.fn, "has")
+                vim.fn.has.returns(1)
+            end)
+            after_each(function()
+                vim.fn.has:revert()
+            end)
+
+            describe("0.6.0", function()
+                it("should resolve content from params on DID_OPEN", function()
+                    local params = u.make_params({
+                        method = methods.lsp.DID_OPEN,
+                        textDocument = { text = mock_content },
+                    }, mock_method)
+
+                    assert.same(params.content, { mock_content })
+                end)
+
+                it("should resolve content from params on DID_CHANGE", function()
+                    local params = u.make_params({
+                        method = methods.lsp.DID_CHANGE,
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
+
+                    assert.same(params.content, { mock_content })
+                end)
+
+                it("should directly get content from buffer if method does not match", function()
+                    local params = u.make_params({
+                        method = "otherMethod",
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
+
+                    assert.same(params.content, { 'print("I am a test file!")', "" })
+                end)
+            end)
+
+            describe("0.5.0 / 0.5.1", function()
+                it("should directly get content from buffer on DID_OPEN", function()
+                    vim.fn.has.returns(0)
+
+                    local params = u.make_params({
+                        method = methods.lsp.DID_OPEN,
+                        textDocument = { text = mock_content },
+                    }, mock_method)
+
+                    assert.same(params.content, { 'print("I am a test file!")', "" })
+                end)
+
+                it("should directly get content from buffer on DID_CHANGE", function()
+                    vim.fn.has.returns(0)
+
+                    local params = u.make_params({
+                        method = methods.lsp.DID_CHANGE,
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
+
+                    assert.same(params.content, { 'print("I am a test file!")', "" })
+                end)
+
+                it("should directly get content from buffer if method does not match", function()
+                    local params = u.make_params({
+                        method = "otherMethod",
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
+
+                    assert.same(params.content, { 'print("I am a test file!")', "" })
+                end)
             end)
         end)
 
