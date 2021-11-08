@@ -11,6 +11,7 @@ local lsp_methods = {
     DID_OPEN = "textDocument/didOpen",
     DID_CLOSE = "textDocument/didClose",
     HOVER = "textDocument/hover",
+    COMPLETION = "textDocument/completion",
 }
 vim.tbl_add_reverse_lookup(lsp_methods)
 
@@ -20,6 +21,7 @@ local internal_methods = {
     FORMATTING = "NULL_LS_FORMATTING",
     RANGE_FORMATTING = "NULL_LS_RANGE_FORMATTING",
     HOVER = "NULL_LS_HOVER",
+    COMPLETION = "NULL_LS_COMPLETION",
 }
 vim.tbl_add_reverse_lookup(internal_methods)
 
@@ -30,6 +32,7 @@ local lsp_to_internal_map = {
     [lsp_methods.DID_OPEN] = internal_methods.DIAGNOSTICS,
     [lsp_methods.DID_CHANGE] = internal_methods.DIAGNOSTICS,
     [lsp_methods.HOVER] = internal_methods.HOVER,
+    [lsp_methods.COMPLETION] = internal_methods.COMPLETION,
 }
 
 local readable_map = {
@@ -38,6 +41,7 @@ local readable_map = {
     [internal_methods.FORMATTING] = "Formatting",
     [internal_methods.RANGE_FORMATTING] = "Range formatting",
     [internal_methods.HOVER] = "Hover",
+    [internal_methods.COMPLETION] = "Completion",
 }
 
 local M = {}

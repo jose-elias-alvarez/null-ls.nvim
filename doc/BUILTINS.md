@@ -1884,3 +1884,38 @@ local sources = { null_ls.builtins.hover.dictionary }
 ##### Defaults
 
 - `filetypes = { "txt", "markdown" }`
+
+### Completion
+
+#### Tags
+
+##### About
+
+Tags source for completion. Only works if you have `tags` options set.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.tags }
+```
+
+#### Spell
+
+##### About
+
+Spell suggestions completion source.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.spell }
+```
+
+If you want to disable spell suggestions when `spell` options is not set, you can use the
+following snippet:
+
+```lua
+runtime_condition = function(_)
+    return vim.opt_local.spell:get()
+end
+```
