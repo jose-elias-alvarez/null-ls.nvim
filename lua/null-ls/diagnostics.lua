@@ -3,6 +3,8 @@ local s = require("null-ls.state")
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
+local api = vim.api
+
 local M = {}
 
 -- assume 1-indexed ranges
@@ -52,6 +54,8 @@ M.handler = function(original_params)
 
     local params = u.make_params(original_params, methods.map[method])
     local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
+    local initial_changedtick = api.nvim_buf_get_changedtick(params.bufnr)
+
     require("null-ls.generators").run_registered({
         filetype = params.ft,
         method = methods.map[method],
@@ -60,6 +64,12 @@ M.handler = function(original_params)
         callback = function(diagnostics)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
+
+            local changedtick = api.nvim_buf_get_changedtick(params.bufnr)
+            if changedtick > initial_changedtick then
+                u.debug_log("buffer changed; ignoring received diagnostics")
+                return
+            end
 
             local bufnr = vim.uri_to_bufnr(uri)
             if vim.fn.has("nvim-0.5.1") > 0 then
@@ -72,7 +82,6 @@ M.handler = function(original_params)
                 handler(nil, methods.lsp.PUBLISH_DIAGNOSTICS, {
                     diagnostics = diagnostics,
                     uri = uri,
-                    ---@diagnostic disable-next-line: redundant-parameter
                 }, original_params.client_id, bufnr)
             end
         end,

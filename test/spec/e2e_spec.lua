@@ -114,9 +114,9 @@ describe("e2e", function()
         end
 
         before_each(function()
-            c.register(builtins.diagnostics.write_good)
-
             tu.edit_test_file("test-file.md")
+
+            c.register(builtins.diagnostics.write_good)
             lsp_wait()
         end)
 
@@ -149,7 +149,6 @@ describe("e2e", function()
 
             it("should show diagnostics from multiple sources", function()
                 c.register(builtins.diagnostics.markdownlint)
-                vim.cmd("e")
                 lsp_wait()
 
                 local diagnostics = lsp.diagnostic.get(0)
@@ -172,7 +171,6 @@ describe("e2e", function()
         it("should format diagnostics with source-specific diagnostics_format", function()
             c.reset_sources()
             c.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
-            vim.cmd("e")
             lsp_wait()
 
             local write_good_diagnostic = lsp.diagnostic.get(0)[1]
