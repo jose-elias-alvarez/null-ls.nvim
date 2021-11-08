@@ -1,4 +1,4 @@
-local diagnostics = require("null-ls.builtins.diagnostics")
+local diagnostics = require("null-ls.builtins").diagnostics
 
 describe("diagnostics", function()
     describe("chktex", function()
