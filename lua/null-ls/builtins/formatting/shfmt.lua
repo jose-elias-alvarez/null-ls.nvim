@@ -5,10 +5,7 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     method = FORMATTING,
-    filetypes = {
-        "sh",
-        "zsh",
-    },
+    filetypes = { "sh" },
     generator_opts = {
         command = "shfmt",
         args = { "-filename", "$FILENAME" },
