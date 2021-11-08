@@ -28,6 +28,9 @@ null_ls.builtins.formatting
 
 -- hover sources
 null_ls.builtins.hover
+
+-- completion sources
+null_ls.builtins.completion
 ```
 
 You can then register sources by passing a `sources` list into your `config`
@@ -1939,18 +1942,6 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 ### Completion
 
-#### Tags
-
-##### About
-
-Tags source for completion. Only works if you have `tags` options set.
-
-###### Usage
-
-```lua
-local sources = { null_ls.builtins.completion.tags }
-```
-
 #### Spell
 
 ##### About
@@ -1970,4 +1961,16 @@ following snippet:
 runtime_condition = function(_)
     return vim.opt_local.spell:get()
 end
+```
+
+#### Tags
+
+##### About
+
+Tags source for completion. Only works if you have `tags` options set.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.tags }
 ```
