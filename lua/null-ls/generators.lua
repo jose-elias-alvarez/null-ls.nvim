@@ -1,5 +1,6 @@
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
+local methods = require("null-ls.methods")
 
 local M = {}
 

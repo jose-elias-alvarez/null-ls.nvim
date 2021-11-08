@@ -105,7 +105,7 @@ M.statix = h.make_builtin({
         args = { "check", "--format=json", "--", "$FILENAME" },
         format = "json",
         to_temp_file = true,
-        ignore_stderr = true,
+        from_stderr = true,
         on_output = function(params)
             local actions = {}
             for _, r in ipairs(params.output.report) do

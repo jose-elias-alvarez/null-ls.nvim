@@ -3,6 +3,7 @@ local paths = {
     formatting = "null-ls.builtins.formatting",
     code_actions = "null-ls.builtins.code-actions",
     hover = "null-ls.builtins.hover",
+    completion = "null-ls.builtins.completion",
     _test = "null-ls.builtins.test",
 }
 

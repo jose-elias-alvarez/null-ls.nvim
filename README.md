@@ -44,6 +44,8 @@ null-ls sources are able to hook into the following LSP features:
 
 - Hover
 
+- Completion
+
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
 how to set up sources and a list of available sources.
@@ -69,12 +71,14 @@ integration with nvim-lspconfig, as in this example:
 ```lua
 -- example configuration! (see CONFIG above to make your own)
 require("null-ls").config({
-    sources = { require("null-ls").builtins.formatting.stylua }
+	sources = {
+		require("null-ls").builtins.formatting.stylua,
+		require("null-ls").builtins.completion.spell,
+	},
 })
 require("lspconfig")["null-ls"].setup({
-    on_attach = my_custom_on_attach
+	on_attach = my_custom_on_attach,
 })
-
 ```
 
 ## Documentation
