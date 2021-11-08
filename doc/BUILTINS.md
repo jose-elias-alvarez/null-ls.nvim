@@ -615,6 +615,24 @@ local sources = { null_ls.builtins.formatting.isort }
 - `command = "isort"`
 - `args = { "--stdout", "--profile", "black", "-" }`
 
+#### [reorder_python_imports](https://github.com/asottile/reorder_python_imports)
+
+##### About
+
+`python` utility tool for automatically reordering python imports. Similar to isort but uses static analysis more.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.reorder_python_imports }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "reorder-python-imports"`
+- `args = { "-", "--exit-zero-even-if-changed" }`
+
 #### [json.tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
 ##### About
@@ -1018,7 +1036,7 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### Defaults
 
-- `filetypes = { "sh" }`
+- `filetypes = { "sh", "zsh" }`
 - `command = "shfmt"`
 - `args = {}`
 
@@ -1831,9 +1849,6 @@ preview / reset hunks, blame, etc.).
 
 ##### Usage
 
-- Requires installing gitsigns.nvim.
-- Works in files under Git version control.
-
 ```lua
 local sources = { null_ls.builtins.code_actions.gitsigns }
 ```
@@ -1921,3 +1936,38 @@ local sources = { null_ls.builtins.hover.dictionary }
 ##### Defaults
 
 - `filetypes = { "txt", "markdown" }`
+
+### Completion
+
+#### Tags
+
+##### About
+
+Tags source for completion. Only works if you have `tags` options set.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.tags }
+```
+
+#### Spell
+
+##### About
+
+Spell suggestions completion source.
+
+###### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.spell }
+```
+
+If you want to disable spell suggestions when `spell` options is not set, you can use the
+following snippet:
+
+```lua
+runtime_condition = function(_)
+    return vim.opt_local.spell:get()
+end
+```

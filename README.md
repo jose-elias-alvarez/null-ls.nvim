@@ -21,8 +21,8 @@ for external processes.
 
 ## Status
 
-null-ls is in **beta status**. Please open an issue if something doesn't
-work the way you expect (or doesn't work at all).
+null-ls is in **beta status**. Please see below for steps to follow if something
+doesn't work the way you expect (or doesn't work at all).
 
 At the moment, null-is is compatible with Neovim 0.5 (stable) and 0.6 (head),
 but you'll get the best experience from the latest version you can run.
@@ -43,6 +43,8 @@ null-ls sources are able to hook into the following LSP features:
 - Formatting (including range formatting)
 
 - Hover
+
+- Completion
 
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
@@ -69,12 +71,14 @@ integration with nvim-lspconfig, as in this example:
 ```lua
 -- example configuration! (see CONFIG above to make your own)
 require("null-ls").config({
-    sources = { require("null-ls").builtins.formatting.stylua }
+	sources = {
+		require("null-ls").builtins.formatting.stylua,
+		require("null-ls").builtins.completion.spell,
+	},
 })
 require("lspconfig")["null-ls"].setup({
-    on_attach = my_custom_on_attach
+	on_attach = my_custom_on_attach,
 })
-
 ```
 
 ## Documentation
@@ -184,13 +188,23 @@ from a command to generate code actions.
 
 ## FAQ
 
-### How do I set the path to the Neovim binary?
+### Something isn't working! What do I do?
 
-Set it while calling the lspconfig `setup` method for null-ls.
+1. Make sure your configuration is in line with the latest version of this
+   document.
+2. Enable debug mode (see below) and check the output of your source(s). If
+   the CLI program is not properly configured or is otherwise not running as
+   expected, that's an issue with the program, not null-ls.
+3. Check the documentation for available configuration options that might solve
+   your issue.
+4. If you're having trouble configuring null-ls or want to know how to achieve a
+   specific result, open a discussion.
+5. If you believe the issue is with null-ls itself or you want to request a new
+   feature, open an issue and provide all the requested information.
 
-```lua
-require("lspconfig")["null-ls"].setup({ cmd = { "/path/to/nvim" }, ... })
-```
+Please **do not** link to or post your entire Neovim configuration. null-ls is
+in beta status, and if you cannot make the effort to isolate your issue, then I
+recommend using another solution.
 
 ### How do I format files?
 
@@ -215,6 +229,30 @@ on_attach = function(client)
         vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
     end
 end
+```
+
+### How do I enable debug mode and get debug output?
+
+1. Set `debug` flag to `true` in the config like so:
+
+   ```lua
+   require("null-ls").config({
+       debug = true
+   })
+   ```
+
+2. Use `:NullLsInfo` to get the path to your debug log, which you can open
+   direclty in Neovim or with another program.
+
+As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
+option after you've collected the information you're looking for.
+
+### How do I set the path to the Neovim binary?
+
+Set it when calling the lspconfig `setup` method for null-ls.
+
+```lua
+require("lspconfig")["null-ls"].setup({ cmd = { "/path/to/nvim" }, ... })
 ```
 
 ### Does it work with (other plugin)?
@@ -242,21 +280,6 @@ More testing is necessary, but since null-ls uses pure Lua and runs entirely in
 memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
-
-### How to enable and use debug mode
-
-1. Set `debug` flag to `true` in the config like so:
-
-   ```lua
-   require("null-ls").config({
-       debug = true
-   })
-   ```
-
-2. Use `:NullLsInfo` to get the path to your debug log.
-
-As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
-option after you've collected the information you're looking for.
 
 ## Tests
 

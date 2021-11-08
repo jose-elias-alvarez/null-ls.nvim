@@ -119,6 +119,14 @@ M.make_params = function(original_params, method)
         params.range = M.range.from_lsp(original_params.range)
     end
 
+    if params.lsp_method == methods.lsp.COMPLETION then
+        local line = vim.api.nvim_get_current_line()
+        local line_to_cursor = line:sub(1, pos[2])
+        local regex = vim.regex("\\k*$")
+
+        params.word_to_complete = line:sub(regex:match_str(line_to_cursor) + 1, params.col)
+    end
+
     return params
 end
 
@@ -163,6 +171,18 @@ M.table = {
             table.insert(replaced, v == original and replacement or v)
         end
         return replaced
+    end,
+    uniq = function(t)
+        local new_table = {}
+        local hash = {}
+        for _, v in pairs(t) do
+            if not hash[v] then
+                table.insert(new_table, v)
+                hash[v] = true
+            end
+        end
+
+        return new_table
     end,
 }
 
