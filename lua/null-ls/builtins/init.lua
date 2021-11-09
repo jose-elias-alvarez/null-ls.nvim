@@ -1,26 +1,21 @@
-local export_tables = {
-    diagnostics = {},
-    formatting = {},
-    code_actions = {},
-    hover = {},
-    completion = {},
-    _test = {},
+local paths = {
+    diagnostics = "null-ls.builtins.diagnostics",
+    formatting = "null-ls.builtins.formatting",
+    code_actions = "null-ls.builtins.code-actions",
+    hover = "null-ls.builtins.hover",
+    _test = "null-ls.builtins.test",
 }
 
-for method, table in pairs(export_tables) do
-    setmetatable(table, {
-        __index = function(t, k)
-            local ok, builtin = pcall(require, string.format("null-ls.builtins.%s.%s", method, k))
-            if ok then
-                rawset(t, k, builtin)
-            end
-            return builtin
-        end,
-    })
-end
-
 return setmetatable({}, {
-    __index = function(_, k)
-        return export_tables[k]
+    __index = function(t, k)
+        local require_path = paths[k]
+        if not require_path then
+            return
+        end
+
+        local module = require(require_path)
+        t[k] = module
+
+        return module
     end,
 })

@@ -3,7 +3,9 @@ local methods = require("null-ls.methods")
 
 local HOVER = methods.internal.HOVER
 
-return h.make_builtin({
+local M = {}
+
+M.dictionary = h.make_builtin({
     name = "dictionary",
     method = HOVER,
     filetypes = { "text", "markdown" },
@@ -36,3 +38,5 @@ return h.make_builtin({
         async = true,
     },
 })
+
+return M
