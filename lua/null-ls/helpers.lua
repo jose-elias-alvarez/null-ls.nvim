@@ -220,7 +220,11 @@ M.generator_factory = function(opts)
                 local cached = s.get_cache(params.bufnr, command)
                 if cached then
                     params._null_ls_cached = true
-                    wrapper(from_stderr and cached, from_stderr and nil or cached)
+                    if from_stderr then
+                        wrapper(cached, nil)
+                    else
+                        wrapper(nil, cached)
+                    end
                     return
                 end
             end
