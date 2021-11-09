@@ -23,25 +23,17 @@ return h.make_builtin({
         check_exit_code = function(code)
             return code <= 2
         end,
-        on_output = function(...)
-            local parser_result = h.diagnostics.from_pattern(
-                "<string>:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
-                { "row", "col", "severity", "message", "code" },
-                {
-                    severities = {
-                        error = h.diagnostics.severities["error"],
-                        warning = h.diagnostics.severities["warning"],
-                        note = h.diagnostics.severities["information"],
-                    },
-                }
-            )(...)
-
-            if parser_result.code == "syntax" then
-                return nil
-            end
-
-            return parser_result
-        end,
+        on_output = h.diagnostics.from_pattern(
+            "<string>:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
+            { "row", "col", "severity", "message", "code" },
+            {
+                severities = {
+                    error = h.diagnostics.severities["error"],
+                    warning = h.diagnostics.severities["warning"],
+                    note = h.diagnostics.severities["information"],
+                },
+            }
+        ),
     },
     factory = h.generator_factory,
 })
