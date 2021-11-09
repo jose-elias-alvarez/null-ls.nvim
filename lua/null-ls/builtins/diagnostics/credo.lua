@@ -25,6 +25,19 @@ return h.make_builtin({
         from_stderr = true,
         on_output = function(params)
             local issues = {}
+
+            if params.err and params.err:find("{") then
+                i, _ = params.err:find("{")
+                maybe_json_string = params.err:sub(i)
+
+                local ok, decoded = pcall(vim.fn.json_decode, maybe_json_string)
+
+                if ok then
+                    params.output = decoded
+                    params.err = nil
+                end
+            end
+
             if params.output and params.output.issues then
                 for _, issue in ipairs(params.output.issues) do
                     local err = {
