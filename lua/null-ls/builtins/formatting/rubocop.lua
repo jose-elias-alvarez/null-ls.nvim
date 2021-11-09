@@ -17,7 +17,6 @@ return h.make_builtin({
             "$FILENAME",
         },
         to_stdin = true,
-        ignore_stderr = true,
     },
     factory = h.formatter_factory,
 })

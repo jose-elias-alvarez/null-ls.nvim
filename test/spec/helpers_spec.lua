@@ -651,20 +651,20 @@ describe("helpers", function()
             helpers.generator_factory:revert()
         end)
 
-        it("should call generator_factory with opts", function()
+        it("should call generator_factory with default opts", function()
             helpers.formatter_factory(opts)
 
             assert.stub(helpers.generator_factory).was_called_with(opts)
-            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, true)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_stderr, true)
             assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
         end)
 
-        it("should not set suppress_errors when already set", function()
-            opts.suppress_errors = false
+        it("should not set ignore_stderr when explicitly set to false", function()
+            opts.ignore_stderr = false
 
             helpers.formatter_factory(opts)
 
-            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, false)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_stderr, false)
         end)
 
         it("should set from_temp_file if to_temp_file = true", function()

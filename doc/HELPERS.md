@@ -32,7 +32,6 @@ helpers.generator_factory({
     ignore_stderr, -- boolean (optional)
     from_stderr, -- boolean (optional)
     to_stdin, -- boolean (optional)
-    suppress_errors, -- boolean (optional)
     check_exit_code, -- function or table of numbers (optional)
     timeout, -- number (optional)
     to_temp_file, -- boolean (optional)
@@ -92,9 +91,9 @@ Supports the following options:
   `on_output` must call with its results (see _Generators_ in
   [MAIN](MAIN.md) for details).
 
-- `nil`: same as `raw`, but does not receive error output. Instead, error output
-  will cause the generator to throw an error, unless `suppress_errors` is also
-  enabled (see below).
+- `nil`: same as `raw`, but does not receive error output. Instead, any output
+  to `stderr` will cause the generator to throw an error, unless `ignore_stderr`
+  is also enabled (see below).
 
 - `"line"`: splits generator output into lines and calls `on_output(line, params)`
   once for each line, where `line` is a string.
@@ -114,34 +113,23 @@ Supports the following options:
 
 ### ignore_stderr
 
-Usually when a command outputs anything on `stderr` it would cause the command
-to fail (unless `from_stderr` is set to `true`, see below).
+For non-`raw` output formats, any output to `stderr` causes a command to fail
+(unless `from_stderr` is `true`, as described below).
 
-This option tells the runner that the command's `stderr` output is irrelevant
-and should be discarded. This is similar to running a command with a
-`2>/dev/null` redirect, but the error output will still be logged in `debug`
-mode before being rejected.
-
-Note that setting `ignore_stderr = true` will make `from_stderr` not do anything.
+This option tells the runner to ignore the command's `stderr` output. This is
+like redirecting a command's output with `2>/dev/null`, but any error output is
+still logged when `debug` mode is on.
 
 ### from_stderr
 
-Captures a command's `stderr` output and assigns it to `params.output`. Useful
-for linters that output to `stderr`.
+Captures a command's `stderr` output and assigns it to `params.output`. Note
+that setting `from_stderr = true` will discard any `stdin` output.
 
-Note that setting `from_stderr = true` will discard `stdin` output. Will not
-work with `ignore_stderr` set.
+Not compatible with `ignore_stderr`.
 
 ### to_stdin
 
 Sends the current buffer's content to the spawned command via `stdin`.
-
-### suppress_errors
-
-Suppresses errors, regardless of `stderr` output or the command's exit code.
-
-Note that most formats won't call `on_output` if there is an error. To handle
-errors manually or ignore them entirely, use `format = "raw"`.
 
 ### check_exit_code
 
@@ -191,34 +179,20 @@ handler will always invalidate the buffer's cache before running generators.
 
 ### runtime_condition
 
-Optional function that will be called when generating a list of sources to
-run for a given method. The calculations here must be conscious that this is
-called _every_ time a source is potentially run, and hence should avoid
-doing anything overly expensive.
+Optional callback called when generating a list of sources to run for a given
+method. Takes a single argument, `params`, which is a table containing
+information about the current editor state (described in [MAIN](./MAIN.md)). If
+the callback's return value is falsy, the source does not run.
 
-- Takes a single argument, `params`, which is a table of parameters containing
-  the following useful keys, amongst a few others (one can `print(vim.inspect(params))`
-  inside of the function to see more):
-  - `bufnr`: The buffer number being formatted
-  - `bufname`: The name of the above buffer number
-  - `client_id`: The ID of the attached client
-  - `content`: The contents of the buffer, potentially updated from formatters
-    that have been run prior
-  - `ft`: The `filetype` of the aforementioned buffer
-- If the function returns `nil` or `false`, the associated source will be skipped,
-  otherwise it will be added to the set of valid sources to run upon meeting other
-  neccessary conditions (filetype, etc.) as well.
-- Defaults to `true`, hence any configured source will be run every time unless
-  this condition specifies otherwise.
+Be aware that the callback runs _every_ time a source can run and thus should
+avoid doing anything overly expensive.
 
 ### cwd
 
-Optional function to set the working directory for the process being spawned.
-
-- Takes a single argument, `params`, which has the `root` key added of the project
-  root
-- With no function or no return, the working directory remains set to the project
-  root
+Optional callback to set the working directory for the spawned process. Takes a
+single argument, `params`, which is a table containing information about the
+current editor state (described in [MAIN](./MAIN.md)). If the callback returns
+`nil`, the working directory defaults to the project's root.
 
 ## formatter_factory
 
@@ -227,10 +201,7 @@ the process of capturing a formatter's output and replacing a buffer's entire
 content with that output. It supports the same options as `generator_factory`
 with the following changes:
 
-- `suppress_errors`: set to `true` unless specifically set to `false`.
-
-- `from_temp_file`: always set to `true` if `to_temp_file` is `true` (since
-  formatting from a temp file won't work otherwise).
+- `ignore_stderr`: set to `true` by default.
 
 - `on_output`: will always return an edit that will replace the current buffer's
   content with formatter output. As a result, other options that depend on

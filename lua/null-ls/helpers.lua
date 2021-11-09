@@ -100,7 +100,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
         opts.command,
         opts.args,
         opts.on_output,
@@ -108,7 +108,6 @@ M.generator_factory = function(opts)
         opts.ignore_stderr,
         opts.from_stderr,
         opts.to_stdin,
-        opts.suppress_errors,
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
@@ -145,7 +144,6 @@ M.generator_factory = function(opts)
             from_stderr = { from_stderr, "boolean", true },
             ignore_stderr = { ignore_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
-            suppress_errors = { suppress_errors, "boolean", true },
             check_exit_code = { check_exit_code, "function", true },
             timeout = { timeout, "number", true },
             to_temp_file = { to_temp_file, "boolean", true },
@@ -190,9 +188,8 @@ M.generator_factory = function(opts)
                 end
 
                 if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
-                    if not suppress_errors then
-                        error("error in generator output: " .. error_output)
-                    end
+                    error("error in generator output: " .. error_output)
+
                     done()
                     return
                 end
@@ -276,10 +273,12 @@ M.generator_factory = function(opts)
 end
 
 M.formatter_factory = function(opts)
-    if opts.suppress_errors == nil then
-        opts.suppress_errors = true
+    -- ignore errors unless otherwise specified
+    if opts.ignore_stderr == nil then
+        opts.ignore_stderr = true
     end
-    -- assume this is what the author wanted, since it's the only way formatting will work
+
+    -- for formatters, to_temp_file only works if from_temp_file is also set
     if opts.to_temp_file then
         opts.from_temp_file = true
     end
@@ -294,10 +293,8 @@ M.formatter_factory = function(opts)
             {
                 row = 1,
                 col = 1,
-                -- source: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#range
-                -- "... the end position is exclusive. If you want to specify a range that contains a line including the
-                --  line ending character(s) then use an end position denoting the start of the next line."
-                end_row = vim.tbl_count(params.content) + 1,
+                -- wraps to end of document
+                end_row = #params.content + 1,
                 end_col = 1,
                 text = output,
             },
