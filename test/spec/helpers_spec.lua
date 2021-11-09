@@ -559,14 +559,32 @@ describe("helpers", function()
                 assert.equals(on_output.calls[1].refs[2], done)
             end)
 
-            it("should throw error if error_output exists and format ~= raw", function()
+            it("should catch error thrown in handle_output", function()
+                generator_args.on_output = function()
+                    error("handle_output error")
+                end
+
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
-                assert.has_error(function()
-                    wrapper("error output", nil)
-                end)
+                wrapper(nil, "output")
+
+                local generator_err = done.calls[1].refs[1]._generator_err
+                assert.truthy(generator_err)
+                assert.truthy(generator_err:find("handle_output error"))
+            end)
+
+            it("should pass error to done if error_output exists and format ~= raw", function()
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper("error output", nil)
+
+                local generator_err = done.calls[1].refs[1]._generator_err
+                assert.truthy(generator_err)
+                assert.truthy(generator_err:find("error output"))
             end)
 
             it("should set params.err if format == raw", function()

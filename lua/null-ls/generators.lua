@@ -1,6 +1,5 @@
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
-local methods = require("null-ls.methods")
 
 local M = {}
 
@@ -26,11 +25,19 @@ M.run = function(generators, params, postprocess, callback)
                 end
 
                 local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
-                local ok, results = pcall(to_run, copied_params)
+                local protected_call = generator.async and a.util.apcall or pcall
+                local ok, results = protected_call(to_run, copied_params)
                 a.util.scheduler()
+
+                -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
+                if results and results._generator_err then
+                    ok = false
+                    results = results._generator_err
+                end
 
                 if not ok then
                     u.echo("WarningMsg", "failed to run generator: " .. results)
+                    -- prevent failed generators from running again
                     generator._failed = true
                     return
                 end

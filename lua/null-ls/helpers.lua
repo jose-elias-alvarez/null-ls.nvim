@@ -187,33 +187,39 @@ M.generator_factory = function(opts)
                     error_output = nil
                 end
 
-                if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
-                    error("error in generator output: " .. error_output)
+                local handle_output = function()
+                    if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
+                        error("error in generator output: " .. error_output)
+                    end
 
-                    done()
-                    return
+                    params.output = params.output or output
+                    if use_cache then
+                        s.set_cache(params.bufnr, command, output)
+                    end
+
+                    if format == output_formats.raw or format == output_formats.json_raw then
+                        params.err = error_output
+                    end
+
+                    if format == output_formats.json or format == output_formats.json_raw then
+                        json_output_wrapper(params, done, on_output, format)
+                        return
+                    end
+
+                    if format == output_formats.line then
+                        line_output_wrapper(params, done, on_output)
+                        return
+                    end
+
+                    on_output(params, done)
                 end
 
-                params.output = params.output or output
-                if use_cache then
-                    s.set_cache(params.bufnr, command, output)
+                -- errors thrown from luv callbacks can't be caught
+                -- so we catch them here and pass them as results
+                local ok, err = pcall(handle_output)
+                if not ok then
+                    done({ _generator_err = err })
                 end
-
-                if format == output_formats.raw or format == output_formats.json_raw then
-                    params.err = error_output
-                end
-
-                if format == output_formats.json or format == output_formats.json_raw then
-                    json_output_wrapper(params, done, on_output, format)
-                    return
-                end
-
-                if format == output_formats.line then
-                    line_output_wrapper(params, done, on_output)
-                    return
-                end
-
-                on_output(params, done)
             end
 
             if use_cache then

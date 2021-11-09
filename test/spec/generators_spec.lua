@@ -110,16 +110,35 @@ describe("generators", function()
             assert.equals(results[1].title, mock_result.title)
         end)
 
-        it(
-            "should echo error message, set failed flag, and return empty table when generator throws an error",
-            function()
-                local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+        it("should handle error thrown in sync generator", function()
+            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
 
-                assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
-                assert.equals(error_generator._failed, true)
-                assert.equals(vim.tbl_count(results), 0)
+            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
+            assert.equals(error_generator._failed, true)
+            assert.equals(vim.tbl_count(results), 0)
+        end)
+
+        it("should handle error thrown in async generator", function()
+            error_generator.async = true
+
+            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+
+            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
+            assert.equals(error_generator._failed, true)
+            assert.equals(vim.tbl_count(results), 0)
+        end)
+
+        it("should handle error passed as _generator_err", function()
+            error_generator.fn = function()
+                return { _generator_err = "something went wrong" }
             end
-        )
+
+            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+
+            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
+            assert.equals(error_generator._failed, true)
+            assert.equals(vim.tbl_count(results), 0)
+        end)
 
         it("should call postprocess with result, params, and generator", function()
             wrapped_run({ sync_generator }, mock_params, postprocess)()
