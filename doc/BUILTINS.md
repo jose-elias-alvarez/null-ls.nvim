@@ -61,8 +61,12 @@ run the following (Vim, not Lua) command:
 ## Configuration
 
 Built-in sources have access to a special method, `with()`, which modifies the
-source's default options. For example, you can alter a source's file types as
-follows:
+source's default options. See the descriptions below or the relevant source file
+to see the default options passed to each built-in source.
+
+### Filetypes
+
+You can override a source's default filetypes as follows:
 
 ```lua
 local sources = {
@@ -72,14 +76,13 @@ local sources = {
 }
 ```
 
-See the descriptions below or the relevant source file to see the default
-options passed to each built-in source.
+If you see `filetypes = {}` in a source's description, that means the source is
+active for all filetypes by default. You may want to define a specific list of
+filetypes to avoid conflicts or other issues.
 
-Note that setting `filetypes = {}` will enable the source for all filetypes,
-which isn't recommended for most sources.
+### Arguments
 
-You can override `args` using `with({ args = your_args })`, but if you want to
-add more flags, you should use `extra_args` instead:
+To add more arguments to a source's defaults, use `extra_args`:
 
 ```lua
 local sources = {
@@ -88,6 +91,10 @@ local sources = {
       })
   }
 ```
+
+You can also override a source's arguments entirely using `with({ args = your_args })`.
+
+### Expansion
 
 Note that environment variables and `~` aren't expanded in arguments. As a
 workaround, you can use `vim.fn.expand`:
@@ -99,6 +106,8 @@ local sources = {
     }),
 }
 ```
+
+### Diagnostics format
 
 For diagnostics sources, you can change the format of diagnostic messages by
 setting `diagnostics_format`:
@@ -112,9 +121,9 @@ local sources = {
 }
 ```
 
-See [CONFIG](CONFIG.md) to learn about `diagnostics_format`. Note that
-specifying `diagnostics_format` for a built-in will override your global
-`diagnostics_format` for that source.
+See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
+Note that specifying `diagnostics_format` for a built-in will override your
+global `diagnostics_format` for that source.
 
 ## Conditional registration
 
@@ -810,8 +819,8 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 - Supports more filetypes such as
   [Svelte](https://github.com/sveltejs/prettier-plugin-svelte) and
   [TOML](https://github.com/bd82/toml-tools/tree/master/packages/prettier-plugin-toml)
-  via plugins. These filetypes are not enabled by default - see the instructions
-  at the top of this document to add them.
+  via plugins. These filetypes are not enabled by default, but you can follow
+  the instructions [here](#filetypes) to define your own list of filetypes.
 
 ##### Usage
 
@@ -1963,19 +1972,5 @@ If you want to disable spell suggestions when `spell` options is not set, you ca
 following snippet:
 
 ```lua
-runtime_condition = function(_)
-    return vim.opt_local.spell:get()
-end
-```
-
-#### Tags
-
-##### About
-
-Tags source for completion. Only works if you have `tags` options set.
-
-###### Usage
-
-```lua
-local sources = { null_ls.builtins.completion.tags }
+runtime_condit
 ```
