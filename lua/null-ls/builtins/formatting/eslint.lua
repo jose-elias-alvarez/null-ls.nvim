@@ -11,7 +11,6 @@ return h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
-        "svelte",
     },
     factory = h.generator_factory,
     generator_opts = {

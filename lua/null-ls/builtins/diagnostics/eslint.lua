@@ -24,7 +24,7 @@ end
 
 return h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {
         command = "eslint",
         args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },

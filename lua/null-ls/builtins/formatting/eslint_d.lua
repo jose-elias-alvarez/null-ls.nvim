@@ -11,7 +11,6 @@ return h.make_builtin({
         "typescript",
         "typescriptreact",
         "vue",
-        "svelte",
     },
     generator_opts = {
         command = "eslint_d",

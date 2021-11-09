@@ -416,7 +416,7 @@ local sources = { null_ls.builtins.formatting.eslint }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "--fix-dry-run", "--format", "JSON", "--stdin", "--stdin-filename", "$FILENAME" }`
 
@@ -434,7 +434,7 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint_d"`
 - `args = { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -807,6 +807,11 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 ##### About
 
 - Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
+- Supports more filetypes such as
+  [Svelte](https://github.com/sveltejs/prettier-plugin-svelte) and
+  [TOML](https://github.com/bd82/toml-tools/tree/master/packages/prettier-plugin-toml)
+  via plugins. These filetypes are not enabled by default - see the instructions
+  at the top of this document to add them.
 
 ##### Usage
 
@@ -816,7 +821,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
 
@@ -838,7 +843,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier_d_slim"`
 - `args = { "--stdin", "--stdin-filepath", "$FILENAME" }`
 
@@ -858,7 +863,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
@@ -1402,7 +1407,7 @@ local sources = { null_ls.builtins.diagnostics.eslint }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
@@ -1422,7 +1427,7 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 
 ##### Defaults
 
-- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte" }`
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
