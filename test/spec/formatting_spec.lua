@@ -4,6 +4,7 @@ local mock = require("luassert.mock")
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
+local diff = require("null-ls.diff")
 
 local method = methods.lsp.FORMATTING
 
@@ -13,6 +14,7 @@ describe("formatting", function()
     stub(vim, "cmd")
     stub(u, "make_params")
     stub(generators, "run_registered_sequentially")
+    stub(diff, "compute_diff")
 
     local handler = stub.new()
 
@@ -32,12 +34,14 @@ describe("formatting", function()
     end)
 
     after_each(function()
-        mock.revert(api)
         lsp.util.apply_text_edits:clear()
-        lsp.util.compute_diff:clear()
         vim.cmd:clear()
+        mock.revert(api)
+
         u.make_params:clear()
         generators.run_registered_sequentially:clear()
+        diff.compute_diff:clear()
+
         handler:clear()
     end)
 
@@ -90,7 +94,7 @@ describe("formatting", function()
     describe("callback", function()
         local mock_edits = { { text = "new text" } }
         local mock_diffed = {
-            text = "diffed text",
+            newText = "diffed text",
             range = {
                 start = { line = 0, character = 10 },
                 ["end"] = { line = 35, character = 1 },
@@ -101,7 +105,7 @@ describe("formatting", function()
         local original_handler = vim.lsp.handlers[method]
         before_each(function()
             vim.lsp.handlers[method] = lsp_handler
-            lsp.util.compute_diff.returns(mock_diffed)
+            diff.compute_diff.returns(mock_diffed)
         end)
         after_each(function()
             lsp_handler:clear()
@@ -128,7 +132,7 @@ describe("formatting", function()
                     assert.stub(lsp_handler).was_called_with(
                         nil,
                         mock_params.lsp_method,
-                        { { newText = mock_diffed.text, range = mock_diffed.range } },
+                        { mock_diffed },
                         mock_params.client_id,
                         mock_params.bufnr
                     )
@@ -146,15 +150,11 @@ describe("formatting", function()
                     local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
                     callback(mock_edits, mock_params)
 
-                    assert.stub(lsp_handler).was_called_with(
-                        nil,
-                        { { newText = mock_diffed.text, range = mock_diffed.range } },
-                        {
-                            method = mock_params.lsp_method,
-                            client_id = mock_params.client_id,
-                            bufnr = mock_params.bufnr,
-                        }
-                    )
+                    assert.stub(lsp_handler).was_called_with(nil, { mock_diffed }, {
+                        method = mock_params.lsp_method,
+                        client_id = mock_params.client_id,
+                        bufnr = mock_params.bufnr,
+                    })
                 end)
             end)
         end)

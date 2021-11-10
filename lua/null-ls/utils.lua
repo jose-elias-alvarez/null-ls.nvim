@@ -57,11 +57,13 @@ M.echo = function(hlgroup, message)
 end
 
 M.join_at_newline = function(bufnr, text)
-    return table.concat(text, get_line_ending(bufnr))
+    local line_ending = get_line_ending(bufnr)
+    return table.concat(text, line_ending), line_ending
 end
 
 M.split_at_newline = function(bufnr, text)
-    return vim.split(text, get_line_ending(bufnr))
+    local line_ending = get_line_ending(bufnr)
+    return vim.split(text, line_ending), line_ending
 end
 
 M.debug_log = function(...)

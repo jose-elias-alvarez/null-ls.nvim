@@ -1,7 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 
-local lsp = vim.lsp
 local api = vim.api
 
 local M = {}
@@ -57,16 +56,11 @@ M.apply_edits = function(edits, params)
 
     local diffed_edits = {}
     for _, edit in ipairs(edits) do
-        local diffed = lsp.util.compute_diff(params.content, u.split_at_newline(params.bufnr, edit.text))
+        local split_text, line_ending = u.split_at_newline(params.bufnr, edit.text)
+        local diffed = require("null-ls.diff").compute_diff(params.content, split_text, line_ending)
         -- check if the computed diff is an actual edit
-        if
-            not (
-                diffed.text == ""
-                and diffed.range.start.character == diffed.range["end"].character
-                and diffed.range.start.line == diffed.range["end"].line
-            )
-        then
-            table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
+        if not (diffed.newText == "" and diffed.rangeLength == 0) then
+            table.insert(diffed_edits, diffed)
         end
     end
 
