@@ -1974,3 +1974,15 @@ following snippet:
 ```lua
 runtime_condit
 ```
+
+#### Vsnip
+
+##### About
+
+Snippets managed by [vim-vsnip](https://github.com/hrsh7th/vim-vsnip).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.completion.vsnip }
+```
