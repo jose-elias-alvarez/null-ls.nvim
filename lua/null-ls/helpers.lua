@@ -18,7 +18,7 @@ local M = {}
 local get_content = function(params)
     -- when possible, get content from params
     if params.content then
-        return table.concat(params.content, "\n")
+        return u.join_at_newline(params.bufnr, params.content)
     end
 
     -- otherwise, get content directly
@@ -87,7 +87,7 @@ local line_output_wrapper = function(params, done, on_output)
     end
 
     local all_results = {}
-    for _, line in ipairs(vim.split(output, "\n")) do
+    for _, line in ipairs(u.split_at_newline(params.bufnr, output)) do
         if line ~= "" then
             local results = on_output(line, params)
             if type(results) == "table" then
@@ -514,7 +514,7 @@ M.diagnostics = (function()
             end
 
             local diagnostics = {}
-            local lines = vim.split(output, "\n")
+            local lines = u.split_at_newline(params.bufnr, output)
 
             local qflist = vim.fn.getqflist({ efm = efm, lines = lines })
             local severities = { e = 1, w = 2, i = 3, n = 4 }

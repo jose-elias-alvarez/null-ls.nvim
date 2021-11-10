@@ -6,22 +6,35 @@ local api = vim.api
 local M = {}
 
 local resolve_content = function(params, bufnr)
-    -- diagnostic notifications will send full buffer content on open and change
-    -- so we can avoid unnecessary api calls
-    if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
-        return vim.split(params.textDocument.text, "\n")
-    end
-    if
-        params.method == methods.lsp.DID_CHANGE
-        and params.contentChanges
-        and params.contentChanges[1]
-        and params.contentChanges[1].text
-    then
-        return vim.split(params.contentChanges[1].text, "\n")
+    -- older versions don't adapt line endings by format,
+    -- so we always get content directly to make sure it's correct
+    if vim.fn.has("nvim-0.6.0") > 0 then
+        -- diagnostic notifications will send full buffer content on open and change
+        -- so we can avoid unnecessary api calls
+        if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
+            return M.split_at_newline(params.bufnr, params.textDocument.text)
+        end
+        if
+            params.method == methods.lsp.DID_CHANGE
+            and params.contentChanges
+            and params.contentChanges[1]
+            and params.contentChanges[1].text
+        then
+            return M.split_at_newline(params.bufnr, params.contentChanges[1].text)
+        end
     end
 
-    -- for other methods, fall back to manually getting content
     return M.buf.content(bufnr)
+end
+
+local format_line_ending = {
+    ["unix"] = "\n",
+    ["dos"] = "\r\n",
+    ["mac"] = "\r",
+}
+
+local get_line_ending = function(bufnr)
+    return format_line_ending[api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
 end
 
 local resolve_bufnr = function(params)
@@ -41,6 +54,16 @@ end
 
 M.echo = function(hlgroup, message)
     api.nvim_echo({ { "null-ls: " .. message, hlgroup } }, true, {})
+end
+
+M.join_at_newline = function(bufnr, text)
+    local line_ending = get_line_ending(bufnr)
+    return table.concat(text, line_ending), line_ending
+end
+
+M.split_at_newline = function(bufnr, text)
+    local line_ending = get_line_ending(bufnr)
+    return vim.split(text, line_ending), line_ending
 end
 
 M.debug_log = function(...)
@@ -146,21 +169,21 @@ end
 
 M.buf = {
     content = function(bufnr, to_string)
-        if not bufnr then
-            bufnr = api.nvim_get_current_buf()
-        end
-        local eol = api.nvim_buf_get_option(bufnr, "eol")
+        bufnr = bufnr or api.nvim_get_current_buf()
 
-        local split = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+        local eol = api.nvim_buf_get_option(bufnr, "eol")
+        local line_ending = get_line_ending(bufnr)
+
+        local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
         if to_string then
-            local text = table.concat(split, "\n")
-            return eol and text .. "\n" or text
+            local text = table.concat(lines, line_ending)
+            return eol and text .. line_ending or text
         end
 
         if eol then
-            table.insert(split, "")
+            table.insert(lines, "")
         end
-        return split
+        return lines
     end,
 }
 
