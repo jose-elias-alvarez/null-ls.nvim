@@ -5,10 +5,20 @@ local api = vim.api
 
 local M = {}
 
+local format_line_ending = {
+    ["unix"] = "\n",
+    ["dos"] = "\r\n",
+    ["mac"] = "\r",
+}
+
+local get_line_ending = function(bufnr)
+    return format_line_ending[api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
+end
+
 local resolve_content = function(params, bufnr)
-    -- older versions don't adapt line endings by format,
-    -- so we always get content directly to make sure it's correct
-    if vim.fn.has("nvim-0.6.0") > 0 then
+    -- currently, neovim is hardcoded to use \n in notifications that include file content
+    -- so in other cases we get buffer content directly to make sure it's accurate
+    if get_line_ending(bufnr) == format_line_ending["unix"] then
         -- diagnostic notifications will send full buffer content on open and change
         -- so we can avoid unnecessary api calls
         if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
@@ -25,16 +35,6 @@ local resolve_content = function(params, bufnr)
     end
 
     return M.buf.content(bufnr)
-end
-
-local format_line_ending = {
-    ["unix"] = "\n",
-    ["dos"] = "\r\n",
-    ["mac"] = "\r",
-}
-
-local get_line_ending = function(bufnr)
-    return format_line_ending[api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
 end
 
 local resolve_bufnr = function(params)

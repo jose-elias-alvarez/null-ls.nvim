@@ -189,15 +189,7 @@ describe("utils", function()
         end)
 
         describe("resolve_content", function()
-            before_each(function()
-                stub(vim.fn, "has")
-                vim.fn.has.returns(1)
-            end)
-            after_each(function()
-                vim.fn.has:revert()
-            end)
-
-            describe("0.6.0", function()
+            describe("unix-style line endings", function()
                 it("should resolve content from params on DID_OPEN", function()
                     local params = u.make_params({
                         method = methods.lsp.DID_OPEN,
@@ -226,9 +218,13 @@ describe("utils", function()
                 end)
             end)
 
-            describe("0.5.0 / 0.5.1", function()
+            describe("non-unix style line endings", function()
+                after_each(function()
+                    vim.bo.fileformat = "unix"
+                end)
+
                 it("should directly get content from buffer on DID_OPEN", function()
-                    vim.fn.has.returns(0)
+                    vim.bo.fileformat = "dos"
 
                     local params = u.make_params({
                         method = methods.lsp.DID_OPEN,
@@ -239,7 +235,7 @@ describe("utils", function()
                 end)
 
                 it("should directly get content from buffer on DID_CHANGE", function()
-                    vim.fn.has.returns(0)
+                    vim.bo.fileformat = "dos"
 
                     local params = u.make_params({
                         method = methods.lsp.DID_CHANGE,
@@ -250,6 +246,8 @@ describe("utils", function()
                 end)
 
                 it("should directly get content from buffer if method does not match", function()
+                    vim.bo.fileformat = "dos"
+
                     local params = u.make_params({
                         method = "otherMethod",
                         contentChanges = { { text = mock_content } },
