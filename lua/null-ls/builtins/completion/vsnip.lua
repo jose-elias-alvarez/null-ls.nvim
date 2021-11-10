@@ -21,7 +21,7 @@ return h.make_builtin({
                     kind = vim.lsp.protocol.CompletionItemKind["Snippet"],
                 })
             end
-            done({ { items = items, isIncomplete = false } })
+            done({ { items = items, isIncomplete = #items == 0 } })
         end,
         async = true,
     },
