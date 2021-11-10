@@ -1986,3 +1986,7 @@ Snippets managed by [vim-vsnip](https://github.com/hrsh7th/vim-vsnip).
 ```lua
 local sources = { null_ls.builtins.completion.vsnip }
 ```
+
+null-ls does not expand or support snippets in anyway. To use this builtin, snippet completion with vim-vsnip should already be setup, as described in [vim-vsnip's documentation](https://github.com/hrsh7th/vim-vsnip#2-setting).
+
+Because null-ls has nothing to do with the snippets (completing them or returning them to Neovim), [vim-vsnip-integ](https://github.com/hrsh7th/vim-vsnip-integ) is **not** required to use this completion source.
