@@ -23,9 +23,9 @@ local capabilities = {
     },
 }
 
-local lastpid = 5000
+M.capabilities = capabilities
 
-function M.setup()
+M.setup = function()
     local rpc = require("vim.lsp.rpc")
 
     local rpc_start = rpc.start
@@ -38,15 +38,9 @@ function M.setup()
     end
 end
 
-local function get_client(pid)
-    for _, client in pairs(vim.lsp.get_active_clients()) do
-        if client.rpc.pid == pid then
-            return client
-        end
-    end
-end
+local lastpid = 5000
 
-function M.start(dispatchers)
+M.start = function(dispatchers)
     lastpid = lastpid + 1
     local message_id = 1
     local pid = lastpid
@@ -57,7 +51,7 @@ function M.start(dispatchers)
         params = params or {}
         callback = callback and vim.schedule_wrap(callback)
         message_id = message_id + 1
-        client = client or get_client(pid)
+        client = client or u.get_client()
 
         if type(params) ~= "table" then
             params = { params }
