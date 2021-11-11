@@ -148,7 +148,7 @@ M.make_params = function(original_params, method)
     end
 
     if params.lsp_method == methods.lsp.COMPLETION then
-        local line = vim.api.nvim_get_current_line()
+        local line = params.content[params.row]
         local line_to_cursor = line:sub(1, pos[2])
         local regex = vim.regex("\\k*$")
 
