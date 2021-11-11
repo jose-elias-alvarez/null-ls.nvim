@@ -107,6 +107,26 @@ local sources = {
 
 You can also override a source's arguments entirely using `with({ args = your_args })`.
 
+Both `args` and `extra_args` can also be functions that accept a single
+argument, `params`, which is an object containing information about editor
+state. LSP options (e.g. formatting options) are available as `params.options`,
+making it possible to dynamically set arguments based on these options:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        extra_args = function(params)
+            return params.options
+                and params.options.tabSize
+                and {
+                    "--tab-width",
+                    params.options.tabSize,
+                }
+        end,
+    }),
+}
+```
+
 ### Expansion
 
 Note that environment variables and `~` aren't expanded in arguments. As a
@@ -1066,9 +1086,9 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### Defaults
 
-- `filetypes = { "sh", "zsh" }`
+- `filetypes = { "sh" }`
 - `command = "shfmt"`
-- `args = {}`
+- `args = { "-filename", "$FILENAME" }`
 
 #### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
@@ -1419,7 +1439,7 @@ A linter for the `javascript` ecosystem.
 - To use local (project) executables, use the integration in
   [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils)
   or try the [ESLint language
-  server](https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#eslint).
+  server](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint).
 
 ##### Usage
 
