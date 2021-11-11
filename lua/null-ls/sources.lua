@@ -28,8 +28,11 @@ M.is_available = function(source, filetype, method)
         return false
     end
 
-    return (not filetype or source.filetypes["_all"] or source.filetypes[filetype])
-        and (not method or source.methods[method])
+    return (
+            not filetype
+            or (source.filetypes[filetype] == nil and source.filetypes["_all"])
+            or source.filetypes[filetype]
+        ) and (not method or source.methods[method])
 end
 
 M.get_available = function(filetype, method)
@@ -91,11 +94,12 @@ M.validate_and_transform = function(source)
     local generator, name = source.generator, source.name or "anonymous source"
     generator.opts = generator.opts or {}
     local methods = type(source.method) == "table" and source.method or { source.method }
-    local filetypes = source.filetypes
+    local filetypes, disabled_filetypes = source.filetypes, source.disabled_filetypes
 
     validate({
         generator = { generator, "table" },
         filetypes = { filetypes, "table" },
+        disabled_filetypes = { disabled_filetypes, "table", true },
         name = { name, "string" },
         methods = { methods, "table" },
         fn = { generator.fn, "function" },
@@ -116,6 +120,12 @@ M.validate_and_transform = function(source)
     else
         for _, ft in ipairs(filetypes) do
             filetype_map[ft] = true
+        end
+    end
+
+    if disabled_filetypes then
+        for _, ft in ipairs(disabled_filetypes) do
+            filetype_map[ft] = false
         end
     end
 

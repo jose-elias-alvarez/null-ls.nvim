@@ -770,13 +770,18 @@ describe("helpers", function()
                 local copy = builtin.with({ filetypes = { "txt" } })
 
                 assert.not_same(builtin, copy)
-                assert.equals(copy._is_copy, true)
             end)
 
             it("should override filetypes", function()
                 local copy = builtin.with({ filetypes = { "txt" } })
 
                 assert.same(copy.filetypes, { "txt" })
+            end)
+
+            it("should set disabled filetypes", function()
+                local copy = builtin.with({ disabled_filetypes = { "teal" } })
+
+                assert.same(copy.disabled_filetypes, { "teal" })
             end)
 
             it("should override values on opts", function()

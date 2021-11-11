@@ -59,6 +59,15 @@ describe("sources", function()
             assert.truthy(is_available)
         end)
 
+        it("should return false if filetype is disabled", function()
+            mock_source.filetypes["_all"] = true
+            mock_source.filetypes["tl"] = false
+
+            local is_available = sources.is_available(mock_source, "tl")
+
+            assert.falsy(is_available)
+        end)
+
         it("should return true if method matches and no filetype is specified", function()
             local is_available = sources.is_available(mock_source, nil, methods.internal.FORMATTING)
 
@@ -271,6 +280,14 @@ describe("sources", function()
             assert.equals(validated.generator.opts, mock_source.generator.opts)
             assert.same(validated.filetypes, { ["lua"] = true })
             assert.same(validated.methods, { [methods.internal.FORMATTING] = true })
+        end)
+
+        it("should set disabled filetypes", function()
+            mock_source.disabled_filetypes = { "teal" }
+
+            local validated = sources.validate_and_transform(mock_source)
+
+            assert.same(validated.filetypes, { ["lua"] = true, ["teal"] = false })
         end)
 
         it("should handle table of methods", function()
