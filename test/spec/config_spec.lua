@@ -42,6 +42,12 @@ describe("config", function()
 
             assert.equals(c.get().debounce, 250)
         end)
+
+        it("should call on_register_sources", function()
+            c.reset()
+
+            assert.stub(on_register_sources).was_called()
+        end)
     end)
 
     describe("reset_sources", function()
@@ -79,12 +85,10 @@ describe("config", function()
             assert.truthy(find_source(mock_source.name))
         end)
 
-        it("should call on_register_source with transformed source", function()
+        it("should call on_register_source", function()
             c.register(mock_source)
 
-            assert.stub(on_register_source).was_called_with(
-                require("null-ls.sources").validate_and_transform(mock_source)
-            )
+            assert.stub(on_register_source).was_called()
         end)
 
         it("should handle large number of duplicates", function()

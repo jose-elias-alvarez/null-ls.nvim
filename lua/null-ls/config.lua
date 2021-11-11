@@ -102,6 +102,7 @@ M._set = function(new_config)
 end
 
 M.reset = function()
+    M.reset_sources()
     config = vim.deepcopy(defaults)
 end
 
