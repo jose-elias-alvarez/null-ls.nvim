@@ -77,5 +77,14 @@ describe("info", function()
             assert.equals(content[5], "")
             assert.equals(content[6], "Formatting: anonymous source, anonymous source")
         end)
+
+        it("should show log path when debug option is enabled", function()
+            c._set({ debug = true })
+
+            info.show_window()
+
+            local content = api.nvim_buf_get_lines(api.nvim_win_get_buf(0), 0, -1, false)
+            assert.equals(content[1], "null-ls log: " .. vim.fn.stdpath("cache") .. "/null-ls.log")
+        end)
     end)
 end)

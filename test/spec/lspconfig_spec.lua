@@ -5,6 +5,8 @@ local sources = require("null-ls.sources")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 
+local tu = require("test.utils")
+
 describe("lspconfig", function()
     local lspconfig = require("null-ls.lspconfig")
 
@@ -106,6 +108,84 @@ describe("lspconfig", function()
             local filetypes = require("lspconfig")["null-ls"].filetypes
             assert.equals(#filetypes, 1)
             assert.truthy(vim.tbl_contains(filetypes, "lua"))
+        end)
+    end)
+
+    describe("try_add", function()
+        local has_version = stub(u, "has_version")
+        local try_add = stub.new()
+        require("lspconfig")["null-ls"].manager = { try_add = try_add }
+
+        before_each(function()
+            tu.edit_test_file("test-file.lua")
+        end)
+        after_each(function()
+            vim.cmd("bufdo! bdelete!")
+            vim.bo.buftype = ""
+            vim.bo.filetype = ""
+            try_add:clear()
+            u.has_version:clear()
+            u.has_version.returns(nil)
+        end)
+
+        it("should attach when source matches", function()
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_called_with(vim.api.nvim_get_current_buf())
+        end)
+
+        it("should not attach when source is not available", function()
+            sources.register(require("null-ls.builtins")._test.mock_hover)
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_not_called()
+        end)
+
+        it("should not attach when no sources", function()
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_not_called()
+        end)
+
+        it("should not attach when buftype is not empty string", function()
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
+            vim.bo.buftype = "nofile"
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_not_called()
+        end)
+
+        it("should not attach when buffer has no name", function()
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
+            vim.cmd("enew")
+            vim.bo.filetype = "lua"
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_not_called()
+        end)
+
+        it("should not attach when filetype is gitcommit and version is < 0.6.0", function()
+            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
+            vim.bo.filetype = "gitcommit"
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_not_called()
+        end)
+
+        it("should attach when filetype is gitcommit and version is >= 0.6.0", function()
+            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
+            vim.bo.filetype = "gitcommit"
+            has_version.returns(true)
+
+            lspconfig.try_add()
+
+            assert.stub(try_add).was_called_with(vim.api.nvim_get_current_buf())
         end)
     end)
 end)
