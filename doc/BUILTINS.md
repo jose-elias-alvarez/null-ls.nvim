@@ -1426,7 +1426,7 @@ A linter for the `javascript` ecosystem.
 - To use local (project) executables, use the integration in
   [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils)
   or try the [ESLint language
-  server](https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#eslint).
+  server](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint).
 
 ##### Usage
 
