@@ -12,9 +12,8 @@ local should_attach = function(bufnr)
         return false
     end
 
-    -- lspconfig checks if buftype == "nofile", but we want to be defensive,
-    -- since (if configured) null-ls will try attaching to any buffer
-    if api.nvim_buf_get_option(bufnr, "buftype") ~= "" then
+    -- be paranoid and try to make sure that the buffer represents an actual file
+    if api.nvim_buf_get_option(bufnr, "buftype") ~= "" or api.nvim_buf_get_name(bufnr) == "" then
         return false
     end
 
