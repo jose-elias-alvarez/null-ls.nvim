@@ -95,6 +95,9 @@ my_source.filetypes = { "lua", "teal" }
 my_source.filetypes = {}
 ```
 
+Sources can also include a list of `disabled_filetypes`. null-ls checks these
+first, so they'll supersede any defined filetypes.
+
 ### Registration
 
 null-ls can register sources via the `config` method (intended for a user's

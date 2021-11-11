@@ -45,8 +45,12 @@ sources with the same name.
 
 ### filetypes
 
-A table of filetypes, where each key represents a supported filetype.
-Transformed from the original list.
+A table of filetypes, where each key represents a filetype and each value
+indicates whether the source supports that filetype. Transformed from the
+original `filetypes` and `disabled_filetype` lists.
+
+The special key `_all` indicates that a source is active for all filetypes
+(unless superseded by a `false` value for a filetype key).
 
 ### methods
 
