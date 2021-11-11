@@ -13,7 +13,7 @@ end
 
 M.get_available = function(filetype, method)
     local available = {}
-    for _, source in ipairs(require("null-ls.config").get()._sources) do
+    for _, source in ipairs(M.get_all()) do
         if M.is_available(source, filetype, method) then
             table.insert(available, source)
         end
@@ -37,6 +37,27 @@ M.get_filetypes = function()
     return filetypes
 end
 
+M.deregister = function(query)
+    query = type(query) == "string" and { name = vim.pesc(query) } or query
+    local name, method, id = query.name, query.method, query.id
+
+    local matches_query = function(source)
+        local name_matches = name == nil and true or source.name:find(name)
+        local method_matches = method == nil and true or source.methods[method]
+        local id_matches = id == nil and true or source.id == id
+        return name_matches and method_matches and id_matches
+    end
+
+    local all_sources = M.get_all()
+    -- iterate backwards to remove in loop
+    for i = #all_sources, 1, -1 do
+        if matches_query(all_sources[i]) then
+            table.remove(all_sources, i)
+        end
+    end
+end
+
+local source_id = 0
 M.validate_and_transform = function(source)
     if type(source) == "function" then
         source = source()
@@ -89,11 +110,13 @@ M.validate_and_transform = function(source)
         method_map[method] = true
     end
 
+    source_id = source_id + 1
     return {
         name = name,
         generator = generator,
         filetypes = filetype_map,
         methods = method_map,
+        id = source_id,
     }
 end
 

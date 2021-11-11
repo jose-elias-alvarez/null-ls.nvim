@@ -131,6 +131,117 @@ describe("sources", function()
         end)
     end)
 
+    describe("deregister", function()
+        before_each(function()
+            local first_source = {
+                name = "first-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 1,
+            }
+            local second_source = {
+                name = "second-mock-source",
+                methods = { [methods.internal.DIAGNOSTICS] = true },
+                id = 2,
+            }
+            local third_source = {
+                name = "third-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 3,
+            }
+            c._set({ _sources = { first_source, second_source, third_source } })
+        end)
+
+        describe("string query", function()
+            it("should deregister all sources matching name query (partial match)", function()
+                sources.deregister("mock")
+
+                assert.truthy(#sources.get_all() == 0)
+            end)
+
+            it("should deregister source matching name query (exact match)", function()
+                sources.deregister("first-mock-source")
+
+                assert.truthy(#sources.get_all() == 2)
+            end)
+
+            it("should deregister source matching name query (partial match)", function()
+                sources.deregister("first")
+
+                assert.truthy(#sources.get_all() == 2)
+            end)
+
+            it("should not deregister sources not matching name query", function()
+                sources.deregister("other-source")
+
+                assert.truthy(#sources.get_all() == 3)
+            end)
+        end)
+
+        describe("simple query", function()
+            it("should deregister sources matching name query (full match)", function()
+                sources.deregister({ name = "mock%-source" })
+
+                assert.truthy(#sources.get_all() == 0)
+            end)
+
+            it("should deregister sources matching name query (partial match)", function()
+                sources.deregister({ name = "mock" })
+
+                assert.truthy(#sources.get_all() == 0)
+            end)
+
+            it("should not deregister sources not matching name query", function()
+                sources.deregister({ name = "other%-source" })
+
+                assert.truthy(#sources.get_all() == 3)
+            end)
+
+            it("should deregister sources matching method query", function()
+                sources.deregister({ method = methods.internal.FORMATTING })
+
+                assert.truthy(#sources.get_all() == 1)
+            end)
+
+            it("should deregister source matching id query", function()
+                sources.deregister({ id = 1 })
+
+                assert.truthy(#sources.get_all() == 2)
+            end)
+        end)
+
+        describe("complex query", function()
+            it("should deregister all sources if query is empty", function()
+                sources.deregister({})
+
+                assert.truthy(#sources.get_all() == 0)
+            end)
+
+            it("should deregister sources matching name and method query", function()
+                sources.deregister({ name = "mock", method = methods.internal.FORMATTING })
+
+                assert.truthy(#sources.get_all() == 1)
+            end)
+
+            it("should deregister source matching name and id query", function()
+                sources.deregister({ name = "mock", id = 2 })
+
+                assert.truthy(#sources.get_all() == 2)
+            end)
+
+            it("should deregister source matching method and id query", function()
+                sources.deregister({ method = methods.internal.FORMATTING, id = 1 })
+
+                assert.truthy(#sources.get_all() == 2)
+            end)
+
+            it("should not deregister sources not matching complete query", function()
+                sources.deregister({ method = methods.internal.FORMATTING, id = 2 })
+
+                assert.truthy(#sources.get_all() == 3)
+            end)
+        end)
+    end)
+
     describe("validate_and_transform", function()
         local mock_source
         before_each(function()
@@ -150,8 +261,16 @@ describe("sources", function()
             assert.equals(validated.generator.async, mock_source.generator.async)
             assert.equals(validated.generator.fn, mock_source.generator.fn)
             assert.equals(validated.generator.opts, mock_source.generator.opts)
+            assert.equals(validated.id, 1)
             assert.same(validated.filetypes, { ["lua"] = true })
             assert.same(validated.methods, { [methods.internal.FORMATTING] = true })
+        end)
+
+        -- order-dependent
+        it("should increment source id", function()
+            assert.equals(sources.validate_and_transform(mock_source).id, 2)
+            assert.equals(sources.validate_and_transform(mock_source).id, 3)
+            assert.equals(sources.validate_and_transform(mock_source).id, 4)
         end)
 
         it("should handle table of methods", function()
