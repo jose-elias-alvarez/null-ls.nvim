@@ -1,8 +1,20 @@
-local c = require("null-ls.config")
+local stub = require("luassert.stub")
+
 local methods = require("null-ls.methods")
-local sources = require("null-ls.sources")
 
 describe("sources", function()
+    local sources = require("null-ls.sources")
+
+    local on_register_source = stub(require("null-ls.lspconfig"), "on_register_source")
+    local on_register_sources = stub(require("null-ls.lspconfig"), "on_register_sources")
+
+    after_each(function()
+        on_register_source:clear()
+        on_register_sources:clear()
+
+        sources._reset()
+    end)
+
     describe("is_available", function()
         local mock_source
         before_each(function()
@@ -11,10 +23,6 @@ describe("sources", function()
                 filetypes = { ["lua"] = true },
                 methods = { [methods.internal.FORMATTING] = true },
             }
-        end)
-
-        after_each(function()
-            c.reset()
         end)
 
         it("should return false if source generator failed", function()
@@ -78,7 +86,7 @@ describe("sources", function()
             },
         }
         before_each(function()
-            c._set({ _sources = mock_sources })
+            sources._set(mock_sources)
         end)
 
         it("should get available sources by filetype", function()
@@ -100,7 +108,7 @@ describe("sources", function()
             { filetypes = { ["teal"] = true } },
         }
         before_each(function()
-            c._set({ _sources = mock_sources })
+            sources._set(mock_sources)
         end)
 
         it("should get all registered sources", function()
@@ -118,7 +126,7 @@ describe("sources", function()
             { filetypes = { ["_all"] = true } },
         }
         before_each(function()
-            c._set({ _sources = mock_sources })
+            sources._set(mock_sources)
         end)
 
         it("should get list of registered source filetypes", function()
@@ -148,7 +156,7 @@ describe("sources", function()
                 methods = { [methods.internal.FORMATTING] = true },
                 id = 3,
             }
-            c._set({ _sources = { first_source, second_source, third_source } })
+            sources._set({ first_source, second_source, third_source })
         end)
 
         describe("string query", function()
@@ -261,16 +269,8 @@ describe("sources", function()
             assert.equals(validated.generator.async, mock_source.generator.async)
             assert.equals(validated.generator.fn, mock_source.generator.fn)
             assert.equals(validated.generator.opts, mock_source.generator.opts)
-            assert.equals(validated.id, 1)
             assert.same(validated.filetypes, { ["lua"] = true })
             assert.same(validated.methods, { [methods.internal.FORMATTING] = true })
-        end)
-
-        -- order-dependent
-        it("should increment source id", function()
-            assert.equals(sources.validate_and_transform(mock_source).id, 2)
-            assert.equals(sources.validate_and_transform(mock_source).id, 3)
-            assert.equals(sources.validate_and_transform(mock_source).id, 4)
         end)
 
         it("should handle table of methods", function()
@@ -372,6 +372,137 @@ describe("sources", function()
 
             assert.has_error(function()
                 sources.validate_and_transform(mock_source)
+            end)
+        end)
+    end)
+
+    describe("register", function()
+        local mock_raw_source
+        before_each(function()
+            mock_raw_source = {
+                name = "mock source",
+                method = methods.internal.CODE_ACTION,
+                filetypes = { "txt", "markdown" },
+                generator = {
+                    fn = function()
+                        print("I am a generator")
+                    end,
+                },
+            }
+        end)
+
+        local find_source = function(name)
+            for _, source in ipairs(sources.get_all()) do
+                if source.name == name then
+                    return source
+                end
+            end
+        end
+
+        it("should register single source", function()
+            sources.register(mock_raw_source)
+
+            local registered = sources.get_all()
+            assert.equals(vim.tbl_count(registered), 1)
+
+            local found = find_source(mock_raw_source.name)
+            assert.truthy(found)
+            assert.equals(found.id, 1)
+
+            assert.truthy(sources.is_registered(mock_raw_source.name))
+        end)
+
+        it("should increment id", function()
+            for _ = 1, 20 do
+                sources.register(mock_raw_source)
+            end
+
+            local registered = sources.get_all()
+            for i = 1, 20 do
+                assert.equals(registered[i].id, i)
+            end
+        end)
+
+        it("should call on_register_source", function()
+            sources.register(mock_raw_source)
+
+            assert.stub(on_register_source).was_called()
+        end)
+
+        it("should handle large number of duplicates", function()
+            for _ = 1, 99 do
+                sources.register(mock_raw_source)
+            end
+
+            local registered = sources.get_all()
+            assert.equals(vim.tbl_count(registered), 99)
+        end)
+
+        it("should register multiple sources from simple list", function()
+            sources.register({ mock_raw_source, mock_raw_source })
+
+            local registered = sources.get_all()
+            assert.equals(vim.tbl_count(registered), 2)
+        end)
+
+        it("should call on_register_source once per source", function()
+            sources.register({ mock_raw_source, mock_raw_source })
+
+            assert.stub(on_register_source).was_called(2)
+        end)
+
+        it("should call on_register_sources only once", function()
+            sources.register({ mock_raw_source, mock_raw_source })
+
+            assert.stub(on_register_sources).was_called(1)
+        end)
+
+        it("should register multiple sources with shared configuration", function()
+            sources.register({
+                name = "shared config source",
+                filetypes = { "txt" }, -- should take precedence over source filetypes
+                sources = { mock_raw_source, mock_raw_source },
+            })
+
+            local registered = sources.get_all()
+            assert.equals(vim.tbl_count(registered), 2)
+            local found = find_source("shared config source")
+            assert.truthy(found)
+            assert.same(found.filetypes, { ["txt"] = true })
+        end)
+
+        describe("is_registered", function()
+            local mock_name = "mock-name"
+            local mock_sources = {
+                name = mock_name,
+                filetypes = { "txt" },
+                sources = { mock_raw_source, mock_raw_source },
+            }
+
+            it("should return false if source and name are not registered", function()
+                assert.equals(sources.is_registered(mock_name), false)
+            end)
+
+            it("should return true if source is registered", function()
+                sources.register(mock_sources)
+
+                assert.equals(sources.is_registered(mock_name), true)
+            end)
+
+            it("should return true if name is registered", function()
+                sources.register_name(mock_name)
+
+                assert.equals(sources.is_registered(mock_name), true)
+            end)
+        end)
+
+        describe("register_name", function()
+            local mock_name = "mock-name"
+
+            it("should register name", function()
+                sources.register_name(mock_name)
+
+                assert.equals(sources.is_registered(mock_name), true)
             end)
         end)
     end)

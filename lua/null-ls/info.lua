@@ -12,12 +12,10 @@ M.get_active_sources = function(bufnr, ft)
     ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
 
     local active_sources = {}
-    for _, source in ipairs(c.get()._sources) do
-        if require("null-ls.sources").is_available(source, ft) then
-            for method in pairs(source.methods) do
-                active_sources[method] = active_sources[method] or {}
-                table.insert(active_sources[method], source.name)
-            end
+    for _, source in ipairs(require("null-ls.sources").get_available(ft)) do
+        for method in pairs(source.methods) do
+            active_sources[method] = active_sources[method] or {}
+            table.insert(active_sources[method], source.name)
         end
     end
     return active_sources

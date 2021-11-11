@@ -1,18 +1,20 @@
 local stub = require("luassert.stub")
 
 local methods = require("null-ls.methods")
+local sources = require("null-ls.sources")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 
 describe("lspconfig", function()
     local lspconfig = require("null-ls.lspconfig")
 
-    -- this has side effects so we can only do it once
-    lspconfig.setup()
-
     after_each(function()
         c.reset()
+        sources.reset()
     end)
+
+    -- this has side effects so we can only do it once
+    lspconfig.setup()
 
     describe("setup", function()
         it("should set up default config", function()
@@ -97,46 +99,13 @@ describe("lspconfig", function()
         end)
 
         it("should update config.filetypes", function()
-            c.register(require("null-ls.builtins")._test.mock_code_action)
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
 
             lspconfig.on_register_sources()
 
             local filetypes = require("lspconfig")["null-ls"].filetypes
             assert.equals(#filetypes, 1)
             assert.truthy(vim.tbl_contains(filetypes, "lua"))
-        end)
-    end)
-
-    describe("try_add", function()
-        local mock_source = {
-            filetypes = { ["lua"] = true },
-            methods = { [methods.internal.DIAGNOSTICS] = true },
-            generator = {},
-        }
-
-        local original_manager = require("lspconfig")["null-ls"].manager
-        local mock_manager = {
-            try_add = stub.new(),
-        }
-
-        before_each(function()
-            require("lspconfig")["null-ls"].manager = mock_manager
-        end)
-        after_each(function()
-            require("lspconfig")["null-ls"].manager = original_manager
-            mock_manager.try_add:clear()
-
-            vim.bo.filetype = ""
-            vim.bo.buftype = ""
-        end)
-
-        it("should attach if source is available and filetype matches", function()
-            c._set({ _sources = { mock_source } })
-            vim.bo.filetype = "lua"
-
-            lspconfig.try_add()
-
-            assert.stub(mock_manager.try_add).was_called_with(vim.api.nvim_get_current_buf())
         end)
     end)
 end)

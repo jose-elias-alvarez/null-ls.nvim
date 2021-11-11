@@ -2,6 +2,7 @@ local stub = require("luassert.stub")
 
 local builtins = require("null-ls.builtins")
 local methods = require("null-ls.methods")
+local sources = require("null-ls.sources")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 
@@ -10,6 +11,7 @@ local api = vim.api
 describe("info", function()
     local info = require("null-ls.info")
     after_each(function()
+        sources.reset()
         c.reset()
         vim.bo.filetype = ""
     end)
@@ -17,7 +19,7 @@ describe("info", function()
     describe("get_active_sources", function()
         before_each(function()
             vim.bo.filetype = "text"
-            c.register({
+            sources.register({
                 builtins._test.mock_hover,
                 builtins._test.first_formatter,
                 builtins._test.second_formatter,
@@ -48,7 +50,7 @@ describe("info", function()
 
         before_each(function()
             vim.bo.filetype = "text"
-            c.register({
+            sources.register({
                 -- order of active sources is not fixed,
                 -- so we have to avoid using more methods to assert against window content
                 builtins._test.first_formatter,

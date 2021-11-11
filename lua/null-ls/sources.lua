@@ -1,6 +1,27 @@
 local validate = vim.validate
 
+local registered = {
+    names = {},
+    sources = {},
+    id = 0,
+}
+
 local M = {}
+
+local register_source = function(source)
+    source = M.validate_and_transform(source)
+    if not source then
+        return
+    end
+
+    registered.id = registered.id + 1
+    source.id = registered.id
+
+    table.insert(registered.sources, source)
+    registered.names[source.name] = true
+
+    require("null-ls.lspconfig").on_register_source(source)
+end
 
 M.is_available = function(source, filetype, method)
     if source.generator._failed then
@@ -22,7 +43,7 @@ M.get_available = function(filetype, method)
 end
 
 M.get_all = function()
-    return require("null-ls.config").get()._sources
+    return registered.sources
 end
 
 M.get_filetypes = function()
@@ -57,7 +78,6 @@ M.deregister = function(query)
     end
 end
 
-local source_id = 0
 M.validate_and_transform = function(source)
     if type(source) == "function" then
         source = source()
@@ -110,14 +130,58 @@ M.validate_and_transform = function(source)
         method_map[method] = true
     end
 
-    source_id = source_id + 1
     return {
         name = name,
         generator = generator,
         filetypes = filetype_map,
         methods = method_map,
-        id = source_id,
     }
+end
+
+M.register = function(to_register)
+    if type(to_register) == "function" or (type(to_register) == "table" and to_register.method) then
+        -- register a single source
+        register_source(to_register)
+    elseif not to_register.sources then
+        -- register a simple list of sources
+        for _, source in ipairs(to_register) do
+            register_source(source)
+        end
+    else
+        -- register multiple sources with shared configuration
+        for _, source in ipairs(to_register.sources) do
+            source.filetypes = to_register.filetypes
+            source.name = to_register.name
+
+            register_source(source)
+        end
+    end
+
+    require("null-ls.lspconfig").on_register_sources()
+end
+
+M.reset = function()
+    registered.sources = {}
+    registered.names = {}
+    require("null-ls.lspconfig").on_register_sources()
+end
+
+M.is_registered = function(name)
+    return registered.names[name] ~= nil
+end
+
+M.register_name = function(name)
+    registered.names[name] = true
+end
+
+M._reset = function()
+    registered.sources = {}
+    registered.names = {}
+    registered.id = 0
+end
+
+M._set = function(sources)
+    registered.sources = sources
 end
 
 return M
