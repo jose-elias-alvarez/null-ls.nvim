@@ -3,6 +3,8 @@ local stub = require("luassert.stub")
 
 describe("config", function()
     local c = require("null-ls.config")
+    local on_register_source = stub(require("null-ls.lspconfig"), "on_register_source")
+    local on_register_sources = stub(require("null-ls.lspconfig"), "on_register_sources")
 
     local mock_source
     before_each(function()
@@ -20,6 +22,8 @@ describe("config", function()
 
     after_each(function()
         c.reset()
+        on_register_source:clear()
+        on_register_sources:clear()
     end)
 
     describe("get", function()
@@ -50,6 +54,12 @@ describe("config", function()
             assert.equals(vim.tbl_count(c.get()._names), 0)
             assert.equals(c.get().debounce, 500)
         end)
+
+        it("should call on_register_sources", function()
+            c.reset_sources()
+
+            assert.stub(on_register_sources).was_called()
+        end)
     end)
 
     describe("register", function()
@@ -69,6 +79,14 @@ describe("config", function()
             assert.truthy(find_source(mock_source.name))
         end)
 
+        it("should call on_register_source with transformed source", function()
+            c.register(mock_source)
+
+            assert.stub(on_register_source).was_called_with(
+                require("null-ls.sources").validate_and_transform(mock_source)
+            )
+        end)
+
         it("should handle large number of duplicates", function()
             for _ = 1, 99 do
                 c.register(mock_source)
@@ -83,6 +101,18 @@ describe("config", function()
 
             local sources = c.get()._sources
             assert.equals(vim.tbl_count(sources), 2)
+        end)
+
+        it("should call on_register_source once per source", function()
+            c.register({ mock_source, mock_source })
+
+            assert.stub(on_register_source).was_called(2)
+        end)
+
+        it("should call on_register_sources only once", function()
+            c.register({ mock_source, mock_source })
+
+            assert.stub(on_register_sources).was_called(1)
         end)
 
         it("should register multiple sources with shared configuration", function()
