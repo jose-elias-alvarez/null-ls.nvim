@@ -82,6 +82,15 @@ M.get_client = function()
     end
 end
 
+M.resolve_handler = function(method)
+    local client = M.get_client()
+    return client and client.handlers[method] or vim.lsp.handlers[method]
+end
+
+M.has_version = function(ver)
+    return vim.fn.has("nvim-" .. ver) > 0
+end
+
 -- lsp-compatible range is 0-indexed.
 -- lua-friendly range is 1-indexed.
 M.range = {
@@ -205,11 +214,7 @@ M.table = {
     end,
 }
 
-M.resolve_handler = function(method)
-    local client = M.get_client()
-    return client and client.handlers[method] or vim.lsp.handlers[method]
-end
-
+-- TODO: remove on 0.6.0 release
 function M.debounce(ms, fn)
     local timer = vim.loop.new_timer()
     return function(...)

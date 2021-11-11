@@ -142,6 +142,36 @@ describe("utils", function()
         end)
     end)
 
+    describe("has_version", function()
+        local has
+        before_each(function()
+            has = stub(vim.fn, "has")
+        end)
+        after_each(function()
+            has:revert()
+        end)
+
+        it("should call has with full nvim version name", function()
+            has.returns(0)
+
+            u.has_version("0.6.0")
+
+            assert.stub(has).was_called_with("nvim-0.6.0")
+        end)
+
+        it("should return false if has resullt is 0", function()
+            has.returns(0)
+
+            assert.falsy(u.has_version("0.6.0"))
+        end)
+
+        it("should return true if has result is greater than 0", function()
+            has.returns(1)
+
+            assert.truthy(u.has_version("0.6.0"))
+        end)
+    end)
+
     describe("range", function()
         describe("to_lsp", function()
             it("should convert lua-friendly range to lsp range", function()

@@ -5,7 +5,7 @@ local M = {}
 
 function M.setup()
     -- code action batching is merged into master
-    if vim.fn.has("nvim-0.6.0") > 0 then
+    if u.has_version("0.6.0") then
         return
     end
 
@@ -16,7 +16,7 @@ end
 function M.combine(method, ms)
     ms = ms or 100
     local orig = u.resolve_handler(method)
-    local is_new = vim.fn.has("nvim-0.5.1") > 0
+    local is_new = u.has_version("0.5.1")
 
     local all_results = {}
 
