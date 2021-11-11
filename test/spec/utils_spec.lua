@@ -24,35 +24,6 @@ describe("utils", function()
         end)
     end)
 
-    describe("filetype_matches", function()
-        it("should return true when filetypes is empty", function()
-            local filetypes = {}
-            local ft = "lua"
-
-            local matches = u.filetype_matches(filetypes, ft)
-
-            assert.equals(matches, true)
-        end)
-
-        it("should return true when filetypes includes ft", function()
-            local filetypes = { "lua" }
-            local ft = "lua"
-
-            local matches = u.filetype_matches(filetypes, ft)
-
-            assert.equals(matches, true)
-        end)
-
-        it("should return false when filetypes is not empty and does not include ft", function()
-            local filetypes = { "javascript" }
-            local ft = "lua"
-
-            local matches = u.filetype_matches(filetypes, ft)
-
-            assert.equals(matches, false)
-        end)
-    end)
-
     describe("range", function()
         describe("to_lsp", function()
             it("should convert lua-friendly range to lsp range", function()

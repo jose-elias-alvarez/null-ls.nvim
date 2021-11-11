@@ -5,22 +5,10 @@ local u = require("null-ls.utils")
 
 local api = vim.api
 
--- update filetypes shown in :LspInfo
-local get_registered_filetypes = function()
-    local filetypes = {}
-    for _, source in ipairs(c.get()._sources) do
-        for ft in pairs(source.filetypes) do
-            if ft ~= "_all" and not vim.tbl_contains(filetypes, ft) then
-                table.insert(filetypes, ft)
-            end
-        end
-    end
-    return filetypes
-end
-
 local should_attach = function(bufnr)
+    local all_sources = sources.get_all()
     -- don't attach if no sources have been registered
-    if vim.tbl_isempty(c.get()._sources) then
+    if vim.tbl_isempty(all_sources) then
         return false
     end
 
@@ -35,7 +23,7 @@ local should_attach = function(bufnr)
         return false
     end
 
-    for _, source in ipairs(c.get()._sources) do
+    for _, source in ipairs(all_sources) do
         if sources.is_available(source, ft) then
             return true
         end
@@ -55,7 +43,7 @@ function M.setup()
             return lsputil.root_pattern("Makefile", ".git")(fname) or lsputil.path.dirname(fname)
         end,
         flags = { debounce_text_changes = c.get().debounce },
-        filetypes = get_registered_filetypes(),
+        filetypes = sources.get_filetypes(),
         autostart = false,
     }
 
@@ -102,7 +90,7 @@ function M.on_register_sources()
         return
     end
 
-    config.filetypes = get_registered_filetypes()
+    config.filetypes = sources.get_filetypes()
 end
 
 function M.try_add(bufnr)

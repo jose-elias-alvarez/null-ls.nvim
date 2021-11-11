@@ -1,6 +1,4 @@
-local c = require("null-ls.config")
 local u = require("null-ls.utils")
-local sources = require("null-ls.sources")
 
 local M = {}
 
@@ -109,16 +107,14 @@ end
 
 M.get_available = function(filetype, method)
     local available = {}
-    for _, source in ipairs(c.get()._sources) do
-        if sources.is_available(source, filetype, method) then
-            table.insert(available, source.generator)
-        end
+    for _, source in ipairs(require("null-ls.sources").get_available(filetype, method)) do
+        table.insert(available, source.generator)
     end
     return available
 end
 
 M.can_run = function(filetype, method)
-    return not vim.tbl_isempty(M.get_available(filetype, method))
+    return #M.get_available(filetype, method) > 0
 end
 
 return M

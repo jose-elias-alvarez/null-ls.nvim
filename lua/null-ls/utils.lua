@@ -74,10 +74,6 @@ M.debug_log = function(...)
     require("null-ls.logger").debug(...)
 end
 
-M.filetype_matches = function(filetypes, ft)
-    return vim.tbl_isempty(filetypes) or vim.tbl_contains(filetypes, ft)
-end
-
 M.get_client = function()
     for _, client in ipairs(vim.lsp.get_active_clients()) do
         if client.name == "null-ls" then

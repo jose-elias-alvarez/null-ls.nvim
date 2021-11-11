@@ -1,3 +1,4 @@
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
 
@@ -10,6 +11,10 @@ describe("sources", function()
                 filetypes = { ["lua"] = true },
                 methods = { [methods.internal.FORMATTING] = true },
             }
+        end)
+
+        after_each(function()
+            c.reset()
         end)
 
         it("should return false if source generator failed", function()
@@ -56,6 +61,73 @@ describe("sources", function()
             local is_available = sources.is_available(mock_source, "lua", methods.internal.FORMATTING)
 
             assert.truthy(is_available)
+        end)
+    end)
+
+    describe("get_available", function()
+        local mock_sources = {
+            {
+                filetypes = { ["lua"] = true },
+                generator = {},
+                methods = { [methods.internal.FORMATTING] = true },
+            },
+            {
+                filetypes = { ["teal"] = true },
+                generator = {},
+                methods = { [methods.internal.DIAGNOSTICS] = true },
+            },
+        }
+        before_each(function()
+            c._set({ _sources = mock_sources })
+        end)
+
+        it("should get available sources by filetype", function()
+            local available = sources.get_available("lua")
+
+            assert.equals(#available, 1)
+        end)
+
+        it("should get available sources by method", function()
+            local available = sources.get_available(nil, methods.internal.DIAGNOSTICS)
+
+            assert.equals(#available, 1)
+        end)
+    end)
+
+    describe("get_all", function()
+        local mock_sources = {
+            { filetypes = { ["lua"] = true } },
+            { filetypes = { ["teal"] = true } },
+        }
+        before_each(function()
+            c._set({ _sources = mock_sources })
+        end)
+
+        it("should get all registered sources", function()
+            local all_sources = sources.get_all()
+
+            assert.equals(#all_sources, #mock_sources)
+        end)
+    end)
+
+    describe("get_filetypes", function()
+        local mock_sources = {
+            { filetypes = { ["lua"] = true } },
+            { filetypes = { ["lua"] = true } },
+            { filetypes = { ["teal"] = true } },
+            { filetypes = { ["_all"] = true } },
+        }
+        before_each(function()
+            c._set({ _sources = mock_sources })
+        end)
+
+        it("should get list of registered source filetypes", function()
+            local filetypes = sources.get_filetypes()
+
+            assert.equals(#filetypes, 2)
+            assert.truthy(vim.tbl_contains(filetypes, "lua"))
+            assert.truthy(vim.tbl_contains(filetypes, "teal"))
+            assert.falsy(vim.tbl_contains(filetypes, "_all"))
         end)
     end)
 

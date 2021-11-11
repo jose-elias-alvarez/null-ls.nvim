@@ -11,6 +11,32 @@ M.is_available = function(source, filetype, method)
         and (not method or source.methods[method])
 end
 
+M.get_available = function(filetype, method)
+    local available = {}
+    for _, source in ipairs(require("null-ls.config").get()._sources) do
+        if M.is_available(source, filetype, method) then
+            table.insert(available, source)
+        end
+    end
+    return available
+end
+
+M.get_all = function()
+    return require("null-ls.config").get()._sources
+end
+
+M.get_filetypes = function()
+    local filetypes = {}
+    for _, source in ipairs(M.get_all()) do
+        for ft in pairs(source.filetypes) do
+            if ft ~= "_all" and not vim.tbl_contains(filetypes, ft) then
+                table.insert(filetypes, ft)
+            end
+        end
+    end
+    return filetypes
+end
+
 M.validate_and_transform = function(source)
     if type(source) == "function" then
         source = source()
