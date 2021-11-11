@@ -45,7 +45,7 @@ local parse_args = function(args, params)
     }
 
     local parsed = {}
-    for _, arg in pairs(args) do
+    for _, arg in ipairs(args) do
         arg = tostring(arg):gsub("$(%w+)", function(v)
             return vars[v] and vars[v]()
         end)
