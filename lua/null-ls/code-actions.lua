@@ -16,7 +16,7 @@ M.handler = function(method, original_params, handler)
         if not original_params.textDocument then
             return
         end
-        if original_params._null_ls_ignore then
+        if original_params._null_ls_ignore or (original_params.ctx and original_params.ctx._null_ls_ignore) then
             return
         end
 

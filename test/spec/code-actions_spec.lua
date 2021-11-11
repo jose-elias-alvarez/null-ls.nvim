@@ -43,8 +43,16 @@ describe("code_actions", function()
         describe("method == CODE_ACTION", function()
             local method = methods.lsp.CODE_ACTION
 
-            it("should return immediately if null_ls_ignore flag is set", function()
+            it("should return immediately if null_ls_ignore flag is set on params", function()
                 local params = { _null_ls_ignore = true }
+                code_actions.handler(method, params, handler)
+
+                assert.stub(u.make_params).was_not_called()
+                assert.equals(params._null_ls_handled, nil)
+            end)
+
+            it("should return immediately if null_ls_ignore flag is set on ctx", function()
+                local params = { ctx = { _null_ls_ignore = true } }
                 code_actions.handler(method, params, handler)
 
                 assert.stub(u.make_params).was_not_called()
