@@ -1075,7 +1075,7 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 - `filetypes = { "sh" }`
 - `command = "shfmt"`
-- `args = {}`
+- `args = { "-filename", "$FILENAME" }`
 
 #### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
