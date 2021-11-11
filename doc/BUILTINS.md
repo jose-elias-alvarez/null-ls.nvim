@@ -1073,7 +1073,7 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### Defaults
 
-- `filetypes = { "sh", "zsh" }`
+- `filetypes = { "sh" }`
 - `command = "shfmt"`
 - `args = {}`
 
