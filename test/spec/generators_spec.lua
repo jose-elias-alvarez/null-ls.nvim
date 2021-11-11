@@ -3,13 +3,13 @@ local stub = require("luassert.stub")
 local a = require("plenary.async_lib")
 
 local methods = require("null-ls.methods")
+local sources = require("null-ls.sources")
 local u = require("null-ls.utils")
-local c = require("null-ls.config")
 
 local uv = vim.loop
 
 local register = function(method, generator, filetypes)
-    c.register({
+    sources.register({
         method = method,
         generator = generator,
         filetypes = filetypes or { "lua" },
@@ -79,7 +79,7 @@ describe("generators", function()
 
     after_each(function()
         postprocess:clear()
-        c.reset_sources()
+        sources.reset()
     end)
 
     a.tests.describe("run", function()

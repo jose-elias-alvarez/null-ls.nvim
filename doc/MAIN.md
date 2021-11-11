@@ -14,11 +14,13 @@ Splits into the following documents:
 - [CONFIG](CONFIG.md), which describes the available configuration
   options
 
-- [HELPERS](HELPERS.md), which describes available helpers and how to use
-  them to make new sources
-
 - [BUILTINS](BUILTINS.md), which describes how to use and make built-in
   sources
+
+- [SOURCES](SOURCES.md), which describes the source API
+
+- [HELPERS](HELPERS.md), which describes available helpers and how to use
+  them to make new sources
 
 - [TESTING](TESTING.md), which describes best practices for testing null-ls
   integrations
@@ -92,6 +94,9 @@ my_source.filetypes = { "lua", "teal" }
 -- all filetypes
 my_source.filetypes = {}
 ```
+
+Sources can also include a list of `disabled_filetypes`. null-ls checks these
+first, so they'll supersede any defined filetypes.
 
 ### Registration
 

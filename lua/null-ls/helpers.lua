@@ -45,7 +45,7 @@ local parse_args = function(args, params)
     }
 
     local parsed = {}
-    for _, arg in pairs(args) do
+    for _, arg in ipairs(args) do
         arg = tostring(arg):gsub("$(%w+)", function(v)
             return vars[v] and vars[v]()
         end)
@@ -339,9 +339,9 @@ M.make_builtin = function(opts)
     builtin.with = function(user_opts)
         local builtin_copy = vim.deepcopy(builtin)
         setmetatable(builtin_copy, getmetatable(builtin))
-        builtin_copy._is_copy = true
 
         builtin_copy.filetypes = user_opts.filetypes or builtin_copy.filetypes
+        builtin_copy.disabled_filetypes = user_opts.disabled_filetypes
 
         -- Extend args manually as vim.tbl_deep_extend overwrites the list
         if

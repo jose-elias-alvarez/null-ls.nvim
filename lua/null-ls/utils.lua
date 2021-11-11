@@ -74,16 +74,21 @@ M.debug_log = function(...)
     require("null-ls.logger").debug(...)
 end
 
-M.filetype_matches = function(filetypes, ft)
-    return vim.tbl_isempty(filetypes) or vim.tbl_contains(filetypes, ft)
-end
-
 M.get_client = function()
     for _, client in ipairs(vim.lsp.get_active_clients()) do
         if client.name == "null-ls" then
             return client
         end
     end
+end
+
+M.resolve_handler = function(method)
+    local client = M.get_client()
+    return client and client.handlers[method] or vim.lsp.handlers[method]
+end
+
+M.has_version = function(ver)
+    return vim.fn.has("nvim-" .. ver) > 0
 end
 
 -- lsp-compatible range is 0-indexed.
@@ -144,7 +149,7 @@ M.make_params = function(original_params, method)
     end
 
     if params.lsp_method == methods.lsp.COMPLETION then
-        local line = vim.api.nvim_get_current_line()
+        local line = params.content[params.row]
         local line_to_cursor = line:sub(1, pos[2])
         local regex = vim.regex("\\k*$")
 
@@ -210,11 +215,7 @@ M.table = {
     end,
 }
 
-M.resolve_handler = function(method)
-    local client = M.get_client()
-    return client and client.handlers[method] or vim.lsp.handlers[method]
-end
-
+-- TODO: remove on 0.6.0 release
 function M.debounce(ms, fn)
     local timer = vim.loop.new_timer()
     return function(...)

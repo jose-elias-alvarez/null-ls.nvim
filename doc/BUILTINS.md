@@ -80,6 +80,19 @@ If you see `filetypes = {}` in a source's description, that means the source is
 active for all filetypes by default. You may want to define a specific list of
 filetypes to avoid conflicts or other issues.
 
+You can also pass a list of specifically disabled filetypes:
+
+```lua
+local sources = {
+    null_ls.builtins.code_actions.gitsigns.with({
+        disabled_filetypes = { "lua" },
+    }),
+}
+```
+
+null-ls is always inactive in non-file buffers (e.g. file trees, finders) so
+theres's no need to specify them here.
+
 ### Arguments
 
 To add more arguments to a source's defaults, use `extra_args`:

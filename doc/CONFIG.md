@@ -124,3 +124,6 @@ end
 If null-ls is already running but you want to stop it, you can use the methods
 provided by nvim-lspconfig (`:LspStart`, `:LspStop`, and `:LspRestart`) to
 control its behavior.
+
+You can also deregister sources using the source API, as described in
+[SOURCES](SOURCES.md).

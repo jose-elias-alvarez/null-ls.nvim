@@ -1,4 +1,3 @@
-local c = require("null-ls.config")
 local u = require("null-ls.utils")
 
 local M = {}
@@ -107,13 +106,15 @@ M.run_registered_sequentially = function(opts)
 end
 
 M.get_available = function(filetype, method)
-    return vim.tbl_filter(function(generator)
-        return not generator._failed and u.filetype_matches(generator.filetypes, filetype)
-    end, c.get()._generators[method] or {})
+    local available = {}
+    for _, source in ipairs(require("null-ls.sources").get_available(filetype, method)) do
+        table.insert(available, source.generator)
+    end
+    return available
 end
 
 M.can_run = function(filetype, method)
-    return not vim.tbl_isempty(M.get_available(filetype, method))
+    return #M.get_available(filetype, method) > 0
 end
 
 return M

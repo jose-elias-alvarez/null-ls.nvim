@@ -1,11 +1,15 @@
 local helpers = require("null-ls.helpers")
+local sources = require("null-ls.sources")
 local c = require("null-ls.config")
 
 local M = {}
 
-M.register = c.register
-M.is_registered = c.is_registered
-M.register_name = c.register_name
+M.get_sources = sources.get_all()
+M.register = sources.register
+M.deregister = sources.deregister
+M.reset_sources = sources.reset
+M.is_registered = sources.is_registered
+M.register_name = sources.register_name
 
 M.methods = require("null-ls.methods").internal
 M.builtins = require("null-ls.builtins")

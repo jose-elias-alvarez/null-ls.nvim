@@ -62,7 +62,7 @@ M.handler = function(original_params)
             u.debug_log(diagnostics)
 
             local bufnr = vim.uri_to_bufnr(uri)
-            if vim.fn.has("nvim-0.5.1") > 0 then
+            if u.has_version("0.5.1") then
                 handler(nil, { diagnostics = diagnostics, uri = uri }, {
                     method = methods.lsp.PUBLISH_DIAGNOSTICS,
                     client_id = original_params.client_id,
