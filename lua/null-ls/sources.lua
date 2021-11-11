@@ -76,6 +76,8 @@ M.deregister = function(query)
             table.remove(all_sources, i)
         end
     end
+
+    require("null-ls.lspconfig").on_register_sources()
 end
 
 M.validate_and_transform = function(source)
