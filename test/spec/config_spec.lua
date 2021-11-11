@@ -7,6 +7,7 @@ describe("config", function()
     local mock_source
     before_each(function()
         mock_source = {
+            name = "mock source",
             method = methods.internal.CODE_ACTION,
             filetypes = { "txt", "markdown" },
             generator = {
@@ -39,129 +40,63 @@ describe("config", function()
         end)
     end)
 
+    describe("reset_sources", function()
+        it("should reset source-related tables but leave config values", function()
+            c.setup({ debounce = 500, sources = { mock_source } })
+
+            c.reset_sources()
+
+            assert.equals(vim.tbl_count(c.get()._sources), 0)
+            assert.equals(vim.tbl_count(c.get()._names), 0)
+            assert.equals(c.get().debounce, 500)
+        end)
+    end)
+
     describe("register", function()
+        local find_source = function(name)
+            for _, source in ipairs(c.get()._sources) do
+                if source.name == name then
+                    return source
+                end
+            end
+        end
+
         it("should register single source", function()
             c.register(mock_source)
 
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
-            assert.equals(c.get()._all_filetypes, false)
-            assert.equals(c.get()._registered, true)
+            local sources = c.get()._sources
+            assert.equals(vim.tbl_count(sources), 1)
+            assert.truthy(find_source(mock_source.name))
         end)
 
-        it("should set all_filetypes if filetypes is empty table", function()
-            mock_source.filetypes = {}
+        it("should handle large number of duplicates", function()
+            for _ = 1, 99 do
+                c.register(mock_source)
+            end
 
-            c.register(mock_source)
-
-            assert.equals(vim.tbl_count(c.get()._filetypes), 0)
-            assert.equals(c.get()._all_filetypes, true)
-        end)
-
-        it("should throw if source method is invalid", function()
-            mock_source.method = "badMethod"
-
-            local ok, err = pcall(c.register, mock_source)
-
-            assert.equals(ok, false)
-            assert.matches("expected supported null%-ls method", err)
-        end)
-
-        it("should register source filetypes under methods if name is defined", function()
-            mock_source.name = "mock-source"
-
-            c.register(mock_source)
-
-            local source_methods = c.get()._methods
-            assert.truthy(source_methods[mock_source.method])
-            assert.truthy(source_methods[mock_source.method][mock_source.name])
-            assert.same(source_methods[mock_source.method][mock_source.name], mock_source.filetypes)
-        end)
-
-        it("should not register source with same name twice", function()
-            mock_source.name = "mock-source"
-
-            c.register(mock_source)
-            c.register(mock_source)
-
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-        end)
-
-        it("should register sources with same name if they are copies", function()
-            mock_source.name = "mock-source"
-            mock_source._is_copy = true
-
-            local copy = vim.deepcopy(mock_source)
-            mock_source.filetypes = { "lua" }
-
-            c.register(mock_source)
-            c.register(copy)
-
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.same(c.get()._methods[mock_source.method][mock_source.name], { "lua", "txt", "markdown" })
-        end)
-
-        it("should register function source", function()
-            c.register(function()
-                return mock_source
-            end)
-
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-        end)
-
-        it("should register additional generators for same method", function()
-            c.register(mock_source)
-            c.register(mock_source)
-
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
+            local sources = c.get()._sources
+            assert.equals(vim.tbl_count(sources), 99)
         end)
 
         it("should register multiple sources from simple list", function()
             c.register({ mock_source, mock_source })
 
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
+            local sources = c.get()._sources
+            assert.equals(vim.tbl_count(sources), 2)
         end)
 
         it("should register multiple sources with shared configuration", function()
             c.register({
-                name = "mock-source",
+                name = "shared config source",
                 filetypes = { "txt" }, -- should take precedence over source filetypes
                 sources = { mock_source, mock_source },
             })
 
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 1)
-            assert.equals(c.get()._names["mock-source"], true)
-        end)
-
-        it("should not register mutiple sources with same name twice", function()
-            local mock_sources = {
-                name = "mock-source",
-                filetypes = { "txt" },
-                sources = { mock_source, mock_source },
-            }
-
-            c.register(mock_sources)
-            c.register(mock_sources)
-
-            local generators = c.get()._generators
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 2)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 1)
+            local sources = c.get()._sources
+            assert.equals(vim.tbl_count(sources), 2)
+            local found = find_source("shared config source")
+            assert.truthy(found)
+            assert.same(found.filetypes, { ["txt"] = true })
         end)
     end)
 
@@ -173,12 +108,18 @@ describe("config", function()
             sources = { mock_source, mock_source },
         }
 
-        it("should return false if name is not registered", function()
+        it("should return false if source and name are not registered", function()
             assert.equals(c.is_registered(mock_name), false)
         end)
 
-        it("should return true if name is registered", function()
+        it("should return true if source is registered", function()
             c.register(mock_sources)
+
+            assert.equals(c.is_registered(mock_name), true)
+        end)
+
+        it("should return true if name is registered", function()
+            c.register_name(mock_name)
 
             assert.equals(c.is_registered(mock_name), true)
         end)
@@ -191,19 +132,6 @@ describe("config", function()
             c.register_name(mock_name)
 
             assert.equals(c.is_registered(mock_name), true)
-        end)
-    end)
-
-    describe("reset_sources", function()
-        it("should reset source-related values only", function()
-            c.setup({ debounce = 500, sources = { mock_source } })
-
-            c.reset_sources()
-
-            assert.equals(vim.tbl_count(c.get()._generators), 0)
-            assert.equals(vim.tbl_count(c.get()._methods), 0)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 0)
-            assert.equals(c.get().debounce, 500)
         end)
     end)
 
@@ -263,14 +191,13 @@ describe("config", function()
             assert.matches("expected nil", err)
         end)
 
-        it("should register sources", function()
+        it("should register source under private key and set config.sources to nil", function()
             c.setup({ sources = { mock_source } })
 
-            local generators = c.get()._generators
+            local sources = c.get()._sources
 
-            assert.equals(vim.tbl_count(generators), 1)
-            assert.equals(vim.tbl_count(generators[mock_source.method]), 1)
-            assert.equals(vim.tbl_count(c.get()._filetypes), 2)
+            assert.equals(vim.tbl_count(sources), 1)
+            assert.falsy(c.get().sources)
         end)
     end)
 end)

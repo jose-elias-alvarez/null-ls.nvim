@@ -63,14 +63,6 @@ describe("e2e", function()
             assert.equals(null_ls_action.command, methods.internal.CODE_ACTION)
         end)
 
-        it("should only register source once", function()
-            c.register(builtins._test.toggle_line_comment)
-
-            actions = get_code_actions()
-
-            assert.equals(vim.tbl_count(actions[1].result), 1)
-        end)
-
         it("should apply code action", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
