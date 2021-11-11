@@ -12,13 +12,15 @@ local should_attach = function(bufnr)
         return false
     end
 
-    -- lspconfig checks if buftype == "nofile", but we want to be defensive, since (if configured) null-ls will try attaching to any buffer
+    -- lspconfig checks if buftype == "nofile", but we want to be defensive,
+    -- since (if configured) null-ls will try attaching to any buffer
     if api.nvim_buf_get_option(bufnr, "buftype") ~= "" then
-        return
+        return false
     end
 
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
-    -- writing and immediately deleting a buffer (e.g. :wq from a git commit) triggers a bug on 0.5 which is fixed on master
+    -- writing and immediately deleting a buffer (e.g. :wq from a git commit)
+    -- triggers a bug on 0.5 which is fixed on master
     if ft == "gitcommit" and not u.has_version("0.6.0") then
         return false
     end
@@ -76,7 +78,9 @@ function M.on_register_source(source)
         if
             sources.is_available(source, api.nvim_buf_get_option(buf.bufnr, "filetype"), methods.internal.DIAGNOSTICS)
         then
-            client.notify(methods.lsp.DID_CHANGE, { textDocument = { uri = vim.uri_from_bufnr(buf.bufnr) } })
+            client.notify(methods.lsp.DID_CHANGE, {
+                textDocument = { uri = vim.uri_from_bufnr(buf.bufnr) },
+            })
         end
     end
 
