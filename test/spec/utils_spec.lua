@@ -1,11 +1,16 @@
 local stub = require("luassert.stub")
 
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
 local test_utils = require("test.utils")
 
 describe("utils", function()
     local u = require("null-ls.utils")
+
+    after_each(function()
+        c.reset()
+    end)
 
     describe("echo", function()
         local echo
@@ -21,6 +26,119 @@ describe("utils", function()
             u.echo(hlgroup, "message goes here")
 
             assert.stub(echo).was_called_with({ { "null-ls: message goes here", hlgroup } }, true, {})
+        end)
+    end)
+
+    describe("join_at_newline", function()
+        after_each(function()
+            vim.bo.fileformat = "unix"
+        end)
+
+        it("should join text with unix line ending", function()
+            vim.bo.fileformat = "unix"
+
+            local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+            assert.equals(joined, "line1\nline2\nline3")
+        end)
+
+        it("should join text with dos line ending", function()
+            vim.bo.fileformat = "dos"
+
+            local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+            assert.equals(joined, "line1\r\nline2\r\nline3")
+        end)
+
+        it("should join text with mac line ending", function()
+            vim.bo.fileformat = "mac"
+
+            local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
+
+            assert.equals(joined, "line1\rline2\rline3")
+        end)
+    end)
+
+    describe("split_at_newline", function()
+        after_each(function()
+            vim.bo.fileformat = "unix"
+        end)
+
+        it("should split text with unix line ending", function()
+            vim.bo.fileformat = "unix"
+
+            local split = u.split_at_newline(0, "line1\nline2\nline3")
+
+            assert.same(split, { "line1", "line2", "line3" })
+        end)
+
+        it("should split text with dos line ending", function()
+            vim.bo.fileformat = "dos"
+
+            local split = u.split_at_newline(0, "line1\r\nline2\r\nline3")
+
+            assert.same(split, { "line1", "line2", "line3" })
+        end)
+
+        it("should split text with mac line ending", function()
+            vim.bo.fileformat = "mac"
+
+            local split = u.split_at_newline(0, "line1\rline2\rline3")
+
+            assert.same(split, { "line1", "line2", "line3" })
+        end)
+    end)
+
+    describe("debug_log", function()
+        local logger
+        before_each(function()
+            logger = stub(require("null-ls.logger"), "debug")
+        end)
+        after_each(function()
+            logger:revert()
+        end)
+
+        it("should do nothing if debug option is not set", function()
+            u.debug_log("my message")
+
+            assert.stub(logger).was_not_called()
+        end)
+
+        it("should call logger with message if debug option is set", function()
+            c._set({ debug = true })
+
+            u.debug_log("my message")
+
+            assert.stub(logger).was_called_with("my message")
+        end)
+    end)
+
+    describe("get_client", function()
+        local get_active_clients
+        before_each(function()
+            get_active_clients = stub(vim.lsp, "get_active_clients")
+        end)
+        after_each(function()
+            get_active_clients:revert()
+        end)
+
+        it("should return matching client", function()
+            local client = { name = "null-ls" }
+            get_active_clients.returns({ client })
+
+            local found_client = u.get_client()
+
+            assert.truthy(found_client)
+            assert.equals(found_client, client)
+        end)
+
+        it("should nil if no client matches", function()
+            local client = { name = "other-client" }
+            get_active_clients.returns({ client })
+
+            local found_client = u.get_client()
+
+            assert.falsy(found_client)
         end)
     end)
 
@@ -99,63 +217,43 @@ describe("utils", function()
             assert.same(params.content, { 'print("I am a test file!")', "" })
         end)
 
-        describe("join_at_newline", function()
-            after_each(function()
-                vim.bo.fileformat = "unix"
-            end)
+        it("should convert original range and assign to params.range", function()
+            local original_params = {
+                range = {
+                    ["start"] = { line = 4, character = 0 },
+                    ["end"] = { line = 5, character = 6 },
+                },
+            }
 
-            it("should join text with unix line ending", function()
-                vim.bo.fileformat = "unix"
+            local params = u.make_params(original_params)
 
-                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
-
-                assert.equals(joined, "line1\nline2\nline3")
-            end)
-
-            it("should join text with dos line ending", function()
-                vim.bo.fileformat = "dos"
-
-                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
-
-                assert.equals(joined, "line1\r\nline2\r\nline3")
-            end)
-
-            it("should join text with mac line ending", function()
-                vim.bo.fileformat = "mac"
-
-                local joined = u.join_at_newline(0, { "line1", "line2", "line3" })
-
-                assert.equals(joined, "line1\rline2\rline3")
-            end)
+            assert.truthy(params.range)
+            assert.same(params.range, u.range.from_lsp(original_params.range))
         end)
 
-        describe("split_at_newline", function()
-            after_each(function()
-                vim.bo.fileformat = "unix"
+        it("should set word_to_complete if method is COMPLETION", function()
+            vim.cmd("normal 5l") -- move cursor to end of "print"
+
+            local params = u.make_params({ method = methods.lsp.COMPLETION })
+
+            assert.equals(params.word_to_complete, "print")
+        end)
+
+        describe("resolve_bufnr", function()
+            it("should resolve bufnr from params", function()
+                local params = u.make_params({
+                    bufnr = vim.api.nvim_get_current_buf(),
+                }, mock_method)
+
+                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
             end)
 
-            it("should split text with unix line ending", function()
-                vim.bo.fileformat = "unix"
+            it("should resolve bufnr from uri", function()
+                local params = u.make_params({
+                    textDocument = { uri = vim.uri_from_bufnr(vim.api.nvim_get_current_buf()) },
+                }, mock_method)
 
-                local split = u.split_at_newline(0, "line1\nline2\nline3")
-
-                assert.same(split, { "line1", "line2", "line3" })
-            end)
-
-            it("should split text with dos line ending", function()
-                vim.bo.fileformat = "dos"
-
-                local split = u.split_at_newline(0, "line1\r\nline2\r\nline3")
-
-                assert.same(split, { "line1", "line2", "line3" })
-            end)
-
-            it("should split text with mac line ending", function()
-                vim.bo.fileformat = "mac"
-
-                local split = u.split_at_newline(0, "line1\rline2\rline3")
-
-                assert.same(split, { "line1", "line2", "line3" })
+                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
             end)
         end)
 
@@ -228,22 +326,32 @@ describe("utils", function()
                 end)
             end)
         end)
+    end)
 
-        describe("resolve_bufnr", function()
-            it("should resolve bufnr from params", function()
-                local params = u.make_params({
-                    bufnr = vim.api.nvim_get_current_buf(),
-                }, mock_method)
+    describe("make_conditional_utils", function()
+        local utils = u.make_conditional_utils()
+        it("should return object containing utils", function()
+            assert.truthy(type(utils.root_has_file) == "function")
+            assert.truthy(type(utils.root_matches) == "function")
+        end)
 
-                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
+        describe("root_has_file", function()
+            it("should return true if file exists at root", function()
+                assert.truthy(utils.root_has_file("stylua.toml"))
             end)
 
-            it("should resolve bufnr from uri", function()
-                local params = u.make_params({
-                    textDocument = { uri = vim.uri_from_bufnr(vim.api.nvim_get_current_buf()) },
-                }, mock_method)
+            it("should return false if file does not exist at root", function()
+                assert.falsy(utils.root_has_file("bad-file"))
+            end)
+        end)
 
-                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
+        describe("root_matches", function()
+            it("should return true if root matches pattern", function()
+                assert.truthy(utils.root_matches("null%-ls"))
+            end)
+
+            it("should return false if root does not match pattern", function()
+                assert.falsy(utils.root_has_file("other%-plugin"))
             end)
         end)
     end)
@@ -300,6 +408,57 @@ describe("utils", function()
                 assert.equals(replaced[2], "new element")
                 assert.equals(replaced[3], "don't replace me")
             end)
+        end)
+
+        describe("uniq", function()
+            it("should return table of unique elements", function()
+                local start_table = { "hello", "hello", "goodbye" }
+
+                local unique_table = u.table.uniq(start_table)
+
+                assert.equals(#unique_table, 2)
+            end)
+        end)
+    end)
+
+    describe("resolve_handler", function()
+        local method = methods.lsp.FORMATTING
+        local original_handler = vim.lsp.handlers[method]
+
+        local get_client
+        before_each(function()
+            get_client = stub(u, "get_client")
+            vim.lsp.handlers[method] = "default-handler"
+        end)
+        after_each(function()
+            get_client:revert()
+            vim.lsp.handlers[method] = original_handler
+        end)
+
+        it("should get handler from client when available", function()
+            local mock_client = { handlers = { [method] = "custom-handler" } }
+            get_client.returns(mock_client)
+
+            local resolved = u.resolve_handler(method)
+
+            assert.equals(resolved, "custom-handler")
+        end)
+
+        it("should get default handler when client handler is not set", function()
+            local mock_client = { handlers = { ["otherMethod"] = "custom-handler" } }
+            get_client.returns(mock_client)
+
+            local resolved = u.resolve_handler(method)
+
+            assert.equals(resolved, "default-handler")
+        end)
+
+        it("should get default handler when client is unavailable", function()
+            get_client.returns(nil)
+
+            local resolved = u.resolve_handler(method)
+
+            assert.equals(resolved, "default-handler")
         end)
     end)
 end)
