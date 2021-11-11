@@ -94,6 +94,26 @@ local sources = {
 
 You can also override a source's arguments entirely using `with({ args = your_args })`.
 
+Both `args` and `extra_args` can also be functions that accept a single
+argument, `params`, which is an object containing information about editor
+state. LSP options (e.g. formatting options) are available as `params.options`,
+making it possible to dynamically set arguments based on these options:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        extra_args = function(params)
+            return params.options
+                and params.options.tabSize
+                and {
+                    "--tab-width",
+                    params.options.tabSize,
+                }
+        end,
+    }),
+}
+```
+
 ### Expansion
 
 Note that environment variables and `~` aren't expanded in arguments. As a

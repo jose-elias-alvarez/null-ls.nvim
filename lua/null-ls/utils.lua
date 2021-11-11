@@ -129,6 +129,7 @@ M.make_params = function(original_params, method)
     local params = {
         client_id = original_params.client_id,
         lsp_method = original_params.method,
+        options = original_params.options,
         content = content,
         method = method,
         row = pos[1],
