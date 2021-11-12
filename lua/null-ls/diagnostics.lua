@@ -92,10 +92,16 @@ M.handler = function(original_params)
         s.clear_cache(uri)
     end
 
-    local params = u.make_params(original_params, methods.map[method])
     local bufnr = vim.uri_to_bufnr(uri)
-
     local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
+
+    if method == methods.lsp.DID_SAVE and changedtick == last_changedtick[uri] then
+        u.debug_log("buffer unchanged; ignoring didSave notification")
+        return
+    end
+
+    local params = u.make_params(original_params, methods.map[method])
+
     last_changedtick[uri] = changedtick
 
     require("null-ls.generators").run_registered({

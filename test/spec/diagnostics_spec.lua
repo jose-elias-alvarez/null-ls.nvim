@@ -67,7 +67,7 @@ describe("diagnostics", function()
         it("should call make_params with params and method", function()
             diagnostics.handler(mock_params)
 
-            assert.stub(u.make_params).was_called_with(mock_params, methods.internal.DIAGNOSTICS)
+            assert.stub(u.make_params).was_called_with(mock_params, methods.internal.DIAGNOSTICS_ON_OPEN)
         end)
 
         describe("handler", function()
