@@ -2008,7 +2008,7 @@ following snippet:
 runtime_condit
 ```
 
-#### Vsnip
+#### [vim-vsnip](https://github.com/hrsh7th/vim-vsnip)
 
 ##### About
 
@@ -2020,4 +2020,6 @@ Snippets managed by [vim-vsnip](https://github.com/hrsh7th/vim-vsnip).
 local sources = { null_ls.builtins.completion.vsnip }
 ```
 
-Registering this source will show available snippets in the completion list, but vim-vsnip is responsible for expanding them. See [vim-vsnip's documentation for setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
+Registering this source will show available snippets in the completion list, but
+vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation for
+setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
