@@ -488,6 +488,18 @@ describe("sources", function()
             assert.same(found.filetypes, { ["txt"] = true })
         end)
 
+        it("should keep source config if not specified in shared config", function()
+            sources.register({
+                sources = { mock_raw_source, mock_raw_source },
+            })
+
+            local registered = sources.get_all()
+            assert.equals(vim.tbl_count(registered), 2)
+            local found = find_source("mock source")
+            assert.truthy(found)
+            assert.same(found.filetypes, { ["txt"] = true, ["markdown"] = true })
+        end)
+
         describe("is_registered", function()
             local mock_name = "mock-name"
             local mock_sources = {

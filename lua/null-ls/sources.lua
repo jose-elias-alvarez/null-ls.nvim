@@ -162,8 +162,8 @@ M.register = function(to_register)
     else
         -- register multiple sources with shared configuration
         for _, source in ipairs(to_register.sources) do
-            source.filetypes = to_register.filetypes
-            source.name = to_register.name
+            source.filetypes = to_register.filetypes or source.filetypes
+            source.name = to_register.name or source.name
 
             register_source(source)
         end
