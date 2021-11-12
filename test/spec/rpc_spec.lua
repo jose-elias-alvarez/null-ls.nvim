@@ -174,6 +174,16 @@ describe("rpc", function()
                 request = rpc_object.request
             end)
 
+            it("should call notify_callback if defined", function()
+                local notify_callback = stub.new()
+                request(methods.lsp.INITIALIZE, {}, callback, notify_callback)
+
+                wait_for_scheduler()
+
+                -- asserting against message_id is flaky
+                assert.stub(notify_callback).was_called()
+            end)
+
             it("should send capabilities on initialize request", function()
                 request(methods.lsp.INITIALIZE, {}, callback)
 

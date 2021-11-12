@@ -462,4 +462,13 @@ describe("e2e", function()
             assert.same(mock_handler.calls[1].refs[2], { contents = { { "test" } } })
         end)
     end)
+
+    describe("client", function()
+        it("should not leave pending requests on client object", function()
+            local client = u.get_client()
+
+            assert.truthy(client)
+            assert.truthy(vim.tbl_isempty(client.requests))
+        end)
+    end)
 end)

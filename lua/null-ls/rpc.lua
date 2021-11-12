@@ -94,9 +94,20 @@ M.start = function(dispatchers)
         return true, message_id
     end
 
-    local function request(method, params, callback)
+    local function request(method, params, callback, notify_callback)
         u.debug_log("received LSP request for method " .. method)
-        return handle(method, params, callback)
+
+        -- clear pending requests from client object
+        local success = handle(method, params, callback)
+        if success and notify_callback then
+            -- copy before scheduling to make sure it hasn't changed
+            local id_to_clear = message_id
+            vim.schedule(function()
+                notify_callback(id_to_clear)
+            end)
+        end
+
+        return success, message_id
     end
 
     local function notify(method, params)
