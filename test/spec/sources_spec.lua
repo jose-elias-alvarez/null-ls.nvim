@@ -74,6 +74,14 @@ describe("sources", function()
             assert.truthy(is_available)
         end)
 
+        it("should return true if method has override", function()
+            mock_source.methods = { [methods.internal.DIAGNOSTICS_ON_SAVE] = true }
+
+            local is_available = sources.is_available(mock_source, nil, methods.internal.DIAGNOSTICS_ON_OPEN)
+
+            assert.truthy(is_available)
+        end)
+
         it("should return true if filetype and method match", function()
             local is_available = sources.is_available(mock_source, "lua", methods.internal.FORMATTING)
 
