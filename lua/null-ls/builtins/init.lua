@@ -1,22 +1,34 @@
-local paths = {
-    diagnostics = "null-ls.builtins.diagnostics",
-    formatting = "null-ls.builtins.formatting",
-    code_actions = "null-ls.builtins.code-actions",
-    hover = "null-ls.builtins.hover",
-    completion = "null-ls.builtins.completion",
-    _test = "null-ls.builtins.test",
+local u = require("null-ls.utils")
+
+local export_tables = {
+    diagnostics = {},
+    formatting = {},
+    code_actions = {},
+    hover = {},
+    completion = {},
+    _test = {},
 }
 
+for method, table in pairs(export_tables) do
+    setmetatable(table, {
+        __index = function(t, k)
+            local ok, builtin = pcall(require, string.format("null-ls.builtins.%s.%s", method, k))
+            if not ok then
+                u.echo(
+                    "WarningMsg",
+                    string.format("failed to load builtin %s for method %s; please check your config", k, method)
+                )
+                return
+            end
+
+            rawset(t, k, builtin)
+            return builtin
+        end,
+    })
+end
+
 return setmetatable({}, {
-    __index = function(t, k)
-        local require_path = paths[k]
-        if not require_path then
-            return
-        end
-
-        local module = require(require_path)
-        t[k] = module
-
-        return module
+    __index = function(_, k)
+        return export_tables[k]
     end,
 })

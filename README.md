@@ -27,10 +27,10 @@ doesn't work the way you expect (or doesn't work at all).
 At the moment, null-is is compatible with Neovim 0.5 (stable) and 0.6 (head),
 but you'll get the best experience from the latest version you can run.
 
-Note that null-ls is built on macOS and Linux and may not work as expected (or
-at all) on Windows. Contributions to expand Windows support are welcome, but
-since I don't work on Windows, my ability to diagnose or fix Windows issues is
-nonexistent.
+Note that null-ls development takes place primarily on macOS and Linux and may
+not work as expected (or at all) on Windows. Contributions to expand Windows
+support are welcome, but since I don't work on Windows, my ability to diagnose
+or fix Windows issues is nonexistent.
 
 ## Features
 
@@ -65,19 +65,19 @@ are (probably) already using.
 Please see [CONFIG](doc/CONFIG.md) for information about setting up and
 configuring null-ls.
 
-At a minimum, you must register at least one source and set up the plugin's
+To get started, you must register at least one source and set up the plugin's
 integration with nvim-lspconfig, as in this example:
 
 ```lua
 -- example configuration! (see CONFIG above to make your own)
 require("null-ls").config({
-	sources = {
-		require("null-ls").builtins.formatting.stylua,
-		require("null-ls").builtins.completion.spell,
-	},
+    sources = {
+        require("null-ls").builtins.formatting.stylua,
+        require("null-ls").builtins.completion.spell,
+    },
 })
 require("lspconfig")["null-ls"].setup({
-	on_attach = my_custom_on_attach,
+    on_attach = my_custom_on_attach,
 })
 ```
 
@@ -292,17 +292,10 @@ Run `make test` in the root of the project to run the suite or
 - [efm-langserver](https://github.com/mattn/efm-langserver) and
   [diagnostic-languageserver](https://github.com/iamcco/diagnostic-languageserver):
   general-purpose language servers that can provide formatting and diagnostics
-  (but not code actions) from CLI output. Both require installing external
-  executables, and neither provides built-ins (and configuring them is, to put
-  it nicely, unfriendly).
+  from CLI output.
 
 - [nvim-lint](https://github.com/mfussenegger/nvim-lint): a Lua plugin that
-  focuses on providing diagnostics from CLI output. Provides built-in linters.
-  Runs independently, which provides flexibility but requires users to define
-  their own autocommands. Does not currently support writing to temp files for
-  diagnostics.
+  focuses on providing diagnostics from CLI output.
 
 - [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
-  that (surprise) focuses on formatting. Does not currently provide built-in
-  formatters, meaning users have to define their own. Makes no attempt to
-  integrate with LSP behavior (which may be an upside or a downside).
+  that (surprise) focuses on formatting.

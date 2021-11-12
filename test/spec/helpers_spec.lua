@@ -559,14 +559,32 @@ describe("helpers", function()
                 assert.equals(on_output.calls[1].refs[2], done)
             end)
 
-            it("should throw error if error_output exists and format ~= raw", function()
+            it("should catch error thrown in handle_output", function()
+                generator_args.on_output = function()
+                    error("handle_output error")
+                end
+
                 local generator = helpers.generator_factory(generator_args)
                 generator.fn({}, done)
 
                 local wrapper = loop.spawn.calls[1].refs[3].handler
-                assert.has_error(function()
-                    wrapper("error output", nil)
-                end)
+                wrapper(nil, "output")
+
+                local generator_err = done.calls[1].refs[1]._generator_err
+                assert.truthy(generator_err)
+                assert.truthy(generator_err:find("handle_output error"))
+            end)
+
+            it("should pass error to done if error_output exists and format ~= raw", function()
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                local wrapper = loop.spawn.calls[1].refs[3].handler
+                wrapper("error output", nil)
+
+                local generator_err = done.calls[1].refs[1]._generator_err
+                assert.truthy(generator_err)
+                assert.truthy(generator_err:find("error output"))
             end)
 
             it("should set params.err if format == raw", function()
@@ -651,20 +669,20 @@ describe("helpers", function()
             helpers.generator_factory:revert()
         end)
 
-        it("should call generator_factory with opts", function()
+        it("should call generator_factory with default opts", function()
             helpers.formatter_factory(opts)
 
             assert.stub(helpers.generator_factory).was_called_with(opts)
-            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, true)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_stderr, true)
             assert.truthy(helpers.generator_factory.calls[1].refs[1].on_output)
         end)
 
-        it("should not set suppress_errors when already set", function()
-            opts.suppress_errors = false
+        it("should not set ignore_stderr when explicitly set to false", function()
+            opts.ignore_stderr = false
 
             helpers.formatter_factory(opts)
 
-            assert.equals(helpers.generator_factory.calls[1].refs[1].suppress_errors, false)
+            assert.equals(helpers.generator_factory.calls[1].refs[1].ignore_stderr, false)
         end)
 
         it("should set from_temp_file if to_temp_file = true", function()
@@ -752,13 +770,18 @@ describe("helpers", function()
                 local copy = builtin.with({ filetypes = { "txt" } })
 
                 assert.not_same(builtin, copy)
-                assert.equals(copy._is_copy, true)
             end)
 
             it("should override filetypes", function()
                 local copy = builtin.with({ filetypes = { "txt" } })
 
                 assert.same(copy.filetypes, { "txt" })
+            end)
+
+            it("should set disabled filetypes", function()
+                local copy = builtin.with({ disabled_filetypes = { "teal" } })
+
+                assert.same(copy.disabled_filetypes, { "teal" })
             end)
 
             it("should override values on opts", function()

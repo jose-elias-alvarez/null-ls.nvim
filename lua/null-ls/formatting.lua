@@ -1,7 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
 
-local lsp = vim.lsp
 local api = vim.api
 
 local M = {}
@@ -57,22 +56,17 @@ M.apply_edits = function(edits, params)
 
     local diffed_edits = {}
     for _, edit in ipairs(edits) do
-        local diffed = lsp.util.compute_diff(params.content, vim.split(edit.text, "\n"))
+        local split_text, line_ending = u.split_at_newline(params.bufnr, edit.text)
+        local diffed = require("null-ls.diff").compute_diff(params.content, split_text, line_ending)
         -- check if the computed diff is an actual edit
-        if
-            not (
-                diffed.text == ""
-                and diffed.range.start.character == diffed.range["end"].character
-                and diffed.range.start.line == diffed.range["end"].line
-            )
-        then
-            table.insert(diffed_edits, { newText = diffed.text, range = diffed.range })
+        if not (diffed.newText == "" and diffed.rangeLength == 0) then
+            table.insert(diffed_edits, diffed)
         end
     end
 
     local marks, views = save_win_data(bufnr)
 
-    if vim.fn.has("nvim-0.5.1") > 0 then
+    if u.has_version("0.5.1") then
         handler(nil, diffed_edits, { method = params.lsp_method, client_id = params.client_id, bufnr = bufnr })
     else
         ---@diagnostic disable-next-line: redundant-parameter

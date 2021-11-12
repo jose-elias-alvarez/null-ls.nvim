@@ -1,3 +1,9 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false
+}
+-->
+
 # null-ls Documentation
 
 Splits into the following documents:
@@ -8,11 +14,13 @@ Splits into the following documents:
 - [CONFIG](CONFIG.md), which describes the available configuration
   options
 
-- [HELPERS](HELPERS.md), which describes available helpers and how to use
-  them to make new sources
-
 - [BUILTINS](BUILTINS.md), which describes how to use and make built-in
   sources
+
+- [SOURCES](SOURCES.md), which describes the source API
+
+- [HELPERS](HELPERS.md), which describes available helpers and how to use
+  them to make new sources
 
 - [TESTING](TESTING.md), which describes best practices for testing null-ls
   integrations
@@ -63,6 +71,9 @@ my_source.method = null_ls.methods.FORMATTING
 
 -- source will run on LSP hover request
 my_source.method = null_ls.methods.HOVER
+
+-- source will run on LSP completion request
+my_source.method = null_ls.methods.completion
 ```
 
 ### Filetypes
@@ -83,6 +94,9 @@ my_source.filetypes = { "lua", "teal" }
 -- all filetypes
 my_source.filetypes = {}
 ```
+
+Sources can also include a list of `disabled_filetypes`. null-ls checks these
+first, so they'll supersede any defined filetypes.
 
 ### Registration
 
@@ -190,6 +204,7 @@ local params = {
     bufnr, -- current buffer's number (number)
     bufname, -- current buffer's full path (string)
     ft, -- current buffer's filetype (string)
+    root, -- current buffer's root directory (string)
 }
 ```
 
@@ -314,7 +329,6 @@ handler, so 2+ _null-ls_ hover sources are okay, but note that running more than
 one LSP server with hover capabilities **is not well-supported** (by default,
 the second popup will wipe out the first).
 
-
 #### Completion
 
 ```lua
@@ -326,8 +340,8 @@ return {
 }
 ```
 
-Completion sources must return a list of
+Completion sources must return a
 [CompletionList](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionList).
-You can leverage the full attributes of `CompletionItem` from LSP specification. They can be used
-by other plugins (e.g completion plugins) to provide additional context about the highlighted
-completion item.
+You can leverage the full attributes of `CompletionItem` from the LSP
+specification. Other plugins (e.g completion plugins) can then use these
+attributes to provide more context about the highlighted completion item.

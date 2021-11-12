@@ -1,4 +1,4 @@
-local diagnostics = require("null-ls.builtins.diagnostics")
+local diagnostics = require("null-ls.builtins").diagnostics
 
 describe("diagnostics", function()
     describe("chktex", function()
@@ -151,6 +151,38 @@ describe("diagnostics", function()
                     source = "credo",
                     message = error,
                     row = 1,
+                },
+            }, diagnostic)
+        end)
+        it("should handle compile warnings preceeding output", function()
+            local error = [[
+            [warn] IMPORTING DEV.SECRET
+
+            {
+              "issues": [
+                {
+                  "category": "consistency",
+                  "check": "Credo.Check.Consistency.SpaceInParentheses",
+                  "column": null,
+                  "column_end": null,
+                  "filename": "lib/todo_web/controllers/page_controller.ex",
+                  "line_no": 4,
+                  "message": "There is no whitespace around parentheses/brackets most of the time, but here there is.",
+                  "priority": 12,
+                  "scope": "TodoWeb.PageController.index",
+                  "trigger": "( c"
+                }
+              ]
+            } ]]
+            local diagnostic = parser({ err = error })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = "There is no whitespace around parentheses/brackets most of the time, but here there is.",
+                    row = 4,
+                    col = nil,
+                    end_col = nil,
+                    severity = 1,
                 },
             }, diagnostic)
         end)

@@ -12,12 +12,10 @@ M.get_active_sources = function(bufnr, ft)
     ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
 
     local active_sources = {}
-    for method, source in pairs(c.get()._methods) do
-        for name, filetypes in pairs(source) do
-            if u.filetype_matches(filetypes, ft) then
-                active_sources[method] = active_sources[method] or {}
-                table.insert(active_sources[method], name)
-            end
+    for _, source in ipairs(require("null-ls.sources").get_available(ft)) do
+        for method in pairs(source.methods) do
+            active_sources[method] = active_sources[method] or {}
+            table.insert(active_sources[method], source.name)
         end
     end
     return active_sources
@@ -27,7 +25,6 @@ M.show_window = function()
     local windows = require("lspconfig.ui.windows")
 
     local client = u.get_client()
-
     local bufnr = api.nvim_get_current_buf()
     if not client or not lsp.buf_is_attached(bufnr, client.id) then
         u.echo("WarningMsg", "failed to get info: buffer is not attached")

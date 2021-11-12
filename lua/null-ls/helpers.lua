@@ -18,7 +18,7 @@ local M = {}
 local get_content = function(params)
     -- when possible, get content from params
     if params.content then
-        return table.concat(params.content, "\n")
+        return u.join_at_newline(params.bufnr, params.content)
     end
 
     -- otherwise, get content directly
@@ -45,7 +45,7 @@ local parse_args = function(args, params)
     }
 
     local parsed = {}
-    for _, arg in pairs(args) do
+    for _, arg in ipairs(args) do
         arg = tostring(arg):gsub("$(%w+)", function(v)
             return vars[v] and vars[v]()
         end)
@@ -87,7 +87,7 @@ local line_output_wrapper = function(params, done, on_output)
     end
 
     local all_results = {}
-    for _, line in ipairs(vim.split(output, "\n")) do
+    for _, line in ipairs(u.split_at_newline(params.bufnr, output)) do
         if line ~= "" then
             local results = on_output(line, params)
             if type(results) == "table" then
@@ -100,7 +100,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, suppress_errors, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
         opts.command,
         opts.args,
         opts.on_output,
@@ -108,7 +108,6 @@ M.generator_factory = function(opts)
         opts.ignore_stderr,
         opts.from_stderr,
         opts.to_stdin,
-        opts.suppress_errors,
         opts.check_exit_code,
         opts.timeout,
         opts.to_temp_file,
@@ -145,7 +144,6 @@ M.generator_factory = function(opts)
             from_stderr = { from_stderr, "boolean", true },
             ignore_stderr = { ignore_stderr, "boolean", true },
             to_stdin = { to_stdin, "boolean", true },
-            suppress_errors = { suppress_errors, "boolean", true },
             check_exit_code = { check_exit_code, "function", true },
             timeout = { timeout, "number", true },
             to_temp_file = { to_temp_file, "boolean", true },
@@ -189,41 +187,50 @@ M.generator_factory = function(opts)
                     error_output = nil
                 end
 
-                if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
-                    if not suppress_errors then
+                local handle_output = function()
+                    if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
                         error("error in generator output: " .. error_output)
                     end
-                    done()
-                    return
+
+                    params.output = params.output or output
+                    if use_cache then
+                        s.set_cache(params.bufnr, command, output)
+                    end
+
+                    if format == output_formats.raw or format == output_formats.json_raw then
+                        params.err = error_output
+                    end
+
+                    if format == output_formats.json or format == output_formats.json_raw then
+                        json_output_wrapper(params, done, on_output, format)
+                        return
+                    end
+
+                    if format == output_formats.line then
+                        line_output_wrapper(params, done, on_output)
+                        return
+                    end
+
+                    on_output(params, done)
                 end
 
-                params.output = params.output or output
-                if use_cache then
-                    s.set_cache(params.bufnr, command, output)
+                -- errors thrown from luv callbacks can't be caught
+                -- so we catch them here and pass them as results
+                local ok, err = pcall(handle_output)
+                if not ok then
+                    done({ _generator_err = err })
                 end
-
-                if format == output_formats.raw or format == output_formats.json_raw then
-                    params.err = error_output
-                end
-
-                if format == output_formats.json or format == output_formats.json_raw then
-                    json_output_wrapper(params, done, on_output, format)
-                    return
-                end
-
-                if format == output_formats.line then
-                    line_output_wrapper(params, done, on_output)
-                    return
-                end
-
-                on_output(params, done)
             end
 
             if use_cache then
                 local cached = s.get_cache(params.bufnr, command)
                 if cached then
                     params._null_ls_cached = true
-                    wrapper(from_stderr and cached, from_stderr and nil or cached)
+                    if from_stderr then
+                        wrapper(cached, nil)
+                    else
+                        wrapper(nil, cached)
+                    end
                     return
                 end
             end
@@ -276,10 +283,12 @@ M.generator_factory = function(opts)
 end
 
 M.formatter_factory = function(opts)
-    if opts.suppress_errors == nil then
-        opts.suppress_errors = true
+    -- ignore errors unless otherwise specified
+    if opts.ignore_stderr == nil then
+        opts.ignore_stderr = true
     end
-    -- assume this is what the author wanted, since it's the only way formatting will work
+
+    -- for formatters, to_temp_file only works if from_temp_file is also set
     if opts.to_temp_file then
         opts.from_temp_file = true
     end
@@ -294,10 +303,8 @@ M.formatter_factory = function(opts)
             {
                 row = 1,
                 col = 1,
-                -- source: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#range
-                -- "... the end position is exclusive. If you want to specify a range that contains a line including the
-                --  line ending character(s) then use an end position denoting the start of the next line."
-                end_row = vim.tbl_count(params.content) + 1,
+                -- wraps to end of document
+                end_row = #params.content + 1,
                 end_col = 1,
                 text = output,
             },
@@ -332,9 +339,9 @@ M.make_builtin = function(opts)
     builtin.with = function(user_opts)
         local builtin_copy = vim.deepcopy(builtin)
         setmetatable(builtin_copy, getmetatable(builtin))
-        builtin_copy._is_copy = true
 
         builtin_copy.filetypes = user_opts.filetypes or builtin_copy.filetypes
+        builtin_copy.disabled_filetypes = user_opts.disabled_filetypes
 
         -- Extend args manually as vim.tbl_deep_extend overwrites the list
         if
@@ -507,7 +514,7 @@ M.diagnostics = (function()
             end
 
             local diagnostics = {}
-            local lines = vim.split(output, "\n")
+            local lines = u.split_at_newline(params.bufnr, output)
 
             local qflist = vim.fn.getqflist({ efm = efm, lines = lines })
             local severities = { e = 1, w = 2, i = 3, n = 4 }

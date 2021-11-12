@@ -1,5 +1,6 @@
 local builtins = require("null-ls.builtins")
 local methods = require("null-ls.methods")
+local sources = require("null-ls.sources")
 local main = require("null-ls")
 
 local c = require("null-ls.config")
@@ -33,16 +34,17 @@ local get_code_actions = function()
 end
 
 describe("e2e", function()
-    _G._TEST = true
     after_each(function()
         vim.cmd("bufdo! bdelete!")
+
         c.reset()
+        sources.reset()
     end)
 
     describe("code actions", function()
         local actions, null_ls_action
         before_each(function()
-            c.register(builtins._test.toggle_line_comment)
+            sources.register(builtins._test.toggle_line_comment)
 
             tu.edit_test_file("test-file.lua")
             lsp_wait()
@@ -63,14 +65,6 @@ describe("e2e", function()
             assert.equals(null_ls_action.command, methods.internal.CODE_ACTION)
         end)
 
-        it("should only register source once", function()
-            c.register(builtins._test.toggle_line_comment)
-
-            actions = get_code_actions()
-
-            assert.equals(vim.tbl_count(actions[1].result), 1)
-        end)
-
         it("should apply code action", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
@@ -89,7 +83,7 @@ describe("e2e", function()
         end)
 
         it("should combine actions from multiple sources", function()
-            c.register(builtins._test.mock_code_action)
+            sources.register(builtins._test.mock_code_action)
 
             actions = get_code_actions()
 
@@ -99,7 +93,7 @@ describe("e2e", function()
         it("should handle code action timeout", function()
             -- action calls a script that waits for 250 ms,
             -- but action timeout is 100 ms
-            c.register(builtins._test.slow_code_action)
+            sources.register(builtins._test.slow_code_action)
 
             actions = get_code_actions()
 
@@ -114,6 +108,8 @@ describe("e2e", function()
         end
 
         before_each(function()
+            sources.register(builtins.diagnostics.write_good)
+
             tu.edit_test_file("test-file.md")
 
             c.register(builtins.diagnostics.write_good)
@@ -148,7 +144,8 @@ describe("e2e", function()
             end
 
             it("should show diagnostics from multiple sources", function()
-                c.register(builtins.diagnostics.markdownlint)
+                sources.register(builtins.diagnostics.markdownlint)
+                vim.cmd("e")
                 lsp_wait()
 
                 local diagnostics = lsp.diagnostic.get(0)
@@ -169,8 +166,9 @@ describe("e2e", function()
         end)
 
         it("should format diagnostics with source-specific diagnostics_format", function()
-            c.reset_sources()
-            c.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
+            sources.reset()
+            sources.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
+            vim.cmd("e")
             lsp_wait()
 
             local write_good_diagnostic = lsp.diagnostic.get(0)[1]
@@ -189,7 +187,7 @@ describe("e2e", function()
 
         local bufnr
         before_each(function()
-            c.register(builtins.formatting.prettier)
+            sources.register(builtins.formatting.prettier)
 
             tu.edit_test_file("test-file.js")
             -- make sure file wasn't accidentally saved
@@ -248,11 +246,11 @@ describe("e2e", function()
             local prettier = builtins.formatting.prettier
             local original_args = prettier._opts.args
             before_each(function()
-                c.reset()
+                sources.reset()
 
                 prettier._opts.args = { "--write", "$FILENAME" }
                 prettier._opts.to_temp_file = true
-                c.register(prettier)
+                sources.register(prettier)
             end)
             after_each(function()
                 prettier._opts.args = original_args
@@ -279,7 +277,7 @@ describe("e2e", function()
         local formatted = 'import { User } from "./test-types";\nimport {Other} from "./test-types"\n'
 
         before_each(function()
-            c.register(builtins.formatting.prettier)
+            sources.register(builtins.formatting.prettier)
             tu.edit_test_file("range-formatting.js")
             assert.is_not.equals(u.buf.content(nil, true), formatted)
 
@@ -312,7 +310,7 @@ describe("e2e", function()
             ]],
                 false
             )
-            c.register(builtins.diagnostics.teal)
+            sources.register(builtins.diagnostics.teal)
 
             tu.edit_test_file("test-file.tl")
             lsp_wait()
@@ -350,7 +348,7 @@ describe("e2e", function()
     describe("cached generator", function()
         local actions, null_ls_action
         before_each(function()
-            c.register(builtins._test.cached_code_action)
+            sources.register(builtins._test.cached_code_action)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
@@ -385,8 +383,8 @@ describe("e2e", function()
 
     describe("sequential formatting", function()
         it("should format file sequentially", function()
-            c.register(builtins._test.first_formatter)
-            c.register(builtins._test.second_formatter)
+            sources.register(builtins._test.first_formatter)
+            sources.register(builtins._test.second_formatter)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
@@ -397,8 +395,8 @@ describe("e2e", function()
         end)
 
         it("should format file according to source order", function()
-            c.register(builtins._test.second_formatter)
-            c.register(builtins._test.first_formatter)
+            sources.register(builtins._test.second_formatter)
+            sources.register(builtins._test.first_formatter)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
@@ -409,8 +407,8 @@ describe("e2e", function()
         end)
 
         it("should skip formatters that fail runtime conditions", function()
-            c.register(builtins._test.first_formatter)
-            c.register(builtins._test.runtime_skipped_formatter)
+            sources.register(builtins._test.first_formatter)
+            sources.register(builtins._test.runtime_skipped_formatter)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
@@ -427,7 +425,7 @@ describe("e2e", function()
             local client = u.get_client()
             client.handlers[methods.lsp.FORMATTING] = mock_handler
 
-            c.register(builtins._test.first_formatter)
+            sources.register(builtins._test.first_formatter)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
         end)
@@ -447,7 +445,7 @@ describe("e2e", function()
         local mock_handler = require("luassert.stub").new()
 
         before_each(function()
-            c.register(builtins._test.mock_hover)
+            sources.register(builtins._test.mock_hover)
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
@@ -464,6 +462,15 @@ describe("e2e", function()
 
             assert.stub(mock_handler).was_called()
             assert.same(mock_handler.calls[1].refs[2], { contents = { { "test" } } })
+        end)
+    end)
+
+    describe("client", function()
+        it("should not leave pending requests on client object", function()
+            local client = u.get_client()
+
+            assert.truthy(client)
+            assert.truthy(vim.tbl_isempty(client.requests))
         end)
     end)
 end)
