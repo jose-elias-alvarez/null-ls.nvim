@@ -1,11 +1,11 @@
 local mock = require("luassert.mock")
 local stub = require("luassert.stub")
 
+local methods = require("null-ls.methods")
+local generators = require("null-ls.generators")
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
 local c = require("null-ls.config")
-local methods = require("null-ls.methods")
-local generators = require("null-ls.generators")
 
 local lsp = mock(vim.lsp, "true")
 
@@ -22,7 +22,7 @@ describe("diagnostics", function()
         local mock_params
         before_each(function()
             mock_params = {
-                textDocument = { uri = mock_uri },
+                textDocument = { uri = mock_uri, version = 1 },
                 client_id = mock_client_id,
                 method = methods.lsp.DID_OPEN,
             }
@@ -41,6 +41,14 @@ describe("diagnostics", function()
             c.reset()
         end)
 
+        it("should call clear_cache with uri when method is DID_CLOSE", function()
+            mock_params.method = methods.lsp.DID_CLOSE
+
+            diagnostics.handler(mock_params)
+
+            assert.stub(s.clear_cache).was_called_with(mock_params.textDocument.uri)
+        end)
+
         it("should call clear_cache with uri when method is DID_CHANGE", function()
             mock_params.method = methods.lsp.DID_CHANGE
 
@@ -53,6 +61,30 @@ describe("diagnostics", function()
             diagnostics.handler(mock_params)
 
             assert.stub(u.make_params).was_called_with(mock_params, methods.internal.DIAGNOSTICS)
+        end)
+
+        describe("changedtick tracking", function()
+            it("should call handler on each callback if buffer did not change", function()
+                diagnostics.handler(mock_params)
+                diagnostics.handler(mock_params)
+
+                generators.run_registered.calls[1].refs[1].callback("diagnostics")
+                generators.run_registered.calls[2].refs[1].callback("diagnostics")
+
+                assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called(2)
+            end)
+
+            it("should call handler only once if buffer changed in between callbacks", function()
+                diagnostics.handler(mock_params)
+                local new_params = vim.deepcopy(mock_params)
+                new_params.textDocument.version = 9999
+                diagnostics.handler(new_params)
+
+                generators.run_registered.calls[1].refs[1].callback("diagnostics")
+                generators.run_registered.calls[2].refs[1].callback("diagnostics")
+
+                assert.stub(lsp.handlers[methods.lsp.PUBLISH_DIAGNOSTICS]).was_called(1)
+            end)
         end)
 
         describe("handler", function()

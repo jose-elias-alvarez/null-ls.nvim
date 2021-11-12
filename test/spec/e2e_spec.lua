@@ -111,8 +111,6 @@ describe("e2e", function()
             sources.register(builtins.diagnostics.write_good)
 
             tu.edit_test_file("test-file.md")
-
-            c.register(builtins.diagnostics.write_good)
             lsp_wait()
         end)
 

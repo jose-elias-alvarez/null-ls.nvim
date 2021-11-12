@@ -38,12 +38,17 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
+-- track last changedtick to only send most recent diagnostics
+local last_changedtick = {}
+
 M.handler = function(original_params)
     if not original_params.textDocument then
         return
     end
+
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CLOSE then
+        last_changedtick[uri] = nil
         s.clear_cache(uri)
         return
     end
@@ -54,7 +59,10 @@ M.handler = function(original_params)
 
     local params = u.make_params(original_params, methods.map[method])
     local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
-    local initial_changedtick = api.nvim_buf_get_changedtick(params.bufnr)
+    local bufnr = vim.uri_to_bufnr(uri)
+
+    local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
+    last_changedtick[uri] = changedtick
 
     require("null-ls.generators").run_registered({
         filetype = params.ft,
@@ -65,13 +73,14 @@ M.handler = function(original_params)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
 
-            local changedtick = api.nvim_buf_get_changedtick(params.bufnr)
-            if changedtick > initial_changedtick then
+            if
+                last_changedtick[uri] -- nil if received didExit notification
+                and last_changedtick[uri] > changedtick -- buffer changed between notification and callback
+            then
                 u.debug_log("buffer changed; ignoring received diagnostics")
                 return
             end
 
-            local bufnr = vim.uri_to_bufnr(uri)
             if u.has_version("0.5.1") then
                 handler(nil, { diagnostics = diagnostics, uri = uri }, {
                     method = methods.lsp.PUBLISH_DIAGNOSTICS,
