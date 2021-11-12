@@ -19,7 +19,7 @@ local should_attach = function(bufnr)
 
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
     -- writing and immediately deleting a buffer (e.g. :wq from a git commit)
-    -- triggers a bug on 0.5 which is fixed on master
+    -- triggers a bug on 0.5.1 which is fixed on master
     if ft == "gitcommit" and not u.has_version("0.6.0") then
         return false
     end

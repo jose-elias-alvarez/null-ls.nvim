@@ -81,18 +81,11 @@ M.handler = function(original_params)
                 return
             end
 
-            if u.has_version("0.5.1") then
-                handler(nil, { diagnostics = diagnostics, uri = uri }, {
-                    method = methods.lsp.PUBLISH_DIAGNOSTICS,
-                    client_id = original_params.client_id,
-                    bufnr = bufnr,
-                })
-            else
-                handler(nil, methods.lsp.PUBLISH_DIAGNOSTICS, {
-                    diagnostics = diagnostics,
-                    uri = uri,
-                }, original_params.client_id, bufnr)
-            end
+            handler(nil, { diagnostics = diagnostics, uri = uri }, {
+                method = methods.lsp.PUBLISH_DIAGNOSTICS,
+                client_id = original_params.client_id,
+                bufnr = bufnr,
+            })
         end,
     })
 end

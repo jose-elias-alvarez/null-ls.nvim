@@ -15,33 +15,22 @@ end
 -- this will override a handler, batch results and debounce them
 function M.combine(method, ms)
     ms = ms or 100
-    local orig = u.resolve_handler(method)
-    local is_new = u.has_version("0.5.1")
 
+    local orig = u.resolve_handler(method)
     local all_results = {}
 
     local handler = u.debounce(ms, function()
         if #all_results > 0 then
-            if is_new then
-                pcall(orig, nil, all_results)
-            else
-                pcall(orig, nil, nil, all_results)
-            end
+            pcall(orig, nil, all_results)
             all_results = {}
         end
     end)
 
-    if is_new then
-        vim.lsp.handlers[method] = function(_, results)
-            vim.list_extend(all_results, results or {})
-            handler()
-        end
-    else
-        vim.lsp.handlers[method] = function(_, _, results)
-            vim.list_extend(all_results, results or {})
-            handler()
-        end
+    vim.lsp.handlers[method] = function(_, results)
+        vim.list_extend(all_results, results or {})
+        handler()
     end
+
     return vim.lsp.handlers[method]
 end
 
