@@ -3,6 +3,8 @@ local s = require("null-ls.state")
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
+local api = vim.api
+
 local M = {}
 
 -- assume 1-indexed ranges
@@ -36,12 +38,17 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
+-- track last changedtick to only send most recent diagnostics
+local last_changedtick = {}
+
 M.handler = function(original_params)
     if not original_params.textDocument then
         return
     end
+
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CLOSE then
+        last_changedtick[uri] = nil
         s.clear_cache(uri)
         return
     end
@@ -52,6 +59,11 @@ M.handler = function(original_params)
 
     local params = u.make_params(original_params, methods.map[method])
     local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
+    local bufnr = vim.uri_to_bufnr(uri)
+
+    local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
+    last_changedtick[uri] = changedtick
+
     require("null-ls.generators").run_registered({
         filetype = params.ft,
         method = methods.map[method],
@@ -61,7 +73,14 @@ M.handler = function(original_params)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
 
-            local bufnr = vim.uri_to_bufnr(uri)
+            if
+                last_changedtick[uri] -- nil if received didExit notification
+                and last_changedtick[uri] > changedtick -- buffer changed between notification and callback
+            then
+                u.debug_log("buffer changed; ignoring received diagnostics")
+                return
+            end
+
             if u.has_version("0.5.1") then
                 handler(nil, { diagnostics = diagnostics, uri = uri }, {
                     method = methods.lsp.PUBLISH_DIAGNOSTICS,
@@ -72,7 +91,6 @@ M.handler = function(original_params)
                 handler(nil, methods.lsp.PUBLISH_DIAGNOSTICS, {
                     diagnostics = diagnostics,
                     uri = uri,
-                    ---@diagnostic disable-next-line: redundant-parameter
                 }, original_params.client_id, bufnr)
             end
         end,
