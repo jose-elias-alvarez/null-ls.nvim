@@ -283,10 +283,33 @@ describe("generators", function()
             generators.run_registered(mock_opts)
 
             assert.stub(run).was_called_with(
-                { sync_generator },
+                generators.get_available(mock_opts.filetype, mock_opts.method),
                 mock_opts.params,
                 mock_opts.postprocess,
-                mock_opts.callback
+                mock_opts.callback,
+                nil
+            )
+        end)
+
+        it("should call run with available generators indexed by id", function()
+            register(method, sync_generator, { "lua" })
+            local mock_opts = {
+                filetype = mock_params.ft,
+                method = mock_params.method,
+                params = mock_params,
+                postprocess = postprocess,
+                callback = callback,
+                index_by_id = true,
+            }
+
+            generators.run_registered(mock_opts)
+
+            assert.stub(run).was_called_with(
+                generators.get_available(mock_opts.filetype, mock_opts.method, mock_opts.index_by_id),
+                mock_opts.params,
+                mock_opts.postprocess,
+                mock_opts.callback,
+                true
             )
         end)
     end)
@@ -360,6 +383,20 @@ describe("generators", function()
             local available = generators.get_available("lua", method)
 
             assert.same(available, {})
+        end)
+
+        it("should index generators by id if index_by_id is true", function()
+            register(method, sync_generator, { "lua" })
+
+            local available = generators.get_available("lua", method, true)
+
+            local generator_id
+            for id in pairs(available) do
+                generator_id = id
+                break
+            end
+
+            assert.same(available, { [generator_id] = sync_generator })
         end)
     end)
 

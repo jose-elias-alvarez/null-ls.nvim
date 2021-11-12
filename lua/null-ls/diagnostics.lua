@@ -5,7 +5,15 @@ local methods = require("null-ls.methods")
 
 local api = vim.api
 
+local should_use_diagnostic_api = function()
+    return vim.diagnostic and not c.get()._use_lsp_handler
+end
+
+local namespaces = {}
+
 local M = {}
+
+M.namespaces = namespaces
 
 -- assume 1-indexed ranges
 local convert_range = function(diagnostic)
@@ -23,7 +31,17 @@ local convert_range = function(diagnostic)
 end
 
 local postprocess = function(diagnostic, _, generator)
-    diagnostic.range = convert_range(diagnostic)
+    local range = convert_range(diagnostic)
+    -- the diagnostic API requires 0-indexing, so we can repurpose the LSP range
+    if should_use_diagnostic_api() then
+        diagnostic.lnum = range["start"].line
+        diagnostic.end_lnum = range["end"].line
+        diagnostic.col = range["start"].character
+        diagnostic.end_col = range["end"].character
+    else
+        diagnostic.range = range
+    end
+
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
@@ -36,6 +54,23 @@ local postprocess = function(diagnostic, _, generator)
     formatted = formatted:gsub("#{s}", diagnostic.source)
     formatted = formatted:gsub("#{c}", diagnostic.code or "")
     diagnostic.message = formatted
+end
+
+local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
+    if should_use_diagnostic_api() then
+        for id, by_id in pairs(diagnostics) do
+            namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+            vim.diagnostic.set(namespaces[id], bufnr, by_id)
+        end
+        return
+    end
+
+    local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
+    handler(nil, { diagnostics = diagnostics, uri = uri }, {
+        method = methods.lsp.PUBLISH_DIAGNOSTICS,
+        client_id = client_id,
+        bufnr = bufnr,
+    })
 end
 
 -- track last changedtick to only send most recent diagnostics
@@ -58,7 +93,6 @@ M.handler = function(original_params)
     end
 
     local params = u.make_params(original_params, methods.map[method])
-    local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
     local bufnr = vim.uri_to_bufnr(uri)
 
     local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
@@ -69,6 +103,7 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
+        index_by_id = should_use_diagnostic_api(),
         callback = function(diagnostics)
             u.debug_log("received diagnostics from generators")
             u.debug_log(diagnostics)
@@ -81,11 +116,7 @@ M.handler = function(original_params)
                 return
             end
 
-            handler(nil, { diagnostics = diagnostics, uri = uri }, {
-                method = methods.lsp.PUBLISH_DIAGNOSTICS,
-                client_id = original_params.client_id,
-                bufnr = bufnr,
-            })
+            handle_diagnostics(diagnostics, uri, bufnr, original_params.client_id)
         end,
     })
 end
