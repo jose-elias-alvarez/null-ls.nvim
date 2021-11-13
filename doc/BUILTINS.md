@@ -1769,7 +1769,7 @@ local sources = { null_ls.builtins.diagnostics.statix }
 
 - `filetypes = { "nix" }`
 - `command = "statix"`
-- `args = { "check", "--format=errfmt", "--", "$FILENAME" }`
+- `args = { "check", "--stdin", "--format=errfmt" }`
 
 #### [Stylelint](https://github.com/stylelint/stylelint)
 
@@ -1961,7 +1961,7 @@ local sources = { null_ls.builtins.code_actions.statix }
 
 - `filetypes = { "nix" }`
 - `command = "statix"`
-- `args = { "check", "--format=json", "--", "$FILENAME" }`
+- `args = { "check", "--stdin", "--format=json" }`
 
 ### Hover
 
