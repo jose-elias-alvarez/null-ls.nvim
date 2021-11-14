@@ -25,13 +25,16 @@ return h.make_builtin({
         end,
         on_output = function(params)
             local diags = {}
-            for _, d in ipairs(params.output.Issues) do
-                if d.Pos.Filename == params.bufname then
-                    table.insert(diags, {
-                        row = d.Pos.Line,
-                        col = d.Pos.Column,
-                        message = d.Text,
-                    })
+            local issues = params.output["Issues"]
+            if type(issues) == "table" then
+                for _, d in ipairs(issues) do
+                    if d.Pos.Filename == params.bufname then
+                        table.insert(diags, {
+                            row = d.Pos.Line,
+                            col = d.Pos.Column,
+                            message = d.Text,
+                        })
+                    end
                 end
             end
             return diags
