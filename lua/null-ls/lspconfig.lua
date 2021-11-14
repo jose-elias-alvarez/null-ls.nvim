@@ -41,7 +41,7 @@ function M.setup()
         cmd = { "nvim" },
         name = "null-ls",
         root_dir = function(fname)
-            return lsputil.root_pattern("Makefile", ".git")(fname) or lsputil.path.dirname(fname)
+            return lsputil.root_pattern(".null-ls-root", "Makefile", ".git")(fname) or lsputil.path.dirname(fname)
         end,
         flags = { debounce_text_changes = c.get().debounce },
         filetypes = sources.get_filetypes(),
