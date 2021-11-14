@@ -9,10 +9,9 @@ return h.make_builtin({
     filetypes = { "nix" },
     generator_opts = {
         command = "statix",
-        args = { "check", "--format=json", "--", "$FILENAME" },
+        args = { "check", "--stdin", "--format=json" },
         format = "json",
-        to_temp_file = true,
-        from_stderr = true,
+        to_stdin = true,
         on_output = function(params)
             local actions = {}
             for _, r in ipairs(params.output.report) do

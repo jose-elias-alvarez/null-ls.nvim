@@ -8,10 +8,9 @@ return h.make_builtin({
     filetypes = { "nix" },
     generator_opts = {
         command = "statix",
-        args = { "check", "--format=errfmt", "--", "$FILENAME" },
+        args = { "check", "--stdin", "--format=errfmt" },
         format = "line",
-        to_temp_file = true,
-        from_stderr = true,
+        to_stdin = true,
         on_output = h.diagnostics.from_pattern(
             [[>(%d+):(%d+):(.):(%d+):(.*)]],
             { "row", "col", "severity", "code", "message" },
