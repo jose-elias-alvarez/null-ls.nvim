@@ -2,7 +2,7 @@ local u = require("null-ls.utils")
 
 local M = {}
 
-M.run = function(generators, params, postprocess, callback)
+M.run = function(generators, params, postprocess, callback, should_index)
     local a = require("plenary.async")
 
     local runner = function()
@@ -14,7 +14,14 @@ M.run = function(generators, params, postprocess, callback)
         end
 
         local futures, all_results = {}, {}
-        for _, generator in ipairs(generators) do
+        local iterator = should_index and pairs or ipairs
+        for index, generator in iterator(generators) do
+            local to_insert = all_results
+            if should_index then
+                all_results[index] = {}
+                to_insert = all_results[index]
+            end
+
             table.insert(futures, function()
                 local copied_params = vim.deepcopy(params)
 
@@ -50,7 +57,7 @@ M.run = function(generators, params, postprocess, callback)
                         postprocess(result, copied_params, generator)
                     end
 
-                    table.insert(all_results, result)
+                    table.insert(to_insert, result)
                 end
             end)
         end
@@ -90,11 +97,11 @@ M.run_sequentially = function(generators, make_params, postprocess, callback, af
 end
 
 M.run_registered = function(opts)
-    local filetype, method, params, postprocess, callback =
-        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback
-    local generators = M.get_available(filetype, method)
+    local filetype, method, params, postprocess, callback, index_by_id =
+        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback, opts.index_by_id
+    local generators = M.get_available(filetype, method, index_by_id)
 
-    M.run(generators, params, postprocess, callback)
+    M.run(generators, params, postprocess, callback, index_by_id)
 end
 
 M.run_registered_sequentially = function(opts)
@@ -105,10 +112,14 @@ M.run_registered_sequentially = function(opts)
     M.run_sequentially(generators, make_params, postprocess, callback, after_all)
 end
 
-M.get_available = function(filetype, method)
+M.get_available = function(filetype, method, index_by_id)
     local available = {}
     for _, source in ipairs(require("null-ls.sources").get_available(filetype, method)) do
-        table.insert(available, source.generator)
+        if index_by_id then
+            available[source.id] = source.generator
+        else
+            table.insert(available, source.generator)
+        end
     end
     return available
 end

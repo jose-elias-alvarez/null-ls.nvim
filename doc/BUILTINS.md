@@ -1888,6 +1888,32 @@ local sources = { null_ls.builtins.diagnostics.yamllint }
 - `command = "yamllint"`
 - `args = { "--format", "parsable", "-" }`
 
+### Diagnostics on save
+
+**NOTE**: These sources depend on Neovim version 0.6.0 and are not compatible
+with previous versions.
+
+These sources run **only** on save, meaning that the diagnostics you see will
+not reflect changes to the buffer until you write the changes to the disk.
+
+#### [golangci-lint](https://golangci-lint.run/)
+
+##### About
+
+A Go linter aggregator.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.golangci_lint }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "golangci-lint"`
+- `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
+
 ### Code actions
 
 #### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
@@ -2008,7 +2034,7 @@ following snippet:
 runtime_condit
 ```
 
-#### Vsnip
+#### [vim-vsnip](https://github.com/hrsh7th/vim-vsnip)
 
 ##### About
 
@@ -2020,4 +2046,6 @@ Snippets managed by [vim-vsnip](https://github.com/hrsh7th/vim-vsnip).
 local sources = { null_ls.builtins.completion.vsnip }
 ```
 
-Registering this source will show available snippets in the completion list, but vim-vsnip is responsible for expanding them. See [vim-vsnip's documentation for setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
+Registering this source will show available snippets in the completion list, but
+vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation for
+setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).

@@ -24,8 +24,9 @@ for external processes.
 null-ls is in **beta status**. Please see below for steps to follow if something
 doesn't work the way you expect (or doesn't work at all).
 
-At the moment, null-is is compatible with Neovim 0.5 (stable) and 0.6 (head),
-but you'll get the best experience from the latest version you can run.
+At the moment, null-is is compatible with Neovim 0.5.1 (stable) and 0.6 (head),
+but some features and performance improvements are exclusive to the latest
+version.
 
 Note that null-ls development takes place primarily on macOS and Linux and may
 not work as expected (or at all) on Windows. Contributions to expand Windows
@@ -286,6 +287,8 @@ with an alternative, please open an issue!
 The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
+
+E2E tests expect the latest Neovim master.
 
 ## Alternatives
 

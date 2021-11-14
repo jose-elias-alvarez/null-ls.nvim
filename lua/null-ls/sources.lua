@@ -1,3 +1,6 @@
+local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
+
 local validate = vim.validate
 
 local registered = {
@@ -28,11 +31,21 @@ M.is_available = function(source, filetype, method)
         return false
     end
 
-    return (
-            not filetype
-            or (source.filetypes[filetype] == nil and source.filetypes["_all"])
-            or source.filetypes[filetype]
-        ) and (not method or source.methods[method])
+    local filetype_matches = not filetype
+        or source.filetypes["_all"] and source.filetypes[filetype] == nil
+        or source.filetypes[filetype] == true
+
+    local method_matches = not method or source.methods[method] == true
+    if not method_matches and methods.overrides[method] then
+        for m in pairs(methods.overrides[method]) do
+            if source.methods[m] then
+                method_matches = true
+                break
+            end
+        end
+    end
+
+    return filetype_matches and method_matches
 end
 
 M.get_available = function(filetype, method)
@@ -93,7 +106,7 @@ M.validate_and_transform = function(source)
 
     local generator, name = source.generator, source.name or "anonymous source"
     generator.opts = generator.opts or {}
-    local methods = type(source.method) == "table" and source.method or { source.method }
+    local source_methods = type(source.method) == "table" and source.method or { source.method }
     local filetypes, disabled_filetypes = source.filetypes, source.disabled_filetypes
 
     validate({
@@ -101,12 +114,11 @@ M.validate_and_transform = function(source)
         filetypes = { filetypes, "table" },
         disabled_filetypes = { disabled_filetypes, "table", true },
         name = { name, "string" },
-        methods = { methods, "table" },
         fn = { generator.fn, "function" },
         opts = { generator.opts, "table" },
         async = { generator.async, "boolean", true },
         method = {
-            methods,
+            source_methods,
             function(m)
                 return not vim.tbl_isempty(m), "at least one method"
             end,
@@ -129,7 +141,7 @@ M.validate_and_transform = function(source)
         end
     end
 
-    for _, method in ipairs(methods) do
+    for _, method in ipairs(source_methods) do
         validate({
             method = {
                 method,
@@ -140,6 +152,11 @@ M.validate_and_transform = function(source)
             },
         })
         method_map[method] = true
+    end
+
+    if method_map[methods.internal.DIAGNOSTICS_ON_SAVE] and not u.has_version("0.6.0") then
+        u.echo("WarningMsg", string.format("source %s is not supported on nvim versions < 0.6.0", name))
+        return
     end
 
     return {

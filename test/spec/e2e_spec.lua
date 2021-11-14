@@ -115,16 +115,16 @@ describe("e2e", function()
         end)
 
         it("should get buffer diagnostics on attach", function()
-            local buf_diagnostics = lsp.diagnostic.get(0)
+            local buf_diagnostics = vim.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
             local write_good_diagnostic = buf_diagnostics[1]
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning')
             assert.equals(write_good_diagnostic.source, "write-good")
-            assert.same(write_good_diagnostic.range, {
-                start = { character = 7, line = 0 },
-                ["end"] = { character = 13, line = 0 },
-            })
+            assert.equals(write_good_diagnostic.lnum, 0)
+            assert.equals(write_good_diagnostic.end_lnum, 0)
+            assert.equals(write_good_diagnostic.col, 7)
+            assert.equals(write_good_diagnostic.end_col, 13)
         end)
 
         it("should update buffer diagnostics on text change", function()
@@ -132,7 +132,7 @@ describe("e2e", function()
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 6, 0, 13, {})
             lsp_wait()
 
-            assert.equals(vim.tbl_count(lsp.diagnostic.get(0)), 0)
+            assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
         end)
 
         describe("multiple diagnostics", function()
@@ -146,7 +146,7 @@ describe("e2e", function()
                 vim.cmd("e")
                 lsp_wait()
 
-                local diagnostics = lsp.diagnostic.get(0)
+                local diagnostics = vim.diagnostic.get(0)
                 assert.equals(vim.tbl_count(diagnostics), 2)
 
                 local markdownlint_diagnostic, write_good_diagnostic
@@ -169,7 +169,7 @@ describe("e2e", function()
             vim.cmd("e")
             lsp_wait()
 
-            local write_good_diagnostic = lsp.diagnostic.get(0)[1]
+            local write_good_diagnostic = vim.diagnostic.get(0)[1]
 
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
         end)
@@ -330,16 +330,16 @@ describe("e2e", function()
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 52, 0, 53, { ".." })
             lsp_wait()
 
-            local buf_diagnostics = lsp.diagnostic.get(0)
+            local buf_diagnostics = vim.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
             local tl_check_diagnostic = buf_diagnostics[1]
             assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
             assert.equals(tl_check_diagnostic.source, "tl check")
-            assert.same(tl_check_diagnostic.range, {
-                start = { character = 52, line = 0 },
-                ["end"] = { character = 0, line = 1 },
-            })
+            assert.equals(tl_check_diagnostic.lnum, 0)
+            assert.equals(tl_check_diagnostic.end_lnum, 1)
+            assert.equals(tl_check_diagnostic.col, 52)
+            assert.equals(tl_check_diagnostic.end_col, 0)
         end)
     end)
 

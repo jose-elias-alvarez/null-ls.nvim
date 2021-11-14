@@ -1,6 +1,8 @@
 local stub = require("luassert.stub")
+local mock = require("luassert.mock")
 
 local methods = require("null-ls.methods")
+local u = mock(require("null-ls.utils"), true)
 
 describe("sources", function()
     local sources = require("null-ls.sources")
@@ -70,6 +72,14 @@ describe("sources", function()
 
         it("should return true if method matches and no filetype is specified", function()
             local is_available = sources.is_available(mock_source, nil, methods.internal.FORMATTING)
+
+            assert.truthy(is_available)
+        end)
+
+        it("should return true if method has override", function()
+            mock_source.methods = { [methods.internal.DIAGNOSTICS_ON_SAVE] = true }
+
+            local is_available = sources.is_available(mock_source, nil, methods.internal.DIAGNOSTICS_ON_OPEN)
 
             assert.truthy(is_available)
         end)
@@ -262,12 +272,17 @@ describe("sources", function()
     describe("validate_and_transform", function()
         local mock_source
         before_each(function()
+            u.has_version.returns(true)
             mock_source = {
                 generator = { fn = function() end, opts = {}, async = false },
                 name = "mock generator",
                 filetypes = { "lua" },
                 method = methods.internal.FORMATTING,
             }
+        end)
+
+        after_each(function()
+            u.has_version:clear()
         end)
 
         it("should validate and return transformed source", function()
@@ -332,6 +347,15 @@ describe("sources", function()
             local validated = sources.validate_and_transform(function()
                 return nil
             end)
+
+            assert.falsy(validated)
+        end)
+
+        it("should return nil if nvim version does not support method", function()
+            mock_source.method = methods.internal.DIAGNOSTICS_ON_SAVE
+            u.has_version.returns(false)
+
+            local validated = sources.validate_and_transform(mock_source)
 
             assert.falsy(validated)
         end)
