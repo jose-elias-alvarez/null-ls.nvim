@@ -237,8 +237,8 @@ describe("helpers", function()
 
         it("should throw error if command is not executable", function()
             generator_args.command = "nonexistent"
-            local generator = helpers.generator_factory(generator_args)
 
+            local generator = helpers.generator_factory(generator_args)
             local _, err = pcall(generator.fn, {})
 
             assert.truthy(err)
@@ -251,8 +251,8 @@ describe("helpers", function()
                 params = _params
                 return "cat"
             end
-            local generator = helpers.generator_factory(generator_args)
 
+            local generator = helpers.generator_factory(generator_args)
             generator.fn({ test_key = "test_val" })
 
             assert.same(params, { test_key = "test_val", root = root })
@@ -262,8 +262,8 @@ describe("helpers", function()
             generator_args.command = function()
                 return "cat"
             end
-            local generator = helpers.generator_factory(generator_args)
 
+            local generator = helpers.generator_factory(generator_args)
             generator.fn({})
 
             assert.stub(loop.spawn).was_called()
@@ -274,11 +274,26 @@ describe("helpers", function()
             generator_args.command = function()
                 return "cat"
             end
-            local generator = helpers.generator_factory(generator_args)
 
+            local generator = helpers.generator_factory(generator_args)
             generator.fn({})
 
             assert.equals(generator.opts.command, "cat")
+        end)
+
+        it("should set _last_args and _last_command from last resolved args and command", function()
+            generator_args.command = function()
+                return "cat"
+            end
+            generator_args.args = function()
+                return { "-b" }
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            generator.fn({})
+
+            assert.equals(generator.opts._last_command, "cat")
+            assert.same(generator.opts._last_args, { "-b" })
         end)
 
         it("should throw error if from_temp_file = true but to_temp_file is not", function()

@@ -277,6 +277,8 @@ M.generator_factory = function(opts)
             local spawn_args = args or {}
             spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             spawn_args = parse_args(spawn_args, params)
+            opts._last_args = spawn_args
+            opts._last_command = command
 
             log:debug(string.format("spawning command [%s] with args %s", command, vim.inspect(spawn_args)))
             loop.spawn(command, spawn_args, spawn_opts)
