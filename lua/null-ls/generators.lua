@@ -1,4 +1,3 @@
-local u = require("null-ls.utils")
 local log = require("null-ls.logger")
 
 local M = {}

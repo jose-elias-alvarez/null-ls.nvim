@@ -4,7 +4,8 @@ local c = require("null-ls.config")
 
 local M = {}
 
-M.get_sources = sources.get_all()
+M.get_sources = sources.get_all
+M.get_source = sources.get
 M.register = sources.register
 M.deregister = sources.deregister
 M.reset_sources = sources.reset

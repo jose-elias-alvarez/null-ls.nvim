@@ -66,6 +66,26 @@ The source's generator.
 The source's ID. Assigned automatically. Each source receives the next available
 ID.
 
+## get_source(query)
+
+Returns a list of all registered sources matching `query`. `query` can be a
+string, in which case it's treated as a name, or an object with the following
+structure:
+
+```lua
+local query = {
+    name = "my-source", -- string
+    method = require("null-ls").methods.FORMATTING, -- null-ls method
+    id = 1, -- number
+}
+```
+
+All keys in the query are optional, and passing an empty query will get
+all sources.
+
+Note that special characters are automatically escaped when `query` is a string
+but not when it's an object, which allows using Lua string matchers.
+
 ## register(to_register)
 
 The main method for registering sources. `to_register` can have the following
@@ -98,23 +118,8 @@ For information on sources, see [MAIN](MAIN.md).
 
 ## deregister(query)
 
-Removes all sources matching `query` from the internal list of sources. `query`
-can be a string, in which case it's treated as a name, or an object with the
-following structure:
-
-```lua
-local query = {
-    name = "my-source", -- string
-    method = require("null-ls").methods.FORMATTING, -- null-ls method
-    id = 1, -- number
-}
-```
-
-All keys in the query are optional, and passing an empty query will deregister
-all sources.
-
-Note that special characters are automatically escaped when `query` is a string
-but not when it's an object, which allows using Lua string matchers.
+Removes all sources matching `query` from the internal list of sources. See
+`get_source(query)` above for information about the structure of `query`.
 
 ## reset_sources()
 

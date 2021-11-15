@@ -121,6 +121,117 @@ describe("sources", function()
         end)
     end)
 
+    describe("get", function()
+        before_each(function()
+            local first_source = {
+                name = "first-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 1,
+            }
+            local second_source = {
+                name = "second-mock-source",
+                methods = { [methods.internal.DIAGNOSTICS] = true },
+                id = 2,
+            }
+            local third_source = {
+                name = "third-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 3,
+            }
+            sources._set({ first_source, second_source, third_source })
+        end)
+
+        describe("string query", function()
+            it("should get sources matching name query (partial match)", function()
+                local matching = sources.get("mock")
+
+                assert.truthy(#matching == 3)
+            end)
+
+            it("should get source matching name query (exact match)", function()
+                local matching = sources.get("first-mock-source")
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should get source matching name query (partial match)", function()
+                local matching = sources.get("first")
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should not get any sources when name query does not match", function()
+                local matching = sources.get("other-source")
+
+                assert.truthy(#matching == 0)
+            end)
+        end)
+
+        describe("simple query", function()
+            it("should get sources matching name query (full match)", function()
+                local matching = sources.get({ name = "mock%-source" })
+
+                assert.truthy(#matching == 3)
+            end)
+
+            it("should get sources matching name query (partial match)", function()
+                local matching = sources.get({ name = "mock" })
+
+                assert.truthy(#matching == 3)
+            end)
+
+            it("should not get any sources when name query does not match", function()
+                local matching = sources.get({ name = "other%-source" })
+
+                assert.truthy(#matching == 0)
+            end)
+
+            it("should get sources matching method query", function()
+                local matching = sources.get({ method = methods.internal.FORMATTING })
+
+                assert.truthy(#matching == 2)
+            end)
+
+            it("should get source matching id query", function()
+                local matching = sources.get({ id = 1 })
+
+                assert.truthy(#matching == 1)
+            end)
+        end)
+
+        describe("complex query", function()
+            it("should get all sources if query is empty", function()
+                local matching = sources.get({})
+
+                assert.truthy(#matching == 3)
+            end)
+
+            it("should get sources matching name and method query", function()
+                local matching = sources.get({ name = "mock", method = methods.internal.FORMATTING })
+
+                assert.truthy(#matching == 2)
+            end)
+
+            it("should get source matching name and id query", function()
+                local matching = sources.get({ name = "mock", id = 2 })
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should get source matching method and id query", function()
+                local matching = sources.get({ method = methods.internal.FORMATTING, id = 1 })
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should not get any sources when query does not match", function()
+                local matching = sources.get({ method = methods.internal.FORMATTING, id = 2 })
+
+                assert.truthy(#matching == 0)
+            end)
+        end)
+    end)
+
     describe("get_all", function()
         local mock_sources = {
             { filetypes = { ["lua"] = true } },
@@ -178,94 +289,22 @@ describe("sources", function()
             sources._set({ first_source, second_source, third_source })
         end)
 
-        describe("string query", function()
-            it("should deregister all sources matching name query (partial match)", function()
-                sources.deregister("mock")
+        it("should deregister all sources matching query (partial match)", function()
+            sources.deregister("mock")
 
-                assert.truthy(#sources.get_all() == 0)
-            end)
-
-            it("should deregister source matching name query (exact match)", function()
-                sources.deregister("first-mock-source")
-
-                assert.truthy(#sources.get_all() == 2)
-            end)
-
-            it("should deregister source matching name query (partial match)", function()
-                sources.deregister("first")
-
-                assert.truthy(#sources.get_all() == 2)
-            end)
-
-            it("should not deregister sources not matching name query", function()
-                sources.deregister("other-source")
-
-                assert.truthy(#sources.get_all() == 3)
-            end)
+            assert.truthy(#sources.get_all() == 0)
         end)
 
-        describe("simple query", function()
-            it("should deregister sources matching name query (full match)", function()
-                sources.deregister({ name = "mock%-source" })
+        it("should deregister source matching query (exact match)", function()
+            sources.deregister("first-mock-source")
 
-                assert.truthy(#sources.get_all() == 0)
-            end)
-
-            it("should deregister sources matching name query (partial match)", function()
-                sources.deregister({ name = "mock" })
-
-                assert.truthy(#sources.get_all() == 0)
-            end)
-
-            it("should not deregister sources not matching name query", function()
-                sources.deregister({ name = "other%-source" })
-
-                assert.truthy(#sources.get_all() == 3)
-            end)
-
-            it("should deregister sources matching method query", function()
-                sources.deregister({ method = methods.internal.FORMATTING })
-
-                assert.truthy(#sources.get_all() == 1)
-            end)
-
-            it("should deregister source matching id query", function()
-                sources.deregister({ id = 1 })
-
-                assert.truthy(#sources.get_all() == 2)
-            end)
+            assert.truthy(#sources.get_all() == 2)
         end)
 
-        describe("complex query", function()
-            it("should deregister all sources if query is empty", function()
-                sources.deregister({})
+        it("should not deregister sources not matching name query", function()
+            sources.deregister("other-source")
 
-                assert.truthy(#sources.get_all() == 0)
-            end)
-
-            it("should deregister sources matching name and method query", function()
-                sources.deregister({ name = "mock", method = methods.internal.FORMATTING })
-
-                assert.truthy(#sources.get_all() == 1)
-            end)
-
-            it("should deregister source matching name and id query", function()
-                sources.deregister({ name = "mock", id = 2 })
-
-                assert.truthy(#sources.get_all() == 2)
-            end)
-
-            it("should deregister source matching method and id query", function()
-                sources.deregister({ method = methods.internal.FORMATTING, id = 1 })
-
-                assert.truthy(#sources.get_all() == 2)
-            end)
-
-            it("should not deregister sources not matching complete query", function()
-                sources.deregister({ method = methods.internal.FORMATTING, id = 2 })
-
-                assert.truthy(#sources.get_all() == 3)
-            end)
+            assert.truthy(#sources.get_all() == 3)
         end)
     end)
 

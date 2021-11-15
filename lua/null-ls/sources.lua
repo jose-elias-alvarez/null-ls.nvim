@@ -9,6 +9,16 @@ local registered = {
     id = 0,
 }
 
+local matches_query = function(source, query)
+    query = type(query) == "string" and { name = vim.pesc(query) } or query
+    local name, method, id = query.name, query.method, query.id
+
+    local name_matches = name == nil and true or source.name:find(name)
+    local method_matches = method == nil and true or source.methods[method]
+    local id_matches = id == nil and true or source.id == id
+    return name_matches and method_matches and id_matches
+end
+
 local M = {}
 
 local register_source = function(source)
@@ -58,6 +68,18 @@ M.get_available = function(filetype, method)
     return available
 end
 
+M.get = function(query)
+    query = type(query) == "string" and { name = vim.pesc(query) } or query
+    local matching = {}
+    for _, source in ipairs(M.get_all()) do
+        if matches_query(source, query) then
+            table.insert(matching, source)
+        end
+    end
+
+    return matching
+end
+
 M.get_all = function()
     return registered.sources
 end
@@ -75,20 +97,10 @@ M.get_filetypes = function()
 end
 
 M.deregister = function(query)
-    query = type(query) == "string" and { name = vim.pesc(query) } or query
-    local name, method, id = query.name, query.method, query.id
-
-    local matches_query = function(source)
-        local name_matches = name == nil and true or source.name:find(name)
-        local method_matches = method == nil and true or source.methods[method]
-        local id_matches = id == nil and true or source.id == id
-        return name_matches and method_matches and id_matches
-    end
-
     local all_sources = M.get_all()
     -- iterate backwards to remove in loop
     for i = #all_sources, 1, -1 do
-        if matches_query(all_sources[i]) then
+        if matches_query(all_sources[i], query) then
             table.remove(all_sources, i)
         end
     end
