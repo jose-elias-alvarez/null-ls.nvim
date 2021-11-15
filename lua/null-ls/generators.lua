@@ -1,4 +1,5 @@
 local u = require("null-ls.utils")
+local log = require("null-ls.logger")
 
 local M = {}
 
@@ -6,10 +7,10 @@ M.run = function(generators, params, postprocess, callback, should_index)
     local a = require("plenary.async")
 
     local runner = function()
-        u.debug_log("running generators for method " .. params.method)
+        log:trace("running generators for method " .. params.method)
 
         if vim.tbl_isempty(generators) then
-            u.debug_log("no generators available")
+            log:debug("no generators available")
             return {}
         end
 
@@ -42,8 +43,7 @@ M.run = function(generators, params, postprocess, callback, should_index)
                 end
 
                 if not ok then
-                    u.echo("WarningMsg", "failed to run generator: " .. results)
-                    -- prevent failed generators from running again
+                    log:warn("failed to run generator: " .. results)
                     generator._failed = true
                     return
                 end

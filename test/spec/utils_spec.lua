@@ -89,30 +89,6 @@ describe("utils", function()
         end)
     end)
 
-    describe("debug_log", function()
-        local logger
-        before_each(function()
-            logger = stub(require("null-ls.logger"), "debug")
-        end)
-        after_each(function()
-            logger:revert()
-        end)
-
-        it("should do nothing if debug option is not set", function()
-            u.debug_log("my message")
-
-            assert.stub(logger).was_not_called()
-        end)
-
-        it("should call logger with message if debug option is set", function()
-            c._set({ debug = true })
-
-            u.debug_log("my message")
-
-            assert.stub(logger).was_called_with("my message")
-        end)
-    end)
-
     describe("get_client", function()
         local get_active_clients
         before_each(function()

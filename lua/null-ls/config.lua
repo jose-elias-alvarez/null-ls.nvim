@@ -4,7 +4,18 @@ local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
+    ---@usage setting this to true will enable debug logging
     debug = false,
+    log = {
+        ---@usage disable logging completely
+        enable = true,
+        ---@usage set logging level
+        --- possible valuse: {"error", "warn", "info", "debug", "trace"}
+        level = "warn",
+        ---@usage whether to print the output to neovim's
+        --- possible values: 'sync','async', false
+        use_console = "async",
+    },
     -- prevent double setup
     _setup = false,
     -- force using LSP handler, even when native API is available (e.g diagnostics)
@@ -77,6 +88,9 @@ M.setup = function(user_config)
 
     local validated = validate_config(user_config)
     config = vim.tbl_extend("force", config, validated)
+
+    -- FIXME: validating log options should maintain any default options
+    config.log = vim.tbl_extend("keep", config.log, defaults.log)
 
     if config.sources then
         require("null-ls.sources").register(config.sources)

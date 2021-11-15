@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local api = vim.api
 
@@ -51,8 +52,8 @@ M.apply_edits = function(edits, params)
     -- formatting and rangeFormatting handlers are identical
     local handler = u.resolve_handler(params.lsp_method)
 
-    u.debug_log("received edits from generators:")
-    u.debug_log(edits)
+    log:debug("received edits from generators")
+    log:trace(edits)
 
     local diffed_edits = {}
     for _, edit in ipairs(edits) do
@@ -72,8 +73,8 @@ M.apply_edits = function(edits, params)
         restore_win_data(marks, views, bufnr)
     end)
 
-    u.debug_log("successfully applied edits:")
-    u.debug_log(diffed_edits)
+    log:debug("successfully applied edits")
+    log:trace(diffed_edits)
 end
 
 M.handler = function(method, original_params, handler)

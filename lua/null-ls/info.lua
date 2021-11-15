@@ -1,6 +1,7 @@
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
+local log = require("null-ls.logger")
 
 local lsp = vim.lsp
 local api = vim.api
@@ -27,7 +28,7 @@ M.show_window = function()
     local client = u.get_client()
     local bufnr = api.nvim_get_current_buf()
     if not client or not lsp.buf_is_attached(bufnr, client.id) then
-        u.echo("WarningMsg", "failed to get info: buffer is not attached")
+        log:warn("failed to get info: buffer is not attached")
         return
     end
 

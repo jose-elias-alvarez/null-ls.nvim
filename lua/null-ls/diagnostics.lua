@@ -2,6 +2,7 @@ local u = require("null-ls.utils")
 local s = require("null-ls.state")
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local api = vim.api
 
@@ -96,7 +97,7 @@ M.handler = function(original_params)
     local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
 
     if method == methods.lsp.DID_SAVE and changedtick == last_changedtick[uri] then
-        u.debug_log("buffer unchanged; ignoring didSave notification")
+        log:debug("buffer unchanged; ignoring didSave notification")
         return
     end
 
@@ -111,14 +112,14 @@ M.handler = function(original_params)
         postprocess = postprocess,
         index_by_id = should_use_diagnostic_api(),
         callback = function(diagnostics)
-            u.debug_log("received diagnostics from generators")
-            u.debug_log(diagnostics)
+            log:trace("received diagnostics from generators")
+            log:trace(diagnostics)
 
             if
                 last_changedtick[uri] -- nil if received didExit notification
                 and last_changedtick[uri] > changedtick -- buffer changed between notification and callback
             then
-                u.debug_log("buffer changed; ignoring received diagnostics")
+                log:debug("buffer changed; ignoring received diagnostics")
                 return
             end
 
