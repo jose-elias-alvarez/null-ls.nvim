@@ -278,7 +278,7 @@ M.generator_factory = function(opts)
             spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             spawn_args = parse_args(spawn_args, params)
 
-            log:debug(string.format("spawning command [%s] with args { %s }", command, vim.inspect(spawn_args)))
+            log:debug(string.format("spawning command [%s] with args %s", command, vim.inspect(spawn_args)))
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
