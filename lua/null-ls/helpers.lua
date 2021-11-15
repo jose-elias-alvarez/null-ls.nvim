@@ -162,15 +162,11 @@ M.generator_factory = function(opts)
             opts.command = command
         end
 
-        local err_msg
-        if vim.fn.executable(command) ~= 1 and not dynamic_command then
-            err_msg = string.format(
-                "command %s is not executable (make sure it's installed and on your $PATH)",
-                command
-            )
+        if not dynamic_command then
+            local is_executable, err_msg = u.is_executable(command)
+            assert(is_executable, err_msg)
         end
 
-        assert(not err_msg, err_msg)
         assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
         _validated = true
@@ -438,7 +434,7 @@ M.make_builtin = function(opts)
                 local local_bin
                 lsputil.path.traverse_parents(params.bufname, function(dir)
                     local_bin = lsputil.path.join(dir, executable_to_find)
-                    if vim.fn.executable(local_bin) > 0 then
+                    if u.is_executable(local_bin) then
                         return true
                     end
 
@@ -450,8 +446,12 @@ M.make_builtin = function(opts)
                 end)
 
                 resolved = local_bin or (prefer_local and base_command)
-                s.set_command(params.bufnr, base_command, resolved or false)
+                if resolved then
+                    local is_executable, err_msg = u.is_executable(resolved)
+                    assert(is_executable, err_msg)
+                end
 
+                s.set_command(params.bufnr, base_command, resolved or false)
                 return resolved
             end
         end

@@ -104,7 +104,7 @@ describe("e2e", function()
     end)
 
     describe("diagnostics", function()
-        if vim.fn.executable("write-good") == 0 then
+        if not u.is_executable("write-good") then
             print("skipping diagnostic tests (write-good not installed)")
             return
         end
@@ -138,7 +138,7 @@ describe("e2e", function()
         end)
 
         describe("multiple diagnostics", function()
-            if vim.fn.executable("markdownlint") == 0 then
+            if not u.is_executable("markdownlint") then
                 print("skipping multiple diagnostics tests (markdownlint not installed)")
                 return
             end
@@ -178,7 +178,7 @@ describe("e2e", function()
     end)
 
     describe("formatting", function()
-        if vim.fn.executable("prettier") == 0 then
+        if not u.is_executable("prettier") then
             print("skipping formatting tests (prettier not installed)")
             return
         end
@@ -268,7 +268,7 @@ describe("e2e", function()
     end)
 
     describe("range formatting", function()
-        if vim.fn.executable("prettier") == 0 then
+        if not u.is_executable("prettier") then
             print("skipping range formatting tests (prettier not installed)")
             return
         end
@@ -295,7 +295,7 @@ describe("e2e", function()
     end)
 
     describe("temp file source", function()
-        if vim.fn.executable("tl") == 0 then
+        if not u.is_executable("tl") then
             print("skipping temp file source tests (teal not installed)")
             return
         end

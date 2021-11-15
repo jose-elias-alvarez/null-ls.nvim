@@ -82,6 +82,15 @@ M.has_version = function(ver)
     return vim.fn.has("nvim-" .. ver) > 0
 end
 
+M.is_executable = function(cmd)
+    local is_executable = vim.fn.executable(cmd) > 0
+    if is_executable then
+        return true
+    end
+
+    return false, string.format("command %s is not executable (make sure it's installed and on your $PATH)", cmd)
+end
+
 -- lsp-compatible range is 0-indexed.
 -- lua-friendly range is 1-indexed.
 M.range = {
