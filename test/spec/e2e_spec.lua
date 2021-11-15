@@ -16,7 +16,7 @@ local lsp_wait = function(wait_time)
     vim.wait(wait_time or 400)
 end
 
-main.config()
+main.config({ log = { enable = false } })
 require("lspconfig")["null-ls"].setup({
     flags = {
         debounce_text_changes = nil,
