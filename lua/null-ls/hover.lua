@@ -1,5 +1,6 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local M = {}
 
@@ -11,8 +12,8 @@ M.handler = function(method, original_params, handler)
             method = methods.map[method],
             params = params,
             callback = function(results)
-                u.debug_log("received hover results from generators")
-                u.debug_log(results)
+                log:trace("received hover results from generators")
+                log:trace(results)
                 handler({ contents = { results } })
             end,
         })

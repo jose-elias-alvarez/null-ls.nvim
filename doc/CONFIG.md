@@ -47,14 +47,30 @@ The following code block shows the available options and their defaults.
 
 ```lua
 local defaults = {
+    sources = nil,
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
-    sources = nil,
+    debug = false,
+    log = {
+        enable = true,
+        level = "warn",
+        use_console = "async",
+    },
 }
 ```
 
-## diagnostics_format (string)
+### sources (list)
+
+Defines a list of sources for null-ls to register. Users can add built-in
+sources (see [BUILTINS.md](BUILTINS.md)) or custom sources (see
+[MAIN.md](MAIN.md)).
+
+If you've installed an integration that provides its own sources and aren't
+interested in built-in sources, you don't have to define any sources here. The
+integration will register them independently.
+
+### diagnostics_format (string)
 
 Sets the default format used for diagnostics. The plugin will replace the
 following special components with the relevant diagnostic information:
@@ -78,7 +94,7 @@ Formats diagnostics as follows:
 You can also set `diagnostics_format` for built-ins by using the `with` method,
 described in [BUILTINS](BUILTINS.md).
 
-## debounce (number)
+### debounce (number)
 
 The `debounce` setting controls the amount of time between the last change to a
 buffer and the next diagnostic refresh. **It does not affect code actions or
@@ -96,15 +112,35 @@ out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
 [BUILTINS.md](BUILTINS.md)).
 
-### sources (list)
+### debug (boolean)
 
-Defines a list of sources for null-ls to register. Users can add built-in
-sources (see [BUILTINS.md](BUILTINS.md)) or custom sources (see
-[MAIN.md](MAIN.md)).
+Displays all possible log messages and writes them to the null-ls log, which you
+can view with the command `:NullLsLog`. Also enables extra source validation.
+This option can slow down Neovim, so it's strongly recommended to disable it for
+normal use.
 
-If you've installed an integration that provides its own sources and aren't
-interested in built-in sources, you don't have to define any sources here. The
-integration will register them independently.
+`debug = true` is the same as setting `log.level` to `"trace"` and
+`log.use_console` to `false`. For finer-grained control, see the `log` options
+below.
+
+### log (table)
+
+Sets options for null-ls logging.
+
+#### log.enable (boolean)
+
+Enables or disables logging altogether. Setting this to `false` will suppress
+important operational warnings and is not recommended.
+
+#### log.level (one of "error", "warn", "info", "debug", "trace")
+
+Sets the logging level.
+
+#### log.use_console (one of "sync", "async", false)
+
+Determines whether to show log output in Neovim's `:messages`. `sync` is slower
+but guarantees that messages will appear in order. Setting this to `false` will
+skip the console but still log to the file specified by `:NullLsLog`.
 
 ## Disabling null-ls
 

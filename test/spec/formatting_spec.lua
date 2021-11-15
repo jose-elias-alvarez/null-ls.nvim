@@ -9,6 +9,7 @@ local diff = require("null-ls.diff")
 local method = methods.lsp.FORMATTING
 
 local lsp = mock(vim.lsp, true)
+mock(require("null-ls.logger"), true)
 
 describe("formatting", function()
     stub(vim, "cmd")

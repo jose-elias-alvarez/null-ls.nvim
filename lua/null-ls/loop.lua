@@ -1,4 +1,4 @@
-local u = require("null-ls.utils")
+local log = require("null-ls.logger")
 
 local uv = vim.loop
 local wrap = vim.schedule_wrap
@@ -7,6 +7,12 @@ local close_handle = function(handle)
     if handle and not handle:is_closing() then
         handle:close()
     end
+end
+
+local on_error = function(errkind, ...)
+    log:debug(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
+    -- we need to make sure to raise an error
+    error(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
 end
 
 local TIMEOUT_EXIT_CODE = 7451
@@ -20,9 +26,8 @@ M.spawn = function(cmd, args, opts)
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
         if err then
-            error("stdout error: " .. err)
+            on_error("stdout", err)
         end
-
         if chunk then
             output = output .. chunk
         end
@@ -30,9 +35,8 @@ M.spawn = function(cmd, args, opts)
 
     local handle_stderr = function(err, chunk)
         if err then
-            error("stderr error: " .. err)
+            on_error("stderr", err)
         end
-
         if chunk then
             error_output = error_output .. chunk
         end
@@ -95,8 +99,7 @@ M.spawn = function(cmd, args, opts)
 
     if timeout then
         timer = M.timer(timeout, nil, true, function()
-            u.debug_log("command timed out after " .. timeout .. " ms")
-
+            log:debug(string.format("command [%s] timed out after %s ms", cmd, timeout))
             on_close(TIMEOUT_EXIT_CODE)
             timer.stop(true)
         end)

@@ -29,6 +29,7 @@ M.config = function(user_config)
     require("null-ls.handlers").setup()
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
+    vim.cmd("command! NullLsLog lua vim.fn.execute('edit ' .. require('null-ls.logger').get_path())")
 end
 
 return M

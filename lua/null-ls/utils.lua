@@ -1,4 +1,3 @@
-local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
 local api = vim.api
@@ -64,14 +63,6 @@ end
 M.split_at_newline = function(bufnr, text)
     local line_ending = get_line_ending(bufnr)
     return vim.split(text, line_ending), line_ending
-end
-
-M.debug_log = function(...)
-    if not c.get().debug then
-        return
-    end
-
-    require("null-ls.logger").debug(...)
 end
 
 M.get_client = function()

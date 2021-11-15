@@ -1,12 +1,13 @@
-local match = require("luassert.match")
 local stub = require("luassert.stub")
+local mock = require("luassert.mock")
 local a = require("plenary.async_lib")
 
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
-local u = require("null-ls.utils")
 
 local uv = vim.loop
+
+mock(require("null-ls.logger"), true)
 
 local register = function(method, generator, filetypes)
     sources.register({
@@ -83,11 +84,6 @@ describe("generators", function()
     end)
 
     a.tests.describe("run", function()
-        local echo = stub(u, "echo")
-        after_each(function()
-            echo:clear()
-        end)
-
         local wrapped_run = a.wrap(generators.run, 4)
 
         it("should return empty table when generators is empty", function()
@@ -113,7 +109,6 @@ describe("generators", function()
         it("should handle error thrown in sync generator", function()
             local results = wrapped_run({ error_generator }, mock_params, postprocess)()
 
-            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -123,7 +118,6 @@ describe("generators", function()
 
             local results = wrapped_run({ error_generator }, mock_params, postprocess)()
 
-            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -135,7 +129,6 @@ describe("generators", function()
 
             local results = wrapped_run({ error_generator }, mock_params, postprocess)()
 
-            assert.stub(u.echo).was_called_with("WarningMsg", match.has_match("something went wrong"))
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
         end)

@@ -1,5 +1,6 @@
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
+local log = require("null-ls.logger")
 
 local M = {}
 
@@ -96,7 +97,7 @@ M.start = function(dispatchers)
     end
 
     local function request(method, params, callback, notify_callback)
-        u.debug_log("received LSP request for method " .. method)
+        log:trace("received LSP request for method " .. method)
 
         -- clear pending requests from client object
         local success = handle(method, params, callback)
@@ -112,7 +113,7 @@ M.start = function(dispatchers)
     end
 
     local function notify(method, params)
-        u.debug_log("received LSP notification for method " .. method)
+        log:trace("received LSP notification for method " .. method)
         return handle(method, params, nil, true)
     end
 

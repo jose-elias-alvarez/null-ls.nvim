@@ -1,6 +1,7 @@
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local M = {}
 
@@ -28,8 +29,8 @@ M.handler = function(method, original_params, handler)
             params = params,
             postprocess = postprocess,
             callback = function(actions)
-                u.debug_log("received code actions from generators")
-                u.debug_log(actions)
+                log:trace("received code actions from generators")
+                log:trace(actions)
 
                 -- sort actions by title
                 table.sort(actions, function(a, b)

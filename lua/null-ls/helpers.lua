@@ -1,6 +1,7 @@
 local u = require("null-ls.utils")
 local c = require("null-ls.config")
 local s = require("null-ls.state")
+local log = require("null-ls.logger")
 
 local api = vim.api
 local validate = vim.validate
@@ -159,10 +160,15 @@ M.generator_factory = function(opts)
             opts.command = command
         end
 
-        assert(
-            vim.fn.executable(command) > 0,
-            string.format("command %s is not executable (make sure it's installed and on your $PATH)", command)
-        )
+        local err_msg
+        if vim.fn.executable(command) ~= 1 then
+            err_msg = string.format(
+                "command %s is not executable (make sure it's installed and on your $PATH)",
+                command
+            )
+        end
+
+        assert(not err_msg, err_msg)
         assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
         _validated = true
@@ -177,8 +183,8 @@ M.generator_factory = function(opts)
             end
 
             local wrapper = function(error_output, output)
-                u.debug_log("error output: " .. (error_output or "nil"))
-                u.debug_log("output: " .. (output or "nil"))
+                log:trace("error output: " .. (error_output or "nil"))
+                log:trace("output: " .. (output or "nil"))
 
                 if ignore_stderr then
                     error_output = nil
@@ -259,7 +265,7 @@ M.generator_factory = function(opts)
                             vim.loop.fs_close(fd)
                         end)
                         if not ok then
-                            u.echo("WarningMsg", "failed to read from temp file: " .. err)
+                            log:warn("failed to read from temp file: " .. err)
                         end
                     end
 
@@ -272,8 +278,7 @@ M.generator_factory = function(opts)
             spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
             spawn_args = parse_args(spawn_args, params)
 
-            u.debug_log("spawning command " .. command .. " with args:")
-            u.debug_log(spawn_args)
+            log:debug(string.format("spawning command [%s] with args %s", command, vim.inspect(spawn_args)))
             loop.spawn(command, spawn_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
@@ -376,11 +381,11 @@ M.make_builtin = function(opts)
             return function()
                 local should_register = condition(u.make_conditional_utils())
                 if should_register then
-                    u.debug_log("registering conditional source " .. builtin_copy.name)
-                    return builtin_copy
+                    log:debug("registering conditional source " .. builtin.name)
+                    return builtin
                 end
 
-                u.debug_log("not registering conditional source " .. builtin_copy.name)
+                log:debug("not registering conditional source " .. builtin.name)
             end
         end
 

@@ -282,6 +282,22 @@ memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
 
+### Debugging
+
+1. Enable debug logging
+
+   ```lua
+   require("null-ls").config({
+      debug = true,
+   })
+
+   ```
+
+2. Use `:NullLsLog` to open the log file.
+
+As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
+option after you've collected the information you're looking for.
+
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
