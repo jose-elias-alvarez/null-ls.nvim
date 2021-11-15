@@ -127,3 +127,7 @@ control its behavior.
 
 You can also deregister sources using the source API, as described in
 [SOURCES](SOURCES.md).
+
+## Explicitly defining the project root
+
+Create an empty file `.null-ls-root` in the directory you want to mark as the project root for null-ls.
