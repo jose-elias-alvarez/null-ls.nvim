@@ -1,3 +1,4 @@
+local c = require("null-ls.config")
 local log = {}
 
 --- Adds a log entry using Plenary.log
@@ -10,8 +11,7 @@ function log:add_entry(msg, level)
         self.__handle[level:lower()](msg)
         return
     end
-    local status_ok, plenary = pcall(require, "plenary")
-    local c = require("null-ls.config")
+
     local default_opts = {
         plugin = "null-ls",
         level = c.get().log.level or "warn",
@@ -22,12 +22,10 @@ function log:add_entry(msg, level)
         default_opts.use_console = false
         default_opts.level = "trace"
     end
-    if status_ok then
-        local handle = plenary.log.new(default_opts)
-        handle[level:lower()](msg)
-        self.__handle = handle
-    end
-    -- don't do anything if plenary is not available
+
+    local handle = require("plenary.log").new(default_opts)
+    handle[level:lower()](msg)
+    self.__handle = handle
 end
 
 ---Retrieves the path of the logfile
