@@ -3,6 +3,7 @@ local mock = require("luassert.mock")
 
 local methods = require("null-ls.methods")
 local u = mock(require("null-ls.utils"), true)
+local diagnostics = mock(require("null-ls.diagnostics"), true)
 
 describe("sources", function()
     local sources = require("null-ls.sources")
@@ -13,6 +14,8 @@ describe("sources", function()
     after_each(function()
         on_register_source:clear()
         on_register_sources:clear()
+        diagnostics.hide_source_diagnostics:clear()
+        diagnostics.show_source_diagnostics:clear()
 
         sources._reset()
     end)
@@ -29,6 +32,14 @@ describe("sources", function()
 
         it("should return false if source generator failed", function()
             mock_source.generator._failed = true
+
+            local is_available = sources.is_available(mock_source)
+
+            assert.falsy(is_available)
+        end)
+
+        it("should return false if source is disabled", function()
+            mock_source._disabled = true
 
             local is_available = sources.is_available(mock_source)
 
@@ -305,6 +316,67 @@ describe("sources", function()
             sources.deregister("other-source")
 
             assert.truthy(#sources.get_all() == 3)
+        end)
+    end)
+
+    describe("enable", function()
+        before_each(function()
+            local mock_source = {
+                name = "first-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 1,
+                generator = {},
+                _disabled = true,
+            }
+            sources._set({ mock_source })
+        end)
+
+        it("should enable matching source", function()
+            sources.enable("mock")
+
+            assert.truthy(#sources.get_available() == 1)
+            assert.stub(diagnostics.show_source_diagnostics).was_called_with(1)
+        end)
+    end)
+
+    describe("disable", function()
+        before_each(function()
+            local mock_source = {
+                name = "first-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 1,
+                generator = {},
+            }
+            sources._set({ mock_source })
+        end)
+
+        it("should disable matching source", function()
+            sources.disable("mock")
+
+            assert.truthy(#sources.get_available() == 0)
+            assert.stub(diagnostics.hide_source_diagnostics).was_called_with(1)
+        end)
+    end)
+
+    describe("toggle", function()
+        before_each(function()
+            local mock_source = {
+                name = "first-mock-source",
+                methods = { [methods.internal.FORMATTING] = true },
+                id = 1,
+                generator = {},
+            }
+            sources._set({ mock_source })
+        end)
+
+        it("should toggle matching source availability", function()
+            sources.toggle("mock")
+            assert.truthy(#sources.get_available() == 0)
+            assert.stub(diagnostics.hide_source_diagnostics).was_called_with(1)
+
+            sources.toggle("mock")
+            assert.truthy(#sources.get_available() == 1)
+            assert.stub(diagnostics.show_source_diagnostics).was_called_with(1)
         end)
     end)
 

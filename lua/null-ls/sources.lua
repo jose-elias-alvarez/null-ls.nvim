@@ -1,4 +1,5 @@
 local methods = require("null-ls.methods")
+local diagnostics = require("null-ls.diagnostics")
 local u = require("null-ls.utils")
 
 local validate = vim.validate
@@ -8,6 +9,8 @@ local registered = {
     sources = {},
     id = 0,
 }
+
+local M = {}
 
 local matches_query = function(source, query)
     query = type(query) == "string" and { name = vim.pesc(query) } or query
@@ -19,7 +22,13 @@ local matches_query = function(source, query)
     return name_matches and method_matches and id_matches
 end
 
-local M = {}
+local for_each_matching = function(query, cb)
+    for _, source in ipairs(M.get_all()) do
+        if matches_query(source, query) then
+            cb(source)
+        end
+    end
+end
 
 local register_source = function(source)
     source = M.validate_and_transform(source)
@@ -37,7 +46,7 @@ local register_source = function(source)
 end
 
 M.is_available = function(source, filetype, method)
-    if source.generator._failed then
+    if source._disabled or source.generator._failed then
         return false
     end
 
@@ -69,15 +78,37 @@ M.get_available = function(filetype, method)
 end
 
 M.get = function(query)
-    query = type(query) == "string" and { name = vim.pesc(query) } or query
     local matching = {}
-    for _, source in ipairs(M.get_all()) do
-        if matches_query(source, query) then
-            table.insert(matching, source)
-        end
-    end
+    for_each_matching(query, function(source)
+        table.insert(matching, source)
+    end)
 
     return matching
+end
+
+M.enable = function(query)
+    for_each_matching(query, function(source)
+        source._disabled = nil
+        diagnostics.show_source_diagnostics(source.id)
+    end)
+end
+
+M.disable = function(query)
+    for_each_matching(query, function(source)
+        source._disabled = true
+        diagnostics.hide_source_diagnostics(source.id)
+    end)
+end
+
+M.toggle = function(query)
+    for_each_matching(query, function(source)
+        source._disabled = not source._disabled
+        if source._disabled then
+            diagnostics.hide_source_diagnostics(source.id)
+        else
+            diagnostics.show_source_diagnostics(source.id)
+        end
+    end)
 end
 
 M.get_all = function()

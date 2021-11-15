@@ -116,9 +116,34 @@ require("null-ls").register({
 
 For information on sources, see [MAIN](MAIN.md).
 
+## disable(query)
+
+Disables all sources matching `query`, preventing them from running under any
+conditions. See `get_source(query)` above for information about the structure of
+`query`.
+
+On Neovim versions >= 0.6.0, this will also hide diagnostics from disabled
+sources.
+
+## enable(query)
+
+Enables all disabled sources matching `query`, allowing them to run again as
+normal. See `get_source(query)` above for information about the structure of `query`.
+
+On Neovim versions >= 0.6.0, this will also show diagnostics from enabled
+sources. Note that diagnostics will reflect the state of the buffer at the time
+of the generator's last run. To regenerate, make a change to the buffer.
+
+## toggle(query)
+
+Enables or disables each source based on its current availability. See
+`get_source(query)` above for information about the structure of `query` and
+`enable(query)` / `disable(query)` above for the consequences of source
+avaiability.
+
 ## deregister(query)
 
-Removes all sources matching `query` from the internal list of sources. See
+Clears all sources matching `query` from the internal list of sources. See
 `get_source(query)` above for information about the structure of `query`.
 
 ## reset_sources()
@@ -128,7 +153,8 @@ Clears all registered sources.
 ## is_registered(name)
 
 Returns `true` if null-ls has registered a source with the name `name` (exact
-match). For more flexible queries, check the results of `get_sources()` manually.
+match). For more flexible queries, use one of the query methods or check the
+results of `get_sources()` manually.
 
 ## register_name(name)
 
