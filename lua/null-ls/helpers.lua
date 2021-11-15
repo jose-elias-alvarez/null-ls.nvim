@@ -160,16 +160,15 @@ M.generator_factory = function(opts)
             opts.command = command
         end
 
-        local err_msg = ""
+        local err_msg
         if vim.fn.executable(command) ~= 1 then
             err_msg = string.format(
                 "command %s is not executable (make sure it's installed and on your $PATH)",
                 command
             )
-            log:debug(err_msg)
         end
 
-        assert(err_msg, "")
+        assert(not err_msg, err_msg)
         assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
         _validated = true
