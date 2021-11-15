@@ -34,7 +34,7 @@ M.show_window = function()
 
     local lines = {}
 
-    local log_path = c.get().debug and require("lspconfig.util").path.join(vim.fn.stdpath("cache"), "null-ls.log")
+    local log_path = c.get().debug and log:get_path()
         or "not enabled (this is normal; see the README if you need to enable logging)"
     table.insert(lines, "null-ls log: " .. log_path)
 
