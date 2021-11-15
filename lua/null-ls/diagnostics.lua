@@ -75,7 +75,17 @@ local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
 end
 
 -- track last changedtick to only send most recent diagnostics
-local last_changedtick = {}
+local changedticks_by_uri = {}
+
+local set_last_changedtick = function(changedtick, uri, method)
+    changedticks_by_uri[uri] = changedticks_by_uri[uri] or {}
+    changedticks_by_uri[uri][method] = changedticks_by_uri[uri][method] or {}
+    changedticks_by_uri[uri][method] = changedtick
+end
+
+local get_last_changedtick = function(uri, method)
+    return changedticks_by_uri[uri] and changedticks_by_uri[uri][method] or -1
+end
 
 M.handler = function(original_params)
     if not original_params.textDocument then
@@ -84,7 +94,7 @@ M.handler = function(original_params)
 
     local method, uri = original_params.method, original_params.textDocument.uri
     if method == methods.lsp.DID_CLOSE then
-        last_changedtick[uri] = nil
+        changedticks_by_uri[uri] = nil
         s.clear_cache(uri)
         return
     end
@@ -96,14 +106,13 @@ M.handler = function(original_params)
     local bufnr = vim.uri_to_bufnr(uri)
     local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
 
-    if method == methods.lsp.DID_SAVE and changedtick == last_changedtick[uri] then
+    if method == methods.lsp.DID_SAVE and changedtick == get_last_changedtick(uri, method) then
         log:debug("buffer unchanged; ignoring didSave notification")
         return
     end
 
     local params = u.make_params(original_params, methods.map[method])
-
-    last_changedtick[uri] = changedtick
+    set_last_changedtick(changedtick, uri, method)
 
     require("null-ls.generators").run_registered({
         filetype = params.ft,
@@ -115,10 +124,7 @@ M.handler = function(original_params)
             log:trace("received diagnostics from generators")
             log:trace(diagnostics)
 
-            if
-                last_changedtick[uri] -- nil if received didExit notification
-                and last_changedtick[uri] > changedtick -- buffer changed between notification and callback
-            then
+            if get_last_changedtick(uri, method) > changedtick then
                 log:debug("buffer changed; ignoring received diagnostics")
                 return
             end

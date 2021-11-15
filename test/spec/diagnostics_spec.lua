@@ -108,6 +108,7 @@ describe("diagnostics", function()
 
                     it("should call handler only once if buffer changed in between callbacks", function()
                         diagnostics.handler(mock_params)
+
                         local new_params = vim.deepcopy(mock_params)
                         new_params.textDocument.version = 9999
                         diagnostics.handler(new_params)
@@ -117,6 +118,20 @@ describe("diagnostics", function()
 
                         assert.stub(mock_handler).was_called(1)
                     end)
+
+                    it("should call handler on each callback if buffer changed but method is different", function()
+                        diagnostics.handler(mock_params)
+
+                        local new_params = vim.deepcopy(mock_params)
+                        new_params.textDocument.version = 9999
+                        new_params.method = "newMethod"
+                        diagnostics.handler(new_params)
+
+                        generators.run_registered.calls[1].refs[1].callback("diagnostics")
+                        generators.run_registered.calls[2].refs[1].callback("diagnostics")
+
+                        assert.stub(mock_handler).was_called(2)
+                    end)
                 end)
             end)
 
@@ -125,6 +140,7 @@ describe("diagnostics", function()
                 local mock_bufnr = vim.uri_to_bufnr(mock_uri)
                 before_each(function()
                     c.reset()
+                    diagnostic_api.set:clear()
                 end)
 
                 it("should send results of diagnostic generators to API handler", function()
@@ -141,6 +157,45 @@ describe("diagnostics", function()
                             mock_diagnostics[id]
                         )
                     end
+                end)
+
+                describe("changedtick tracking", function()
+                    it("should call handler on each callback if buffer did not change", function()
+                        diagnostics.handler(mock_params)
+                        diagnostics.handler(mock_params)
+
+                        generators.run_registered.calls[1].refs[1].callback({ [1] = "diagnostics" })
+                        generators.run_registered.calls[2].refs[1].callback({ [1] = "diagnostics" })
+
+                        assert.stub(diagnostic_api.set).was_called(2)
+                    end)
+
+                    it("should call handler only once if buffer changed in between callbacks", function()
+                        diagnostics.handler(mock_params)
+
+                        local new_params = vim.deepcopy(mock_params)
+                        new_params.textDocument.version = 9999
+                        diagnostics.handler(new_params)
+
+                        generators.run_registered.calls[1].refs[1].callback({ [1] = "diagnostics" })
+                        generators.run_registered.calls[2].refs[1].callback({ [1] = "diagnostics" })
+
+                        assert.stub(diagnostic_api.set).was_called(1)
+                    end)
+
+                    it("should call handler on each callback if buffer changed but method is different", function()
+                        diagnostics.handler(mock_params)
+
+                        local new_params = vim.deepcopy(mock_params)
+                        new_params.textDocument.version = 9999
+                        new_params.method = "newMethod"
+                        diagnostics.handler(new_params)
+
+                        generators.run_registered.calls[1].refs[1].callback({ [1] = "diagnostics" })
+                        generators.run_registered.calls[2].refs[1].callback({ [1] = "diagnostics" })
+
+                        assert.stub(diagnostic_api.set).was_called(2)
+                    end)
                 end)
             end)
         end)
