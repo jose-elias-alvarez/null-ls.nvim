@@ -341,6 +341,7 @@ M.make_builtin = function(opts)
         setmetatable(builtin_copy, getmetatable(builtin))
 
         builtin_copy.filetypes = user_opts.filetypes or builtin_copy.filetypes
+        builtin_copy.method = user_opts.method or builtin.method
         builtin_copy.disabled_filetypes = user_opts.disabled_filetypes
 
         -- Extend args manually as vim.tbl_deep_extend overwrites the list

@@ -778,6 +778,12 @@ describe("helpers", function()
                 assert.same(copy.filetypes, { "txt" })
             end)
 
+            it("should override method", function()
+                local copy = builtin.with({ method = "newMethod" })
+
+                assert.equals(copy.method, "newMethod")
+            end)
+
             it("should set disabled filetypes", function()
                 local copy = builtin.with({ disabled_filetypes = { "teal" } })
 

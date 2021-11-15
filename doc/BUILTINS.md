@@ -1896,6 +1896,17 @@ with previous versions.
 These sources run **only** on save, meaning that the diagnostics you see will
 not reflect changes to the buffer until you write the changes to the disk.
 
+You can configure built-in diagnostic sources to run on save by overriding
+`method`:
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+        method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+    }),
+}
+```
+
 #### [golangci-lint](https://golangci-lint.run/)
 
 ##### About
