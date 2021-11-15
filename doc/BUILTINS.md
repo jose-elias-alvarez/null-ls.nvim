@@ -158,6 +158,28 @@ See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
 Note that specifying `diagnostics_format` for a built-in will override your
 global `diagnostics_format` for that source.
 
+## Local executables
+
+To prefer using a local executable for a built-in, use the `prefer_local`
+option. This will cause null-ls to search upwards from the current buffer's
+directory, try to find a local executable at each parent directory, and fall
+back to a global executable if it can't find one locally.
+
+`prefer_local` can be a boolean or a string, in which case it's treated as a
+prefix. For example, the following settings will cause null-ls to search for
+`node_modules/.bin/prettier`:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        prefer_local = "node_modules/.bin",
+    }),
+}
+```
+
+To _only_ use a local executable without falling back, use `only_local`, which
+accepts the same options.
+
 ## Conditional registration
 
 null-ls supports dynamic registration, meaning that you can register sources

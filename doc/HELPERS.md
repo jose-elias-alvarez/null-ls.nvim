@@ -38,6 +38,7 @@ helpers.generator_factory({
     use_cache, -- boolean (optional)
     runtime_condition, -- function (optional)
     cwd, -- function (optional)
+    dynamic_command, -- function(optional)
 })
 ```
 
@@ -193,6 +194,18 @@ Optional callback to set the working directory for the spawned process. Takes a
 single argument, `params`, which is a table containing information about the
 current editor state (described in [MAIN](./MAIN.md)). If the callback returns
 `nil`, the working directory defaults to the project's root.
+
+### dynamic_command
+
+Optional callback to set `command` dynamically. Takes two arguments, a string
+containing the base `command` and a `params` object containing information about
+the current buffer's state. The callback should return a string containing the
+command to run or `nil`, meaning that no command should run.
+
+`dynamic_command` runs every time its parent generator runs and can affect
+performance, so it's best to cache its output when possible.
+
+Note that setting `dynamic_command` will disable `command` validation.
 
 ## formatter_factory
 
