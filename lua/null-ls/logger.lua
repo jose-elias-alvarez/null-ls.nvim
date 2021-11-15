@@ -20,7 +20,7 @@ function log:add_entry(msg, level)
     }
     if c.get().debug then
         default_opts.use_console = false
-        default_opts.log_level = "trace"
+        default_opts.level = "trace"
     end
     if status_ok then
         local handle = plenary.log.new(default_opts)
