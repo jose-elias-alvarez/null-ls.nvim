@@ -428,7 +428,7 @@ M.make_builtin = function(opts)
                 -- a string means command was resolved on last run
                 -- false means the command already failed to resolve, so don't bother checking again
                 if resolved and (type(resolved.command) == "string" or resolved.command == false) then
-                    return resolved
+                    return resolved.command
                 end
 
                 local maybe_prefix = prefer_local or only_local
