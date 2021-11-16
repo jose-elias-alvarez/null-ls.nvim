@@ -10,6 +10,7 @@ return h.make_builtin({
         command = "golangci-lint",
         to_stdin = true,
         from_stderr = false,
+        ignore_stderr = true,
         args = {
             "run",
             "--fix=false",
@@ -33,6 +34,7 @@ return h.make_builtin({
                             row = d.Pos.Line,
                             col = d.Pos.Column,
                             message = d.Text,
+                            severity = h.diagnostics.severities["warning"],
                         })
                     end
                 end
