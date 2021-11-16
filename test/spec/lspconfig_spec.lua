@@ -13,6 +13,7 @@ describe("lspconfig", function()
     after_each(function()
         c.reset()
         sources.reset()
+        tu.wipeout()
     end)
 
     -- this has side effects so we can only do it once
@@ -45,7 +46,7 @@ describe("lspconfig", function()
 
     describe("on_register_source", function()
         local mock_source
-        local get_client, try_add
+        local notify_client, try_add
         before_each(function()
             mock_source = {
                 filetypes = { ["lua"] = true },
@@ -53,37 +54,27 @@ describe("lspconfig", function()
                 generator = {},
             }
 
-            get_client = stub(u, "get_client")
+            notify_client = stub(u, "notify_client")
             try_add = stub(lspconfig, "try_add")
         end)
         after_each(function()
             vim.bo.filetype = ""
-            get_client:revert()
+            notify_client:revert()
             try_add:revert()
         end)
 
-        it("should do nothing if client does not exist", function()
-            lspconfig.on_register_source(mock_source)
-
-            assert.stub(try_add).was_not_called()
-        end)
-
         it("should call try_add with bufnr", function()
-            get_client.returns({})
-
             lspconfig.on_register_source(mock_source)
 
             assert.stub(try_add).was_called_with(vim.api.nvim_get_current_buf())
         end)
 
         it("should call client.notify if source is available", function()
-            local mock_client = { notify = stub.new() }
-            get_client.returns(mock_client)
             vim.bo.filetype = "lua"
 
             lspconfig.on_register_source(mock_source)
 
-            assert.stub(mock_client.notify).was_called_with(methods.lsp.DID_CHANGE, {
+            assert.stub(notify_client).was_called_with(methods.lsp.DID_CHANGE, {
                 textDocument = {
                     uri = vim.uri_from_bufnr(vim.api.nvim_get_current_buf()),
                 },
@@ -115,6 +106,7 @@ describe("lspconfig", function()
         before_each(function()
             tu.edit_test_file("test-file.lua")
         end)
+
         after_each(function()
             vim.cmd("bufdo! bdelete!")
             vim.bo.buftype = ""
@@ -147,8 +139,8 @@ describe("lspconfig", function()
         end)
 
         it("should not attach when buftype is not empty string", function()
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
             vim.bo.buftype = "nofile"
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
 
             lspconfig.try_add()
 
@@ -156,9 +148,9 @@ describe("lspconfig", function()
         end)
 
         it("should not attach when buffer has no name", function()
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
-            vim.cmd("enew")
+            tu.wipeout()
             vim.bo.filetype = "lua"
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
 
             lspconfig.try_add()
 
@@ -166,8 +158,8 @@ describe("lspconfig", function()
         end)
 
         it("should not attach when filetype is gitcommit and version is < 0.6.0", function()
-            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
             vim.bo.filetype = "gitcommit"
+            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
 
             lspconfig.try_add()
 

@@ -51,8 +51,6 @@ function M.setup()
     require("lspconfig/configs")["null-ls"] = {
         default_config = default_config,
     }
-
-    -- listen on FileType and try attaching
 end
 
 -- after registering a new source, try attaching to existing buffers and refresh diagnostics
@@ -61,23 +59,21 @@ function M.on_register_source(source)
         return
     end
 
-    local client = u.get_client()
-    if not client then
-        return
-    end
-
-    local handle_existing_buffer = function(buf)
+    u.buf.for_each(function(buf)
         M.try_add(buf.bufnr)
+
         if
-            sources.is_available(source, api.nvim_buf_get_option(buf.bufnr, "filetype"), methods.internal.DIAGNOSTICS)
+            sources.is_available(
+                source,
+                api.nvim_buf_get_option(buf.bufnr, "filetype"),
+                methods.internal.DIAGNOSTICS_ON_OPEN
+            )
         then
-            client.notify(methods.lsp.DID_CHANGE, {
+            u.notify_client(methods.lsp.DID_CHANGE, {
                 textDocument = { uri = vim.uri_from_bufnr(buf.bufnr) },
             })
         end
-    end
-
-    vim.tbl_map(handle_existing_buffer, vim.fn.getbufinfo({ listed = 1 }))
+    end)
 end
 
 -- refresh filetypes after modifying registered sources

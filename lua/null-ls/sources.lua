@@ -88,8 +88,8 @@ end
 
 M.enable = function(query)
     for_each_matching(query, function(source)
-        source._disabled = nil
-        diagnostics.show_source_diagnostics(source.id)
+        source._disabled = false
+        require("null-ls.lspconfig").on_register_source(source)
     end)
 end
 
@@ -106,7 +106,7 @@ M.toggle = function(query)
         if source._disabled then
             diagnostics.hide_source_diagnostics(source.id)
         else
-            diagnostics.show_source_diagnostics(source.id)
+            require("null-ls.lspconfig").on_register_source(source)
         end
     end)
 end

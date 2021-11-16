@@ -27,21 +27,7 @@ M.hide_source_diagnostics = function(id)
         return
     end
 
-    vim.diagnostic.hide(ns)
-end
-
-M.show_source_diagnostics = function(id)
-    if not vim.diagnostic then
-        log:debug("unable to clear diagnostics (not available on nvim < 0.6.0)")
-        return
-    end
-
-    local ns = namespaces[id]
-    if not ns then
-        return
-    end
-
-    vim.diagnostic.show(ns)
+    vim.diagnostic.reset(ns)
 end
 
 -- assume 1-indexed ranges

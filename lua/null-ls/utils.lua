@@ -73,6 +73,15 @@ M.get_client = function()
     end
 end
 
+M.notify_client = function(method, params)
+    local client = M.get_client()
+    if not client then
+        return
+    end
+
+    client.notify(method, params)
+end
+
 M.resolve_handler = function(method)
     local client = M.get_client()
     return client and client.handlers[method] or vim.lsp.handlers[method]
@@ -181,6 +190,11 @@ M.buf = {
             table.insert(lines, "")
         end
         return lines
+    end,
+    for_each = function(cb)
+        for _, buf in ipairs(vim.fn.getbufinfo({ listed = 1 })) do
+            cb(buf)
+        end
     end,
 }
 

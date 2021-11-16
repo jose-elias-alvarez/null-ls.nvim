@@ -127,6 +127,17 @@ describe("e2e", function()
             assert.equals(write_good_diagnostic.end_col, 13)
         end)
 
+        it("should clear and regenerate buffer diagnostics on toggle", function()
+            sources.toggle("write-good")
+
+            assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
+
+            sources.toggle("write-good")
+            lsp_wait()
+
+            assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 1)
+        end)
+
         it("should update buffer diagnostics on text change", function()
             -- remove "really"
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 6, 0, 13, {})
