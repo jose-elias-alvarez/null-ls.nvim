@@ -27,7 +27,11 @@ M.hide_source_diagnostics = function(id)
         return
     end
 
-    vim.diagnostic.reset(ns)
+    -- this is occasionally throwing errors that are most likely related to upstream issues
+    local ok, err = pcall(vim.diagnostic.reset, ns)
+    if not ok then
+        log:warn(string.format("failed to hide diagnostics for source %d: %s", ok, err))
+    end
 end
 
 -- assume 1-indexed ranges
