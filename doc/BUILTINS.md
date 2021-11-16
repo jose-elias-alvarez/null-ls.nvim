@@ -641,6 +641,34 @@ local sources = { null_ls.builtins.formatting.golines }
 - `command = "golines"`
 - `args = {}`
 
+#### [google-java-format](https://github.com/google/google-java-format)
+
+##### About
+
+Reformats Java source code to comply with Google Java Style.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.google_java_format }
+```
+
+If you want 4 space indentation use:
+
+```lua
+local sources = {
+  null_ls.builtins.formatting.google_java_format.with({
+    extra_args = { "--aosp" },
+  }),
+}
+```
+
+##### Defaults
+
+- `filetypes = { "java" }`
+- `command = "google-java-format"`
+- `args = { "-" }`
+
 #### [isort](https://github.com/PyCQA/isort)
 
 ##### About
