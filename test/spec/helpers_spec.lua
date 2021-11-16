@@ -267,7 +267,7 @@ describe("helpers", function()
             local generator = helpers.generator_factory(generator_args)
             generator.fn({ test_key = "test_val" })
 
-            assert.same(params, { test_key = "test_val", root = root })
+            assert.same(params, { test_key = "test_val", root = root, cwd = vim.loop.cwd() })
         end)
 
         it("should set command from function return value", function()
@@ -349,7 +349,7 @@ describe("helpers", function()
             assert.equals(generator.opts.command, "cat")
         end)
 
-        it("should set _last_args and _last_command from last resolved args and command", function()
+        it("should set _last_args, _last_command, and _last_cwd from last resolved", function()
             generator_args.command = function()
                 return "cat"
             end
@@ -362,6 +362,7 @@ describe("helpers", function()
 
             assert.equals(generator.opts._last_command, "cat")
             assert.same(generator.opts._last_args, { "-b" })
+            assert.same(generator.opts._last_cwd, vim.loop.cwd())
         end)
 
         it("should throw error if from_temp_file = true but to_temp_file is not", function()

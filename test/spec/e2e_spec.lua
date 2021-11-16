@@ -401,6 +401,7 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
+                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
             end)
 
             it("should fall back to global executable when local is unavailable", function()
@@ -416,6 +417,7 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, "ls")
+                assert.equals(copy._opts._last_cwd, vim.loop.cwd())
             end)
         end)
 
@@ -433,6 +435,7 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
+                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
             end)
 
             it("should not run when local executable is unavailable", function()
@@ -447,6 +450,8 @@ describe("e2e", function()
                 lsp_wait()
 
                 assert.equals(vim.tbl_count(actions[1].result), 0)
+                assert.equals(copy._opts.last_command, nil)
+                assert.equals(copy._opts._last_cwd, nil)
             end)
         end)
     end)

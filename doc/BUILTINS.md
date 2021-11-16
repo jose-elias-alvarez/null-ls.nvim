@@ -180,6 +180,10 @@ local sources = {
 To _only_ use a local executable without falling back, use `only_local`, which
 accepts the same options.
 
+By default, these options will also set the `cwd` of the spawned process to the
+parent directory of the local executable (if found). You can override this by
+manually setting `cwd` to a function that should return your preferred `cwd`.
+
 ## Conditional registration
 
 null-ls supports dynamic registration, meaning that you can register sources
