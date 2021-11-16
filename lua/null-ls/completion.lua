@@ -29,10 +29,6 @@ M.handler = function(method, original_params, handler)
                                 items = { result.items, "table" },
                                 isIncomplete = { result.isIncomplete, "boolean" },
                             })
-
-                            vim.validate({
-                                item = { result.items[1], "table" },
-                            })
                         end
 
                         vim.list_extend(items, result.items)
