@@ -197,10 +197,11 @@ current editor state (described in [MAIN](./MAIN.md)). If the callback returns
 
 ### dynamic_command
 
-Optional callback to set `command` dynamically. Takes two arguments, a string
-containing the base `command` and a `params` object containing information about
-the current buffer's state. The callback should return a string containing the
-command to run or `nil`, meaning that no command should run.
+Optional callback to set `command` dynamically. Takes one arguments, a `params`
+object containing information about the current buffer's state. The generator's
+original command (if set) is available as `params.command`. The callback should
+return a string containing the command to run or `nil`, meaning that no command
+should run.
 
 `dynamic_command` runs every time its parent generator runs and can affect
 performance, so it's best to cache its output when possible.

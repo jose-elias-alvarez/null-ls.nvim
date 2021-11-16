@@ -239,9 +239,10 @@ M.generator_factory = function(opts)
                 end
             end
 
+            params.command = command
             local resolved_command
             if dynamic_command then
-                resolved_command = dynamic_command(command, params)
+                resolved_command = dynamic_command(params)
             else
                 resolved_command = command
             end
@@ -420,37 +421,40 @@ M.make_builtin = function(opts)
         end
 
         if prefer_local or only_local then
-            local resolved_cwd
-            builtin_copy._opts.dynamic_command = function(base_command, params)
+            builtin_copy._opts.dynamic_command = function(params)
                 local lsputil = require("lspconfig.util")
 
                 -- assume the resolved command stays the same for the lifetime of the buffer,
                 -- to avoid a potentially expensive search on every run
-                local resolved = s.get_command(params.bufnr, base_command)
+                local resolved = s.get_resolved_command(params.bufnr, params.command)
                 if
-                    type(resolved) == "string" -- command was resolved on last run
-                    or resolved == false -- command failed to resolve, so don't bother checking again
+                    resolved
+                    and (
+                        type(resolved.command)
+                            == "string" -- command was resolved on last run
+                        or resolved.command == false -- command failed to resolve, so don't bother checking again
+                    )
                 then
                     return resolved
                 end
 
                 local maybe_prefix = prefer_local or only_local
                 local prefix = type(maybe_prefix) == "string" and maybe_prefix
-                local executable_to_find = prefix and lsputil.path.join(prefix, base_command) or base_command
+                local executable_to_find = prefix and lsputil.path.join(prefix, params.command) or params.command
                 log:debug("attempting to find local executable " .. executable_to_find)
 
                 local client = u.get_client()
                 local root = client and client.root_dir or vim.fn.getcwd()
 
-                local local_bin
+                local found, resolved_cwd
                 lsputil.path.traverse_parents(params.bufname, function(dir)
-                    local_bin = lsputil.path.join(dir, executable_to_find)
-                    if u.is_executable(local_bin) then
+                    found = lsputil.path.join(dir, executable_to_find)
+                    if u.is_executable(found) then
                         resolved_cwd = dir
                         return true
                     end
 
-                    local_bin = nil
+                    found = nil
                     resolved_cwd = nil
                     -- use cwd as a stopping point to avoid scanning the entire file system
                     if dir == root then
@@ -458,19 +462,25 @@ M.make_builtin = function(opts)
                     end
                 end)
 
-                resolved = local_bin or (prefer_local and base_command)
-                if resolved then
-                    local is_executable, err_msg = u.is_executable(resolved)
+                local resolved_command = found or (prefer_local and params.command)
+                if resolved_command then
+                    local is_executable, err_msg = u.is_executable(resolved_command)
                     assert(is_executable, err_msg)
                 end
 
-                s.set_command(params.bufnr, base_command, resolved or false)
-                return resolved
+                s.set_resolved_command(
+                    params.bufnr,
+                    params.command,
+                    { command = resolved_command or false, cwd = resolved_cwd }
+                )
+                return resolved_command
             end
 
-            builtin_copy._opts.cwd = user_opts.cwd or function()
-                return resolved_cwd
-            end
+            builtin_copy._opts.cwd = user_opts.cwd
+                or function(params)
+                    local resolved = s.get_resolved_command(params.bufnr, params.command)
+                    return resolved and resolved.cwd
+                end
         end
 
         builtin_copy._opts._last_command = nil

@@ -267,7 +267,8 @@ describe("helpers", function()
             local generator = helpers.generator_factory(generator_args)
             generator.fn({ test_key = "test_val" })
 
-            assert.same(params, { test_key = "test_val", root = root, cwd = vim.loop.cwd() })
+            assert.truthy(params)
+            assert.equals(params.test_key, "test_val")
         end)
 
         it("should set command from function return value", function()
@@ -297,17 +298,17 @@ describe("helpers", function()
             assert.equals(count, 1)
         end)
 
-        it("should call dynamic_command with command but not override original command", function()
+        it("should call dynamic_command with params but not override original command", function()
             local original_command
-            generator_args.dynamic_command = function(cmd)
-                original_command = cmd
-                return "cat"
+            generator_args.dynamic_command = function(params)
+                original_command = params.command
+                return "tldr"
             end
 
             local generator = helpers.generator_factory(generator_args)
             generator.fn({})
 
-            assert.equals(loop.spawn.calls[1].refs[1], "cat")
+            assert.equals(loop.spawn.calls[1].refs[1], "tldr")
             assert.equals(generator_args.command, original_command)
             assert.equals(generator_args.command, "cat")
         end)

@@ -71,12 +71,12 @@ M.clear_cache = function(uri)
     state.cache[uri] = nil
 end
 
-M.set_command = function(bufnr, base, resolved)
+M.set_resolved_command = function(bufnr, base, resolved)
     state.commands[bufnr] = state.commands[bufnr] or {}
     state.commands[bufnr][base] = resolved
 end
 
-M.get_command = function(bufnr, base)
+M.get_resolved_command = function(bufnr, base)
     return state.commands[bufnr] and state.commands[bufnr][base]
 end
 
