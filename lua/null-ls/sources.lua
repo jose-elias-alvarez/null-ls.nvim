@@ -238,8 +238,17 @@ M.reset = function()
     require("null-ls.lspconfig").on_register_sources()
 end
 
-M.is_registered = function(name)
-    return registered.names[name] ~= nil
+M.is_registered = function(query)
+    if type(query) == "string" and registered.names[query] then
+        return true
+    end
+
+    local found
+    for_each_matching(query, function(source)
+        found = source
+    end)
+
+    return found ~= nil
 end
 
 M.register_name = function(name)
