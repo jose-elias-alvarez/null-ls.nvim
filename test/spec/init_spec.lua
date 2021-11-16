@@ -65,6 +65,7 @@ describe("init", function()
             assert.equals(vim.fn.exists(":NullLsInfo") > 0, true)
             assert.equals(vim.fn.exists(":NullLsLog") > 0, true)
             assert.truthy(vim.fn.exists("#NullLs#FileType") > 0)
+            assert.truthy(vim.fn.exists("#NullLs#InsertLeave") > 0)
         end)
 
         it("should set up null-ls with user config", function()
