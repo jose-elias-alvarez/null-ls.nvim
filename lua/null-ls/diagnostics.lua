@@ -72,7 +72,7 @@ local postprocess = function(diagnostic, _, generator)
 end
 
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
-    if not api.nvim_buf_is_valid(bufnr) then
+    if not api.nvim_buf_is_loaded(bufnr) then
         return
     end
 
