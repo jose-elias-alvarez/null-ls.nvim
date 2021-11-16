@@ -1456,6 +1456,24 @@ local sources = { null_ls.builtins.diagnostics.credo }
 - `command = "mix"`
 - `args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }`
 
+#### [cspell](https://github.com/streetsidesoftware/cspell)
+
+##### About
+
+`cspell` is a spell checker for code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cspell }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "cspell"`
+- `args = { "stdin" }`
+
 #### [ESLint](https://github.com/eslint/eslint)
 
 ##### About
