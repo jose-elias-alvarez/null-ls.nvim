@@ -32,10 +32,6 @@ describe("lspconfig", function()
             assert.truthy(type(default_config.root_dir) == "function")
         end)
 
-        it("should set up autocommand", function()
-            assert.truthy(vim.fn.exists("#NullLs#FileType") > 0)
-        end)
-
         describe("root_dir", function()
             it("should return root dir", function()
                 local cwd = vim.fn.getcwd()

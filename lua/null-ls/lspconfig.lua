@@ -53,12 +53,6 @@ function M.setup()
     }
 
     -- listen on FileType and try attaching
-    vim.cmd([[
-      augroup NullLs
-        autocmd!
-        autocmd FileType * lua require("null-ls.lspconfig").try_add()
-      augroup end
-    ]])
 end
 
 -- after registering a new source, try attaching to existing buffers and refresh diagnostics
