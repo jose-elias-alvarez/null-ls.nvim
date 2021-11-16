@@ -27,11 +27,7 @@ M.hide_source_diagnostics = function(id)
         return
     end
 
-    -- this is occasionally throwing errors that are most likely related to upstream issues
-    local ok, err = pcall(vim.diagnostic.reset, ns)
-    if not ok then
-        log:warn(string.format("failed to hide diagnostics for source %d: %s", ok, err))
-    end
+    vim.diagnostic.reset(ns)
 end
 
 -- assume 1-indexed ranges
@@ -76,6 +72,10 @@ local postprocess = function(diagnostic, _, generator)
 end
 
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
+    if not api.nvim_buf_is_valid(bufnr) then
+        return
+    end
+
     if should_use_diagnostic_api() then
         for id, by_id in pairs(diagnostics) do
             namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
