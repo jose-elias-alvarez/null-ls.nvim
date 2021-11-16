@@ -128,7 +128,7 @@ sources (you'll have to make a change to trigger an update on lower versions).
 ## enable(query)
 
 Enables all disabled sources matching `query`, allowing them to run again as
-normal. See `get_source(query)` above for information about the structure of `query`.
+normal.
 
 This will also prompt null-ls to attempt to re-attach to existing buffers and
 regenerate diagnostics.
@@ -136,24 +136,20 @@ regenerate diagnostics.
 ## toggle(query)
 
 Enables or disables each source based on its current availability. See
-`get_source(query)` above for information about the structure of `query` and
 `enable(query)` / `disable(query)` above for the consequences of source
 avaiability.
 
 ## deregister(query)
 
-Clears all sources matching `query` from the internal list of sources. See
-`get_source(query)` above for information about the structure of `query`.
+Clears all sources matching `query` from the internal list of sources.
 
 ## reset_sources()
 
 Clears all registered sources.
 
-## is_registered(name)
+## is_registered(query)
 
-Returns `true` if null-ls has registered a source with the name `name` (exact
-match). For more flexible queries, use one of the query methods or check the
-results of `get_sources()` manually.
+Returns `true` if null-ls has registered a source matching `query`
 
 ## register_name(name)
 
