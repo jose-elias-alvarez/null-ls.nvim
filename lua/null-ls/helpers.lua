@@ -424,17 +424,10 @@ M.make_builtin = function(opts)
             builtin_copy._opts.dynamic_command = function(params)
                 local lsputil = require("lspconfig.util")
 
-                -- assume the resolved command stays the same for the lifetime of the buffer,
-                -- to avoid a potentially expensive search on every run
                 local resolved = s.get_resolved_command(params.bufnr, params.command)
-                if
-                    resolved
-                    and (
-                        type(resolved.command)
-                            == "string" -- command was resolved on last run
-                        or resolved.command == false -- command failed to resolve, so don't bother checking again
-                    )
-                then
+                -- a string means command was resolved on last run
+                -- false means the command already failed to resolve, so don't bother checking again
+                if resolved and (type(resolved.command) == "string" or resolved.command == false) then
                     return resolved
                 end
 
