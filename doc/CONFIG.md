@@ -115,9 +115,8 @@ users can override the timeout period on a per-source basis, too (see
 ### debug (boolean)
 
 Displays all possible log messages and writes them to the null-ls log, which you
-can view with the command `:NullLsLog`. Also enables extra source validation.
-This option can slow down Neovim, so it's strongly recommended to disable it for
-normal use.
+can view with the command `:NullLsLog`. This option can slow down Neovim, so
+it's strongly recommended to disable it for normal use.
 
 `debug = true` is the same as setting `log.level` to `"trace"` and
 `log.use_console` to `false`. For finer-grained control, see the `log` options
