@@ -383,11 +383,11 @@ M.make_builtin = function(opts)
             return function()
                 local should_register = condition(u.make_conditional_utils())
                 if should_register then
-                    log:debug("registering conditional source " .. builtin.name)
-                    return builtin
+                    log:debug("registering conditional source " .. builtin_copy.name)
+                    return builtin_copy
                 end
 
-                log:debug("not registering conditional source " .. builtin.name)
+                log:debug("not registering conditional source " .. builtin_copy.name)
             end
         end
 
