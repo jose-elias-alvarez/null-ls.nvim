@@ -11,6 +11,10 @@ local should_use_diagnostic_api = function()
 end
 
 local namespaces = {}
+local get_namespace = function(id)
+    namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+    return namespaces[id]
+end
 
 local M = {}
 
@@ -88,8 +92,7 @@ end
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
     if should_use_diagnostic_api() then
         for id, by_id in pairs(diagnostics) do
-            namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
-            vim.diagnostic.set(namespaces[id], bufnr, by_id)
+            vim.diagnostic.set(get_namespace(id), bufnr, by_id)
         end
         return
     end
@@ -160,6 +163,62 @@ M.handler = function(original_params)
             handle_diagnostics(diagnostics, uri, bufnr, original_params.client_id)
         end,
     })
+end
+
+M.set_project_diagnostics = function()
+    local method = methods.internal.PROJECT_DIAGNOSTICS
+    local params = u.make_params({}, method)
+
+    M.clear_project_diagnostics(params.ft)
+
+    u.echo("MoreMsg", "fetching project diagnostics...")
+
+    require("null-ls.generators").run_registered({
+        filetype = params.ft,
+        method = method,
+        params = params,
+        index_by_id = true,
+        postprocess = postprocess,
+        callback = function(diagnostics)
+            log:debug("received project diagnostics from generators")
+            log:trace(diagnostics)
+
+            for id, by_id in pairs(diagnostics) do
+                local diagnostics_by_bufnr = {}
+                for _, diagnostic in ipairs(by_id) do
+                    local filename = diagnostic.filename
+                    local bufnr = vim.fn.bufadd(filename)
+                    vim.fn.bufload(bufnr)
+                    vim.fn.setbufvar(bufnr, "&buflisted", 1)
+
+                    diagnostics_by_bufnr[bufnr] = diagnostics_by_bufnr[bufnr] or {}
+                    table.insert(diagnostics_by_bufnr[bufnr], diagnostic)
+                end
+
+                for bufnr, by_bufnr in pairs(diagnostics_by_bufnr) do
+                    vim.diagnostic.set(get_namespace(id), bufnr, by_bufnr)
+                end
+
+                vim.fn.setqflist(vim.diagnostic.toqflist(by_id))
+            end
+
+            u.echo("MoreMsg", "successfully fetched project diagnostics")
+
+            if vim.tbl_count(diagnostics) > 0 then
+                vim.cmd("copen | wincmd p")
+            end
+        end,
+    })
+end
+
+M.clear_project_diagnostics = function(ft)
+    local method = methods.internal.PROJECT_DIAGNOSTICS
+    ft = ft or vim.bo.filetype
+
+    local generators = require("null-ls.generators").get_available(ft, method, true)
+    for id in pairs(generators) do
+        M.hide_source_diagnostics(id)
+    end
 end
 
 return M
