@@ -72,10 +72,6 @@ local postprocess = function(diagnostic, _, generator)
 end
 
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
-    if not api.nvim_buf_is_loaded(bufnr) then
-        return
-    end
-
     if should_use_diagnostic_api() then
         for id, by_id in pairs(diagnostics) do
             namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
