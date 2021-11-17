@@ -155,7 +155,7 @@ M.handler = function(original_params)
     })
 end
 
-M.set_project_diagnostics = function()
+M.get_project_diagnostics = function()
     local method = methods.internal.PROJECT_DIAGNOSTICS
     local params = u.make_params({}, method)
 
