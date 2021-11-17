@@ -1971,6 +1971,40 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - `command = "golangci-lint"`
 - `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
+### Project diagnostics (experimental)
+
+**NOTE**: These sources depend on Neovim version 0.6.0 and are not compatible
+with previous versions. Support for project diagnostics is experimental and
+subject to change.
+
+To get project diagnostics, open a file matching the filetype of your registered
+source(s) and run `:lua require("null-ls.diagnostics").get_project_diagnostics()`. This will load
+buffers containing diagnostics and populate the quickfix list with results.
+
+Project diagnostics are not cleared until you either get them again or run `:lua require("null-ls.diagnostics").clear_project_diagnostics()`.
+
+#### [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+
+##### About
+
+Parses diagnostics from the TypeScript compiler.
+
+##### Usage
+
+- Diagnostics from this source and `tsserver` are independent. If you have
+  `tsserver` configured to show diagnostics, project and LSP diagnostics will
+  overlap and you'll see duplicates.
+
+```lua
+local sources = { null_ls.builtins.diagnostics.tsc }
+```
+
+##### Defaults
+
+- `filetypes = { "typescript", "typescriptreact" }`
+- `command = "tsc"`
+- `args = { "--pretty", "false", "--noEmit" }`
+
 ### Code actions
 
 #### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)

@@ -47,6 +47,12 @@ null-ls sources are able to hook into the following LSP features:
 
 - Completion
 
+On Neovim 0.6.0, null-ls also supports the following:
+
+- Diagnostics on save
+
+- Project diagnostics (experimental)
+
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
 how to set up sources and a list of available sources.

@@ -267,7 +267,7 @@ actions on the next request.
 Like generator functions, code action
 callbacks are schedule-wrapped, making it safe to call any API function.
 
-#### Diagnostics
+#### Diagnostics (on change and on save)
 
 ```lua
 -- null-ls assumes ranges are 1-indexed, so sources should offset if not
@@ -285,6 +285,27 @@ return { {
 
 null-ls sends diagnostic results to the Neovim LSP client's handler, which shows
 them in the editor.
+
+#### Project diagnostics
+
+```lua
+-- see above for defaults
+return { {
+    filename, -- string
+    row, -- number, optional
+    col, -- number, optional
+    end_row, -- number, optional
+    end_col, -- number, optional
+    source, -- string, optional
+    code, -- number, optional
+    message, -- string
+    severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
+} }
+```
+
+Project diagnostics must include a filename specifying the full path to the file
+to which the diagnostic applies. Otherwise, the return value is the same as
+standard diagnostics.
 
 #### Formatting
 
