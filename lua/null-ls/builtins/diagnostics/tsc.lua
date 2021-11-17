@@ -25,7 +25,7 @@ return h.make_builtin({
             local severity = err == "error" and 1 or 2
             return { row = row, col = col, code = code, message = message, severity = severity, filename = filename }
         end,
-        timeout = 100000,
+        timeout = 150000,
         cwd = function(params)
             return require("lspconfig.util").root_pattern("tsconfig.json")(params.bufname)
         end,
