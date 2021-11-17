@@ -1,6 +1,5 @@
 local u = require("null-ls.utils")
 local methods = require("null-ls.methods")
-local config = require("null-ls.config").get()
 local log = require("null-ls.logger")
 
 local M = {}
@@ -23,13 +22,6 @@ M.handler = function(method, original_params, handler)
                     local isIncomplete = false
                     for _, result in ipairs(results) do
                         isIncomplete = isIncomplete or result.isIncomplete
-
-                        if config.debug then
-                            vim.validate({
-                                items = { result.items, "table" },
-                                isIncomplete = { result.isIncomplete, "boolean" },
-                            })
-                        end
 
                         vim.list_extend(items, result.items)
                     end

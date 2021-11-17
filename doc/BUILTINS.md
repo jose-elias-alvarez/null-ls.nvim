@@ -641,6 +641,34 @@ local sources = { null_ls.builtins.formatting.golines }
 - `command = "golines"`
 - `args = {}`
 
+#### [google-java-format](https://github.com/google/google-java-format)
+
+##### About
+
+Reformats Java source code to comply with Google Java Style.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.google_java_format }
+```
+
+If you want 4 space indentation use:
+
+```lua
+local sources = {
+  null_ls.builtins.formatting.google_java_format.with({
+    extra_args = { "--aosp" },
+  }),
+}
+```
+
+##### Defaults
+
+- `filetypes = { "java" }`
+- `command = "google-java-format"`
+- `args = { "-" }`
+
 #### [isort](https://github.com/PyCQA/isort)
 
 ##### About
@@ -1427,6 +1455,24 @@ local sources = { null_ls.builtins.diagnostics.credo }
 - `filetypes = { "elixir" }`
 - `command = "mix"`
 - `args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }`
+
+#### [cspell](https://github.com/streetsidesoftware/cspell)
+
+##### About
+
+`cspell` is a spell checker for code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cspell }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "cspell"`
+- `args = { "stdin" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
