@@ -114,9 +114,12 @@ M.handler = function(original_params)
     end
 
     local method, uri = original_params.method, original_params.textDocument.uri
+    local bufnr = vim.uri_to_bufnr(uri)
+
     if method == methods.lsp.DID_CLOSE then
         changedticks_by_uri[uri] = nil
         s.clear_cache(uri)
+        s.clear_commands(bufnr)
         return
     end
 
@@ -124,7 +127,6 @@ M.handler = function(original_params)
         s.clear_cache(uri)
     end
 
-    local bufnr = vim.uri_to_bufnr(uri)
     local changedtick = original_params.textDocument.version or api.nvim_buf_get_changedtick(bufnr)
 
     if method == methods.lsp.DID_SAVE and changedtick == get_last_changedtick(uri, method) then

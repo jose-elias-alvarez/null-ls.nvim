@@ -135,7 +135,7 @@ describe("utils", function()
             assert.stub(has).was_called_with("nvim-0.6.0")
         end)
 
-        it("should return false if has resullt is 0", function()
+        it("should return false if has result is 0", function()
             has.returns(0)
 
             assert.falsy(u.has_version("0.6.0"))
@@ -145,6 +145,42 @@ describe("utils", function()
             has.returns(1)
 
             assert.truthy(u.has_version("0.6.0"))
+        end)
+    end)
+
+    describe("is_executable", function()
+        local executable
+        before_each(function()
+            executable = stub(vim.fn, "executable")
+        end)
+        after_each(function()
+            executable:revert()
+        end)
+
+        it("should call executable with command", function()
+            executable.returns(0)
+
+            u.is_executable("mock-command")
+
+            assert.stub(executable).was_called_with("mock-command")
+        end)
+
+        it("should return true and nil if result is > 0", function()
+            executable.returns(1)
+
+            local is_executable, err_msg = u.is_executable("mock-command")
+
+            assert.truthy(is_executable)
+            assert.falsy(err_msg)
+        end)
+
+        it("should return false and error message if result is 0", function()
+            executable.returns(0)
+
+            local is_executable, err_msg = u.is_executable("mock-command")
+
+            assert.falsy(is_executable)
+            assert.truthy(err_msg:find("is not executable"))
         end)
     end)
 

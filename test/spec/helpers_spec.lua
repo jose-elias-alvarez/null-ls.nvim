@@ -245,6 +245,18 @@ describe("helpers", function()
             assert.truthy(err:match("command nonexistent is not executable"))
         end)
 
+        it("should not validate command if dynamic_command is set", function()
+            generator_args.command = "nonexistent"
+            generator_args.dynamic_command = function()
+                return "cat"
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            local _, err = pcall(generator.fn, {})
+
+            assert.falsy(err)
+        end)
+
         it("should call command function with params ", function()
             local params
             generator_args.command = function(_params)
@@ -255,7 +267,8 @@ describe("helpers", function()
             local generator = helpers.generator_factory(generator_args)
             generator.fn({ test_key = "test_val" })
 
-            assert.same(params, { test_key = "test_val", root = root })
+            assert.truthy(params)
+            assert.equals(params.test_key, "test_val")
         end)
 
         it("should set command from function return value", function()
@@ -268,6 +281,62 @@ describe("helpers", function()
 
             assert.stub(loop.spawn).was_called()
             assert.equals(loop.spawn.calls[1].refs[1], "cat")
+            assert.equals(generator_args.command, "cat")
+        end)
+
+        it("should only set command once", function()
+            local count = 0
+            generator_args.command = function()
+                count = count + 1
+                return "cat"
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            generator.fn({})
+            generator.fn({})
+
+            assert.equals(count, 1)
+        end)
+
+        it("should call dynamic_command with params but not override original command", function()
+            local original_command
+            generator_args.dynamic_command = function(params)
+                original_command = params.command
+                return "tldr"
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            generator.fn({})
+
+            assert.equals(loop.spawn.calls[1].refs[1], "tldr")
+            assert.equals(generator_args.command, original_command)
+            assert.equals(generator_args.command, "cat")
+        end)
+
+        it("should not spawn command and return done if dynamic_command returns nil", function()
+            generator_args.dynamic_command = function()
+                return nil
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            generator.fn({}, done)
+
+            assert.stub(loop.spawn).was_not_called()
+            assert.stub(done).was_called()
+        end)
+
+        it("should call dynamic_command once on each run", function()
+            local count = 0
+            generator_args.dynamic_command = function()
+                count = count + 1
+                return "cat"
+            end
+
+            local generator = helpers.generator_factory(generator_args)
+            generator.fn({})
+            generator.fn({})
+
+            assert.equals(count, 2)
         end)
 
         it("should set generator.opts.command to function return value", function()
@@ -281,7 +350,7 @@ describe("helpers", function()
             assert.equals(generator.opts.command, "cat")
         end)
 
-        it("should set _last_args and _last_command from last resolved args and command", function()
+        it("should set _last_args, _last_command, and _last_cwd from last resolved", function()
             generator_args.command = function()
                 return "cat"
             end
@@ -294,6 +363,7 @@ describe("helpers", function()
 
             assert.equals(generator.opts._last_command, "cat")
             assert.same(generator.opts._last_args, { "-b" })
+            assert.same(generator.opts._last_cwd, vim.loop.cwd())
         end)
 
         it("should throw error if from_temp_file = true but to_temp_file is not", function()

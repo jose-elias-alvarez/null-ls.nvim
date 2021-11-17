@@ -101,7 +101,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command =
         opts.command,
         opts.args,
         opts.on_output,
@@ -115,7 +115,8 @@ M.generator_factory = function(opts)
         opts.from_temp_file,
         opts.use_cache,
         opts.runtime_condition,
-        opts.cwd
+        opts.cwd,
+        opts.dynamic_command
 
     if type(check_exit_code) == "table" then
         local codes = vim.deepcopy(check_exit_code)
@@ -152,6 +153,7 @@ M.generator_factory = function(opts)
             use_cache = { use_cache, "boolean", true },
             runtime_condition = { runtime_condition, "function", true },
             cwd = { cwd, "function", true },
+            dynamic_command = { dynamic_command, "function", true },
         })
 
         if type(command) == "function" then
@@ -160,15 +162,11 @@ M.generator_factory = function(opts)
             opts.command = command
         end
 
-        local err_msg
-        if vim.fn.executable(command) ~= 1 then
-            err_msg = string.format(
-                "command %s is not executable (make sure it's installed and on your $PATH)",
-                command
-            )
+        if not dynamic_command then
+            local is_executable, err_msg = u.is_executable(command)
+            assert(is_executable, err_msg)
         end
 
-        assert(not err_msg, err_msg)
         assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
         _validated = true
@@ -241,10 +239,29 @@ M.generator_factory = function(opts)
                 end
             end
 
-            local client = vim.lsp.get_client_by_id(params.client_id)
-            params.root = client and client.config.root_dir or vim.fn.getcwd()
+            params.command = command
+            local resolved_command
+            if dynamic_command then
+                resolved_command = dynamic_command(params)
+            else
+                resolved_command = command
+            end
+
+            -- if dynamic_command returns nil, don't fall back to command
+            if not resolved_command then
+                log:debug(string.format("failed to resolve command [%s]; not spawning", command))
+                return done()
+            end
+
+            local client = u.get_client()
+            local root = client and client.config.root_dir or vim.loop.cwd()
+            params.root = root
+
+            local resolved_cwd = cwd and cwd(params) or root
+            params.cwd = resolved_cwd
+
             local spawn_opts = {
-                cwd = opts.cwd and opts.cwd(params) or params.root,
+                cwd = resolved_cwd,
                 input = to_stdin and get_content(params) or nil,
                 handler = wrapper,
                 check_exit_code = check_exit_code,
@@ -274,14 +291,16 @@ M.generator_factory = function(opts)
                 params.temp_path = temp_path
             end
 
-            local spawn_args = args or {}
-            spawn_args = type(spawn_args) == "function" and spawn_args(params) or spawn_args
-            spawn_args = parse_args(spawn_args, params)
-            opts._last_args = spawn_args
-            opts._last_command = command
+            local resolved_args = args or {}
+            resolved_args = type(resolved_args) == "function" and resolved_args(params) or resolved_args
+            resolved_args = parse_args(resolved_args, params)
 
-            log:debug(string.format("spawning command [%s] with args %s", command, vim.inspect(spawn_args)))
-            loop.spawn(command, spawn_args, spawn_opts)
+            opts._last_command = resolved_command
+            opts._last_args = resolved_args
+            opts._last_cwd = resolved_cwd
+
+            log:debug(string.format("spawning command [%s] with args %s", resolved_command, vim.inspect(resolved_args)))
+            loop.spawn(resolved_command, resolved_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
         opts = opts,
@@ -344,14 +363,15 @@ M.make_builtin = function(opts)
     })
 
     builtin.with = function(user_opts)
+        -- return a copy to allow registering multiple copies of the same built-in with different opts
         local builtin_copy = vim.deepcopy(builtin)
         setmetatable(builtin_copy, getmetatable(builtin))
 
         builtin_copy.filetypes = user_opts.filetypes or builtin_copy.filetypes
-        builtin_copy.method = user_opts.method or builtin.method
         builtin_copy.disabled_filetypes = user_opts.disabled_filetypes
+        builtin_copy.method = user_opts.method or builtin.method
 
-        -- Extend args manually as vim.tbl_deep_extend overwrites the list
+        -- set args to a function that merges args and extra_args
         if
             user_opts.extra_args
             and (type(user_opts.extra_args) == "function" or vim.tbl_count(user_opts.extra_args) > 0)
@@ -366,6 +386,7 @@ M.make_builtin = function(opts)
                 local extra_args_copy = type(original_extra_args) == "function" and original_extra_args(params)
                     or vim.deepcopy(original_extra_args)
 
+                -- make sure "-" stays last
                 if original_args_copy[#original_args_copy] == "-" then
                     table.remove(original_args_copy)
                     table.insert(extra_args_copy, "-")
@@ -373,11 +394,12 @@ M.make_builtin = function(opts)
 
                 return vim.list_extend(original_args_copy, extra_args_copy)
             end
-            user_opts.extra_args = nil
         end
 
+        -- merge other opts with generator opts
         builtin_copy._opts = vim.tbl_deep_extend("force", builtin_copy._opts, user_opts)
 
+        -- return a function that runs on registration to determine if source should be registered
         local condition = user_opts.condition
         if condition then
             return function()
@@ -390,6 +412,73 @@ M.make_builtin = function(opts)
                 log:debug("not registering conditional source " .. builtin_copy.name)
             end
         end
+
+        -- set a dynamic command that attempts to find a local executable on run
+        local prefer_local, only_local = user_opts.prefer_local, user_opts.only_local
+        -- override in case both are set
+        if only_local then
+            prefer_local = nil
+        end
+
+        if prefer_local or only_local then
+            builtin_copy._opts.dynamic_command = function(params)
+                local lsputil = require("lspconfig.util")
+
+                local resolved = s.get_resolved_command(params.bufnr, params.command)
+                -- a string means command was resolved on last run
+                -- false means the command already failed to resolve, so don't bother checking again
+                if resolved and (type(resolved.command) == "string" or resolved.command == false) then
+                    return resolved.command
+                end
+
+                local maybe_prefix = prefer_local or only_local
+                local prefix = type(maybe_prefix) == "string" and maybe_prefix
+                local executable_to_find = prefix and lsputil.path.join(prefix, params.command) or params.command
+                log:debug("attempting to find local executable " .. executable_to_find)
+
+                local client = u.get_client()
+                local root = client and client.root_dir or vim.fn.getcwd()
+
+                local found, resolved_cwd
+                lsputil.path.traverse_parents(params.bufname, function(dir)
+                    found = lsputil.path.join(dir, executable_to_find)
+                    if u.is_executable(found) then
+                        resolved_cwd = dir
+                        return true
+                    end
+
+                    found = nil
+                    resolved_cwd = nil
+                    -- use cwd as a stopping point to avoid scanning the entire file system
+                    if dir == root then
+                        return true
+                    end
+                end)
+
+                local resolved_command = found or (prefer_local and params.command)
+                if resolved_command then
+                    local is_executable, err_msg = u.is_executable(resolved_command)
+                    assert(is_executable, err_msg)
+                end
+
+                s.set_resolved_command(
+                    params.bufnr,
+                    params.command,
+                    { command = resolved_command or false, cwd = resolved_cwd }
+                )
+                return resolved_command
+            end
+
+            builtin_copy._opts.cwd = user_opts.cwd
+                or function(params)
+                    local resolved = s.get_resolved_command(params.bufnr, params.command)
+                    return resolved and resolved.cwd
+                end
+        end
+
+        builtin_copy._opts._last_command = nil
+        builtin_copy._opts._last_args = nil
+        builtin_copy._opts._last_cwd = nil
 
         return builtin_copy
     end
