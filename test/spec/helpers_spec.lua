@@ -874,7 +874,7 @@ describe("helpers", function()
                 assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
             end)
 
-            it("should wrap builtin with condition", function()
+            it("should wrap builtin with condition and return copy if callback returns true", function()
                 local wrapped_copy = builtin.with({
                     condition = function()
                         return true
@@ -882,6 +882,18 @@ describe("helpers", function()
                 })
 
                 assert.equals(type(wrapped_copy), "function")
+
+                assert.is_not.equals(wrapped_copy(), builtin)
+            end)
+
+            it("should retrun nil if callback returns false", function()
+                local wrapped_copy = builtin.with({
+                    condition = function()
+                        return false
+                    end,
+                })
+
+                assert.falsy(wrapped_copy())
             end)
         end)
 

@@ -31,21 +31,7 @@ M.hide_source_diagnostics = function(id)
         return
     end
 
-    vim.diagnostic.hide(ns)
-end
-
-M.show_source_diagnostics = function(id)
-    if not vim.diagnostic then
-        log:debug("unable to clear diagnostics (not available on nvim < 0.6.0)")
-        return
-    end
-
-    local ns = namespaces[id]
-    if not ns then
-        return
-    end
-
-    vim.diagnostic.show(ns)
+    vim.diagnostic.reset(ns)
 end
 
 -- assume 1-indexed ranges
@@ -90,6 +76,10 @@ local postprocess = function(diagnostic, _, generator)
 end
 
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
+    if not api.nvim_buf_is_loaded(bufnr) then
+        return
+    end
+
     if should_use_diagnostic_api() then
         for id, by_id in pairs(diagnostics) do
             vim.diagnostic.set(get_namespace(id), bufnr, by_id)

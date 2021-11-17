@@ -9,4 +9,8 @@ M.edit_test_file = function(file)
     vim.cmd("e! " .. M.test_file_path(file))
 end
 
+M.wipeout = function()
+    vim.cmd("bufdo! bwipeout!")
+end
+
 return M

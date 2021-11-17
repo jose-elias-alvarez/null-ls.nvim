@@ -15,7 +15,6 @@ describe("sources", function()
         on_register_source:clear()
         on_register_sources:clear()
         diagnostics.hide_source_diagnostics:clear()
-        diagnostics.show_source_diagnostics:clear()
 
         sources._reset()
     end)
@@ -320,8 +319,9 @@ describe("sources", function()
     end)
 
     describe("enable", function()
+        local mock_source
         before_each(function()
-            local mock_source = {
+            mock_source = {
                 name = "first-mock-source",
                 methods = { [methods.internal.FORMATTING] = true },
                 id = 1,
@@ -335,7 +335,7 @@ describe("sources", function()
             sources.enable("mock")
 
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(diagnostics.show_source_diagnostics).was_called_with(1)
+            assert.stub(on_register_source).was_called_with(mock_source)
         end)
     end)
 
@@ -359,8 +359,9 @@ describe("sources", function()
     end)
 
     describe("toggle", function()
+        local mock_source
         before_each(function()
-            local mock_source = {
+            mock_source = {
                 name = "first-mock-source",
                 methods = { [methods.internal.FORMATTING] = true },
                 id = 1,
@@ -376,7 +377,7 @@ describe("sources", function()
 
             sources.toggle("mock")
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(diagnostics.show_source_diagnostics).was_called_with(1)
+            assert.stub(on_register_source).was_called_with(mock_source)
         end)
     end)
 
