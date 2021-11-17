@@ -1516,7 +1516,7 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 ##### Defaults
 
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
-- `command = "eslint"`
+- `command = "eslint_d"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 #### [flake8](https://github.com/PyCGA/flake8)
