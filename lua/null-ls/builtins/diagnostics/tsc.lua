@@ -26,6 +26,9 @@ return h.make_builtin({
             return { row = row, col = col, code = code, message = message, severity = severity, filename = filename }
         end,
         timeout = 100000,
+        cwd = function(params)
+            return require("lspconfig.util").root_pattern("tsconfig.json")(params.bufname)
+        end,
     },
     factory = h.generator_factory,
 })
