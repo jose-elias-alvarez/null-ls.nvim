@@ -1,5 +1,6 @@
 local methods = require("null-ls.methods")
 local diagnostics = require("null-ls.diagnostics")
+local log = require("null-ls.logger")
 local u = require("null-ls.utils")
 
 local validate = vim.validate
@@ -197,8 +198,11 @@ M.validate_and_transform = function(source)
         method_map[method] = true
     end
 
-    if method_map[methods.internal.DIAGNOSTICS_ON_SAVE] and not u.has_version("0.6.0") then
-        u.echo("WarningMsg", string.format("source %s is not supported on nvim versions < 0.6.0", name))
+    if
+        (method_map[methods.internal.DIAGNOSTICS_ON_SAVE] or method_map[methods.internal.PROJECT_DIAGNOSTICS])
+        and not u.has_version("0.6.0")
+    then
+        log:warn(string.format("source %s is not supported on nvim versions < 0.6.0", name))
         return
     end
 
