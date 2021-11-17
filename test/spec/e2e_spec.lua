@@ -5,6 +5,7 @@ local main = require("null-ls")
 
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
+local s = require("null-ls.state")
 local tu = require("test.utils")
 
 local lsp = vim.lsp
@@ -38,6 +39,7 @@ describe("e2e", function()
         vim.cmd("bufdo! bdelete!")
 
         c.reset()
+        s.reset()
         sources.reset()
     end)
 
@@ -102,7 +104,7 @@ describe("e2e", function()
     end)
 
     describe("diagnostics", function()
-        if vim.fn.executable("write-good") == 0 then
+        if not u.is_executable("write-good") then
             print("skipping diagnostic tests (write-good not installed)")
             return
         end
@@ -147,7 +149,7 @@ describe("e2e", function()
         end)
 
         describe("multiple diagnostics", function()
-            if vim.fn.executable("markdownlint") == 0 then
+            if not u.is_executable("markdownlint") then
                 print("skipping multiple diagnostics tests (markdownlint not installed)")
                 return
             end
@@ -187,7 +189,7 @@ describe("e2e", function()
     end)
 
     describe("formatting", function()
-        if vim.fn.executable("prettier") == 0 then
+        if not u.is_executable("prettier") then
             print("skipping formatting tests (prettier not installed)")
             return
         end
@@ -277,7 +279,7 @@ describe("e2e", function()
     end)
 
     describe("range formatting", function()
-        if vim.fn.executable("prettier") == 0 then
+        if not u.is_executable("prettier") then
             print("skipping range formatting tests (prettier not installed)")
             return
         end
@@ -304,7 +306,7 @@ describe("e2e", function()
     end)
 
     describe("temp file source", function()
-        if vim.fn.executable("tl") == 0 then
+        if not u.is_executable("tl") then
             print("skipping temp file source tests (teal not installed)")
             return
         end
@@ -387,6 +389,81 @@ describe("e2e", function()
             actions = get_code_actions()
             null_ls_action = actions[1].result[1]
             assert.equals(null_ls_action.title, "Not cached")
+        end)
+    end)
+
+    describe("local executable", function()
+        before_each(function()
+            sources._reset()
+            tu.edit_test_file("test-file.lua")
+        end)
+
+        describe("prefer_local", function()
+            it("should prefer local executable when available", function()
+                local copy = builtins._test.slow_code_action.with({
+                    command = "cat",
+                    args = {},
+                    prefer_local = true,
+                })
+                sources.register(copy)
+
+                local actions = get_code_actions()
+                lsp_wait()
+
+                assert.equals(vim.tbl_count(actions[1].result), 1)
+                assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
+                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
+            end)
+
+            it("should fall back to global executable when local is unavailable", function()
+                local copy = builtins._test.slow_code_action.with({
+                    command = "ls",
+                    args = {},
+                    prefer_local = true,
+                })
+                sources.register(copy)
+
+                local actions = get_code_actions()
+                lsp_wait()
+
+                assert.equals(vim.tbl_count(actions[1].result), 1)
+                assert.equals(copy._opts._last_command, "ls")
+                assert.equals(copy._opts._last_cwd, vim.loop.cwd())
+            end)
+        end)
+
+        describe("only_local", function()
+            it("should use local executable when available", function()
+                local copy = builtins._test.slow_code_action.with({
+                    command = "cat",
+                    args = {},
+                    only_local = true,
+                })
+                sources.register(copy)
+
+                local actions = get_code_actions()
+                lsp_wait()
+
+                assert.equals(vim.tbl_count(actions[1].result), 1)
+                assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
+                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
+            end)
+
+            it("should not run when local executable is unavailable", function()
+                local copy = builtins._test.slow_code_action.with({
+                    command = "ls",
+                    args = {},
+                    only_local = true,
+                })
+                sources.register(copy)
+
+                local actions = get_code_actions()
+                lsp_wait()
+
+                assert.equals(vim.tbl_count(actions[1].result), 0)
+                assert.equals(copy._opts.last_command, nil)
+                assert.equals(copy._opts._last_cwd, nil)
+            end)
         end)
     end)
 
