@@ -8,8 +8,9 @@ return h.make_builtin({
     filetypes = { "nginx" },
     generator_opts = {
         command = "nginxbeautifier",
-        args = { "-i" },
-        to_stdin = true,
+        args = { "-i", "-o", "$FILENAME" },
+        to_temp_file = true,
+        from_temp_file = true,
     },
     factory = h.formatter_factory,
 })

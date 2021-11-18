@@ -180,13 +180,6 @@ local markdownlint = {
 null_ls.register(markdownlint)
 ```
 
-### Advanced usage
-
-This [ESLint
-integration](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils/blob/main/lua/nvim-lsp-ts-utils/null-ls.lua)
-from one of my plugins demonstrates an advanced example of parsing JSON output
-from a command to generate code actions.
-
 ## FAQ
 
 ### Something isn't working! What do I do?

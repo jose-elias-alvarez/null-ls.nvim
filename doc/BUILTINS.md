@@ -1506,13 +1506,6 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 
 A linter for the `javascript` ecosystem.
 
-- Note that the `null-ls` builtin requires your `eslint` executable to be
-  available on your `$PATH`.
-- To use local (project) executables, use the integration in
-  [nvim-lsp-ts-utils](https://github.com/jose-elias-alvarez/nvim-lsp-ts-utils)
-  or try the [ESLint language
-  server](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#eslint).
-
 ##### Usage
 
 ```lua
@@ -1530,8 +1523,6 @@ local sources = { null_ls.builtins.diagnostics.eslint }
 ##### About
 
 An absurdly fast linter (and formatter).
-
-- See the notes re: ESLint above.
 
 ##### Usage
 
@@ -1577,7 +1568,7 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 
 ##### Defaults
 
-- `filetypes = { "Dockerfile", "dockerfile" }`
+- `filetypes = { "dockerfile" }`
 - `command = "hadolint"`
 - `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
@@ -1998,6 +1989,43 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
 ### Code actions
+
+#### [ESLint](https://github.com/eslint/eslint)
+
+##### About
+
+Injects actions to fix ESLint issues (or ignore broken rules).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.eslint }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `command = "eslint"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
+#### [eslint_d](https://github.com/mantoni/eslint_d.js)
+
+##### About
+
+Injects actions to fix ESLint issues (or ignore broken rules). Like ESLint, but
+faster.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.eslint_d }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
+- `command = "eslint_d"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 #### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
 
