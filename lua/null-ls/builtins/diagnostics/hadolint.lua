@@ -5,7 +5,7 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "Dockerfile", "dockerfile" },
+    filetypes = { "dockerfile" },
     generator_opts = {
         command = "hadolint",
         format = "json",
