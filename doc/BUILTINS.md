@@ -1988,6 +1988,25 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - `command = "golangci-lint"`
 - `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
+#### [staticcheck](https://staticcheck.io/)
+
+##### About
+
+Advanced Go linter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.staticcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "staticcheck"`
+- `args = { "-f", "json", "./..." }`
+
+
 ### Code actions
 
 #### [ESLint](https://github.com/eslint/eslint)
