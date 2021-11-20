@@ -1988,6 +1988,24 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - `command = "golangci-lint"`
 - `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
+#### [revive](https://revive.run/)
+
+##### About
+
+Fast, configurable, extensible, flexible, and beautiful linter for Go.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.revive }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "revive"`
+- `args = { "-formatter", "json", "$FILENAME" }`
+
 #### [staticcheck](https://staticcheck.io/)
 
 ##### About
