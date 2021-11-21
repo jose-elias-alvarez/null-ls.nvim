@@ -27,7 +27,7 @@ return h.make_builtin({
                     R = h.diagnostics.severities["warning"],
                     S = h.diagnostics.severities["warning"],
                     I = h.diagnostics.severities["warning"],
-                    C = h.diagnostics.severities["warning"]
+                    C = h.diagnostics.severities["warning"],
                 },
             }
         ),
