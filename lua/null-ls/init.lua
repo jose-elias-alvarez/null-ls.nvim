@@ -39,6 +39,7 @@ M.config = function(user_config)
       augroup NullLs
         autocmd!
         autocmd FileType * lua require("null-ls.lspconfig").try_add()
+        autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
       augroup end
     ]])
 end

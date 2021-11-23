@@ -4,6 +4,7 @@ local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
+    update_on_insert = false,
     ---@usage setting this to true will enable debug logging
     debug = false,
     log = {
