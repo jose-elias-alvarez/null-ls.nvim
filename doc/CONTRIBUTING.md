@@ -37,6 +37,11 @@
 - A built-in source's arguments are the minimal arguments required for the
   source to work. Leave out non-essential arguments.
 
+- Built-in sources should target the latest available version of the underlying
+  program unless there is a compelling and widespread reason to use an older
+  version. If older versions require different arguments, mention that in the
+  documentation. If they require a different parser, create a separate built-in.
+
 ## Sources
 
 ### Diagnostics
