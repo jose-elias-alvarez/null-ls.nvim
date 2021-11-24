@@ -2031,10 +2031,12 @@ with previous versions. Support for project diagnostics is experimental and
 subject to change.
 
 To get project diagnostics, open a file matching the filetype of your registered
-source(s) and run `:lua require("null-ls.diagnostics").get_project_diagnostics()`. This will load
-buffers containing diagnostics and populate the quickfix list with results.
+source(s) and run `:NullLsProjectDiagnostics`. This will load buffers containing
+diagnostics and populate the quickfix list with results. (Add a `!` to the
+command to skip populating and opening the quickfix list.)
 
-Project diagnostics are not cleared until you either get them again or run `:lua require("null-ls.diagnostics").clear_project_diagnostics()`.
+Project diagnostics are not cleared until you either get them again or run
+`:NullLsClearProjectDiagnostics`.
 
 #### [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
 

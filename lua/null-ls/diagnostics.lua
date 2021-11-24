@@ -153,7 +153,7 @@ M.handler = function(original_params)
     })
 end
 
-M.get_project_diagnostics = function()
+M.get_project_diagnostics = function(no_quickfix)
     local method = methods.internal.PROJECT_DIAGNOSTICS
     local params = u.make_params({}, method)
 
@@ -187,12 +187,14 @@ M.get_project_diagnostics = function()
                     vim.diagnostic.set(get_namespace(id), bufnr, by_bufnr)
                 end
 
-                vim.fn.setqflist(vim.diagnostic.toqflist(by_id))
+                if not no_quickfix then
+                    vim.fn.setqflist(vim.diagnostic.toqflist(by_id))
+                end
             end
 
             u.echo("MoreMsg", "successfully fetched project diagnostics")
 
-            if vim.tbl_count(diagnostics) > 0 then
+            if not no_quickfix and vim.tbl_count(diagnostics) > 0 then
                 vim.cmd("copen | wincmd p")
             end
         end,

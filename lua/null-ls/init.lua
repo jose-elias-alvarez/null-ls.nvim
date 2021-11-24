@@ -34,6 +34,10 @@ M.config = function(user_config)
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
     vim.cmd("command! NullLsLog lua vim.fn.execute('edit ' .. require('null-ls.logger').get_path())")
+    vim.cmd(
+        "command! -bang NullLsProjectDiagnostics lua require('null-ls.diagnostics').get_project_diagnostics('<bang>' ~= '')"
+    )
+    vim.cmd("command! NullLsClearProjectDiagnostics lua require('null-ls.diagnostics').clear_project_diagnostics()")
 
     vim.cmd([[
       augroup NullLs
