@@ -15,9 +15,7 @@ local get_line_ending = function(bufnr)
 end
 
 local resolve_content = function(params, bufnr)
-    -- currently, neovim is hardcoded to use \n in notifications that include file content
-    -- so in other cases we get buffer content directly to make sure it's accurate
-    if get_line_ending(bufnr) == format_line_ending["unix"] then
+    if M.has_version("0.6.0") or get_line_ending(bufnr) == format_line_ending["unix"] then
         -- diagnostic notifications will send full buffer content on open and change
         -- so we can avoid unnecessary api calls
         if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
