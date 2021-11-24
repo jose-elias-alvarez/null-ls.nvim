@@ -174,13 +174,23 @@ M.get_project_diagnostics = function(no_quickfix)
             for id, by_id in pairs(diagnostics) do
                 local diagnostics_by_bufnr = {}
                 for _, diagnostic in ipairs(by_id) do
-                    local filename = diagnostic.filename
-                    local bufnr = vim.fn.bufadd(filename)
-                    vim.fn.bufload(bufnr)
-                    vim.fn.setbufvar(bufnr, "&buflisted", 1)
+                    local filename = diagnostic.filename or ""
+                    local is_valid = require("lspconfig.util").path.is_file(filename)
+                    if not is_valid then
+                        log:debug(
+                            string.format(
+                                "received project diagnostic with invalid filename: %s",
+                                vim.inspect(diagnostic)
+                            )
+                        )
+                    else
+                        local bufnr = vim.fn.bufadd(filename)
+                        vim.fn.bufload(bufnr)
+                        vim.fn.setbufvar(bufnr, "&buflisted", 1)
 
-                    diagnostics_by_bufnr[bufnr] = diagnostics_by_bufnr[bufnr] or {}
-                    table.insert(diagnostics_by_bufnr[bufnr], diagnostic)
+                        diagnostics_by_bufnr[bufnr] = diagnostics_by_bufnr[bufnr] or {}
+                        table.insert(diagnostics_by_bufnr[bufnr], diagnostic)
+                    end
                 end
 
                 for bufnr, by_bufnr in pairs(diagnostics_by_bufnr) do
