@@ -2024,6 +2024,28 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - `command = "staticcheck"`
 - `args = { "-f", "json", "./..." }`
 
+#### [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+
+##### About
+
+Parses diagnostics from the TypeScript compiler.
+
+##### Usage
+
+- Diagnostics from this source and `tsserver` are independent. If you have
+  `tsserver` configured to show diagnostics, you may see duplicates until buffer
+  diagnostics update.
+
+```lua
+local sources = { null_ls.builtins.diagnostics.tsc }
+```
+
+##### Defaults
+
+- `filetypes = { "typescript", "typescriptreact" }`
+- `command = "tsc"`
+- `args = { "--pretty", "false", "--noEmit" }`
+
 ### Code actions
 
 #### [ESLint](https://github.com/eslint/eslint)
