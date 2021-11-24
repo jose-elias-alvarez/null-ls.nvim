@@ -1,3 +1,4 @@
+-- Tested using PHP 7.x and PHP 8.x.
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
@@ -8,18 +9,28 @@ return h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "php",
-        to_stdin = false,
-        to_temp_file = true,
-        args = { "-l", "$FILENAME" },
+        -- Send file to stdin or else checking will only be done when the file is saved.
+        to_stdin = true,
+        to_temp_file = false,
+        args = { "-l" },
         format = "line",
-        check_exit_code = function()
-            return true
+        check_exit_code = function(code)
+            -- Code 0 means no syntax errors.
+            -- Code 255 means syntax errors.
+            -- Other codes mean something went wrong.
+            return code == 0 or code == 255
         end,
         on_output = h.diagnostics.from_patterns({
             {
+                -- Example of an error when checking a file:
                 -- Parse error: syntax error, unexpected '$appends' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) in app/Config.php on line 16
-                pattern = [[Parse error: (.*) (%d+)]],
-                groups = { "message", "row" },
+
+                -- Example of an error when checking stdin:
+                -- Parse error: syntax error, unexpected token "=>", expecting "," or ";" in Standard input code on line 21
+
+                -- This pattern should match both.
+                pattern = [[Parse error: (.*) in (.*) on line (%d+)]],
+                groups = { "message", "junk", "row" },
                 overrides = {
                     diagnostic = { severity = h.diagnostics.severities["error"] },
                     offsets = { col = 1, end_col = 1 },
