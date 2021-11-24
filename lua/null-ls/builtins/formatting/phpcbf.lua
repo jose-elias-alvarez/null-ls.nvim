@@ -11,6 +11,8 @@ return h.make_builtin({
         args = {
             -- silence status messages during processing
             "-q",
+            -- passes the filename to phpcs, so it respects all include and exclude patterns
+            "--stdin-path=$FILENAME",
             -- process stdin
             "-",
         },

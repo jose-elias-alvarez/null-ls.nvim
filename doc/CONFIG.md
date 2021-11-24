@@ -51,6 +51,7 @@ local defaults = {
     diagnostics_format = "#{m}",
     debounce = 250,
     default_timeout = 5000,
+    update_on_insert = false,
     debug = false,
     log = {
         enable = true,
@@ -111,6 +112,13 @@ Sets the amount of time (in milliseconds) after which built-in sources will time
 out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
 [BUILTINS.md](BUILTINS.md)).
+
+### update_on_insert (boolean)
+
+Controls whether diagnostic sources run in insert mode. If set to `false`,
+diagnostic sources will run only upon exiting insert mode, which greatly
+improves performance but can create a slight delay before diagnostics show up.
+Set this to `true` if you don't experience performance issues with your sources.
 
 ### debug (boolean)
 

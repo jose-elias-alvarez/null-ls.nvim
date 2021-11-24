@@ -10,6 +10,8 @@ return h.make_builtin({
         command = "isort",
         args = {
             "--stdout",
+            "--filename",
+            "$FILENAME",
             "-",
         },
         to_stdin = true,

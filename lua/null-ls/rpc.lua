@@ -1,6 +1,27 @@
 local methods = require("null-ls.methods")
+local c = require("null-ls.config")
 local u = require("null-ls.utils")
 local log = require("null-ls.logger")
+
+local notification_cache = {}
+
+local should_cache = function(method)
+    return not c.get().update_in_insert and method == methods.lsp.DID_CHANGE and vim.api.nvim_get_mode().mode == "i"
+end
+
+local set_cache = function(params)
+    local uri = params.textDocument and params.textDocument.uri
+    if uri then
+        notification_cache[uri] = params
+    end
+end
+
+local clear_cache = function(params)
+    local uri = params.textDocument and params.textDocument.uri
+    if uri and notification_cache[uri] then
+        notification_cache[uri] = nil
+    end
+end
 
 local M = {}
 
@@ -113,6 +134,15 @@ M.start = function(dispatchers)
     end
 
     local function notify(method, params)
+        if should_cache(method) then
+            set_cache(params)
+            return
+        end
+
+        if method == methods.lsp.DID_CLOSE then
+            clear_cache(params)
+        end
+
         log:trace("received LSP notification for method " .. method)
         return handle(method, params, nil, true)
     end
@@ -130,6 +160,13 @@ M.start = function(dispatchers)
             end,
         },
     }
+end
+
+M.flush = function()
+    for uri, notification in pairs(notification_cache) do
+        u.notify_client(methods.lsp.DID_CHANGE, notification)
+        notification_cache[uri] = nil
+    end
 end
 
 return M
