@@ -188,6 +188,36 @@ describe("e2e", function()
         end)
     end)
 
+    describe("project diagnostics", function()
+        before_each(function()
+            sources.register(builtins._test.mock_project_diagnostics)
+
+            tu.edit_test_file("test-file.txt")
+        end)
+
+        it("should get project diagnostics on :NullLsProjectDiagnostics", function()
+            vim.cmd("NullLsProjectDiagnostics")
+            lsp_wait(0)
+
+            local buf_diagnostics = vim.diagnostic.get(0)
+            assert.equals(vim.tbl_count(buf_diagnostics), 1)
+
+            local diagnostic = buf_diagnostics[1]
+            assert.equals(diagnostic.message, "something is wrong with this file")
+            assert.equals(diagnostic.filename, api.nvim_buf_get_name(0))
+        end)
+
+        it("should clear project diagnostics on :NullLsClearProjectDiagnostics", function()
+            vim.cmd("NullLsProjectDiagnostics")
+            lsp_wait(0)
+            assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 1)
+
+            vim.cmd("NullLsClearProjectDiagnostics")
+
+            assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
+        end)
+    end)
+
     describe("formatting", function()
         if not u.is_executable("prettier") then
             print("skipping formatting tests (prettier not installed)")

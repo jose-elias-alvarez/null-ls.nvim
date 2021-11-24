@@ -159,8 +159,7 @@ M.get_project_diagnostics = function(no_quickfix)
 
     M.clear_project_diagnostics(params.ft)
 
-    u.echo("MoreMsg", "fetching project diagnostics...")
-
+    log:info("fetching project diagnostics")
     require("null-ls.generators").run_registered({
         filetype = params.ft,
         method = method,
@@ -201,8 +200,6 @@ M.get_project_diagnostics = function(no_quickfix)
                     vim.fn.setqflist(vim.diagnostic.toqflist(by_id))
                 end
             end
-
-            u.echo("MoreMsg", "successfully fetched project diagnostics")
 
             if not no_quickfix and vim.tbl_count(diagnostics) > 0 then
                 vim.cmd("copen | wincmd p")
