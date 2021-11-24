@@ -1988,6 +1988,42 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - `command = "golangci-lint"`
 - `args = { "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
+#### [revive](https://revive.run/)
+
+##### About
+
+Fast, configurable, extensible, flexible, and beautiful linter for Go.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.revive }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "revive"`
+- `args = { "-formatter", "json", "$FILENAME" }`
+
+#### [staticcheck](https://staticcheck.io/)
+
+##### About
+
+Advanced Go linter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.staticcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "go" }`
+- `command = "staticcheck"`
+- `args = { "-f", "json", "./..." }`
+
 ### Project diagnostics (experimental)
 
 **NOTE**: These sources depend on Neovim version 0.6.0 and are not compatible
