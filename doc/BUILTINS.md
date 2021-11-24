@@ -2024,7 +2024,6 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - `command = "staticcheck"`
 - `args = { "-f", "json", "./..." }`
 
-
 ### Code actions
 
 #### [ESLint](https://github.com/eslint/eslint)
@@ -2080,6 +2079,22 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 ##### Defaults
 
 - `filetypes = {}`
+
+#### gitrebase
+
+##### About
+
+Inject actions to change gitrebase command. (eg. using `squash` instead of `pick`).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.gitrebase }
+```
+
+##### Defaults
+
+- `filetypes = { "gitrebase" }`
 
 #### [proselint](https://github.com/amperser/proselint)
 
