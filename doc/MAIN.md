@@ -280,11 +280,19 @@ return { {
     code, -- number, optional
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
+    filename, -- string, optional
+    bufnr, -- number, optional
 } }
 ```
 
-null-ls sends diagnostic results to the Neovim LSP client's handler, which shows
-them in the editor.
+null-ls generates diagnostics in response to LSP notifications and publishes
+them via the `vim.diagnostic` API when available (falling back to the LSP
+handler on pre-0.6 versions).
+
+By default, null-ls publishes diagnostics to the buffer that triggered the LSP
+diagnostic (in most cases the active buffer). Specifying `filename` or `bufnr`
+overrides the default behavior and instead publishes diagnostics to the
+specified buffer.
 
 #### Formatting
 

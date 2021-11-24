@@ -11,6 +11,10 @@ local should_use_diagnostic_api = function()
 end
 
 local namespaces = {}
+local get_namespace = function(id)
+    namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+    return namespaces[id]
+end
 
 local M = {}
 
@@ -58,6 +62,10 @@ local postprocess = function(diagnostic, _, generator)
     end
 
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
+    if diagnostic.filename and not diagnostic.bufnr then
+        local bufnr = vim.fn.bufadd(diagnostic.filename)
+        diagnostic.bufnr = bufnr
+    end
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
     -- avoid unnecessary gsub if using default
@@ -71,11 +79,29 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
+local index_diagnostics_by_bufnr = function(diagnostics_by_id, bufnr, namespace)
+    local by_bufnr = {}
+    for _, diagnostic in ipairs(diagnostics_by_id) do
+        local diagnostic_bufnr = diagnostic.bufnr or bufnr
+        by_bufnr[diagnostic_bufnr] = by_bufnr[diagnostic_bufnr] or {}
+        table.insert(by_bufnr[diagnostic_bufnr], diagnostic)
+    end
+
+    -- clear stale diagnostics
+    for _, old_diagnostic in ipairs(vim.diagnostic.get(bufnr, { namespace = namespace })) do
+        by_bufnr[old_diagnostic.bufnr] = by_bufnr[old_diagnostic.bufnr] or {}
+    end
+
+    return by_bufnr
+end
+
 local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
     if should_use_diagnostic_api() then
         for id, by_id in pairs(diagnostics) do
-            namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
-            vim.diagnostic.set(namespaces[id], bufnr, by_id)
+            local namespace = get_namespace(id)
+            for index_bufnr, by_bufnr in pairs(index_diagnostics_by_bufnr(by_id, bufnr, namespace)) do
+                vim.diagnostic.set(namespace, index_bufnr, by_bufnr)
+            end
         end
         return
     end
