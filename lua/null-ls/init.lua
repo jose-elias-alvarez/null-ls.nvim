@@ -28,8 +28,8 @@ M.config = function(user_config)
     end
 
     c.setup(user_config or {})
-    require("null-ls.lspconfig").setup()
     require("null-ls.rpc").setup()
+    require("null-ls.lspconfig").setup()
     require("null-ls.handlers").setup()
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
