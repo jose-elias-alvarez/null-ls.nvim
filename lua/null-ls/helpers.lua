@@ -254,7 +254,8 @@ M.generator_factory = function(opts)
             end
 
             local client = u.get_client()
-            local root = client and client.config.root_dir or vim.loop.cwd()
+            local root = client and client.workspaceFolders[1].name or vim.fn.getcwd()
+
             params.root = root
 
             local resolved_cwd = cwd and cwd(params) or root
@@ -437,7 +438,7 @@ M.make_builtin = function(opts)
                 log:debug("attempting to find local executable " .. executable_to_find)
 
                 local client = u.get_client()
-                local root = client and client.root_dir or vim.fn.getcwd()
+                local root = client and client.workspaceFolders[1].name or vim.fn.getcwd()
 
                 local found, resolved_cwd
                 lsputil.path.traverse_parents(params.bufname, function(dir)

@@ -21,7 +21,7 @@ describe("lspconfig", function()
 
     describe("setup", function()
         it("should set up default config", function()
-            local null_ls_config = require("lspconfig/configs")["null-ls"]
+            local null_ls_config = require("lspconfig.configs")["null-ls"]
             assert.truthy(null_ls_config)
 
             local default_config = null_ls_config.document_config.default_config
@@ -37,7 +37,7 @@ describe("lspconfig", function()
             it("should return root dir", function()
                 local cwd = vim.fn.getcwd()
 
-                local root_dir = require("lspconfig/configs")["null-ls"].document_config.default_config.root_dir
+                local root_dir = require("lspconfig.configs")["null-ls"].document_config.default_config.root_dir
 
                 assert.equals(root_dir(cwd), cwd)
             end)
