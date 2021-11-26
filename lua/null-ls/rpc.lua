@@ -53,7 +53,7 @@ M.setup = function()
 
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
-        local config = require("lspconfig.configs")["null-ls"]
+        local config = require("lspconfig")["null-ls"]
         if config and cmd == config.cmd[1] then
             return M.start(dispatchers)
         end
