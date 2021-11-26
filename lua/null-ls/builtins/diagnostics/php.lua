@@ -12,7 +12,10 @@ return h.make_builtin({
         -- Send file to stdin or else checking will only be done when the file is saved.
         to_stdin = true,
         to_temp_file = false,
-        args = { "-l" },
+        -- -d=STDERR ensures errors are reported to stderr.
+        -- Without this, a setting in php.ini can turn them off entirely, or send them to stdout.
+        args = { "-l", "-d", "display_errors=STDERR" },
+        from_stderr = true,
         format = "line",
         check_exit_code = function(code)
             -- Code 0 means no syntax errors.
