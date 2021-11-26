@@ -100,6 +100,14 @@ local line_output_wrapper = function(params, done, on_output)
     done(all_results)
 end
 
+local resolve_root_dir = function(client)
+    if client and client.workspaceFolders then
+        return client.workspaceFolders[1].name
+    end
+    -- single-file support
+    return vim.fn.getcwd()
+end
+
 M.generator_factory = function(opts)
     local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command =
         opts.command,
@@ -254,7 +262,7 @@ M.generator_factory = function(opts)
             end
 
             local client = u.get_client()
-            local root = client and client.workspaceFolders[1].name or vim.fn.getcwd()
+            local root = resolve_root_dir(client)
 
             params.root = root
 
@@ -438,7 +446,7 @@ M.make_builtin = function(opts)
                 log:debug("attempting to find local executable " .. executable_to_find)
 
                 local client = u.get_client()
-                local root = client and client.workspaceFolders[1].name or vim.fn.getcwd()
+                local root = resolve_root_dir(client)
 
                 local found, resolved_cwd
                 lsputil.path.traverse_parents(params.bufname, function(dir)
