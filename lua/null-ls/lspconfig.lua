@@ -41,21 +41,23 @@ function M.setup()
         cmd = { "nvim" },
         name = "null-ls",
         root_dir = function(fname)
-            return lsputil.root_pattern(".null-ls-root", "Makefile", ".git")(fname) or lsputil.path.dirname(fname)
+            return lsputil.root_pattern(".null-ls-root", "Makefile", ".git")(fname)
         end,
+        single_file_support = true,
         flags = { debounce_text_changes = c.get().debounce },
         filetypes = sources.get_filetypes(),
         autostart = false,
     }
 
-    require("lspconfig/configs")["null-ls"] = {
+    local configs = require("lspconfig.configs")
+    configs["null-ls"] = {
         default_config = default_config,
     }
 end
 
 -- after registering a new source, try attaching to existing buffers and refresh diagnostics
 function M.on_register_source(source)
-    if not require("lspconfig")["null-ls"] then
+    if not require("lspconfig.configs")["null-ls"] then
         return
     end
 
@@ -78,7 +80,7 @@ end
 
 -- refresh filetypes after modifying registered sources
 function M.on_register_sources()
-    local config = require("lspconfig")["null-ls"]
+    local config = require("lspconfig.configs")["null-ls"]
     if not config then
         return
     end
@@ -87,7 +89,7 @@ function M.on_register_sources()
 end
 
 function M.try_add(bufnr)
-    local config = require("lspconfig")["null-ls"]
+    local config = require("lspconfig.configs")["null-ls"]
     if not config and config.manager then
         return
     end
