@@ -2134,6 +2134,24 @@ local sources = { null_ls.builtins.code_actions.refactoring }
 
 - `filetypes = { "go", "javascript", "lua", "python", "typescript" }`
 
+#### [shellcheck](https://www.shellcheck.net)
+
+##### About
+
+A shell script static analysis tool.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.shellcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "sh" }`
+- `command = "shellcheck"`
+- `args = { "--format", "json1", "-" }`
+
 #### [statix](https://github.com/nerdypepper/statix)
 
 ##### About
