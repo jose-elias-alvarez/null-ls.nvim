@@ -93,7 +93,7 @@ end
 
 function M.try_add(bufnr)
     local config = require("lspconfig.configs")["null-ls"]
-    if not config and config.manager then
+    if not (config and config.manager) then
         return
     end
 
