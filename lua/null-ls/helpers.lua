@@ -380,11 +380,21 @@ M.make_builtin = function(opts)
             local original_extra_args = user_opts.extra_args
 
             builtin_copy._opts.args = function(params)
-                local original_args_copy = type(original_args) == "function" and original_args(params)
-                    or vim.deepcopy(original_args)
-                    or {}
-                local extra_args_copy = type(original_extra_args) == "function" and original_extra_args(params)
-                    or vim.deepcopy(original_extra_args)
+                local original_args_copy
+                if type(original_args) == "function" then
+                    original_args_copy = original_args(params)
+                else
+                    original_args_copy = vim.deepcopy(original_args)
+                end
+                original_args_copy = original_args_copy or {}
+
+                local extra_args_copy
+                if type(original_extra_args) == "function" then
+                    extra_args_copy = original_extra_args(params)
+                else
+                    extra_args_copy = vim.deepcopy(original_extra_args)
+                end
+                extra_args_copy = extra_args_copy or {}
 
                 -- make sure "-" stays last
                 if original_args_copy[#original_args_copy] == "-" then

@@ -909,6 +909,18 @@ describe("helpers", function()
                 assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
             end)
 
+            it("should keep original args if extra_args returns nil", function()
+                local copy = builtin.with({
+                    extra_args = function()
+                        return nil
+                    end,
+                })
+
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "first", "second" })
+                assert.are.same(copy._opts.args(), { "first", "second" })
+            end)
+
             it("should set args to extra_args if args is nil", function()
                 local test_opts = {
                     method = "mockMethod",
@@ -916,6 +928,24 @@ describe("helpers", function()
                     filetypes = { "lua" },
                     generator_opts = {
                         args = nil,
+                    },
+                }
+                builtin = helpers.make_builtin(test_opts)
+                local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
+
+                assert.equals(type(copy._opts.args), "function")
+                assert.are.same(copy._opts.args(), { "user_first", "user_second" })
+            end)
+
+            it("should set args to extra_args if args returns nil", function()
+                local test_opts = {
+                    method = "mockMethod",
+                    name = "mock-builtin",
+                    filetypes = { "lua" },
+                    generator_opts = {
+                        args = function()
+                            return nil
+                        end,
                     },
                 }
                 builtin = helpers.make_builtin(test_opts)
