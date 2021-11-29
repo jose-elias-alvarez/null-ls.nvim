@@ -36,6 +36,11 @@ end
 local M = {}
 
 function M.setup()
+    local configs = require("lspconfig.configs")
+    if configs["null-ls"] then
+        return
+    end
+
     local lsputil = require("lspconfig.util")
     local default_config = {
         cmd = { "nvim" },
@@ -48,7 +53,6 @@ function M.setup()
         autostart = false,
     }
 
-    local configs = require("lspconfig.configs")
     configs["null-ls"] = {
         default_config = default_config,
     }
