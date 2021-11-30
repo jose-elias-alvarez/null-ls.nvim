@@ -253,6 +253,7 @@ describe("generators", function()
 
     describe("run_registered", function()
         local callback = stub.new()
+        local after_each = stub.new()
 
         local run
         before_each(function()
@@ -271,6 +272,7 @@ describe("generators", function()
                 params = mock_params,
                 postprocess = postprocess,
                 callback = callback,
+                after_each = after_each,
             }
 
             generators.run_registered(mock_opts)
@@ -280,29 +282,29 @@ describe("generators", function()
                 mock_opts.params,
                 mock_opts.postprocess,
                 mock_opts.callback,
-                nil
+                mock_opts.after_each
             )
         end)
 
         it("should call run with available generators indexed by id", function()
             register(method, sync_generator, { "lua" })
+            mock_params.should_index = true
             local mock_opts = {
                 filetype = mock_params.ft,
                 method = mock_params.method,
                 params = mock_params,
                 postprocess = postprocess,
                 callback = callback,
-                index_by_id = true,
             }
 
             generators.run_registered(mock_opts)
 
             assert.stub(run).was_called_with(
-                generators.get_available(mock_opts.filetype, mock_opts.method, mock_opts.index_by_id),
+                generators.get_available(mock_opts.filetype, mock_opts.method, mock_params.should_index),
                 mock_opts.params,
                 mock_opts.postprocess,
                 mock_opts.callback,
-                true
+                nil
             )
         end)
     end)

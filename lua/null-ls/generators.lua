@@ -2,7 +2,7 @@ local log = require("null-ls.logger")
 
 local M = {}
 
-M.run = function(generators, params, postprocess, callback, should_index)
+M.run = function(generators, params, postprocess, callback, after_each)
     local a = require("plenary.async")
 
     local runner = function()
@@ -14,10 +14,10 @@ M.run = function(generators, params, postprocess, callback, should_index)
         end
 
         local futures, all_results = {}, {}
-        local iterator = should_index and pairs or ipairs
+        local iterator = params.should_index and pairs or ipairs
         for index, generator in iterator(generators) do
             local to_insert = all_results
-            if should_index then
+            if iterator == pairs then
                 all_results[index] = {}
                 to_insert = all_results[index]
             end
@@ -28,6 +28,10 @@ M.run = function(generators, params, postprocess, callback, should_index)
                 local runtime_condition = generator.opts and generator.opts.runtime_condition
                 if runtime_condition and not runtime_condition(copied_params) then
                     return
+                end
+
+                if generator.on_run then
+                    generator.on_run(copied_params)
                 end
 
                 local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
@@ -47,16 +51,17 @@ M.run = function(generators, params, postprocess, callback, should_index)
                     return
                 end
 
-                if not results then
-                    return
-                end
-
+                results = results or {}
                 for _, result in ipairs(results) do
                     if postprocess then
                         postprocess(result, copied_params, generator)
                     end
 
                     table.insert(to_insert, result)
+                end
+
+                if after_each then
+                    after_each(index, results, copied_params, generator)
                 end
             end)
         end
@@ -66,7 +71,9 @@ M.run = function(generators, params, postprocess, callback, should_index)
     end
 
     a.run(runner, function(results)
-        callback(results, params)
+        if callback then
+            callback(results, params)
+        end
     end)
 end
 
@@ -96,11 +103,11 @@ M.run_sequentially = function(generators, make_params, postprocess, callback, af
 end
 
 M.run_registered = function(opts)
-    local filetype, method, params, postprocess, callback, index_by_id =
-        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback, opts.index_by_id
-    local generators = M.get_available(filetype, method, index_by_id)
+    local filetype, method, params, postprocess, callback, after_each =
+        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback, opts.after_each
+    local generators = M.get_available(filetype, method, params.should_index)
 
-    M.run(generators, params, postprocess, callback, index_by_id)
+    M.run(generators, params, postprocess, callback, after_each)
 end
 
 M.run_registered_sequentially = function(opts)

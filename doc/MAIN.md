@@ -243,6 +243,22 @@ my_source.generator = {
 }
 ```
 
+### `on_run`
+
+If defined, a generator's `on_run` callback runs when the generator runs (before
+it returns results). `on_run` receives `params` as its first argument, so it can
+react to or alter state before continuing to the handler:
+
+```lua
+local my_source = {
+    generator = {
+        on_run = function(params)
+            params.multiple_files = true
+        end,
+    },
+}
+```
+
 ### Generator Return Types
 
 Generators must return `nil` or a list containing their results. The structure
@@ -264,8 +280,8 @@ Once generated, null-ls stores code action results in its internal state and
 calls them if selected by the user. It clears and re-generates non-selected
 actions on the next request.
 
-Like generator functions, code action
-callbacks are schedule-wrapped, making it safe to call any API function.
+Like generator functions, code action callbacks are schedule-wrapped, making it
+safe to call any API function.
 
 #### Diagnostics
 
