@@ -19,8 +19,6 @@ local defaults = {
     },
     -- prevent double setup
     _setup = false,
-    -- force using LSP handler, even when native API is available (e.g diagnostics)
-    _use_lsp_handler = false,
 }
 
 local config = vim.deepcopy(defaults)

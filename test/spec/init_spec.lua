@@ -1,7 +1,6 @@
 local stub = require("luassert.stub")
 
 local config = require("null-ls.config")
-local handlers = require("null-ls.handlers")
 local rpc = require("null-ls.rpc")
 local lspconfig = require("null-ls.lspconfig")
 
@@ -24,14 +23,12 @@ describe("init", function()
             stub(config, "setup")
             stub(rpc, "setup")
             stub(lspconfig, "setup")
-            stub(handlers, "setup")
         end)
 
         after_each(function()
             config.setup:revert()
             rpc.setup:revert()
             lspconfig.setup:revert()
-            handlers.setup:revert()
 
             config.reset()
             vim.g.null_ls_disable = nil
@@ -60,7 +57,6 @@ describe("init", function()
             assert.stub(config.setup).was_called()
             assert.stub(rpc.setup).was_called()
             assert.stub(lspconfig.setup).was_called()
-            assert.stub(handlers.setup).was_called()
 
             assert.equals(vim.fn.exists(":NullLsInfo") > 0, true)
             assert.equals(vim.fn.exists(":NullLsLog") > 0, true)
