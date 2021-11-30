@@ -1556,6 +1556,24 @@ local sources = { null_ls.builtins.diagnostics.flake8 }
 - `command = "flake8"`
 - `args = { "--stdin-display-name", "$FILENAME", "-" }`
 
+#### [pylama](https://github.com/klen/pylama)
+
+##### About
+
+Code audit tool for Python.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pylama }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "pylama"`
+- `args = { "--from-stdin", "$FILENAME", "-f", "json" }`
+
 #### [hadolint](https://github.com/hadolint/hadolint)
 
 ##### About
