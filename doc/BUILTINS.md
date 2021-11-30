@@ -1374,6 +1374,8 @@ local sources = { null_ls.builtins.formatting.uncrustify }
 ##### About
 
 Formatter for `python` files
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
+  - `textDocument/rangeFormatting` is line-based.
 
 ##### Usage
 
