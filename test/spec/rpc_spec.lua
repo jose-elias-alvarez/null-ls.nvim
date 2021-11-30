@@ -34,7 +34,11 @@ describe("rpc", function()
         end)
 
         it("should call rpc.start override if config exists and command matches", function()
-            require("lspconfig")["null-ls"] = { cmd = { "nvim" } }
+            local configs = require("lspconfig.configs")
+            configs["null-ls"] = {
+                default_config = { name = "null-ls", cmd = { "nvim" } },
+            }
+            require("lspconfig")["null-ls"].setup({})
             rpc.setup()
 
             require("vim.lsp.rpc").start("nvim", "args", "dispatchers", "other_args")
