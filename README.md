@@ -28,11 +28,6 @@ At the moment, null-is is compatible with Neovim 0.5.1 (stable) and 0.6 (head),
 but some features and performance improvements are exclusive to the latest
 version.
 
-Note that null-ls development takes place primarily on macOS and Linux and may
-not work as expected (or at all) on Windows. Contributions to expand Windows
-support are welcome, but since I don't work on Windows, my ability to diagnose
-or fix Windows issues is nonexistent.
-
 ## Features
 
 null-ls sources are able to hook into the following LSP features:
@@ -196,9 +191,7 @@ null_ls.register(markdownlint)
 5. If you believe the issue is with null-ls itself or you want to request a new
    feature, open an issue and provide all the requested information.
 
-Please **do not** link to or post your entire Neovim configuration. null-ls is
-in beta status, and if you cannot make the effort to isolate your issue, then I
-recommend using another solution.
+Please **do not** link to or post your entire Neovim configuration.
 
 ### How do I format files?
 
@@ -227,7 +220,7 @@ end
 
 ### How do I enable debug mode and get debug output?
 
-1. Set `debug` flag to `true` in the config like so:
+1. Set `debug` flag to `true` in your config:
 
    ```lua
    require("null-ls").config({
@@ -235,10 +228,10 @@ end
    })
    ```
 
-2. Use `:NullLsInfo` to get the path to your debug log, which you can open
-   direclty in Neovim or with another program.
+2. Use `:NullLsLog` to open your debug log in the current Neovim instance or
+   `:NullLsInfo` to get the path to your debug log.
 
-As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
+As with LSP logging, debug mode will slow down Neovim. Make sure to disable the
 option after you've collected the information you're looking for.
 
 ### How do I set the path to the Neovim binary?
@@ -275,29 +268,13 @@ memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
 
-### Debugging
-
-1. Enable debug logging
-
-   ```lua
-   require("null-ls").config({
-      debug = true,
-   })
-
-   ```
-
-2. Use `:NullLsLog` to open the log file.
-
-As with LSP logging, `debug` will slow down Neovim. Make sure to disable the
-option after you've collected the information you're looking for.
-
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
 
-E2E tests expect the latest Neovim master.
+All tests expect the latest Neovim master.
 
 ## Alternatives
 
