@@ -99,7 +99,6 @@ describe("lspconfig", function()
     end)
 
     describe("try_add", function()
-        local has_version = stub(u, "has_version")
         local try_add = stub.new()
         require("lspconfig")["null-ls"].manager = { try_add = try_add }
 
@@ -112,8 +111,6 @@ describe("lspconfig", function()
             vim.bo.buftype = ""
             vim.bo.filetype = ""
             try_add:clear()
-            u.has_version:clear()
-            u.has_version.returns(nil)
         end)
 
         it("should attach when source matches", function()
@@ -155,25 +152,6 @@ describe("lspconfig", function()
             lspconfig.try_add()
 
             assert.stub(try_add).was_not_called()
-        end)
-
-        it("should not attach when filetype is gitcommit and version is < 0.6.0", function()
-            vim.bo.filetype = "gitcommit"
-            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
-
-            lspconfig.try_add()
-
-            assert.stub(try_add).was_not_called()
-        end)
-
-        it("should attach when filetype is gitcommit and version is >= 0.6.0", function()
-            sources.register(require("null-ls.builtins")._test.toggle_line_comment)
-            vim.bo.filetype = "gitcommit"
-            has_version.returns(true)
-
-            lspconfig.try_add()
-
-            assert.stub(try_add).was_called_with(vim.api.nvim_get_current_buf())
         end)
     end)
 end)

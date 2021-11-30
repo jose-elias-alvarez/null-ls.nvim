@@ -15,20 +15,18 @@ local get_line_ending = function(bufnr)
 end
 
 local resolve_content = function(params, bufnr)
-    if M.has_version("0.6.0") or get_line_ending(bufnr) == format_line_ending["unix"] then
-        -- diagnostic notifications will send full buffer content on open and change
-        -- so we can avoid unnecessary api calls
-        if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
-            return M.split_at_newline(params.bufnr, params.textDocument.text)
-        end
-        if
-            params.method == methods.lsp.DID_CHANGE
-            and params.contentChanges
-            and params.contentChanges[1]
-            and params.contentChanges[1].text
-        then
-            return M.split_at_newline(params.bufnr, params.contentChanges[1].text)
-        end
+    -- diagnostic notifications will send full buffer content on open and change
+    -- so we can avoid unnecessary api calls
+    if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
+        return M.split_at_newline(params.bufnr, params.textDocument.text)
+    end
+    if
+        params.method == methods.lsp.DID_CHANGE
+        and params.contentChanges
+        and params.contentChanges[1]
+        and params.contentChanges[1].text
+    then
+        return M.split_at_newline(params.bufnr, params.contentChanges[1].text)
     end
 
     return M.buf.content(bufnr)
@@ -226,34 +224,5 @@ M.table = {
         return new_table
     end,
 }
-
--- TODO: remove on 0.6.0 release
-function M.debounce(ms, fn)
-    local timer = vim.loop.new_timer()
-    return function(...)
-        local argv = { ... }
-        timer:start(ms, 0, function()
-            timer:stop()
-            vim.schedule_wrap(fn)(unpack(argv))
-        end)
-    end
-end
-
-function M.throttle(ms, fn)
-    local timer = vim.loop.new_timer()
-    local running = false
-    return function(...)
-        if not running then
-            local argv = { ... }
-            local argc = select("#", ...)
-
-            timer:start(ms, 0, function()
-                running = false
-                pcall(vim.schedule_wrap(fn), unpack(argv, 1, argc))
-            end)
-            running = true
-        end
-    end
-end
 
 return M

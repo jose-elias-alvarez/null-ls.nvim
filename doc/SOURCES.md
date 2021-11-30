@@ -122,9 +122,6 @@ Disables all sources matching `query`, preventing them from running under any
 conditions. See `get_source(query)` above for information about the structure of
 `query`.
 
-On Neovim versions >= 0.6.0, this will also clear diagnostics from disabled
-sources (you'll have to make a change to trigger an update on lower versions).
-
 ## enable(query)
 
 Enables all disabled sources matching `query`, allowing them to run again as
