@@ -17,21 +17,28 @@ describe("diagnostics", function()
         stub(s, "clear_commands")
         stub(u, "make_params")
         stub(generators, "run_registered")
+        stub(vim, "uri_to_bufnr")
 
         local mock_uri = "file:///mock-file"
-        local mock_client_id = 999
         local mock_handler = stub.new()
         local mock_bufnr = 5
+        local mock_source_id = 8141
 
-        local mock_params
+        local mock_params, mock_generator
         before_each(function()
             mock_params = {
                 textDocument = { uri = mock_uri, version = 1 },
-                client_id = mock_client_id,
                 method = methods.lsp.DID_OPEN,
                 bufnr = mock_bufnr,
             }
+            mock_generator = {
+                opts = {},
+                source_id = mock_source_id,
+                multiple_files = nil,
+            }
+
             u.make_params.returns(mock_params)
+            vim.uri_to_bufnr.returns(mock_bufnr)
         end)
 
         after_each(function()
@@ -41,6 +48,7 @@ describe("diagnostics", function()
             s.clear_commands:clear()
             generators.run_registered:clear()
             u.make_params:clear()
+            vim.uri_to_bufnr:clear()
 
             s.reset()
             c.reset()
@@ -68,9 +76,7 @@ describe("diagnostics", function()
 
             local refs = u.make_params.calls[1].refs
 
-            assert.equals(refs[1].client_id, mock_params.client_id)
             assert.equals(refs[1].method, mock_params.method)
-            assert.equals(refs[1].should_index, mock_params.should_index)
             assert.equals(refs[1].textDocument, mock_params.textDocument)
             assert.equals(refs[1].bufnr, mock_params.bufnr)
             assert.equals(refs[2], methods.internal.DIAGNOSTICS_ON_OPEN)
@@ -101,35 +107,35 @@ describe("diagnostics", function()
                     diagnostics.handler(mock_params)
                     diagnostics.handler(mock_params)
 
-                    generators.run_registered.calls[1].refs[1].after_each(1, "diagnostics", mock_params)
-                    generators.run_registered.calls[2].refs[1].after_each(1, "diagnostics", mock_params)
+                    generators.run_registered.calls[1].refs[1].after_each(mock_diagnostics, mock_params, mock_generator)
+                    generators.run_registered.calls[2].refs[1].after_each(mock_diagnostics, mock_params, mock_generator)
 
                     assert.stub(diagnostic_api.set).was_called(2)
                 end)
 
                 it("should call handler only once if buffer changed in between callbacks", function()
                     diagnostics.handler(mock_params)
-                    generators.run_registered.calls[1].refs[1].after_each(1, "diagnostics", mock_params)
+                    generators.run_registered.calls[1].refs[1].after_each(mock_diagnostics, mock_params, mock_generator)
 
                     local new_params = vim.deepcopy(mock_params)
                     new_params.textDocument.version = 9999
                     diagnostics.handler(new_params)
 
-                    generators.run_registered.calls[2].refs[1].after_each(1, "diagnostics", new_params)
+                    generators.run_registered.calls[2].refs[1].after_each(mock_diagnostics, new_params, mock_generator)
 
                     assert.stub(diagnostic_api.set).was_called(1)
                 end)
 
                 it("should call handler on each callback if buffer changed but method is different", function()
                     diagnostics.handler(mock_params)
-                    generators.run_registered.calls[1].refs[1].after_each(1, "diagnostics", mock_params)
+                    generators.run_registered.calls[1].refs[1].after_each(mock_diagnostics, mock_params, mock_generator)
 
                     local new_params = vim.deepcopy(mock_params)
                     new_params.textDocument.version = 9999
                     new_params.method = "newMethod"
                     diagnostics.handler(new_params)
 
-                    generators.run_registered.calls[2].refs[1].after_each(1, "diagnostics", new_params)
+                    generators.run_registered.calls[2].refs[1].after_each(mock_diagnostics, new_params, mock_generator)
 
                     assert.stub(diagnostic_api.set).was_called(2)
                 end)
@@ -144,8 +150,9 @@ describe("diagnostics", function()
                 end)
 
                 it("should send results of diagnostic generators to API handler", function()
-                    for id, diag in pairs(mock_diagnostics) do
-                        after_each(id, diag, mock_params)
+                    for id, diags in pairs(mock_diagnostics) do
+                        mock_generator.source_id = id
+                        after_each(diags, mock_params, mock_generator)
                     end
 
                     assert.stub(diagnostic_api.set).was_called(#mock_diagnostics)
@@ -164,7 +171,7 @@ describe("diagnostics", function()
                 before_each(function()
                     vim.diagnostic.get.returns({})
 
-                    mock_params.multiple_files = true
+                    mock_generator.multiple_files = true
                     diagnostics.handler(mock_params)
 
                     after_each = generators.run_registered.calls[1].refs[1].after_each
@@ -172,7 +179,8 @@ describe("diagnostics", function()
 
                 it("should send results of diagnostic generators to API handler", function()
                     for id, diags in pairs(mock_diagnostics) do
-                        after_each(id, diags, mock_params)
+                        mock_generator.source_id = id
+                        after_each(diags, mock_params, mock_generator)
                     end
 
                     assert.stub(diagnostic_api.set).was_called(#mock_diagnostics)
@@ -191,8 +199,9 @@ describe("diagnostics", function()
                     }
                     vim.diagnostic.get.returns(old_diagnostics)
 
-                    for id, diag in pairs(mock_diagnostics) do
-                        after_each(id, diag, mock_params)
+                    for id, diags in pairs(mock_diagnostics) do
+                        mock_generator.source_id = id
+                        after_each(diags, mock_params, mock_generator)
                     end
 
                     -- twice per old diagnostic
@@ -211,7 +220,8 @@ describe("diagnostics", function()
                         for _, diag in ipairs(diags) do
                             diag.bufnr = nil
                         end
-                        after_each(id, diags, mock_params)
+                        mock_generator.source_id = id
+                        after_each(diags, mock_params, mock_generator)
                     end
 
                     assert.stub(diagnostic_api.set).was_called(0)
@@ -222,7 +232,7 @@ describe("diagnostics", function()
         describe("postprocess", function()
             local bufadd = stub(vim.fn, "bufadd")
 
-            local postprocess, mock_diagnostic, mock_generator
+            local postprocess, mock_diagnostic
             before_each(function()
                 bufadd.returns(mock_bufnr)
 
@@ -235,7 +245,6 @@ describe("diagnostics", function()
                     message = "message",
                     code = "code",
                 }
-                mock_generator = { opts = {} }
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
                 diagnostics.handler(mock_params)
@@ -364,6 +373,7 @@ describe("diagnostics", function()
 
             it("should set default source when undefined in diagnostic and generator", function()
                 mock_diagnostic.source = nil
+                mock_generator.opts = {}
 
                 postprocess(mock_diagnostic, mock_params, mock_generator)
 

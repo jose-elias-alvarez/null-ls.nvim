@@ -243,21 +243,11 @@ my_source.generator = {
 }
 ```
 
-### `on_run`
+### Multi-file Generators
 
-If defined, a generator's `on_run` callback runs when the generator runs (before
-it returns results). `on_run` receives `params` as its first argument, so it can
-react to or alter state before continuing to the handler:
-
-```lua
-local my_source = {
-    generator = {
-        on_run = function(params)
-            params.multiple_files = true
-        end,
-    },
-}
-```
+If `generator.multiple_files` is `true`, the generator can return results for
+more than one file at a time. At the moment, null-ls supports multi-file
+generators for diagnostics (see below).
 
 ### Generator Return Types
 
@@ -267,7 +257,7 @@ generator.
 
 All return values are **required** unless specified as optional.
 
-#### Code actions
+#### Code Actions
 
 ```lua
 return { {
@@ -296,8 +286,8 @@ return { {
     code, -- number, optional
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
-    filename, -- string, optional (requires params.multiple_files)
-    bufnr, -- number, optional (requires params.multiple_files)
+    filename, -- string, optional (requires generator.multiple_files)
+    bufnr, -- number, optional (requires generator.multiple_files)
 } }
 ```
 
@@ -305,9 +295,10 @@ null-ls generates diagnostics in response to LSP notifications and publishes
 them via the `vim.diagnostic` API when available (falling back to the LSP
 handler on pre-0.6 versions).
 
-When `params.multiple_files` is true, specifying `filename` or `bufnr` publishes
-diagnostics to the specified buffer. Otherwise, null-ls publishes diagnostics to
-the buffer that triggered the LSP diagnostic (in most cases the active buffer).
+When `generator.multiple_files` is true, specifying `filename` or `bufnr`
+publishes diagnostics to the specified buffer. Otherwise, null-ls publishes
+diagnostics to the buffer that triggered the LSP diagnostic (in most cases the
+active buffer).
 
 #### Formatting
 

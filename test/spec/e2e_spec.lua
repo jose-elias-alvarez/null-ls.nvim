@@ -196,7 +196,9 @@ describe("e2e", function()
                     end
                 end
                 assert.truthy(lua_diagnostic)
+                assert.is_not.equals(lua_diagnostic.bufnr, api.nvim_get_current_buf())
                 assert.truthy(javascript_diagnostic)
+                assert.is_not.equals(javascript_diagnostic.bufnr, api.nvim_get_current_buf())
             end)
         end)
 

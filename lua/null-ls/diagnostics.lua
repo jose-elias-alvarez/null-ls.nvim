@@ -94,12 +94,12 @@ local handle_multiple_file_diagnostics = function(namespace, diagnostics)
     end
 end
 
-local handle_diagnostics = function(id, diagnostics, params)
+local handle_diagnostics = function(id, diagnostics, bufnr, multiple_files)
     local namespace = get_namespace(id)
-    if params.multiple_files then
+    if multiple_files then
         handle_multiple_file_diagnostics(namespace, diagnostics)
     else
-        handle_single_file_diagnostics(namespace, diagnostics, params.bufnr)
+        handle_single_file_diagnostics(namespace, diagnostics, bufnr)
     end
 end
 
@@ -143,7 +143,6 @@ M.handler = function(original_params)
     end
 
     local params = u.make_params(original_params, methods.map[method])
-    params.should_index = true
     set_last_changedtick(changedtick, uri, method)
 
     require("null-ls.generators").run_registered({
@@ -151,8 +150,9 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
-        after_each = function(id, diagnostics, generator_params)
-            log:trace("received diagnostics from source " .. id)
+        after_each = function(diagnostics, _, generator)
+            local source_id, multiple_files = generator.source_id, generator.multiple_files
+            log:trace("received diagnostics from source " .. source_id)
             log:trace(diagnostics)
 
             if get_last_changedtick(uri, method) > changedtick then
@@ -160,7 +160,7 @@ M.handler = function(original_params)
                 return
             end
 
-            handle_diagnostics(id, diagnostics, generator_params)
+            handle_diagnostics(source_id, diagnostics, bufnr, multiple_files)
         end,
     })
 end

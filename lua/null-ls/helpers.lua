@@ -306,9 +306,7 @@ M.generator_factory = function(opts)
         filetypes = opts.filetypes,
         opts = opts,
         async = true,
-        on_run = multiple_files and function(params)
-            params.multiple_files = true
-        end,
+        multiple_files = multiple_files,
     }
 end
 

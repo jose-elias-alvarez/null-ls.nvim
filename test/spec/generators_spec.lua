@@ -66,7 +66,7 @@ describe("generators", function()
     end
 
     local error_generator
-    local mock_params
+    local mock_params, mock_opts
     local postprocess = stub.new()
     before_each(function()
         error_generator = {
@@ -75,39 +75,40 @@ describe("generators", function()
                 error("something went wrong")
             end,
         }
-        mock_params = { method = method, ft = "lua", generators = {} }
+        mock_params = { method = method, ft = "lua" }
+        mock_opts = { postprocess = postprocess }
     end)
 
     after_each(function()
         postprocess:clear()
-        sources.reset()
+        sources._reset()
     end)
 
     a.tests.describe("run", function()
         local wrapped_run = a.wrap(generators.run, 4)
 
         it("should return empty table when generators is empty", function()
-            local results = wrapped_run({}, mock_params, postprocess)()
+            local results = wrapped_run({}, mock_params, mock_opts)()
 
             assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should get result from sync generator", function()
-            local results = wrapped_run({ sync_generator }, mock_params, postprocess)()
+            local results = wrapped_run({ sync_generator }, mock_params, mock_opts)()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should get result from async generator", function()
-            local results = wrapped_run({ async_generator }, mock_params, postprocess)()
+            local results = wrapped_run({ async_generator }, mock_params, mock_opts)()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should handle error thrown in sync generator", function()
-            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
@@ -116,7 +117,7 @@ describe("generators", function()
         it("should handle error thrown in async generator", function()
             error_generator.async = true
 
-            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
@@ -127,36 +128,40 @@ describe("generators", function()
                 return { _generator_err = "something went wrong" }
             end
 
-            local results = wrapped_run({ error_generator }, mock_params, postprocess)()
+            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should call postprocess with result, params, and generator", function()
-            wrapped_run({ sync_generator }, mock_params, postprocess)()
+            wrapped_run({ sync_generator }, mock_params, mock_opts)()
 
             assert.stub(postprocess).was_called_with(mock_result, mock_params, sync_generator)
         end)
 
+        it("should call after_each with results, params, and generator", function()
+            mock_opts.after_each = stub.new()
+
+            local results = wrapped_run({ sync_generator }, mock_params, mock_opts)()
+
+            assert.stub(mock_opts.after_each).was_called_with(results, mock_params, sync_generator)
+        end)
+
         it("should skip generators that fail runtime_condition", function()
-            local results =
-                wrapped_run(
-                    { runtime_generator(false), runtime_generator(true) },
-                    mock_params,
-                    postprocess
-                )()
+            local results = wrapped_run({ runtime_generator(false), runtime_generator(true) }, mock_params, mock_opts)()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should return an empty table if all runtime_conditions fail", function()
-            local results = wrapped_run(
-                { runtime_generator(false), runtime_generator(false) },
-                mock_params,
-                postprocess
-            )()
+            local results =
+                wrapped_run(
+                    { runtime_generator(false), runtime_generator(false) },
+                    mock_params,
+                    mock_opts
+                )()
 
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -188,7 +193,7 @@ describe("generators", function()
             generators.run_sequentially({ first_generator, second_generator }, function()
                 mock_params.count = mock_params.count and mock_params.count + 1 or 1
                 return mock_params
-            end, postprocess, callback)
+            end, mock_opts, callback)
 
             vim.wait(50, function()
                 return #results == 2
@@ -202,7 +207,7 @@ describe("generators", function()
         it("should run generators in order", function()
             generators.run_sequentially({ second_generator, first_generator }, function()
                 return mock_params
-            end, postprocess, callback)
+            end, mock_opts, callback)
 
             vim.wait(50, function()
                 return #results == 2
@@ -218,7 +223,7 @@ describe("generators", function()
             generators.run_sequentially({ first_generator, second_generator }, function()
                 count = count + 1
                 return mock_params
-            end, postprocess, callback)
+            end, mock_opts, callback)
 
             vim.wait(50, function()
                 return #results == 2
@@ -228,22 +233,22 @@ describe("generators", function()
         end)
 
         it("should call after_all after running all generators", function()
-            local after_all = stub.new()
+            mock_opts.after_all = stub.new()
             generators.run_sequentially({ first_generator, second_generator }, function()
                 return mock_params
-            end, postprocess, callback, after_all)
+            end, mock_opts, callback)
 
             vim.wait(50, function()
                 return #results == 2
             end)
 
-            assert.stub(after_all).was_called(1)
+            assert.stub(mock_opts.after_all).was_called(1)
         end)
 
         it("should return no results when generators is empty", function()
             generators.run_sequentially({}, function()
                 return mock_params
-            end, postprocess, callback)
+            end, mock_opts, callback)
 
             vim.wait(50)
 
@@ -266,7 +271,7 @@ describe("generators", function()
 
         it("should call run with available generators and opts", function()
             register(method, sync_generator, { "lua" })
-            local mock_opts = {
+            local mock_run_opts = {
                 filetype = mock_params.ft,
                 method = mock_params.method,
                 params = mock_params,
@@ -275,36 +280,13 @@ describe("generators", function()
                 after_each = after_each,
             }
 
-            generators.run_registered(mock_opts)
+            generators.run_registered(mock_run_opts)
 
             assert.stub(run).was_called_with(
-                generators.get_available(mock_opts.filetype, mock_opts.method),
-                mock_opts.params,
-                mock_opts.postprocess,
-                mock_opts.callback,
-                mock_opts.after_each
-            )
-        end)
-
-        it("should call run with available generators indexed by id", function()
-            register(method, sync_generator, { "lua" })
-            mock_params.should_index = true
-            local mock_opts = {
-                filetype = mock_params.ft,
-                method = mock_params.method,
-                params = mock_params,
-                postprocess = postprocess,
-                callback = callback,
-            }
-
-            generators.run_registered(mock_opts)
-
-            assert.stub(run).was_called_with(
-                generators.get_available(mock_opts.filetype, mock_opts.method, mock_params.should_index),
-                mock_opts.params,
-                mock_opts.postprocess,
-                mock_opts.callback,
-                nil
+                generators.get_available(mock_run_opts.filetype, mock_run_opts.method),
+                mock_run_opts.params,
+                { postprocess = postprocess, after_each = after_each },
+                mock_run_opts.callback
             )
         end)
     end)
@@ -325,7 +307,7 @@ describe("generators", function()
 
         it("should call run_sequentially with available generators and opts", function()
             register(method, sync_generator, { "lua" })
-            local mock_opts = {
+            local mock_run_opts = {
                 filetype = mock_params.ft,
                 method = mock_params.method,
                 make_params = function()
@@ -336,14 +318,13 @@ describe("generators", function()
                 after_all = after_all,
             }
 
-            generators.run_registered_sequentially(mock_opts)
+            generators.run_registered_sequentially(mock_run_opts)
 
             assert.stub(run_sequentially).was_called_with(
-                { sync_generator },
-                mock_opts.make_params,
-                mock_opts.postprocess,
-                mock_opts.callback,
-                mock_opts.after_all
+                generators.get_available(mock_run_opts.filetype, mock_run_opts.method),
+                mock_run_opts.make_params,
+                { postprocess = postprocess, after_all = after_all },
+                mock_run_opts.callback
             )
         end)
     end)
@@ -363,12 +344,14 @@ describe("generators", function()
             assert.same(available, {})
         end)
 
-        it("should return generator if registered for filetype", function()
+        it("should return generator copy with source id if registered for filetype", function()
             register(method, sync_generator, { "lua" })
 
             local available = generators.get_available("lua", method)
 
-            assert.same(available, { sync_generator })
+            local copy = vim.deepcopy(sync_generator)
+            copy.source_id = 1
+            assert.same(available, { copy })
         end)
 
         it("should exclude generator if failed flag is set", function()
@@ -378,20 +361,6 @@ describe("generators", function()
             local available = generators.get_available("lua", method)
 
             assert.same(available, {})
-        end)
-
-        it("should index generators by id if index_by_id is true", function()
-            register(method, sync_generator, { "lua" })
-
-            local available = generators.get_available("lua", method, true)
-
-            local generator_id
-            for id in pairs(available) do
-                generator_id = id
-                break
-            end
-
-            assert.same(available, { [generator_id] = sync_generator })
         end)
     end)
 
