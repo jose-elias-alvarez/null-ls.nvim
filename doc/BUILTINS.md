@@ -1796,7 +1796,7 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
-- `args = { "--format", "json1", "-" }`
+- `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
@@ -2150,7 +2150,7 @@ local sources = { null_ls.builtins.code_actions.shellcheck }
 
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
-- `args = { "--format", "json1", "-" }`
+- `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
 #### [statix](https://github.com/nerdypepper/statix)
 
