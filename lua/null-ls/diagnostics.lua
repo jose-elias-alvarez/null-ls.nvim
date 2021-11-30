@@ -6,10 +6,6 @@ local log = require("null-ls.logger")
 
 local api = vim.api
 
-local should_use_diagnostic_api = function()
-    return vim.diagnostic and not c.get()._use_lsp_handler
-end
-
 local namespaces = {}
 local get_namespace = function(id)
     namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
@@ -18,14 +14,13 @@ end
 
 local M = {}
 
-M.namespaces = namespaces
+M.get_namespace = get_namespace
+
+M._reset_namespaces = function()
+    namespaces = {}
+end
 
 M.hide_source_diagnostics = function(id)
-    if not vim.diagnostic then
-        log:debug("unable to clear diagnostics (not available on nvim < 0.6.0)")
-        return
-    end
-
     local ns = namespaces[id]
     if not ns then
         return
@@ -51,15 +46,10 @@ end
 
 local postprocess = function(diagnostic, _, generator)
     local range = convert_range(diagnostic)
-    -- the diagnostic API requires 0-indexing, so we can repurpose the LSP range
-    if should_use_diagnostic_api() then
-        diagnostic.lnum = range["start"].line
-        diagnostic.end_lnum = range["end"].line
-        diagnostic.col = range["start"].character
-        diagnostic.end_col = range["end"].character
-    else
-        diagnostic.range = range
-    end
+    diagnostic.lnum = range["start"].line
+    diagnostic.end_lnum = range["end"].line
+    diagnostic.col = range["start"].character
+    diagnostic.end_col = range["end"].character
 
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
     if diagnostic.filename and not diagnostic.bufnr then
@@ -79,39 +69,38 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
-local index_diagnostics_by_bufnr = function(diagnostics_by_id, bufnr, namespace)
+local handle_single_file_diagnostics = function(namespace, diagnostics, bufnr)
+    vim.diagnostic.set(namespace, bufnr, diagnostics)
+end
+
+local handle_multiple_file_diagnostics = function(namespace, diagnostics)
     local by_bufnr = {}
-    for _, diagnostic in ipairs(diagnostics_by_id) do
-        local diagnostic_bufnr = diagnostic.bufnr or bufnr
-        by_bufnr[diagnostic_bufnr] = by_bufnr[diagnostic_bufnr] or {}
-        table.insert(by_bufnr[diagnostic_bufnr], diagnostic)
+    for _, diagnostic in ipairs(diagnostics) do
+        if not diagnostic.bufnr then
+            log:debug(string.format("received multiple-file diagnostic without bufnr: %s", vim.inspect(diagnostic)))
+        else
+            by_bufnr[diagnostic.bufnr] = by_bufnr[diagnostic.bufnr] or {}
+            table.insert(by_bufnr[diagnostic.bufnr], diagnostic)
+        end
     end
 
     -- clear stale diagnostics
-    for _, old_diagnostic in ipairs(vim.diagnostic.get(bufnr, { namespace = namespace })) do
+    for _, old_diagnostic in ipairs(vim.diagnostic.get(nil, { namespace = namespace })) do
         by_bufnr[old_diagnostic.bufnr] = by_bufnr[old_diagnostic.bufnr] or {}
     end
 
-    return by_bufnr
+    for bufnr, bufnr_diagnostics in pairs(by_bufnr) do
+        vim.diagnostic.set(namespace, bufnr, bufnr_diagnostics)
+    end
 end
 
-local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
-    if should_use_diagnostic_api() then
-        for id, by_id in pairs(diagnostics) do
-            local namespace = get_namespace(id)
-            for index_bufnr, by_bufnr in pairs(index_diagnostics_by_bufnr(by_id, bufnr, namespace)) do
-                vim.diagnostic.set(namespace, index_bufnr, by_bufnr)
-            end
-        end
-        return
+local handle_diagnostics = function(id, diagnostics, params)
+    local namespace = get_namespace(id)
+    if params.multiple_files then
+        handle_multiple_file_diagnostics(namespace, diagnostics)
+    else
+        handle_single_file_diagnostics(namespace, diagnostics, params.bufnr)
     end
-
-    local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
-    handler(nil, { diagnostics = diagnostics, uri = uri }, {
-        method = methods.lsp.PUBLISH_DIAGNOSTICS,
-        client_id = client_id,
-        bufnr = bufnr,
-    })
 end
 
 -- track last changedtick to only send most recent diagnostics
@@ -154,6 +143,7 @@ M.handler = function(original_params)
     end
 
     local params = u.make_params(original_params, methods.map[method])
+    params.should_index = true
     set_last_changedtick(changedtick, uri, method)
 
     require("null-ls.generators").run_registered({
@@ -161,9 +151,8 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
-        index_by_id = should_use_diagnostic_api(),
-        callback = function(diagnostics)
-            log:trace("received diagnostics from generators")
+        after_each = function(id, diagnostics, generator_params)
+            log:trace("received diagnostics from source " .. id)
             log:trace(diagnostics)
 
             if get_last_changedtick(uri, method) > changedtick then
@@ -171,7 +160,7 @@ M.handler = function(original_params)
                 return
             end
 
-            handle_diagnostics(diagnostics, uri, bufnr, original_params.client_id)
+            handle_diagnostics(id, diagnostics, generator_params)
         end,
     })
 end

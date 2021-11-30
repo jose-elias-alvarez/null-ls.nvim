@@ -101,7 +101,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files =
         opts.command,
         opts.args,
         opts.on_output,
@@ -116,7 +116,8 @@ M.generator_factory = function(opts)
         opts.use_cache,
         opts.runtime_condition,
         opts.cwd,
-        opts.dynamic_command
+        opts.dynamic_command,
+        opts.multiple_files
 
     if type(check_exit_code) == "table" then
         local codes = vim.deepcopy(check_exit_code)
@@ -305,6 +306,9 @@ M.generator_factory = function(opts)
         filetypes = opts.filetypes,
         opts = opts,
         async = true,
+        on_run = multiple_files and function(params)
+            params.multiple_files = true
+        end,
     }
 end
 

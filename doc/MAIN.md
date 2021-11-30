@@ -296,8 +296,8 @@ return { {
     code, -- number, optional
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
-    filename, -- string, optional
-    bufnr, -- number, optional
+    filename, -- string, optional (requires params.multiple_files)
+    bufnr, -- number, optional (requires params.multiple_files)
 } }
 ```
 
@@ -305,10 +305,9 @@ null-ls generates diagnostics in response to LSP notifications and publishes
 them via the `vim.diagnostic` API when available (falling back to the LSP
 handler on pre-0.6 versions).
 
-By default, null-ls publishes diagnostics to the buffer that triggered the LSP
-diagnostic (in most cases the active buffer). Specifying `filename` or `bufnr`
-overrides the default behavior and instead publishes diagnostics to the
-specified buffer.
+When `params.multiple_files` is true, specifying `filename` or `bufnr` publishes
+diagnostics to the specified buffer. Otherwise, null-ls publishes diagnostics to
+the buffer that triggered the LSP diagnostic (in most cases the active buffer).
 
 #### Formatting
 

@@ -13,6 +13,7 @@ return h.make_builtin({
         },
         from_stderr = true,
         format = "line",
+        multiple_files = true,
         on_output = function(line, params)
             local name, row, col, err, code, message = line:match("(%g+)%((%d+),(%d+)%): (%a+) (%g+): (.+)")
             if not (name and row and col) then
@@ -24,6 +25,7 @@ return h.make_builtin({
             for _, client in ipairs(vim.lsp.get_active_clients()) do
                 if client.name == "tsserver" then
                     tsserver_client_id = client.id
+                    break
                 end
             end
 
@@ -42,10 +44,10 @@ return h.make_builtin({
                 bufnr = bufnr,
             }
         end,
-        timeout = 150000,
         cwd = function(params)
             return require("lspconfig.util").root_pattern("tsconfig.json")(params.bufname)
         end,
+        timeout = 150000,
     },
     factory = h.generator_factory,
 })
