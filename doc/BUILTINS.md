@@ -1817,7 +1817,7 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
-- `args = { "--format", "json1", "-" }`
+- `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
@@ -2152,6 +2152,38 @@ local sources = { null_ls.builtins.code_actions.refactoring }
 ##### Defaults
 
 - `filetypes = { "go", "javascript", "lua", "python", "typescript" }`
+
+#### [shellcheck](https://www.shellcheck.net)
+
+##### About
+
+Provides actions to disable ShellCheck errors/warnings, either for the
+current line or for the entire file.
+
+- Running the action to disable a rule for the current line adds a disable
+  directive above the line or appends the rule to an existing disable directive
+  for that line.
+- Running the action to disable a rule for the current file adds a disable
+  directive at the top of the file or appends the rule to an existing file
+  disable directive.
+- Note: the first non-comment line in a script is not eligible for a line-level
+  disable directive.
+  See [shellcheck#1877](https://github.com/koalaman/shellcheck/issues/1877).
+
+Consult the [ShellCheck wiki](https://github.com/koalaman/shellcheck/wiki/Ignore)
+for more information on disable directives.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.shellcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "sh" }`
+- `command = "shellcheck"`
+- `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
 #### [statix](https://github.com/nerdypepper/statix)
 
