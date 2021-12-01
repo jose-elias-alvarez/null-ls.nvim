@@ -92,43 +92,6 @@ describe("formatting", function()
         end)
     end)
 
-    describe("callback", function()
-        local mock_edits = { { text = "new text" } }
-        local mock_diffed = {
-            newText = "diffed text",
-            range = {
-                start = { line = 0, character = 10 },
-                ["end"] = { line = 35, character = 1 },
-            },
-        }
-
-        local lsp_handler = stub.new()
-        local original_handler = vim.lsp.handlers[method]
-        before_each(function()
-            vim.lsp.handlers[method] = lsp_handler
-            diff.compute_diff.returns(mock_diffed)
-        end)
-        after_each(function()
-            lsp_handler:clear()
-            vim.lsp.handlers[method] = original_handler
-        end)
-
-        describe("handler", function()
-            it("should call lsp_handler with text edit response", function()
-                formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
-
-                local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
-                callback(mock_edits, mock_params)
-
-                assert.stub(lsp_handler).was_called_with(nil, { mock_diffed }, {
-                    method = mock_params.lsp_method,
-                    client_id = mock_params.client_id,
-                    bufnr = mock_params.bufnr,
-                })
-            end)
-        end)
-    end)
-
     describe("after_all", function()
         it("should call original handler with empty response", function()
             formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
