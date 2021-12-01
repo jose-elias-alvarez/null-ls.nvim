@@ -136,7 +136,11 @@ describe("formatting", function()
             local after_all = generators.run_registered_sequentially.calls[1].refs[1].after_all
             after_all()
 
-            assert.stub(handler).was_called_with(nil, method, nil, mock_params.client_id, mock_params.bufnr)
+            assert.stub(handler).was_called_with(nil, nil, {
+                method = mock_params.lsp_method,
+                client_id = mock_params.client_id,
+                bufnr = mock_params.bufnr,
+            })
         end)
     end)
 end)

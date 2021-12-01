@@ -57,7 +57,7 @@ M.apply_edits = function(edits, params)
 
     local diffed_edits = {}
     for _, edit in ipairs(edits) do
-        local split_text, line_ending = u.split_at_newline(params.bufnr, edit.text)
+        local split_text, line_ending = u.split_at_newline(bufnr, edit.text)
         local diffed = require("null-ls.diff").compute_diff(params.content, split_text, line_ending)
         -- check if the computed diff is an actual edit
         if not (diffed.newText == "" and diffed.rangeLength == 0) then
@@ -67,7 +67,11 @@ M.apply_edits = function(edits, params)
 
     local marks, views = save_win_data(bufnr)
 
-    handler(nil, diffed_edits, { method = params.lsp_method, client_id = params.client_id, bufnr = bufnr })
+    handler(nil, diffed_edits, {
+        method = params.lsp_method,
+        client_id = params.client_id,
+        bufnr = bufnr,
+    })
 
     vim.schedule(function()
         restore_win_data(marks, views, bufnr)
@@ -84,6 +88,7 @@ M.handler = function(method, original_params, handler)
 
     if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
         local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
+
         require("null-ls.generators").run_registered_sequentially({
             filetype = api.nvim_buf_get_option(bufnr, "filetype"),
             method = methods.map[method],
@@ -95,7 +100,11 @@ M.handler = function(method, original_params, handler)
             end,
             after_all = function()
                 -- call original handler with empty response to avoid formatting_sync timeout
-                handler(nil, method, nil, original_params.client_id, bufnr)
+                handler(nil, nil, {
+                    method = method,
+                    client_id = original_params.client_id,
+                    bufnr = bufnr,
+                })
             end,
         })
 
