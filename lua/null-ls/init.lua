@@ -1,28 +1,29 @@
-local helpers = require("null-ls.helpers")
-local sources = require("null-ls.sources")
 local c = require("null-ls.config")
+local helpers = require("null-ls.helpers")
+local log = require("null-ls.logger")
+local sources = require("null-ls.sources")
 
 local M = {}
 
-M.get_sources = sources.get_all
-M.get_source = sources.get
-M.register = sources.register
+M.deregister = sources.deregister
 M.disable = sources.disable
 M.enable = sources.enable
-M.toggle = sources.toggle
-M.deregister = sources.deregister
-M.reset_sources = sources.reset
+M.get_source = sources.get
+M.get_sources = sources.get_all
 M.is_registered = sources.is_registered
+M.register = sources.register
 M.register_name = sources.register_name
+M.reset_sources = sources.reset
+M.toggle = sources.toggle
 
-M.methods = require("null-ls.methods").internal
 M.builtins = require("null-ls.builtins")
+M.methods = require("null-ls.methods").internal
 M.null_ls_info = require("null-ls.info").show_window
 
-M.generator = helpers.generator_factory
 M.formatter = helpers.formatter_factory
+M.generator = helpers.generator_factory
 
-M.config = function(user_config)
+M.setup = function(user_config)
     if vim.g.null_ls_disable or c.get()._setup then
         return
     end
@@ -40,6 +41,12 @@ M.config = function(user_config)
         autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
       augroup end
     ]])
+end
+
+M.config = function(user_config)
+    log:warn("config is deprecated; use setup instead")
+
+    M.setup(user_config)
 end
 
 return M
