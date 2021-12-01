@@ -61,28 +61,6 @@ M.split_at_newline = function(bufnr, text)
     return vim.split(text, line_ending), line_ending
 end
 
-M.get_client = function()
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-        if client.name == "null-ls" then
-            return client
-        end
-    end
-end
-
-M.notify_client = function(method, params)
-    local client = M.get_client()
-    if not client then
-        return
-    end
-
-    client.notify(method, params)
-end
-
-M.resolve_handler = function(method)
-    local client = M.get_client()
-    return client and client.handlers[method] or vim.lsp.handlers[method]
-end
-
 M.has_version = function(ver)
     return vim.fn.has("nvim-" .. ver) > 0
 end
@@ -165,12 +143,11 @@ M.make_params = function(original_params, method)
 end
 
 M.make_conditional_utils = function()
-    local lsputil = require("lspconfig.util")
     local cwd = vim.loop.cwd()
 
     return {
         root_has_file = function(name)
-            return lsputil.path.exists(lsputil.path.join(cwd, name))
+            return M.path.exists(M.path.join(cwd, name))
         end,
         root_matches = function(pattern)
             return cwd:find(pattern) ~= nil
@@ -224,5 +201,132 @@ M.table = {
         return new_table
     end,
 }
+
+-- everything below is adapted from nvim-lspconfig's path utils
+M.path = (function()
+    local exists = function(filename)
+        local stat = vim.loop.fs_stat(filename)
+        return stat ~= nil
+    end
+
+    local is_windows = vim.loop.os_uname().version:match("Windows")
+    local path_separator = is_windows and "\\" or "/"
+
+    local is_fs_root
+    if is_windows then
+        is_fs_root = function(path)
+            return path:match("^%a:$")
+        end
+    else
+        is_fs_root = function(path)
+            return path == "/"
+        end
+    end
+
+    local dirname
+    do
+        local strip_dir_pattern = path_separator .. "([^" .. path_separator .. "]+)$"
+        local strip_separator_pattern = path_separator .. "$"
+        dirname = function(path)
+            if not path or #path == 0 then
+                return
+            end
+            local result = path:gsub(strip_separator_pattern, ""):gsub(strip_dir_pattern, "")
+            if #result == 0 then
+                return "/"
+            end
+            return result
+        end
+    end
+
+    local path_join = function(...)
+        local result = table.concat(vim.tbl_flatten({ ... }), path_separator):gsub(
+            path_separator .. "+",
+            path_separator
+        )
+        return result
+    end
+
+    local traverse_parents = function(path, cb)
+        path = vim.loop.fs_realpath(path)
+        local dir = path
+        -- guard against infinite loop
+        for _ = 1, 100 do
+            dir = dirname(dir)
+            if not dir then
+                return
+            end
+
+            if cb(dir, path) then
+                return dir, path
+            end
+
+            if is_fs_root(dir) then
+                break
+            end
+        end
+    end
+
+    -- iterate path until root dir is found
+    local iterate_parents = function(path)
+        local function it(_, v)
+            if v and not is_fs_root(v) then
+                v = dirname(v)
+            else
+                return
+            end
+            if v and vim.loop.fs_realpath(v) then
+                return v, path
+            else
+                return
+            end
+        end
+        return it, path, path
+    end
+
+    return {
+        is_windows = is_windows,
+        exists = exists,
+        dirname = dirname,
+        join = path_join,
+        traverse_parents = traverse_parents,
+        iterate_parents = iterate_parents,
+    }
+end)()
+
+M.search_ancestors = function(startpath, f)
+    if f(startpath) then
+        return startpath
+    end
+    local guard = 100
+    for path in M.path.iterate_parents(startpath) do
+        -- prevent infinite recursion
+        guard = guard - 1
+        if guard == 0 then
+            return
+        end
+
+        if f(path) then
+            return path
+        end
+    end
+end
+
+M.root_pattern = function(...)
+    local patterns = vim.tbl_flatten({ ... })
+    local function matcher(path)
+        for _, pattern in ipairs(patterns) do
+            for _, p in ipairs(vim.fn.glob(M.path.join(path, pattern), true, true)) do
+                if M.path.exists(p) then
+                    return path
+                end
+            end
+        end
+    end
+
+    return function(startpath)
+        return M.search_ancestors(startpath, matcher)
+    end
+end
 
 return M

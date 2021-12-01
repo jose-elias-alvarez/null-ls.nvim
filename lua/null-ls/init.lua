@@ -28,7 +28,6 @@ M.config = function(user_config)
     end
 
     c.setup(user_config or {})
-    require("null-ls.lspconfig").setup()
     require("null-ls.rpc").setup()
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
@@ -37,7 +36,7 @@ M.config = function(user_config)
     vim.cmd([[
       augroup NullLs
         autocmd!
-        autocmd FileType * lua require("null-ls.lspconfig").try_add()
+        autocmd FileType * lua require("null-ls.client").try_add()
         autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
       augroup end
     ]])

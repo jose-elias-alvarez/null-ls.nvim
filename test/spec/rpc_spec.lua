@@ -1,11 +1,17 @@
 local stub = require("luassert.stub")
+local mock = require("luassert.mock")
 
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
-local handlers = require("null-ls.handlers")
-local u = require("null-ls.utils")
+
+local client = mock(require("null-ls.client"), true)
 
 describe("rpc", function()
     local rpc = require("null-ls.rpc")
+
+    after_each(function()
+        c.reset()
+    end)
 
     describe("setup", function()
         local original_rpc_start = require("vim.lsp.rpc").start
@@ -33,15 +39,19 @@ describe("rpc", function()
             assert.stub(rpc_start).was_called_with("command", "args", "dispatchers", "other_args")
         end)
 
-        it("should call rpc.start override if config exists and command matches", function()
-            local configs = require("lspconfig.configs")
-            configs["null-ls"] = {
-                default_config = { name = "null-ls", cmd = { "nvim" } },
-            }
-            require("lspconfig")["null-ls"].setup({})
+        it("should call rpc.start override if command matches default", function()
             rpc.setup()
 
             require("vim.lsp.rpc").start("nvim", "args", "dispatchers", "other_args")
+
+            assert.stub(rpc.start).was_called_with("dispatchers")
+        end)
+
+        it("should call rpc.start override if command matches custom command", function()
+            c._set({ cmd = { "custom" } })
+            rpc.setup()
+
+            require("vim.lsp.rpc").start("custom", "args", "dispatchers", "other_args")
 
             assert.stub(rpc.start).was_called_with("dispatchers")
         end)
@@ -57,8 +67,6 @@ describe("rpc", function()
         stub(require("null-ls.formatting"), "handler")
         stub(require("null-ls.hover"), "handler")
         stub(require("null-ls.completion"), "handler")
-        stub(handlers, "setup_client")
-        stub(u, "get_client")
 
         local rpc_object
         local dispatchers = { on_exit = stub.new() }
@@ -73,9 +81,8 @@ describe("rpc", function()
             require("null-ls.formatting").handler:clear()
             require("null-ls.hover").handler:clear()
             require("null-ls.completion").handler:clear()
-            handlers.setup_client:clear()
-            u.get_client:clear()
-            u.get_client.returns(nil)
+            client.get_client:clear()
+            client.get_client.returns(nil)
         end)
 
         it("should return object with methods", function()
@@ -125,9 +132,9 @@ describe("rpc", function()
                 )
             end)
 
-            it("should set params.client_id and set up client if found", function()
+            it("should set params.client_id if client exists", function()
                 local mock_client = { id = 99 }
-                u.get_client.returns(mock_client)
+                client.get_client.returns(mock_client)
 
                 request(methods.lsp.FORMATTING, {}, callback)
 
@@ -135,7 +142,6 @@ describe("rpc", function()
                     require("null-ls.code-actions").handler.calls[1].refs[2],
                     { method = methods.lsp.FORMATTING, client_id = mock_client.id }
                 )
-                assert.stub(handlers.setup_client).was_called_with(mock_client)
             end)
 
             it("should call callback with empty response if request is not handled", function()

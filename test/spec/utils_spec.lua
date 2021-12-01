@@ -89,35 +89,6 @@ describe("utils", function()
         end)
     end)
 
-    describe("get_client", function()
-        local get_active_clients
-        before_each(function()
-            get_active_clients = stub(vim.lsp, "get_active_clients")
-        end)
-        after_each(function()
-            get_active_clients:revert()
-        end)
-
-        it("should return matching client", function()
-            local client = { name = "null-ls" }
-            get_active_clients.returns({ client })
-
-            local found_client = u.get_client()
-
-            assert.truthy(found_client)
-            assert.equals(found_client, client)
-        end)
-
-        it("should nil if no client matches", function()
-            local client = { name = "other-client" }
-            get_active_clients.returns({ client })
-
-            local found_client = u.get_client()
-
-            assert.falsy(found_client)
-        end)
-    end)
-
     describe("has_version", function()
         local has
         before_each(function()
@@ -456,47 +427,6 @@ describe("utils", function()
 
                 assert.equals(#unique_table, 2)
             end)
-        end)
-    end)
-
-    describe("resolve_handler", function()
-        local method = methods.lsp.FORMATTING
-        local original_handler = vim.lsp.handlers[method]
-
-        local get_client
-        before_each(function()
-            get_client = stub(u, "get_client")
-            vim.lsp.handlers[method] = "default-handler"
-        end)
-        after_each(function()
-            get_client:revert()
-            vim.lsp.handlers[method] = original_handler
-        end)
-
-        it("should get handler from client when available", function()
-            local mock_client = { handlers = { [method] = "custom-handler" } }
-            get_client.returns(mock_client)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "custom-handler")
-        end)
-
-        it("should get default handler when client handler is not set", function()
-            local mock_client = { handlers = { ["otherMethod"] = "custom-handler" } }
-            get_client.returns(mock_client)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "default-handler")
-        end)
-
-        it("should get default handler when client is unavailable", function()
-            get_client.returns(nil)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "default-handler")
         end)
     end)
 end)

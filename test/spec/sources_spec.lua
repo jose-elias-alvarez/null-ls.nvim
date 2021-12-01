@@ -1,20 +1,16 @@
-local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
 local methods = require("null-ls.methods")
-local u = mock(require("null-ls.utils"), true)
+
 local diagnostics = mock(require("null-ls.diagnostics"), true)
+local u = mock(require("null-ls.utils"), true)
 
 describe("sources", function()
     local sources = require("null-ls.sources")
 
-    local on_register_source = stub(require("null-ls.lspconfig"), "on_register_source")
-    local on_register_sources = stub(require("null-ls.lspconfig"), "on_register_sources")
-
     after_each(function()
-        on_register_source:clear()
-        on_register_sources:clear()
         diagnostics.hide_source_diagnostics:clear()
+        u.buf.for_each:clear()
 
         sources._reset()
     end)
@@ -335,7 +331,7 @@ describe("sources", function()
             sources.enable("mock")
 
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(on_register_source).was_called_with(mock_source)
+            assert.stub(u.buf.for_each).was_called()
         end)
     end)
 
@@ -377,7 +373,7 @@ describe("sources", function()
 
             sources.toggle("mock")
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(on_register_source).was_called_with(mock_source)
+            assert.stub(u.buf.for_each).was_called()
         end)
     end)
 
@@ -565,7 +561,7 @@ describe("sources", function()
         it("should call on_register_source", function()
             sources.register(mock_raw_source)
 
-            assert.stub(on_register_source).was_called()
+            assert.stub(u.buf.for_each).was_called()
         end)
 
         it("should handle large number of duplicates", function()
@@ -587,13 +583,7 @@ describe("sources", function()
         it("should call on_register_source once per source", function()
             sources.register({ mock_raw_source, mock_raw_source })
 
-            assert.stub(on_register_source).was_called(2)
-        end)
-
-        it("should call on_register_sources only once", function()
-            sources.register({ mock_raw_source, mock_raw_source })
-
-            assert.stub(on_register_sources).was_called(1)
+            assert.stub(u.buf.for_each).was_called(2)
         end)
 
         it("should register multiple sources with shared configuration", function()

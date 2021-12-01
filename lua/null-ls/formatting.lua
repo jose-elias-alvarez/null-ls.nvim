@@ -50,7 +50,7 @@ M.apply_edits = function(edits, params)
     local bufnr = params.bufnr
     -- directly use lsp handler, since formatting_sync uses a custom handler that won't work if called twice
     -- formatting and rangeFormatting handlers are identical
-    local handler = u.resolve_handler(params.lsp_method)
+    local handler = require("null-ls.client").resolve_handler(params.lsp_method)
 
     log:debug("received edits from generators")
     log:trace(edits)

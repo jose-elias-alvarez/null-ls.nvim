@@ -17,13 +17,7 @@ local lsp_wait = function(wait_time)
     vim.wait(wait_time or 400)
 end
 
-main.config({ log = { enable = false } })
-require("lspconfig")["null-ls"].setup({
-    flags = {
-        debounce_text_changes = nil,
-        allow_incremental_sync = true,
-    },
-})
+main.setup({ log = { enable = false } })
 
 local get_code_actions = function()
     local current_bufnr = api.nvim_get_current_buf()
@@ -508,7 +502,7 @@ describe("e2e", function()
     describe("handlers", function()
         local mock_handler = require("luassert.stub").new()
         before_each(function()
-            local client = u.get_client()
+            local client = require("null-ls.client").get_client()
             client.handlers[methods.lsp.FORMATTING] = mock_handler
 
             sources.register(builtins._test.first_formatter)
@@ -516,7 +510,7 @@ describe("e2e", function()
             lsp_wait()
         end)
         after_each(function()
-            u.get_client().handlers[methods.lsp.CODE_ACTION] = nil
+            require("null-ls.client").get_client().handlers[methods.lsp.CODE_ACTION] = nil
         end)
 
         it("should use client handler", function()
@@ -535,11 +529,11 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             lsp_wait()
 
-            local client = u.get_client()
+            local client = require("null-ls.client").get_client()
             client.handlers[methods.lsp.HOVER] = mock_handler
         end)
         after_each(function()
-            u.get_client().handlers[methods.lsp.HOVER] = nil
+            require("null-ls.client").get_client().handlers[methods.lsp.HOVER] = nil
         end)
 
         it("should call handler with results", function()
@@ -553,7 +547,7 @@ describe("e2e", function()
 
     describe("client", function()
         it("should not leave pending requests on client object", function()
-            local client = u.get_client()
+            local client = require("null-ls.client").get_client()
 
             assert.truthy(client)
             assert.truthy(vim.tbl_isempty(client.requests))

@@ -1,4 +1,6 @@
 local c = require("null-ls.config")
+local u = require("null-ls.utils")
+
 local log = {}
 
 --- Adds a log entry using Plenary.log
@@ -31,7 +33,7 @@ end
 ---Retrieves the path of the logfile
 ---@return string path of the logfile
 function log:get_path()
-    return string.format("%s/%s.log", vim.fn.stdpath("cache"), "null-ls")
+    return u.path.join(vim.fn.stdpath("cache"), "null-ls.log")
 end
 
 ---Add a log entry at TRACE level

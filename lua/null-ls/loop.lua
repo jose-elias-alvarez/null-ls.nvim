@@ -1,4 +1,5 @@
 local log = require("null-ls.logger")
+local u = require("null-ls.utils")
 
 local uv = vim.loop
 local wrap = vim.schedule_wrap
@@ -151,13 +152,12 @@ M.timer = function(timeout, interval, should_start, callback)
 end
 
 M.temp_file = function(content, extension)
-    local lsputil = require("lspconfig.util")
-    local tmp_dir = lsputil.path.sep == "\\" and vim.fn.getenv("TEMP") or "/tmp"
+    local tmp_dir = u.path.is_windows and vim.fn.getenv("TEMP") or "/tmp"
 
     local fd, tmp_path
     if uv.fs_mkstemp then
         -- prefer fs_mkstemp, since we can modify the directory
-        fd, tmp_path = uv.fs_mkstemp(lsputil.path.join(tmp_dir, "null-ls_XXXXXX"))
+        fd, tmp_path = uv.fs_mkstemp(u.path.join(tmp_dir, "null-ls_XXXXXX"))
     else
         -- fall back to os.tmpname, which is Unix-only
         tmp_path = os.tmpname()
