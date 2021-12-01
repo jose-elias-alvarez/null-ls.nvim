@@ -5,7 +5,7 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 
 local blank_or_comment_line_regex = vim.regex([[^\s*\(#.*\)\?$]])
 local shebang_regex = vim.regex([[^#!]])
-local shellcheck_disable_regex = vim.regex([[^\s*#\s*shellcheck\s\+disable=\(\(SC\)\?\d\+\)\(,\(SC\)\?\d\+\)*\s*$]])
+local shellcheck_disable_regex = vim.regex([[^\s*#\s*shellcheck\s\+disable=\(\(SC\)\?\d\+\)\([,-]\(SC\)\?\d\+\)*\s*$]])
 local shellcheck_disable_pattern = "^%s*#%s*shellcheck%s+disable=([^%s]*)%s*$"
 
 -- Searches a region of the buffer `bufnr` for `regex`, returning the first match.
