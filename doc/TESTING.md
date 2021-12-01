@@ -1,23 +1,25 @@
 # Testing
 
 - The test suite includes unit and integration tests and depends on `plenary.nvim`
-- The default `test/minimal.vim` (passed to the instantiation of _Neovim_ with `-u`)
-  assumes that both `plenary.nvim` and `nvim-lspconfig` are installed one directory
-  above where this project lives. This is noted by:
+- The default `test/minimal.vim` (passed to the instantiation of _Neovim_ with
+  `-u`) assumes that `plenary.nvim` is installed one directory above where this
+  project lives. This is noted by:
+
 ```
 ...
 set rtp+=../plenary.nvim
-set rtp+=../nvim-lspconfig
 ...
 ```
+
 - From this, ensure that you have a directory structure that is something like the
   following:
+
 ```
 .
 ├── plenary.nvim
-├── nvim-lspconfig
 └── null-ls
 ```
+
 - As an additional note, the command used in the `Makefile` instantiates _Neovim_ with
   `-u`, which does _not_ skip plugins in `start/` directories on `packpath`. We need
   plugins to load in order for testing to work, so we can't use `--no-plugin` either.
@@ -32,8 +34,9 @@ set rtp+=../nvim-lspconfig
 
 ## Functional
 
-- Run `FILE=test/spec/file_spec.lua make test-file` to run functional tests from a specific file
-- For example:
+- Run `FILE=test/spec/file_spec.lua make test-file` to run functional tests from
+  a specific file, for example:
+
 ```
 $ FILE=test/spec/e2e_spec.lua make test-file
 ```

@@ -100,15 +100,15 @@ first, so they'll supersede any defined filetypes.
 
 ### Registration
 
-null-ls can register sources via the `config` method (intended for a user's
+null-ls can register sources via the `setup` method (intended for a user's
 configuration) or via the `register` method (intended for integrations or
 advanced use cases).
 
 ```lua
 local null_ls = require("null-ls")
 
--- using config method
-null_ls.config({ sources = my_sources })
+-- using setup method
+null_ls.setup({ sources = my_sources })
 
 -- using register method
 null_ls.register({ my_sources })

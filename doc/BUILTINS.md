@@ -33,7 +33,7 @@ null_ls.builtins.hover
 null_ls.builtins.completion
 ```
 
-You can then register sources by passing a `sources` list into your `config`
+You can then register sources by passing a `sources` list into your `setup`
 function:
 
 ```lua
@@ -46,7 +46,7 @@ local sources = {
     null_ls.builtins.code_actions.gitsigns,
 }
 
-null_ls.config({ sources = sources })
+null_ls.setup({ sources = sources })
 ```
 
 To run built-in sources, the command specified below must be available on your
@@ -219,7 +219,7 @@ local sources = {
 }
 ```
 
-Note that if you pass conditional sources into `null_ls.config`, null-ls will
+Note that if you pass conditional sources into `null_ls.setup`, null-ls will
 check and register them at the point that you source your plugin config. To
 handle advanced dynamic registration behavior, you can use `null_ls.register`
 with a relevant `autocommand` event listener.
