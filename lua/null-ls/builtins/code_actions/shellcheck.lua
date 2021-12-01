@@ -8,11 +8,19 @@ local shebang_regex = vim.regex([[^#!]])
 local shellcheck_disable_regex = vim.regex([[^\s*#\s*shellcheck\s\+disable=\(\(SC\)\?\d\+\)\(,\(SC\)\?\d\+\)*\s*$]])
 local shellcheck_disable_pattern = "^%s*#%s*shellcheck%s+disable=([^%s]*)%s*$"
 
--- Searches a region of the buffer `bufnr` for a ShellCheck disable directive.
+-- Searches a region of the buffer `bufnr` for `regex`, returning the first match.
 -- The search proceeds from `row_start` to `row_end`.
+--
 -- If `row_start` is greater than `row_end`, the region is effectively searched in reverse.
--- A table representing first directive that's found is returned, otherwise nil.
-local find_disable_directive = function(bufnr, row_start, row_end)
+--
+-- If `regex` doesn't match a line and `continue_regex` is not nil, the line is
+-- tested against `continue_regex`; if the line doesn't match, the search halts.
+--
+-- The first return value is the matching line and the second return value is
+-- the line number.
+-- nil is returned for no match.
+local search_region = function(bufnr, regex, row_start, row_end, continue_regex, invert)
+    invert = invert ~= nil and invert or false
     local region_start, region_end
     local idx_start, idx_end, step
     if row_start > row_end then
@@ -34,13 +42,11 @@ local find_disable_directive = function(bufnr, row_start, row_end)
         if line == nil then
             return
         end
-        if shellcheck_disable_regex:match_str(line) then
-            return {
-                codes = line:match(shellcheck_disable_pattern),
-                row = i + (step == 1 and row_start or row_end),
-            }
+        local match = regex:match_str(line) ~= nil
+        if match == not invert then
+            return line, i + (step == 1 and row_start or row_end)
         end
-        if not blank_or_comment_line_regex:match_str(line) then
+        if continue_regex and not continue_regex:match_str(line) then
             return
         end
     end
@@ -48,6 +54,20 @@ end
 
 local get_first_non_shebang_row = function(bufnr)
     return shebang_regex:match_line(bufnr, 0) and 1 or 0
+end
+
+local get_first_non_comment_row = function(bufnr, row)
+    local first_non_shebang_row = get_first_non_shebang_row(bufnr)
+    local _, match_row = search_region(bufnr, blank_or_comment_line_regex, first_non_shebang_row, row, nil, true)
+    return match_row
+end
+
+local find_disable_directive = function(bufnr, row_start, row_end)
+    local line, row = search_region(bufnr, shellcheck_disable_regex, row_start, row_end, blank_or_comment_line_regex)
+    return line and {
+        codes = line:match(shellcheck_disable_pattern),
+        row = row,
+    } or nil
 end
 
 local get_file_directive = function(bufnr)
@@ -86,6 +106,9 @@ local generate_file_disable_action = function(bufnr, code)
 end
 
 local generate_line_disable_action = function(bufnr, row, code, indentation)
+    if get_first_non_comment_row(bufnr, row) == row then
+        return
+    end
     return {
         title = "Disable ShellCheck rule " .. code .. " for this line",
         action = function()
