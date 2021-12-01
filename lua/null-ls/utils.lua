@@ -47,10 +47,6 @@ local resolve_bufnr = function(params)
     return api.nvim_get_current_buf()
 end
 
-M.echo = function(hlgroup, message)
-    api.nvim_echo({ { "null-ls: " .. message, hlgroup } }, true, {})
-end
-
 M.join_at_newline = function(bufnr, text)
     local line_ending = get_line_ending(bufnr)
     return table.concat(text, line_ending), line_ending

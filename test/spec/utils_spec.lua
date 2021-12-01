@@ -12,23 +12,6 @@ describe("utils", function()
         c.reset()
     end)
 
-    describe("echo", function()
-        local echo
-        before_each(function()
-            echo = stub(vim.api, "nvim_echo")
-        end)
-        after_each(function()
-            echo:revert()
-        end)
-
-        it("should call nvim_echo with formatted args", function()
-            local hlgroup = "MockHlgroup"
-            u.echo(hlgroup, "message goes here")
-
-            assert.stub(echo).was_called_with({ { "null-ls: message goes here", hlgroup } }, true, {})
-        end)
-    end)
-
     describe("join_at_newline", function()
         after_each(function()
             vim.bo.fileformat = "unix"
