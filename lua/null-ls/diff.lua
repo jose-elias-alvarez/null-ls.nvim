@@ -1,3 +1,5 @@
+-- adapted from Neovim's previous vim.lsp.util.compute_diff implementation
+
 local M = {}
 
 local function first_difference(old_lines, new_lines)
