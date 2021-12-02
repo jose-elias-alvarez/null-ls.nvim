@@ -1,7 +1,6 @@
 local stub = require("luassert.stub")
 
 local config = require("null-ls.config")
-local rpc = require("null-ls.rpc")
 
 describe("init", function()
     local null_ls = require("null-ls")
@@ -20,12 +19,10 @@ describe("init", function()
     describe("setup", function()
         before_each(function()
             stub(config, "setup")
-            stub(rpc, "setup")
         end)
 
         after_each(function()
             config.setup:revert()
-            rpc.setup:revert()
 
             config.reset()
             vim.g.null_ls_disable = nil
@@ -52,7 +49,6 @@ describe("init", function()
             null_ls.setup()
 
             assert.stub(config.setup).was_called()
-            assert.stub(rpc.setup).was_called()
 
             assert.equals(vim.fn.exists(":NullLsInfo") > 0, true)
             assert.equals(vim.fn.exists(":NullLsLog") > 0, true)

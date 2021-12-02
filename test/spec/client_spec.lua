@@ -86,7 +86,7 @@ describe("client", function()
             end)
         end)
 
-        it("should clear client on exit", function()
+        it("should clear client and id on exit", function()
             client.start_client()
             local opts = lsp.start_client.calls[1].refs[1]
             opts.on_init(mock_client)
@@ -94,6 +94,7 @@ describe("client", function()
             opts.on_exit()
 
             assert.falsy(client.get_client())
+            assert.falsy(client.get_id())
         end)
     end)
 
@@ -102,18 +103,29 @@ describe("client", function()
             tu.edit_test_file("test-file.lua")
         end)
 
+        after_each(function()
+            lsp.buf_attach_client:clear()
+            lsp.buf_is_attached.returns(nil)
+        end)
+
+        -- note that sources.register calls try_add
         it("should attach when source matches", function()
             sources.register(require("null-ls.builtins")._test.mock_code_action)
-
-            client.try_add()
 
             assert.stub(lsp.buf_attach_client).was_called_with(vim.api.nvim_get_current_buf(), mock_client_id)
         end)
 
+        it("should not attach if already attached", function()
+            lsp.buf_is_attached.returns(true)
+            client.start_client()
+
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
+
+            assert.stub(lsp.buf_attach_client).was_not_called()
+        end)
+
         it("should not attach when source is not available", function()
             sources.register(require("null-ls.builtins")._test.mock_hover)
-
-            client.try_add()
 
             assert.stub(lsp.buf_attach_client).was_not_called()
         end)
@@ -126,9 +138,8 @@ describe("client", function()
 
         it("should not attach when buftype is not empty string", function()
             vim.bo.buftype = "nofile"
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
 
-            client.try_add()
+            sources.register(require("null-ls.builtins")._test.mock_code_action)
 
             assert.stub(lsp.buf_attach_client).was_not_called()
         end)
@@ -136,11 +147,33 @@ describe("client", function()
         it("should not attach when buffer has no name", function()
             tu.wipeout()
             vim.bo.filetype = "lua"
+
             sources.register(require("null-ls.builtins")._test.mock_code_action)
 
-            client.try_add()
-
             assert.stub(lsp.buf_attach_client).was_not_called()
+        end)
+    end)
+
+    describe("setup_buffer", function()
+        local mock_bufnr = 555
+        local on_attach = stub.new()
+        before_each(function()
+            c._set({ on_attach = on_attach })
+        end)
+
+        it("should do nothing if no client", function()
+            client.setup_buffer(mock_bufnr)
+
+            assert.stub(on_attach).was_not_called()
+        end)
+
+        it("should call on_attach with client and bufnr if client", function()
+            client.start_client()
+            lsp.start_client.calls[1].refs[1].on_init(mock_client)
+
+            client.setup_buffer(mock_bufnr)
+
+            assert.stub(on_attach).was_called_with(mock_client, mock_bufnr)
         end)
     end)
 

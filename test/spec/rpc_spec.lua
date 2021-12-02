@@ -21,14 +21,24 @@ describe("rpc", function()
             start = stub(rpc, "start")
         end)
         after_each(function()
+            require("vim.lsp.rpc")._null_ls_setup = nil
             require("vim.lsp.rpc").start = original_rpc_start
             start:revert()
         end)
 
-        it("should override original rpc.start method", function()
+        it("should override original rpc.start method and set setup flag", function()
             rpc.setup()
 
             assert.is_not.equals(require("vim.lsp.rpc").start, rpc_start)
+            assert.truthy(require("vim.lsp.rpc")._null_ls_setup)
+        end)
+
+        it("should not do anything if already set up", function()
+            require("vim.lsp.rpc")._null_ls_setup = true
+
+            rpc.setup()
+
+            assert.equals(require("vim.lsp.rpc").start, rpc_start)
         end)
 
         it("should call original rpc_start method if config does not exist", function()
@@ -81,8 +91,8 @@ describe("rpc", function()
             require("null-ls.formatting").handler:clear()
             require("null-ls.hover").handler:clear()
             require("null-ls.completion").handler:clear()
-            client.get_client:clear()
-            client.get_client.returns(nil)
+            client.get_id:clear()
+            client.get_id.returns(nil)
         end)
 
         it("should return object with methods", function()
@@ -132,9 +142,9 @@ describe("rpc", function()
                 )
             end)
 
-            it("should set params.client_id if client exists", function()
+            it("should set params.client_id if id exists", function()
                 local mock_client = { id = 99 }
-                client.get_client.returns(mock_client)
+                client.get_id.returns(mock_client.id)
 
                 request(methods.lsp.FORMATTING, {}, callback)
 

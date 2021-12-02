@@ -2,6 +2,7 @@ local c = require("null-ls.config")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 
+local pid = 5000
 local notification_cache = {}
 
 local should_cache = function(method)
@@ -49,6 +50,9 @@ M.capabilities = capabilities
 
 M.setup = function()
     local rpc = require("vim.lsp.rpc")
+    if rpc._null_ls_setup then
+        return
+    end
 
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
@@ -57,14 +61,13 @@ M.setup = function()
         end
         return rpc_start(cmd, cmd_args, dispatchers, ...)
     end
+
+    rpc._null_ls_setup = true
 end
 
-local lastpid = 5000
-
 M.start = function(dispatchers)
-    lastpid = lastpid + 1
+    pid = pid + 1
     local message_id = 1
-    local pid = lastpid
     local stopped = false
 
     local function handle(method, params, callback, is_notify)
@@ -77,10 +80,7 @@ M.start = function(dispatchers)
         end
 
         params.method = method
-        local client = require("null-ls.client").get_client()
-        if client then
-            params.client_id = client.id
-        end
+        params.client_id = require("null-ls.client").get_id()
 
         local send = function(result)
             if callback then
