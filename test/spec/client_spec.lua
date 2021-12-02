@@ -14,7 +14,7 @@ describe("client", function()
     local mock_client_id = 1
     local mock_client
     before_each(function()
-        mock_client = { id = mock_client_id }
+        mock_client = { id = mock_client_id, config = {} }
         lsp.start_client.returns(mock_client_id)
     end)
 
@@ -40,6 +40,8 @@ describe("client", function()
             assert.same(opts.flags, { debounce_text_changes = c.get().debounce })
             assert.truthy(type(opts.on_init) == "function")
             assert.truthy(type(opts.on_exit) == "function")
+            assert.truthy(type(opts.on_attach) == "function")
+            assert.truthy(type(opts.filetypes) == "table")
         end)
 
         describe("on_init", function()

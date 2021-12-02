@@ -49,6 +49,15 @@ local on_register_source = function(source)
     end)
 end
 
+local on_register_sources = function()
+    local client = require("null-ls.client").get_client()
+    if not client then
+        return
+    end
+
+    client.config.filetypes = M.get_filetypes()
+end
+
 local register_source = function(source)
     source = M.validate_and_transform(source)
     if not source then
@@ -154,6 +163,8 @@ M.deregister = function(query)
             table.remove(all_sources, i)
         end
     end
+
+    on_register_sources()
 end
 
 M.validate_and_transform = function(source)
@@ -240,11 +251,15 @@ M.register = function(to_register)
             register_source(source)
         end
     end
+
+    on_register_sources()
 end
 
 M.reset = function()
     registered.sources = {}
     registered.names = {}
+
+    on_register_sources()
 end
 
 M.is_registered = function(query)

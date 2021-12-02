@@ -60,6 +60,7 @@ M.start_client = function(fname)
         on_init = on_init,
         on_exit = on_exit,
         cmd = c.get().cmd,
+        filetypes = require("null-ls.sources").get_filetypes(),
         flags = { debounce_text_changes = c.get().debounce },
         on_attach = vim.schedule_wrap(function(_, bufnr)
             if bufnr == api.nvim_get_current_buf() then
