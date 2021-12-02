@@ -2044,6 +2044,20 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - `command = "staticcheck"`
 - `args = { "-f", "json", "./..." }`
 
+#### [gccdiag](https://gitlab.com/andrejr/gccdiag)
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gccdiag }
+```
+
+##### Defaults
+
+- `filetypes = { "c", "cpp" }`
+- `command = "gccdiag"`
+- `args = { "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
+
 ### Code actions
 
 #### [ESLint](https://github.com/eslint/eslint)
