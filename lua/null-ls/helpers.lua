@@ -557,7 +557,7 @@ M.diagnostics = (function()
     end
 
     local make_diagnostic = function(entries, defaults, attr_adapters, params, offsets)
-        if not (entries["row"] and entries["message"]) then
+        if not entries["message"] then
             return nil
         end
 

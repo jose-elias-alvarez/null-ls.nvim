@@ -1410,6 +1410,24 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 
 ### Diagnostics
 
+#### [ansible-lint](https://github.com/ansible-community/ansible-lint)
+
+##### About
+
+Linter for Ansible playbooks, roles and collections.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ansiblelint }
+```
+
+##### Defaults
+
+- `filetypes = { "yaml" }`
+- `command = "ansible-lint"`
+- `args = { "--parseable-severity", "-q", "--nocolor", "$FILENAME" }`
+
 #### [chktex](https://www.nongnu.org/chktex/)
 
 ##### About
