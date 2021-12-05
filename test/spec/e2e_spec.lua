@@ -176,6 +176,32 @@ describe("e2e", function()
             end)
         end)
 
+        describe("multiple-file diagnostics", function()
+            it("should set diagnostics for multiple files", function()
+                sources.reset()
+                sources.register(builtins._test.mock_multiple_file_diagnostics)
+                vim.cmd("e")
+                lsp_wait()
+
+                local diagnostics = vim.diagnostic.get()
+                assert.equals(vim.tbl_count(diagnostics), 2)
+
+                local lua_diagnostic, javascript_diagnostic
+                for _, diagnostic in ipairs(diagnostics) do
+                    if diagnostic.filename == tu.test_file_path("test-file.lua") then
+                        lua_diagnostic = diagnostic
+                    end
+                    if diagnostic.filename == tu.test_file_path("test-file.js") then
+                        javascript_diagnostic = diagnostic
+                    end
+                end
+                assert.truthy(lua_diagnostic)
+                assert.is_not.equals(lua_diagnostic.bufnr, api.nvim_get_current_buf())
+                assert.truthy(javascript_diagnostic)
+                assert.is_not.equals(javascript_diagnostic.bufnr, api.nvim_get_current_buf())
+            end)
+        end)
+
         it("should format diagnostics with source-specific diagnostics_format", function()
             sources.reset()
             sources.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))

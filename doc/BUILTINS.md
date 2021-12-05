@@ -158,6 +158,19 @@ See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
 Note that specifying `diagnostics_format` for a built-in will override your
 global `diagnostics_format` for that source.
 
+### Diagnostics performance
+
+If you have performance issues with a diagnostic source, you can configure any
+it to run on save (not on each change) by overriding `method`:
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+        method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+    }),
+}
+```
+
 ## Local executables
 
 To prefer using a local executable for a built-in, use the `prefer_local`
@@ -1992,20 +2005,33 @@ local sources = { null_ls.builtins.diagnostics.yamllint }
 
 ### Diagnostics on save
 
-**NOTE**: These sources run **only** on save, meaning that the diagnostics you
-see will not reflect changes to the buffer until you write the changes to the
-disk.
+**NOTE**: These sources **do not run on change**, meaning that the diagnostics
+you see will not reflect changes to the buffer until you write the changes to
+the disk.
 
-You can configure built-in diagnostic sources to run on save by overriding
-`method`:
+#### [gccdiag](https://gitlab.com/andrejr/gccdiag)
+
+##### About
+
+gccdiag is a wrapper for any C/C++ compiler (gcc, avr-gcc, arm-none-eabi-gcc,
+etc) that automatically uses the correct compiler arguments for a file in your
+project by parsing the `compile_commands.json` file at the root of your
+project.
+
+This builtin will call gccdiag and display the diagnostics like any other LSP
+server.
+
+##### Usage
 
 ```lua
-local sources = {
-    null_ls.builtins.diagnostics.pylint.with({
-        method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-    }),
-}
+local sources = { null_ls.builtins.diagnostics.gccdiag }
 ```
+
+##### Defaults
+
+- `filetypes = { "c", "cpp" }`
+- `command = "gccdiag"`
+- `args = { "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
 
 #### [golangci-lint](https://golangci-lint.run/)
 
@@ -2061,29 +2087,27 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - `command = "staticcheck"`
 - `args = { "-f", "json", "./..." }`
 
-#### [gccdiag](https://gitlab.com/andrejr/gccdiag)
+#### [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
 
 ##### About
 
-gccdiag is a wrapper for any C/C++ compiler (gcc, avr-gcc, arm-none-eabi-gcc,
-etc) that automatically uses the correct compiler arguments for a file in your
-project by parsing the `compile_commands.json` file at the root of your
-project.
-
-This builtin will call gccdiag and display the diagnostics like any other LSP
-server.
+Parses diagnostics from the TypeScript compiler.
 
 ##### Usage
 
+- Diagnostics from this source and `tsserver` are independent. If you have
+  `tsserver` configured to show diagnostics, you may see duplicates until buffer
+  diagnostics update.
+
 ```lua
-local sources = { null_ls.builtins.diagnostics.gccdiag }
+local sources = { null_ls.builtins.diagnostics.tsc }
 ```
 
-##### Defaults
+#### Defaults
 
-- `filetypes = { "c", "cpp" }`
-- `command = "gccdiag"`
-- `args = { "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
+- `filetypes = { "typescript", "typescriptreact" }`
+- `command = "tsc"`
+- `args = { "--pretty", "false", "--noEmit" }`
 
 ### Code actions
 
