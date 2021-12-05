@@ -27,6 +27,7 @@ describe("loop", function()
         local mock_stdin_write = stub.new()
         local mock_stdin_is_closing = stub.new()
         local mock_stdin_close = stub.new()
+        local mock_stdin_shutdown = stub.new()
         local mock_stdout = {}
         local mock_stdout_read_stop = stub.new()
         local mock_stdout_is_closing = stub.new()
@@ -54,6 +55,9 @@ describe("loop", function()
             end
             function mock_stdin:close()
                 mock_stdin_close()
+            end
+            function mock_stdin:shutdown(...)
+                mock_stdin_shutdown(...)
             end
             function mock_handle:is_closing()
                 return mock_handle_is_closing()
@@ -85,6 +89,7 @@ describe("loop", function()
             mock_handler:clear()
             mock_stdin_write:clear()
             mock_stdin_close:clear()
+            mock_stdin_shutdown:clear()
             mock_handle_is_closing:clear()
             mock_handle_close:clear()
             mock_stdout_read_stop:clear()
@@ -114,9 +119,12 @@ describe("loop", function()
         end)
 
         describe("stdin", function()
-            it("should call stdin:write when input is given", function()
+            local mock_input = "I have content"
+            before_each(function()
                 uv.new_pipe.returns(mock_stdin)
-                local mock_input = "I have content"
+            end)
+
+            it("should call stdin:write when input is given", function()
                 mock_opts.input = mock_input
 
                 loop.spawn(mock_cmd, mock_args, mock_opts)
@@ -125,13 +133,20 @@ describe("loop", function()
                 assert.equals(mock_stdin_write.calls[1].refs[1], mock_input)
             end)
 
-            it("should call stdin:close in callback", function()
-                uv.new_pipe.returns(mock_stdin)
-                local mock_input = "I have content"
+            it("should call stdin:write with input", function()
+                mock_opts.input = mock_input
+
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+
+                assert.stub(mock_stdin_write).was_called_with(mock_input)
+            end)
+
+            it("should call stdin:shutdown with close callback", function()
                 mock_opts.input = mock_input
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
-                local callback = mock_stdin_write.calls[1].refs[2]
+                assert.stub(mock_stdin_shutdown).was_called()
+                local callback = mock_stdin_shutdown.calls[1].refs[1]
                 callback()
 
                 assert.stub(mock_stdin_close).was_called()
