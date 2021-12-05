@@ -20,20 +20,6 @@ return h.make_builtin({
                 return
             end
 
-            local filename = require("lspconfig.util").path.join(params.root, name)
-            local tsserver_client_id
-            for _, client in ipairs(vim.lsp.get_active_clients()) do
-                if client.name == "tsserver" then
-                    tsserver_client_id = client.id
-                    break
-                end
-            end
-
-            local bufnr = vim.fn.bufadd(filename)
-            if tsserver_client_id and vim.lsp.buf_is_attached(bufnr, tsserver_client_id) then
-                return
-            end
-
             local severity = err == "error" and 1 or 2
             return {
                 row = row,
@@ -41,7 +27,7 @@ return h.make_builtin({
                 code = code,
                 message = message,
                 severity = severity,
-                bufnr = bufnr,
+                filename = require("lspconfig.util").path.join(params.root, name),
             }
         end,
         cwd = function(params)

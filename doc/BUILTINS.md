@@ -2096,8 +2096,7 @@ Parses diagnostics from the TypeScript compiler.
 ##### Usage
 
 - Diagnostics from this source and `tsserver` are independent. If you have
-  `tsserver` configured to show diagnostics, you may see duplicates until buffer
-  diagnostics update.
+  `tsserver` configured to show diagnostics, you will see duplicates.
 
 ```lua
 local sources = { null_ls.builtins.diagnostics.tsc }
