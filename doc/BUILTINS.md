@@ -1410,6 +1410,24 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 
 ### Diagnostics
 
+#### [ansible-lint](https://github.com/ansible-community/ansible-lint)
+
+##### About
+
+Linter for Ansible playbooks, roles and collections.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ansiblelint }
+```
+
+##### Defaults
+
+- `filetypes = { "yaml" }`
+- `command = "ansible-lint"`
+- `args = { "--parseable-severity", "-q", "--nocolor", "$FILENAME" }`
+
 #### [chktex](https://www.nongnu.org/chktex/)
 
 ##### About
@@ -2057,6 +2075,22 @@ Parses diagnostics from the TypeScript compiler.
 
 ```lua
 local sources = { null_ls.builtins.diagnostics.tsc }
+#### [gccdiag](https://gitlab.com/andrejr/gccdiag)
+
+##### About
+
+gccdiag is a wrapper for any C/C++ compiler (gcc, avr-gcc, arm-none-eabi-gcc,
+etc) that automatically uses the correct compiler arguments for a file in your
+project by parsing the `compile_commands.json` file at the root of your
+project.
+
+This builtin will call gccdiag and display the diagnostics like any other LSP
+server.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gccdiag }
 ```
 
 ##### Defaults
@@ -2064,6 +2098,9 @@ local sources = { null_ls.builtins.diagnostics.tsc }
 - `filetypes = { "typescript", "typescriptreact" }`
 - `command = "tsc"`
 - `args = { "--pretty", "false", "--noEmit" }`
+- `filetypes = { "c", "cpp" }`
+- `command = "gccdiag"`
+- `args = { "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
 
 ### Code actions
 
