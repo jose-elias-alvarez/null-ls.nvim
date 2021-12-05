@@ -1374,6 +1374,7 @@ local sources = { null_ls.builtins.formatting.uncrustify }
 ##### About
 
 Formatter for `python` files
+
 - Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
   - `textDocument/rangeFormatting` is line-based.
 
@@ -2061,6 +2062,30 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - `filetypes = { "go" }`
 - `command = "staticcheck"`
 - `args = { "-f", "json", "./..." }`
+
+#### [gccdiag](https://gitlab.com/andrejr/gccdiag)
+
+##### About
+
+gccdiag is a wrapper for any C/C++ compiler (gcc, avr-gcc, arm-none-eabi-gcc,
+etc) that automatically uses the correct compiler arguments for a file in your
+project by parsing the `compile_commands.json` file at the root of your
+project.
+
+This builtin will call gccdiag and display the diagnostics like any other LSP
+server.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gccdiag }
+```
+
+##### Defaults
+
+- `filetypes = { "c", "cpp" }`
+- `command = "gccdiag"`
+- `args = { "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
 
 ### Code actions
 
