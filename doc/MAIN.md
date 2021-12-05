@@ -292,13 +292,14 @@ return { {
 ```
 
 null-ls generates diagnostics in response to LSP notifications and publishes
-them via the `vim.diagnostic` API when available (falling back to the LSP
-handler on pre-0.6 versions).
+them via the `vim.diagnostic` API.
 
 When `generator.multiple_files` is true, specifying `filename` or `bufnr`
 publishes diagnostics to the specified buffer. Otherwise, null-ls publishes
 diagnostics to the buffer that triggered the LSP diagnostic (in most cases the
 active buffer).
+
+Note that `filename` (if specified) should be an absolute path to the file.
 
 #### Formatting
 
