@@ -38,7 +38,8 @@ helpers.generator_factory({
     use_cache, -- boolean (optional)
     runtime_condition, -- function (optional)
     cwd, -- function (optional)
-    dynamic_command, -- function(optional)
+    dynamic_command, -- function (optional)
+    multiple_files, -- boolean (optional)
 })
 ```
 
@@ -208,6 +209,13 @@ performance, so it's best to cache its output when possible.
 
 Note that setting `dynamic_command` will disable `command` validation.
 
+### multiple_files
+
+If set, signals that the generator will return results that apply to more than
+one file. The null-ls diagnostics handler allows applying results to more than
+one file if this option is `true` and each diagnostic specifies a `bufnr` or
+`filename` specifying the file to which the diagnostic applies.
+
 ## formatter_factory
 
 `formatter_factory` is a wrapper around `generator_factory` meant to streamline
@@ -221,7 +229,7 @@ with the following changes:
   content with formatter output. As a result, other options that depend on
   `on_output`, such as `format`, will not have an effect.
 
-### make_builtin
+## make_builtin
 
 `make_builtin` creates built-in sources, as described in
 [BUILTINS](BUILTINS.md). It optimizes the source to reduce start-up time and

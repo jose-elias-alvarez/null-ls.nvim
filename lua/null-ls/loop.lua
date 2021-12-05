@@ -110,7 +110,8 @@ M.spawn = function(cmd, args, opts)
     uv.read_start(stderr, handle_stderr)
 
     if input then
-        stdin:write(input, function()
+        stdin:write(input)
+        stdin:shutdown(function()
             close_handle(stdin)
         end)
     end

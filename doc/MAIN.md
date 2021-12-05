@@ -243,6 +243,12 @@ my_source.generator = {
 }
 ```
 
+### Multi-file Generators
+
+If `generator.multiple_files` is `true`, the generator can return results for
+more than one file at a time. At the moment, null-ls supports multi-file
+generators for diagnostics (see below).
+
 ### Generator Return Types
 
 Generators must return `nil` or a list containing their results. The structure
@@ -251,7 +257,7 @@ generator.
 
 All return values are **required** unless specified as optional.
 
-#### Code actions
+#### Code Actions
 
 ```lua
 return { {
@@ -264,8 +270,8 @@ Once generated, null-ls stores code action results in its internal state and
 calls them if selected by the user. It clears and re-generates non-selected
 actions on the next request.
 
-Like generator functions, code action
-callbacks are schedule-wrapped, making it safe to call any API function.
+Like generator functions, code action callbacks are schedule-wrapped, making it
+safe to call any API function.
 
 #### Diagnostics
 
@@ -280,11 +286,20 @@ return { {
     code, -- number, optional
     message, -- string
     severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
+    filename, -- string, optional (requires generator.multiple_files)
+    bufnr, -- number, optional (requires generator.multiple_files)
 } }
 ```
 
-null-ls sends diagnostic results to the Neovim LSP client's handler, which shows
-them in the editor.
+null-ls generates diagnostics in response to LSP notifications and publishes
+them via the `vim.diagnostic` API.
+
+When `generator.multiple_files` is true, specifying `filename` or `bufnr`
+publishes diagnostics to the specified buffer. Otherwise, null-ls publishes
+diagnostics to the buffer that triggered the LSP diagnostic (in most cases the
+active buffer).
+
+Note that `filename` (if specified) should be an absolute path to the file.
 
 #### Formatting
 

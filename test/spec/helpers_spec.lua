@@ -390,6 +390,14 @@ describe("helpers", function()
             assert.same(generator.filetypes, { "lua" })
         end)
 
+        it("should pass multiple_files to generator", function()
+            generator_args.multiple_files = true
+
+            local generator = helpers.generator_factory(generator_args)
+
+            assert.truthy(generator.multiple_files)
+        end)
+
         it("should wrap check_exit_code if it's a table", function()
             generator_args.check_exit_code = { 0 }
             local generator = helpers.generator_factory(generator_args)

@@ -7,10 +7,18 @@ local log = require("null-ls.logger")
 local api = vim.api
 
 local namespaces = {}
+local get_namespace = function(id)
+    namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+    return namespaces[id]
+end
 
 local M = {}
 
-M.namespaces = namespaces
+M.get_namespace = get_namespace
+
+M._reset_namespaces = function()
+    namespaces = {}
+end
 
 M.hide_source_diagnostics = function(id)
     local ns = namespaces[id]
@@ -38,13 +46,16 @@ end
 
 local postprocess = function(diagnostic, _, generator)
     local range = convert_range(diagnostic)
-    -- the diagnostic API requires 0-indexing, so we can repurpose the LSP range
     diagnostic.lnum = range["start"].line
     diagnostic.end_lnum = range["end"].line
     diagnostic.col = range["start"].character
     diagnostic.end_col = range["end"].character
 
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
+    if diagnostic.filename and not diagnostic.bufnr then
+        local bufnr = vim.fn.bufadd(diagnostic.filename)
+        diagnostic.bufnr = bufnr
+    end
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
     -- avoid unnecessary gsub if using default
@@ -58,10 +69,37 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
-local handle_diagnostics = function(diagnostics, bufnr)
-    for id, by_id in pairs(diagnostics) do
-        namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
-        vim.diagnostic.set(namespaces[id], bufnr, by_id)
+local handle_single_file_diagnostics = function(namespace, diagnostics, bufnr)
+    vim.diagnostic.set(namespace, bufnr, diagnostics)
+end
+
+local handle_multiple_file_diagnostics = function(namespace, diagnostics)
+    local by_bufnr = {}
+    for _, diagnostic in ipairs(diagnostics) do
+        if not diagnostic.bufnr then
+            log:debug(string.format("received multiple-file diagnostic without bufnr: %s", vim.inspect(diagnostic)))
+        else
+            by_bufnr[diagnostic.bufnr] = by_bufnr[diagnostic.bufnr] or {}
+            table.insert(by_bufnr[diagnostic.bufnr], diagnostic)
+        end
+    end
+
+    -- clear stale diagnostics
+    for _, old_diagnostic in ipairs(vim.diagnostic.get(nil, { namespace = namespace })) do
+        by_bufnr[old_diagnostic.bufnr] = by_bufnr[old_diagnostic.bufnr] or {}
+    end
+
+    for bufnr, bufnr_diagnostics in pairs(by_bufnr) do
+        vim.diagnostic.set(namespace, bufnr, bufnr_diagnostics)
+    end
+end
+
+local handle_diagnostics = function(id, diagnostics, bufnr, multiple_files)
+    local namespace = get_namespace(id)
+    if multiple_files then
+        handle_multiple_file_diagnostics(namespace, diagnostics)
+    else
+        handle_single_file_diagnostics(namespace, diagnostics, bufnr)
     end
 end
 
@@ -112,9 +150,9 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
-        index_by_id = true,
-        callback = function(diagnostics)
-            log:trace("received diagnostics from generators")
+        after_each = function(diagnostics, _, generator)
+            local source_id, multiple_files = generator.source_id, generator.multiple_files
+            log:trace("received diagnostics from source " .. source_id)
             log:trace(diagnostics)
 
             if get_last_changedtick(uri, method) > changedtick then
@@ -122,7 +160,7 @@ M.handler = function(original_params)
                 return
             end
 
-            handle_diagnostics(diagnostics, bufnr)
+            handle_diagnostics(source_id, diagnostics, bufnr, multiple_files)
         end,
     })
 end
