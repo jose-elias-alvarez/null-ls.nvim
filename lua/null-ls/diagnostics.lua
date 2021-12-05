@@ -6,10 +6,6 @@ local log = require("null-ls.logger")
 
 local api = vim.api
 
-local should_use_diagnostic_api = function()
-    return vim.diagnostic and not c.get()._use_lsp_handler
-end
-
 local namespaces = {}
 
 local M = {}
@@ -17,11 +13,6 @@ local M = {}
 M.namespaces = namespaces
 
 M.hide_source_diagnostics = function(id)
-    if not vim.diagnostic then
-        log:debug("unable to clear diagnostics (not available on nvim < 0.6.0)")
-        return
-    end
-
     local ns = namespaces[id]
     if not ns then
         return
@@ -48,14 +39,10 @@ end
 local postprocess = function(diagnostic, _, generator)
     local range = convert_range(diagnostic)
     -- the diagnostic API requires 0-indexing, so we can repurpose the LSP range
-    if should_use_diagnostic_api() then
-        diagnostic.lnum = range["start"].line
-        diagnostic.end_lnum = range["end"].line
-        diagnostic.col = range["start"].character
-        diagnostic.end_col = range["end"].character
-    else
-        diagnostic.range = range
-    end
+    diagnostic.lnum = range["start"].line
+    diagnostic.end_lnum = range["end"].line
+    diagnostic.col = range["start"].character
+    diagnostic.end_col = range["end"].character
 
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
 
@@ -71,21 +58,11 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
-local handle_diagnostics = function(diagnostics, uri, bufnr, client_id)
-    if should_use_diagnostic_api() then
-        for id, by_id in pairs(diagnostics) do
-            namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
-            vim.diagnostic.set(namespaces[id], bufnr, by_id)
-        end
-        return
+local handle_diagnostics = function(diagnostics, bufnr)
+    for id, by_id in pairs(diagnostics) do
+        namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+        vim.diagnostic.set(namespaces[id], bufnr, by_id)
     end
-
-    local handler = u.resolve_handler(methods.lsp.PUBLISH_DIAGNOSTICS)
-    handler(nil, { diagnostics = diagnostics, uri = uri }, {
-        method = methods.lsp.PUBLISH_DIAGNOSTICS,
-        client_id = client_id,
-        bufnr = bufnr,
-    })
 end
 
 -- track last changedtick to only send most recent diagnostics
@@ -135,7 +112,7 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
-        index_by_id = should_use_diagnostic_api(),
+        index_by_id = true,
         callback = function(diagnostics)
             log:trace("received diagnostics from generators")
             log:trace(diagnostics)
@@ -145,7 +122,7 @@ M.handler = function(original_params)
                 return
             end
 
-            handle_diagnostics(diagnostics, uri, bufnr, original_params.client_id)
+            handle_diagnostics(diagnostics, bufnr)
         end,
     })
 end

@@ -330,85 +330,37 @@ describe("utils", function()
             end)
 
             describe("non-unix style line endings", function()
-                local has_version = stub(u, "has_version")
-                after_each(function()
-                    has_version:clear()
+                it("should content from params on DID_OPEN", function()
+                    vim.bo.fileformat = "dos"
+
+                    local params = u.make_params({
+                        method = methods.lsp.DID_OPEN,
+                        textDocument = { text = mock_content },
+                    }, mock_method)
+
+                    assert.same(params.content, { mock_content })
                 end)
 
-                describe("0.6", function()
-                    has_version.returns(true)
+                it("should get content from params on DID_CHANGE", function()
+                    vim.bo.fileformat = "dos"
 
-                    it("should content from params on DID_OPEN", function()
-                        vim.bo.fileformat = "dos"
+                    local params = u.make_params({
+                        method = methods.lsp.DID_CHANGE,
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
 
-                        local params = u.make_params({
-                            method = methods.lsp.DID_OPEN,
-                            textDocument = { text = mock_content },
-                        }, mock_method)
-
-                        assert.same(params.content, { mock_content })
-                    end)
-
-                    it("should get content from params on DID_CHANGE", function()
-                        vim.bo.fileformat = "dos"
-
-                        local params = u.make_params({
-                            method = methods.lsp.DID_CHANGE,
-                            contentChanges = { { text = mock_content } },
-                        }, mock_method)
-
-                        assert.same(params.content, { mock_content })
-                    end)
-
-                    it("should directly get content from buffer if method does not match", function()
-                        vim.bo.fileformat = "dos"
-
-                        local params = u.make_params({
-                            method = "otherMethod",
-                            contentChanges = { { text = mock_content } },
-                        }, mock_method)
-
-                        assert.same(params.content, { 'print("I am a test file!")', "" })
-                    end)
+                    assert.same(params.content, { mock_content })
                 end)
 
-                describe("0.5.1", function()
-                    before_each(function()
-                        has_version.returns(false)
-                    end)
+                it("should directly get content from buffer if method does not match", function()
+                    vim.bo.fileformat = "dos"
 
-                    it("should directly get content from buffer on DID_OPEN", function()
-                        vim.bo.fileformat = "dos"
+                    local params = u.make_params({
+                        method = "otherMethod",
+                        contentChanges = { { text = mock_content } },
+                    }, mock_method)
 
-                        local params = u.make_params({
-                            method = methods.lsp.DID_OPEN,
-                            textDocument = { text = mock_content },
-                        }, mock_method)
-
-                        assert.same(params.content, { 'print("I am a test file!")', "" })
-                    end)
-
-                    it("should directly get content from buffer on DID_CHANGE", function()
-                        vim.bo.fileformat = "dos"
-
-                        local params = u.make_params({
-                            method = methods.lsp.DID_CHANGE,
-                            contentChanges = { { text = mock_content } },
-                        }, mock_method)
-
-                        assert.same(params.content, { 'print("I am a test file!")', "" })
-                    end)
-
-                    it("should directly get content from buffer if method does not match", function()
-                        vim.bo.fileformat = "dos"
-
-                        local params = u.make_params({
-                            method = "otherMethod",
-                            contentChanges = { { text = mock_content } },
-                        }, mock_method)
-
-                        assert.same(params.content, { 'print("I am a test file!")', "" })
-                    end)
+                    assert.same(params.content, { 'print("I am a test file!")', "" })
                 end)
             end)
         end)

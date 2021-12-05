@@ -75,75 +75,10 @@ describe("diagnostics", function()
         end)
 
         describe("handler", function()
-            describe("LSP handler", function()
-                before_each(function()
-                    c._set({ _use_lsp_handler = true })
-                    generators.run_registered:clear()
-                    mock_handler:clear()
-                end)
-
-                it("should send results of diagnostic generators to lsp handler", function()
-                    u.make_params.returns({ uri = mock_params.textDocument.uri })
-
-                    diagnostics.handler(mock_params)
-                    local callback = generators.run_registered.calls[1].refs[1].callback
-                    callback("diagnostics")
-
-                    assert.stub(mock_handler).was_called_with(nil, {
-                        diagnostics = "diagnostics",
-                        uri = mock_params.textDocument.uri,
-                    }, {
-                        method = methods.lsp.PUBLISH_DIAGNOSTICS,
-                        client_id = mock_client_id,
-                        bufnr = vim.uri_to_bufnr(mock_uri),
-                    })
-                end)
-
-                describe("changedtick tracking", function()
-                    it("should call handler on each callback if buffer did not change", function()
-                        diagnostics.handler(mock_params)
-                        diagnostics.handler(mock_params)
-
-                        generators.run_registered.calls[1].refs[1].callback("diagnostics 1")
-                        generators.run_registered.calls[2].refs[1].callback("diagnostics")
-
-                        assert.stub(mock_handler).was_called(2)
-                    end)
-
-                    it("should call handler only once if buffer changed in between callbacks", function()
-                        diagnostics.handler(mock_params)
-
-                        local new_params = vim.deepcopy(mock_params)
-                        new_params.textDocument.version = 9999
-                        diagnostics.handler(new_params)
-
-                        generators.run_registered.calls[1].refs[1].callback("diagnostics")
-                        generators.run_registered.calls[2].refs[1].callback("diagnostics")
-
-                        assert.stub(mock_handler).was_called(1)
-                    end)
-
-                    it("should call handler on each callback if buffer changed but method is different", function()
-                        diagnostics.handler(mock_params)
-
-                        local new_params = vim.deepcopy(mock_params)
-                        new_params.textDocument.version = 9999
-                        new_params.method = "newMethod"
-                        diagnostics.handler(new_params)
-
-                        generators.run_registered.calls[1].refs[1].callback("diagnostics")
-                        generators.run_registered.calls[2].refs[1].callback("diagnostics")
-
-                        assert.stub(mock_handler).was_called(2)
-                    end)
-                end)
-            end)
-
             describe("API handler", function()
                 local mock_diagnostics = { [1] = "diagnostics", [2] = "more diagnostics" }
                 local mock_bufnr = vim.uri_to_bufnr(mock_uri)
                 before_each(function()
-                    c.reset()
                     diagnostic_api.set:clear()
                 end)
 
@@ -176,12 +111,11 @@ describe("diagnostics", function()
 
                     it("should call handler only once if buffer changed in between callbacks", function()
                         diagnostics.handler(mock_params)
+                        generators.run_registered.calls[1].refs[1].callback({ [1] = "diagnostics" })
 
                         local new_params = vim.deepcopy(mock_params)
                         new_params.textDocument.version = 9999
                         diagnostics.handler(new_params)
-
-                        generators.run_registered.calls[1].refs[1].callback({ [1] = "diagnostics" })
                         generators.run_registered.calls[2].refs[1].callback({ [1] = "diagnostics" })
 
                         assert.stub(diagnostic_api.set).was_called(1)
@@ -223,198 +157,99 @@ describe("diagnostics", function()
                 postprocess = generators.run_registered.calls[1].refs[1].postprocess
             end)
 
-            describe("LSP range", function()
-                before_each(function()
-                    c._set({ _use_lsp_handler = true })
-                end)
-
-                it("should convert range when all positions are defined", function()
-                    local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 5, line = 1 },
-                        start = { character = 4, line = 0 },
-                    })
-                end)
-
-                it("should convert range when row is missing", function()
-                    local diagnostic = {
-                        row = nil,
-                        col = 5,
-                        end_row = 2,
-                        end_col = 6,
-                    }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 5, line = 1 },
-                        start = { character = 4, line = 0 },
-                    })
-                end)
-
-                it("should convert range when col is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = nil,
-                        end_row = 2,
-                        end_col = 6,
-                    }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 5, line = 1 },
-                        start = { character = 0, line = 0 },
-                    })
-                end)
-
-                it("should convert range when end_row is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = 5,
-                        end_row = nil,
-                        end_col = 6,
-                    }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 5, line = 0 },
-                        start = { character = 4, line = 0 },
-                    })
-                end)
-
-                it("should convert range when end_col is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = 5,
-                        end_row = 2,
-                        end_col = nil,
-                    }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 0, line = 1 },
-                        start = { character = 4, line = 0 },
-                    })
-                end)
-
-                it("should convert range when all positions are missing", function()
-                    local diagnostic = {
-                        row = nil,
-                        col = nil,
-                        end_row = nil,
-                        end_col = nil,
-                    }
-
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.same(diagnostic.range, {
-                        ["end"] = { character = 0, line = 1 },
-                        start = { character = 0, line = 0 },
-                    })
-                end)
+            before_each(function()
+                c.reset()
             end)
 
-            describe("API range", function()
-                before_each(function()
-                    c.reset()
-                end)
+            it("should convert range when all positions are defined", function()
+                local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
 
-                it("should convert range when all positions are defined", function()
-                    local diagnostic = { row = 1, col = 5, end_row = 2, end_col = 6 }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 1)
+                assert.equals(diagnostic.col, 4)
+                assert.equals(diagnostic.end_col, 5)
+            end)
 
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 1)
-                    assert.equals(diagnostic.col, 4)
-                    assert.equals(diagnostic.end_col, 5)
-                end)
+            it("should convert range when row is missing", function()
+                local diagnostic = {
+                    row = nil,
+                    col = 5,
+                    end_row = 2,
+                    end_col = 6,
+                }
 
-                it("should convert range when row is missing", function()
-                    local diagnostic = {
-                        row = nil,
-                        col = 5,
-                        end_row = 2,
-                        end_col = 6,
-                    }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 1)
+                assert.equals(diagnostic.col, 4)
+                assert.equals(diagnostic.end_col, 5)
+            end)
 
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 1)
-                    assert.equals(diagnostic.col, 4)
-                    assert.equals(diagnostic.end_col, 5)
-                end)
+            it("should convert range when col is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = nil,
+                    end_row = 2,
+                    end_col = 6,
+                }
 
-                it("should convert range when col is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = nil,
-                        end_row = 2,
-                        end_col = 6,
-                    }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 1)
+                assert.equals(diagnostic.col, 0)
+                assert.equals(diagnostic.end_col, 5)
+            end)
 
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 1)
-                    assert.equals(diagnostic.col, 0)
-                    assert.equals(diagnostic.end_col, 5)
-                end)
+            it("should convert range when end_row is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = nil,
+                    end_col = 6,
+                }
 
-                it("should convert range when end_row is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = 5,
-                        end_row = nil,
-                        end_col = 6,
-                    }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 0)
+                assert.equals(diagnostic.col, 4)
+                assert.equals(diagnostic.end_col, 5)
+            end)
 
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 0)
-                    assert.equals(diagnostic.col, 4)
-                    assert.equals(diagnostic.end_col, 5)
-                end)
+            it("should convert range when end_col is missing", function()
+                local diagnostic = {
+                    row = 1,
+                    col = 5,
+                    end_row = 2,
+                    end_col = nil,
+                }
 
-                it("should convert range when end_col is missing", function()
-                    local diagnostic = {
-                        row = 1,
-                        col = 5,
-                        end_row = 2,
-                        end_col = nil,
-                    }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 1)
+                assert.equals(diagnostic.col, 4)
+                assert.equals(diagnostic.end_col, 0)
+            end)
 
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 1)
-                    assert.equals(diagnostic.col, 4)
-                    assert.equals(diagnostic.end_col, 0)
-                end)
+            it("should convert range when all positions are missing", function()
+                local diagnostic = {
+                    row = nil,
+                    col = nil,
+                    end_row = nil,
+                    end_col = nil,
+                }
 
-                it("should convert range when all positions are missing", function()
-                    local diagnostic = {
-                        row = nil,
-                        col = nil,
-                        end_row = nil,
-                        end_col = nil,
-                    }
+                postprocess(diagnostic, mock_params, mock_generator)
 
-                    postprocess(diagnostic, mock_params, mock_generator)
-
-                    assert.equals(diagnostic.lnum, 0)
-                    assert.equals(diagnostic.end_lnum, 1)
-                    assert.equals(diagnostic.col, 0)
-                    assert.equals(diagnostic.end_col, 0)
-                end)
+                assert.equals(diagnostic.lnum, 0)
+                assert.equals(diagnostic.end_lnum, 1)
+                assert.equals(diagnostic.col, 0)
+                assert.equals(diagnostic.end_col, 0)
             end)
 
             it("should keep diagnostic source when defined", function()
