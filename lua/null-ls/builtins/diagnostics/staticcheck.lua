@@ -23,24 +23,23 @@ return h.make_builtin({
             "./...",
         },
         format = "line",
+        multiple_files = true,
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = function(line, params)
+        on_output = function(line)
             local decoded = vim.fn.json_decode(line)
-            if decoded.location.file == params.bufname then
-                return {
-                    row = decoded.location.line,
-                    col = decoded.location.column,
-                    end_row = decoded["end"]["line"],
-                    end_col = decoded["end"]["culumn"],
-                    source = "staticcheck",
-                    code = decoded.code,
-                    message = decoded.message,
-                    severity = severities[decoded.severity],
-                }
-            end
-            return nil
+            return {
+                row = decoded.location.line,
+                col = decoded.location.column,
+                end_row = decoded["end"]["line"],
+                end_col = decoded["end"]["culumn"],
+                source = "staticcheck",
+                code = decoded.code,
+                message = decoded.message,
+                severity = severities[decoded.severity],
+                filename = decoded.location.file,
+            }
         end,
     },
     factory = h.generator_factory,

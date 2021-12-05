@@ -19,15 +19,17 @@ return h.make_builtin({
         args = {
             "-formatter",
             "json",
-            "$FILENAME",
+            "./...",
         },
         format = "json",
+        multiple_files = true,
         check_exit_code = function(code)
             return code == 0
         end,
         on_output = function(params)
             local diags = {}
             for _, d in ipairs(params.output) do
+                local filename = require("lspconfig.util").path.join(params.root, d.Position.Start.Filename)
                 table.insert(diags, {
                     row = d.Position.Start.Line,
                     col = d.Position.Start.Column,
@@ -36,6 +38,7 @@ return h.make_builtin({
                     source = "revive",
                     message = d.Failure,
                     severity = severities[d.Severity],
+                    filename = filename,
                 })
             end
             return diags
