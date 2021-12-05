@@ -60,6 +60,8 @@ local diagnostic = {
     end_col, -- number, optional (defaults to end of line),
     source, -- string, optional (defaults to "null-ls")
     code, -- number, optional
+    filename, -- string, optional
+    bufnr, -- number, optional
 }
 ```
 
@@ -76,3 +78,16 @@ local diagnostic = {
 - If at all possible, please add one or more tests to check whether your source
   produces the correct output given an actual raw diagnostic. See [the
   existing tests](../test/spec/builtins/diagnostics_spec.lua) for examples.
+
+- If your source can produce project-level diagnostics (i.e. diagnostics for more
+  than one file at a time), use the `multiple_files` option described in
+  [HELPERS](./HELPERS.md).
+
+  - Specify that your source supports project diagnostics in its documentation.
+
+  - Make sure each multi-file diagnostic includes either a `filename` or a
+    `bufnr` so null-ls can then publish diagnostics properly. If specified,
+    `filename` should be an absolute path.
+
+  - To prevent peformance issues, multi-file sources should default to the
+    `ON_SAVE` method.

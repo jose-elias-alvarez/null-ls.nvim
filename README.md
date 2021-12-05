@@ -34,7 +34,7 @@ null-ls sources are able to hook into the following LSP features:
 
 - Code actions
 
-- Diagnostics
+- Diagnostics (file- and project-level)
 
 - Formatting (including range formatting)
 
@@ -212,6 +212,11 @@ on_attach = function(client)
     end
 end
 ```
+
+### How do I view project-level diagnostics?
+
+For a built-in solution, use `:lua vim.diagnostic.setqflist()`. You can also
+use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 
 ### How do I enable debug mode and get debug output?
 

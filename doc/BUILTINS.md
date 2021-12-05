@@ -2095,6 +2095,7 @@ Parses diagnostics from the TypeScript compiler.
 
 ##### Usage
 
+- Supports project-level diagnostics.
 - Diagnostics from this source and `tsserver` are independent. If you have
   `tsserver` configured to show diagnostics, you will see duplicates.
 
