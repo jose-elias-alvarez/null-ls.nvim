@@ -28,7 +28,7 @@ return h.make_builtin({
             return code <= 1
         end,
         on_output = function(line)
-            local decoded = vim.fn.json_decode(line)
+            local decoded = vim.json.decode(line)
             return {
                 row = decoded.location.line,
                 col = decoded.location.column,
