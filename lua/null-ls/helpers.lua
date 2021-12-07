@@ -57,7 +57,7 @@ local parse_args = function(args, params)
 end
 
 local json_output_wrapper = function(params, done, on_output, format)
-    local ok, decoded = pcall(vim.fn.json_decode, params.output)
+    local ok, decoded = pcall(vim.json.decode, params.output)
     if decoded == vim.NIL or decoded == "" then
         decoded = nil
     end

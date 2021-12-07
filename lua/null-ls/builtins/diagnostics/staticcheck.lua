@@ -27,7 +27,7 @@ return h.make_builtin({
             return code <= 1
         end,
         on_output = function(line, params)
-            local decoded = vim.fn.json_decode(line)
+            local decoded = vim.json.decode(line)
             if decoded.location.file == params.bufname then
                 return {
                     row = decoded.location.line,

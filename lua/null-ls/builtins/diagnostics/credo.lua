@@ -27,10 +27,10 @@ return h.make_builtin({
             local issues = {}
 
             if params.err and params.err:find("{") then
-                i, _ = params.err:find("{")
-                maybe_json_string = params.err:sub(i)
+                local i, _ = params.err:find("{")
+                local maybe_json_string = params.err:sub(i)
 
-                local ok, decoded = pcall(vim.fn.json_decode, maybe_json_string)
+                local ok, decoded = pcall(vim.json.decode, maybe_json_string)
 
                 if ok then
                     params.output = decoded
