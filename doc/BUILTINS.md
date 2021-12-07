@@ -2059,6 +2059,8 @@ Fast, configurable, extensible, flexible, and beautiful linter for Go.
 
 ##### Usage
 
+- Supports project-level diagnostics.
+
 ```lua
 local sources = { null_ls.builtins.diagnostics.revive }
 ```
@@ -2076,6 +2078,8 @@ local sources = { null_ls.builtins.diagnostics.revive }
 Advanced Go linter.
 
 ##### Usage
+
+- Supports project-level diagnostics.
 
 ```lua
 local sources = { null_ls.builtins.diagnostics.staticcheck }
