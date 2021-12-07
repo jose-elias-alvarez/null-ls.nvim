@@ -26,6 +26,7 @@ require("lspconfig")["null-ls"].setup({
 })
 
 local get_code_actions = function()
+    lsp_wait(0)
     local current_bufnr = api.nvim_get_current_buf()
     return lsp.buf_request_sync(
         current_bufnr,

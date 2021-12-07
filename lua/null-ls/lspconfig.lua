@@ -53,14 +53,17 @@ function M.setup()
 end
 
 -- after registering a new source, try attaching to existing buffers and refresh diagnostics
-function M.on_register_source(source)
+M.on_register_source = vim.schedule_wrap(function(source)
     if not require("lspconfig.configs")["null-ls"] then
         return
     end
 
     u.buf.for_each(function(buf)
-        M.try_add(buf.bufnr)
+        if not api.nvim_buf_is_loaded(buf.bufnr) then
+            return
+        end
 
+        M.try_add(buf.bufnr)
         if
             sources.is_available(
                 source,
@@ -73,7 +76,7 @@ function M.on_register_source(source)
             })
         end
     end)
-end
+end)
 
 -- refresh filetypes after modifying registered sources
 function M.on_register_sources()

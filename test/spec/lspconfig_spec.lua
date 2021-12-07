@@ -65,6 +65,7 @@ describe("lspconfig", function()
 
         it("should call try_add with bufnr", function()
             lspconfig.on_register_source(mock_source)
+            vim.wait(0)
 
             assert.stub(try_add).was_called_with(vim.api.nvim_get_current_buf())
         end)
@@ -73,6 +74,7 @@ describe("lspconfig", function()
             vim.bo.filetype = "lua"
 
             lspconfig.on_register_source(mock_source)
+            vim.wait(0)
 
             assert.stub(notify_client).was_called_with(methods.lsp.DID_CHANGE, {
                 textDocument = {
