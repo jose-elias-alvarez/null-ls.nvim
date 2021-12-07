@@ -9,12 +9,15 @@ return h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "php",
-        -- Send file to stdin or else checking will only be done when the file is saved.
+        -- Send file to stdin otherwise checking is only done when the file is saved.
         to_stdin = true,
         to_temp_file = false,
-        -- -d=STDERR ensures errors are reported to stderr.
-        -- Without this, a setting in php.ini can turn them off entirely, or send them to stdout.
-        args = { "-l", "-d", "display_errors=STDERR" },
+        -- -d display_errors=STDERR ensures errors are reported to stderr.
+        -- -d log_errors=Off Disables logging of errors.
+        --
+        -- Without these, a setting in php.ini can turn off error reporting, or
+        -- change where errors are reported.
+        args = { "-l", "-d", "display_errors=STDERR", "-d", " log_errors=Off" },
         from_stderr = true,
         format = "line",
         check_exit_code = function(code)
