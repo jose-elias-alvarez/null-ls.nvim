@@ -426,6 +426,7 @@ describe("e2e", function()
                     prefer_local = true,
                 })
                 sources.register(copy)
+                lsp_wait(0)
 
                 local actions = get_code_actions()
                 lsp_wait()
@@ -442,6 +443,7 @@ describe("e2e", function()
                     prefer_local = true,
                 })
                 sources.register(copy)
+                lsp_wait(0)
 
                 local actions = get_code_actions()
                 lsp_wait()
@@ -460,6 +462,7 @@ describe("e2e", function()
                     only_local = true,
                 })
                 sources.register(copy)
+                lsp_wait(0)
 
                 local actions = get_code_actions()
                 lsp_wait()
@@ -476,6 +479,7 @@ describe("e2e", function()
                     only_local = true,
                 })
                 sources.register(copy)
+                lsp_wait(0)
 
                 local actions = get_code_actions()
                 lsp_wait()

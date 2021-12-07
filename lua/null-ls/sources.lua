@@ -1,6 +1,5 @@
 local diagnostics = require("null-ls.diagnostics")
 local methods = require("null-ls.methods")
-local u = require("null-ls.utils")
 
 local validate = vim.validate
 
@@ -30,34 +29,6 @@ local for_each_matching = function(query, cb)
     end
 end
 
-local on_register_source = function(source)
-    local client = require("null-ls.client")
-    u.buf.for_each(function(buf)
-        client.try_add(buf.bufnr)
-
-        if
-            M.is_available(
-                source,
-                vim.api.nvim_buf_get_option(buf.bufnr, "filetype"),
-                methods.internal.DIAGNOSTICS_ON_OPEN
-            )
-        then
-            client.notify_client(methods.lsp.DID_CHANGE, {
-                textDocument = { uri = vim.uri_from_bufnr(buf.bufnr) },
-            })
-        end
-    end)
-end
-
-local on_register_sources = function()
-    local client = require("null-ls.client").get_client()
-    if not client then
-        return
-    end
-
-    client.config.filetypes = M.get_filetypes()
-end
-
 local register_source = function(source)
     source = M.validate_and_transform(source)
     if not source then
@@ -69,8 +40,6 @@ local register_source = function(source)
 
     table.insert(registered.sources, source)
     registered.names[source.name] = true
-
-    on_register_source(source)
 end
 
 M.is_available = function(source, filetype, method)
@@ -117,8 +86,9 @@ end
 M.enable = function(query)
     for_each_matching(query, function(source)
         source._disabled = false
-        on_register_source(source)
     end)
+
+    require("null-ls.client").on_source_change()
 end
 
 M.disable = function(query)
@@ -133,10 +103,10 @@ M.toggle = function(query)
         source._disabled = not source._disabled
         if source._disabled then
             diagnostics.hide_source_diagnostics(source.id)
-        else
-            on_register_source(source)
         end
     end)
+
+    require("null-ls.client").on_source_change()
 end
 
 M.get_all = function()
@@ -164,7 +134,7 @@ M.deregister = function(query)
         end
     end
 
-    on_register_sources()
+    require("null-ls.client").update_filetypes()
 end
 
 M.validate_and_transform = function(source)
@@ -252,14 +222,15 @@ M.register = function(to_register)
         end
     end
 
-    on_register_sources()
+    require("null-ls.client").on_source_change()
+    require("null-ls.client").update_filetypes()
 end
 
 M.reset = function()
     registered.sources = {}
     registered.names = {}
 
-    on_register_sources()
+    require("null-ls.client").update_filetypes()
 end
 
 M.is_registered = function(query)

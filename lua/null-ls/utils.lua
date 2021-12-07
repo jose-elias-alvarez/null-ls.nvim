@@ -169,9 +169,11 @@ M.buf = {
         end
         return lines
     end,
-    for_each = function(cb)
-        for _, buf in ipairs(vim.fn.getbufinfo({ listed = 1 })) do
-            cb(buf)
+    for_each_bufnr = function(cb)
+        for _, bufnr in ipairs(api.nvim_list_bufs()) do
+            if api.nvim_buf_is_loaded(bufnr) then
+                cb(bufnr)
+            end
         end
     end,
 }

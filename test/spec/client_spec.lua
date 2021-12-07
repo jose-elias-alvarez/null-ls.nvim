@@ -3,19 +3,23 @@ local mock = require("luassert.mock")
 
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
-local sources = require("null-ls.sources")
 local tu = require("test.utils")
 
 local lsp = mock(vim.lsp, true)
+local sources = mock(require("null-ls.sources"), true)
 
 describe("client", function()
     local client = require("null-ls.client")
 
     local mock_client_id = 1
+    local mock_bufnr = 2
+    local mock_filetypes = { "lua", "teal" }
+
     local mock_client
     before_each(function()
         mock_client = { id = mock_client_id, config = {} }
         lsp.start_client.returns(mock_client_id)
+        sources.get_filetypes.returns(mock_filetypes)
     end)
 
     after_each(function()
@@ -23,7 +27,6 @@ describe("client", function()
         lsp.buf_attach_client:clear()
 
         c.reset()
-        sources.reset()
         client._reset()
 
         tu.wipeout()
@@ -31,8 +34,9 @@ describe("client", function()
 
     describe("start_client", function()
         it("should start client with options", function()
-            client.start_client()
+            local id = client.start_client()
 
+            assert.equals(id, mock_client_id)
             local opts = lsp.start_client.calls[1].refs[1]
             assert.equals(opts.name, "null-ls")
             assert.equals(opts.root_dir, vim.loop.cwd())
@@ -41,7 +45,7 @@ describe("client", function()
             assert.truthy(type(opts.on_init) == "function")
             assert.truthy(type(opts.on_exit) == "function")
             assert.truthy(type(opts.on_attach) == "function")
-            assert.truthy(type(opts.filetypes) == "table")
+            assert.equals(opts.filetypes, mock_filetypes)
         end)
 
         describe("on_init", function()
@@ -101,63 +105,75 @@ describe("client", function()
     end)
 
     describe("try_add", function()
-        before_each(function()
-            tu.edit_test_file("test-file.lua")
-        end)
+        local api
+        local mock_bufname = "buffer"
+        local mock_sources = { "source1", "source2" }
 
-        after_each(function()
-            lsp.buf_attach_client:clear()
+        -- set up attach conditions
+        before_each(function()
+            api = mock(vim.api, true)
+            api.nvim_buf_get_option.returns("")
+            api.nvim_buf_get_name.returns(mock_bufname)
+            sources.get_all.returns(mock_sources)
+            sources.is_available.returns(true)
+
+            lsp.buf_attach_client.returns(true)
             lsp.buf_is_attached.returns(nil)
         end)
-
-        -- note that sources.register calls try_add
-        it("should attach when source matches", function()
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
-
-            assert.stub(lsp.buf_attach_client).was_called_with(vim.api.nvim_get_current_buf(), mock_client_id)
+        after_each(function()
+            api.nvim_buf_get_option:clear()
+            api.nvim_buf_get_name:clear()
+            mock.revert(api)
         end)
 
-        it("should not attach if already attached", function()
+        it("should run checks and attach if conditions match", function()
+            local did_attach = client.try_add(mock_bufnr)
+
+            assert.stub(api.nvim_buf_get_option).was_called_with(mock_bufnr, "buftype")
+            assert.stub(api.nvim_buf_get_option).was_called_with(mock_bufnr, "filetype")
+            assert.stub(api.nvim_buf_get_name).was_called_with(mock_bufnr)
+            assert.stub(sources.get_all).was_called()
+            assert.stub(sources.is_available).was_called_with(mock_sources[1], "")
+            assert.stub(lsp.buf_is_attached).was_called_with(mock_bufnr, mock_client_id)
+            assert.stub(lsp.buf_attach_client).was_called_with(mock_bufnr, mock_client_id)
+            assert.truthy(did_attach)
+        end)
+
+        it("should not attach if buftype is not empty", function()
+            api.nvim_buf_get_option.returns("nofile")
+
+            local did_attach = client.try_add(mock_bufnr)
+
+            assert.falsy(did_attach)
+        end)
+
+        it("should not attach if name is empty", function()
+            api.nvim_buf_get_name.returns("")
+
+            local did_attach = client.try_add(mock_bufnr)
+
+            assert.falsy(did_attach)
+        end)
+
+        it("should not attach if no source is available", function()
+            sources.is_available.returns(false)
+
+            local did_attach = client.try_add(mock_bufnr)
+
+            assert.falsy(did_attach)
+        end)
+
+        it("should return true but not attach again if already attached", function()
             lsp.buf_is_attached.returns(true)
-            client.start_client()
 
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
+            local did_attach = client.try_add(mock_bufnr)
 
-            assert.stub(lsp.buf_attach_client).was_not_called()
-        end)
-
-        it("should not attach when source is not available", function()
-            sources.register(require("null-ls.builtins")._test.mock_hover)
-
-            assert.stub(lsp.buf_attach_client).was_not_called()
-        end)
-
-        it("should not attach when no sources", function()
-            client.try_add()
-
-            assert.stub(lsp.buf_attach_client).was_not_called()
-        end)
-
-        it("should not attach when buftype is not empty string", function()
-            vim.bo.buftype = "nofile"
-
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
-
-            assert.stub(lsp.buf_attach_client).was_not_called()
-        end)
-
-        it("should not attach when buffer has no name", function()
-            tu.wipeout()
-            vim.bo.filetype = "lua"
-
-            sources.register(require("null-ls.builtins")._test.mock_code_action)
-
+            assert.truthy(did_attach)
             assert.stub(lsp.buf_attach_client).was_not_called()
         end)
     end)
 
     describe("setup_buffer", function()
-        local mock_bufnr = 555
         local on_attach = stub.new()
         before_each(function()
             c._set({ on_attach = on_attach })
@@ -233,6 +249,23 @@ describe("client", function()
             on_init(mock_client)
 
             assert.equals(client.resolve_handler(mock_method), mock_lsp_handler)
+        end)
+    end)
+
+    describe("update_filetypes", function()
+        before_each(function()
+            client.start_client()
+            lsp.start_client.calls[1].refs[1].on_init(mock_client)
+        end)
+
+        it("should update client filetypes", function()
+            local new_filetypes = { "javascript", "typescript" }
+            sources.get_filetypes.returns(new_filetypes)
+
+            client.update_filetypes()
+
+            assert.stub(sources.get_filetypes).was_called()
+            assert.equals(client.get_client().config.filetypes, new_filetypes)
         end)
     end)
 end)

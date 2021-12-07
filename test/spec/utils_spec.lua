@@ -387,6 +387,16 @@ describe("utils", function()
                 assert.equals(content, 'print("I am a test file!")')
             end)
         end)
+
+        describe("for_each_bufnr", function()
+            local callback = stub.new()
+            it("should call callback once per loaded bufnr", function()
+                u.buf.for_each_bufnr(callback)
+
+                assert.stub(callback).was_called(1)
+                assert.stub(callback).was_called_with(vim.api.nvim_get_current_buf())
+            end)
+        end)
     end)
 
     describe("table", function()

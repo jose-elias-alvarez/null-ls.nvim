@@ -10,13 +10,7 @@ local lsp = vim.lsp
 local client, id
 
 local should_attach = function(bufnr)
-    -- try to make sure the buffer represents an actual file
     if api.nvim_buf_get_option(bufnr, "buftype") ~= "" or api.nvim_buf_get_name(bufnr) == "" then
-        return false
-    end
-
-    -- buf_attach_client handles this case, but this lets us avoid unnecessary checks
-    if id and lsp.buf_is_attached(bufnr, id) then
         return false
     end
 
@@ -66,7 +60,6 @@ M.start_client = function(fname)
             if bufnr == api.nvim_get_current_buf() then
                 M.setup_buffer(bufnr)
             else
-                -- defer setup until BufEnter
                 vim.cmd(
                     string.format(
                         [[autocmd BufEnter <buffer=%d> ++once unsilent lua require("null-ls.client").setup_buffer(%d)]],
@@ -84,22 +77,27 @@ M.start_client = function(fname)
     if not id then
         log:error(string.format("failed to start null-ls client with config: %s", vim.inspect(config)))
     end
+
+    return id
 end
 
 M.try_add = function(bufnr)
     bufnr = bufnr or api.nvim_get_current_buf()
     if not should_attach(bufnr) then
+        return false
+    end
+
+    id = id or M.start_client(api.nvim_buf_get_name(bufnr))
+    if not id then
         return
     end
 
-    if not id then
-        M.start_client(api.nvim_buf_get_name(bufnr))
-    end
-
-    local did_attach = lsp.buf_attach_client(bufnr, id)
+    local did_attach = lsp.buf_is_attached(bufnr, id) or lsp.buf_attach_client(bufnr, id)
     if not did_attach then
         log:warn(string.format("failed to attach buffer %d", bufnr))
     end
+
+    return did_attach
 end
 
 M.setup_buffer = function(bufnr)
@@ -135,6 +133,43 @@ end
 
 M.resolve_handler = function(method)
     return client and client.handlers[method] or lsp.handlers[method]
+end
+
+M.update_filetypes = function()
+    if not client then
+        return
+    end
+
+    client.config.filetypes = require("null-ls.sources").get_filetypes()
+end
+
+M.on_source_change = vim.schedule_wrap(function()
+    local current_bufnr = api.nvim_get_current_buf()
+    u.buf.for_each_bufnr(function(bufnr)
+        if bufnr == current_bufnr then
+            M.retry_add(bufnr)
+        else
+            vim.cmd(
+                string.format(
+                    [[autocmd BufEnter <buffer=%d> ++once unsilent lua require("null-ls.client").retry_add(%d)]],
+                    bufnr,
+                    bufnr
+                )
+            )
+        end
+    end)
+end)
+
+M.retry_add = function(bufnr)
+    bufnr = bufnr or api.nvim_get_current_buf()
+
+    local did_attach = M.try_add(bufnr)
+    if did_attach then
+        -- send synthetic didOpen notification to regenerate diagnostics
+        M.notify_client(methods.lsp.DID_OPEN, {
+            textDocument = { uri = vim.uri_from_bufnr(bufnr) },
+        })
+    end
 end
 
 M._reset = function()
