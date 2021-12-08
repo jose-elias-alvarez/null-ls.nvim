@@ -73,7 +73,7 @@ my_source.method = null_ls.methods.FORMATTING
 my_source.method = null_ls.methods.HOVER
 
 -- source will run on LSP completion request
-my_source.method = null_ls.methods.completion
+my_source.method = null_ls.methods.COMPLETION
 ```
 
 ### Filetypes
