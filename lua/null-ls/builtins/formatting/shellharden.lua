@@ -10,8 +10,8 @@ return h.make_builtin({
     },
     generator_opts = {
         command = "shellharden",
-        args = { "--transform", "$FILENAME" },
-        to_stdin = false,
+        args = { "--transform", "" },
+        to_stdin = true,
     },
     factory = h.formatter_factory,
 })
