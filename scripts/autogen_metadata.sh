@@ -6,6 +6,6 @@ declare -x NVIM_PACK_DIR="$XDG_DATA_HOME/nvim/site/pack"
 
 declare -x NULL_LS_DIR="$PWD"
 
-nvim -u NONE -E -R --headless \
+nvim -u NONE --headless \
   --cmd "set rtp=$VIMRUNTIME,${NULL_LS_DIR}" \
   +"luafile scripts/autogen_metadata.lua" +q

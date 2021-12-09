@@ -1,10 +1,6 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
-  ["*"] = {
-    formatters = { "trim_whitespace", "trim_newlines", "codespell" },
-    linters = { "misspell", "codespell" }
-  },
   asm = {
     formatters = { "asmfmt" }
   },
@@ -12,24 +8,24 @@ return {
     formatters = { "bean_format" }
   },
   c = {
-    formatters = { "uncrustify", "clang_format" },
-    linters = { "cppcheck" }
+    formatters = { "clang_format", "uncrustify" },
+    linters = { "cppcheck", "gccdiag" }
   },
   cmake = {
     formatters = { "cmake_format" }
   },
   cpp = {
-    formatters = { "uncrustify", "clang_format" },
-    linters = { "cppcheck" }
+    formatters = { "clang_format", "uncrustify" },
+    linters = { "cppcheck", "gccdiag" }
   },
   crystal = {
     formatters = { "crystal_format" }
   },
   cs = {
-    formatters = { "uncrustify", "clang_format" }
+    formatters = { "clang_format", "uncrustify" }
   },
   css = {
-    formatters = { "prettier", "prettier_d_slim", "stylelint" },
+    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
     linters = { "stylelint" }
   },
   d = {
@@ -65,39 +61,39 @@ return {
   },
   go = {
     formatters = { "gofmt", "gofumpt", "goimports", "golines" },
-    linters = { "revive", "staticcheck", "golangci_lint" }
+    linters = { "golangci_lint" }
   },
   graphql = {
-    formatters = { "prettier", "prettier_d_slim" }
+    formatters = { "prettier", "prettier_d_slim", "prettierd" }
   },
   html = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind" }
+    formatters = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   java = {
-    formatters = { "google_java_format", "uncrustify", "clang_format" }
+    formatters = { "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind", "eslint", "deno_fmt", "eslint_d" },
+    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
     linters = { "eslint", "eslint_d" }
   },
   javascriptreact = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind", "eslint", "deno_fmt", "eslint_d" },
+    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
     linters = { "eslint", "eslint_d" }
   },
   json = {
-    formatters = { "json_tool", "prettier", "prettier_d_slim", "fixjson" }
+    formatters = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   less = {
-    formatters = { "prettier", "prettier_d_slim", "stylelint" },
+    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
     linters = { "stylelint" }
   },
   lua = {
     formatters = { "lua_format", "stylua" },
-    linters = { "selene", "luacheck" }
+    linters = { "luacheck", "selene" }
   },
   markdown = {
-    formatters = { "prettier", "prettier_d_slim", "markdownlint" },
-    linters = { "proselint", "vale", "write_good", "cspell", "markdownlint" }
+    formatters = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
+    linters = { "cspell", "markdownlint", "proselint", "vale", "write_good" }
   },
   nginx = {
     formatters = { "nginx_beautifier" }
@@ -117,8 +113,8 @@ return {
     formatters = { "prismaFmt" }
   },
   python = {
-    formatters = { "isort", "yapf", "reorder_python_imports", "autopep8", "black" },
-    linters = { "mypy", "pylama", "pylint", "flake8" }
+    formatters = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" },
+    linters = { "flake8", "mypy", "pylama", "pylint" }
   },
   qml = {
     formatters = { "qmlformat" },
@@ -131,7 +127,7 @@ return {
     formatters = { "format_r", "styler" }
   },
   ruby = {
-    formatters = { "rufo", "standardrb", "rubocop" },
+    formatters = { "rubocop", "rufo", "standardrb" },
     linters = { "rubocop", "standardrb" }
   },
   rust = {
@@ -145,11 +141,11 @@ return {
     formatters = { "scalafmt" }
   },
   scss = {
-    formatters = { "prettier", "prettier_d_slim", "stylelint" },
+    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
     linters = { "stylelint" }
   },
   sh = {
-    formatters = { "shfmt", "shellharden" },
+    formatters = { "shellharden", "shfmt" },
     linters = { "shellcheck" }
   },
   sql = {
@@ -171,7 +167,7 @@ return {
     formatters = { "terraform_fmt" }
   },
   tex = {
-    linters = { "proselint", "vale", "chktex" }
+    linters = { "chktex", "proselint", "vale" }
   },
   tf = {
     formatters = { "terraform_fmt" }
@@ -180,23 +176,23 @@ return {
     formatters = { "taplo" }
   },
   typescript = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind", "eslint", "deno_fmt", "eslint_d" },
-    linters = { "eslint", "eslint_d" }
+    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
+    linters = { "eslint", "eslint_d", "tsc" }
   },
   typescriptreact = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind", "eslint", "deno_fmt", "eslint_d" },
-    linters = { "eslint", "eslint_d" }
+    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
+    linters = { "eslint", "eslint_d", "tsc" }
   },
   vim = {
     linters = { "vint" }
   },
   vue = {
-    formatters = { "prettier", "prettier_d_slim", "rustywind", "eslint", "eslint_d" },
+    formatters = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
     linters = { "eslint", "eslint_d" }
   },
   yaml = {
-    formatters = { "prettier", "prettier_d_slim" },
-    linters = { "yamllint" }
+    formatters = { "prettier", "prettier_d_slim", "prettierd" },
+    linters = { "ansiblelint", "yamllint" }
   },
   zig = {
     formatters = { "zigfmt" }
