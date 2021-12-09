@@ -1,6 +1,10 @@
-local f = require("null-ls.builtins").formatting
-local l = require("null-ls.builtins").diagnostics
+local b = require("null-ls.builtins")
 local u = require("null-ls.utils")
+
+local is_directory = function(path)
+    local stat = vim.loop.fs_stat(path)
+    return stat and stat.type == "directory" or false
+end
 
 local write_file = require("null-ls.loop").write_file
 local join_paths = u.path.join
@@ -13,58 +17,51 @@ vim.fn.mkdir(generated_dir, "p")
 
 local metadata_files = {
     ft_mappings = join_paths(generated_dir, "filetype_map.lua"),
-    formatters = join_paths(generated_dir, "formatters.lua"),
-    linters = join_paths(generated_dir, "linters.lua"),
 }
 
-local formatters_pattern = builtins_dir .. "/formatting/*.lua"
-local linters_pattern = builtins_dir .. "/diagnostics/*.lua"
-
-local formatters = {}
-local linters = {}
+local methods = {}
 local filetypes_map = {}
 
+local table_gen = function(data)
+    return table.concat({
+        "-- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.",
+        "-- stylua: ignore",
+        "return " .. vim.inspect(data),
+        "",
+    }, "\n")
+end
+
 do
-    for _, filename in ipairs(vim.fn.glob(linters_pattern, 1, 1)) do
-        local source_name = filename:gsub(".*/", ""):gsub("%.lua$", "")
-        local linter = l[source_name]
-        if linter then
-            linters[source_name] = { filetypes = linter.filetypes or {} }
-            for _, ft in ipairs(linter.filetypes or {}) do
-                filetypes_map[ft] = filetypes_map[ft] or {}
-                if filetypes_map[ft] and filetypes_map[ft].linters then
-                    table.insert(filetypes_map[ft].linters, source_name)
-                else
-                    filetypes_map[ft]["linters"] = { source_name }
-                end
-            end
-        end
-    end
-    for _, filename in ipairs(vim.fn.glob(formatters_pattern, 1, 1)) do
-        local source_name = filename:gsub(".*/", ""):gsub("%.lua$", "")
-        local formatter = f[source_name]
-        if formatter then
-            formatters[source_name] = { filetypes = formatter.filetypes or {} }
-            for _, ft in ipairs(formatter.filetypes or {}) do
-                filetypes_map[ft] = filetypes_map[ft] or {}
-                if filetypes_map[ft] and filetypes_map[ft].formatters then
-                    table.insert(filetypes_map[ft].formatters, source_name)
-                else
-                    filetypes_map[ft]["formatters"] = { source_name }
-                end
-            end
+    for _, entry in ipairs(vim.fn.glob(builtins_dir .. "/*", 1, 1)) do
+        if not entry:match("_") and is_directory(entry) then
+            local method = entry:gsub(".*/", "")
+            table.insert(methods, method)
+            metadata_files[method] = join_paths(generated_dir, method .. ".lua")
         end
     end
 
-    local table_gen = function(data)
-        return table.concat({
-            "-- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.",
-            "-- stylua: ignore",
-            "return " .. vim.inspect(data),
-        }, "\n")
+    for _, method in ipairs(methods) do
+        local method_dir = join_paths(builtins_dir, method)
+        local method_pattern = method_dir .. "/*.lua"
+        local sources = {}
+        for _, filename in ipairs(vim.fn.glob(method_pattern, 1, 1)) do
+            local source_name = filename:gsub(".*/", ""):gsub("%.lua$", "")
+            local source = b[method][source_name]
+            if source then
+                sources[source_name] = { filetypes = source.filetypes or {} }
+                for _, ft in ipairs(source.filetypes or {}) do
+                    filetypes_map[ft] = filetypes_map[ft] or {}
+                    if filetypes_map[ft] and filetypes_map[ft].linters then
+                        table.insert(filetypes_map[ft].linters, source_name)
+                    else
+                        filetypes_map[ft][method] = { source_name }
+                    end
+                end
+            end
+        end
+
+        write_file(metadata_files[method], table_gen(sources), "w")
     end
 
     write_file(metadata_files.ft_mappings, table_gen(filetypes_map), "w")
-    write_file(metadata_files.formatters, table_gen(formatters), "w")
-    write_file(metadata_files.linters, table_gen(linters), "w")
 end

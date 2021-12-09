@@ -2,199 +2,203 @@
 -- stylua: ignore
 return {
   asm = {
-    formatters = { "asmfmt" }
+    formatting = { "asmfmt" }
   },
   beancount = {
-    formatters = { "bean_format" }
+    formatting = { "bean_format" }
   },
   c = {
-    formatters = { "clang_format", "uncrustify" },
-    linters = { "cppcheck", "gccdiag" }
+    diagnostics = { "gccdiag" },
+    formatting = { "uncrustify" }
   },
   cmake = {
-    formatters = { "cmake_format" }
+    formatting = { "cmake_format" }
   },
   cpp = {
-    formatters = { "clang_format", "uncrustify" },
-    linters = { "cppcheck", "gccdiag" }
+    diagnostics = { "gccdiag" },
+    formatting = { "uncrustify" }
   },
   crystal = {
-    formatters = { "crystal_format" }
+    formatting = { "crystal_format" }
   },
   cs = {
-    formatters = { "clang_format", "uncrustify" }
+    formatting = { "uncrustify" }
   },
   css = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
-    linters = { "stylelint" }
+    diagnostics = { "stylelint" },
+    formatting = { "stylelint" }
   },
   d = {
-    formatters = { "dfmt" }
+    formatting = { "dfmt" }
   },
   dart = {
-    formatters = { "dart_format" }
+    formatting = { "dart_format" }
   },
   dockerfile = {
-    linters = { "hadolint" }
+    diagnostics = { "hadolint" }
   },
   elixir = {
-    formatters = { "mix", "surface" },
-    linters = { "credo" }
+    diagnostics = { "credo" },
+    formatting = { "surface" }
   },
   elm = {
-    formatters = { "elm_format" }
+    formatting = { "elm_format" }
   },
   erlang = {
-    formatters = { "erlfmt" }
+    formatting = { "erlfmt" }
   },
   fennel = {
-    formatters = { "fnlfmt" }
+    formatting = { "fnlfmt" }
   },
   fish = {
-    formatters = { "fish_indent" }
+    formatting = { "fish_indent" }
   },
   fnl = {
-    formatters = { "fnlfmt" }
+    formatting = { "fnlfmt" }
   },
   fortran = {
-    formatters = { "fprettify" }
+    formatting = { "fprettify" }
   },
   go = {
-    formatters = { "gofmt", "gofumpt", "goimports", "golines" },
-    linters = { "golangci_lint" }
+    diagnostics = { "golangci_lint" },
+    formatting = { "golines" }
   },
   graphql = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettierd" }
   },
   html = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "rustywind" }
   },
   java = {
-    formatters = { "clang_format", "google_java_format", "uncrustify" }
+    formatting = { "uncrustify" }
   },
   javascript = {
-    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
-    linters = { "eslint", "eslint_d" }
+    diagnostics = { "eslint_d" },
+    formatting = { "rustywind" }
   },
   javascriptreact = {
-    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
-    linters = { "eslint", "eslint_d" }
+    diagnostics = { "eslint_d" },
+    formatting = { "rustywind" }
   },
   json = {
-    formatters = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettierd" }
   },
   less = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
-    linters = { "stylelint" }
+    diagnostics = { "stylelint" },
+    formatting = { "stylelint" }
   },
   lua = {
-    formatters = { "lua_format", "stylua" },
-    linters = { "luacheck", "selene" }
+    diagnostics = { "selene" },
+    formatting = { "stylua" }
   },
   markdown = {
-    formatters = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
-    linters = { "cspell", "markdownlint", "proselint", "vale", "write_good" }
+    diagnostics = { "write_good" },
+    formatting = { "prettierd" },
+    hover = { "dictionary" }
   },
   nginx = {
-    formatters = { "nginx_beautifier" }
+    formatting = { "nginx_beautifier" }
   },
   nix = {
-    formatters = { "nixfmt" },
-    linters = { "statix" }
+    diagnostics = { "statix" },
+    formatting = { "nixfmt" }
   },
   perl = {
-    formatters = { "perltidy" }
+    formatting = { "perltidy" }
   },
   php = {
-    formatters = { "phpcbf", "phpcsfixer" },
-    linters = { "phpcs", "phpstan", "psalm" }
+    diagnostics = { "psalm" },
+    formatting = { "phpcsfixer" }
   },
   prisma = {
-    formatters = { "prismaFmt" }
+    formatting = { "prismaFmt" }
   },
   python = {
-    formatters = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" },
-    linters = { "flake8", "mypy", "pylama", "pylint" }
+    diagnostics = { "pylint" },
+    formatting = { "yapf" }
   },
   qml = {
-    formatters = { "qmlformat" },
-    linters = { "qmllint" }
+    diagnostics = { "qmllint" },
+    formatting = { "qmlformat" }
   },
   r = {
-    formatters = { "format_r", "styler" }
+    formatting = { "styler" }
   },
   rmd = {
-    formatters = { "format_r", "styler" }
+    formatting = { "styler" }
   },
   ruby = {
-    formatters = { "rubocop", "rufo", "standardrb" },
-    linters = { "rubocop", "standardrb" }
+    diagnostics = { "standardrb" },
+    formatting = { "standardrb" }
   },
   rust = {
-    formatters = { "rustfmt" }
+    formatting = { "rustfmt" }
   },
   sass = {
-    formatters = { "stylelint" },
-    linters = { "stylelint" }
+    diagnostics = { "stylelint" },
+    formatting = { "stylelint" }
   },
   scala = {
-    formatters = { "scalafmt" }
+    formatting = { "scalafmt" }
   },
   scss = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd", "stylelint" },
-    linters = { "stylelint" }
+    diagnostics = { "stylelint" },
+    formatting = { "stylelint" }
   },
   sh = {
-    formatters = { "shellharden", "shfmt" },
-    linters = { "shellcheck" }
+    diagnostics = { "shellcheck" },
+    formatting = { "shfmt" }
   },
   sql = {
-    formatters = { "sqlformat" }
+    formatting = { "sqlformat" }
   },
   surface = {
-    formatters = { "surface" }
+    formatting = { "surface" }
   },
   svelte = {
-    formatters = { "rustywind" }
+    formatting = { "rustywind" }
   },
   swift = {
-    formatters = { "swiftformat" }
+    formatting = { "swiftformat" }
   },
   teal = {
-    linters = { "teal" }
+    diagnostics = { "teal" }
   },
   terraform = {
-    formatters = { "terraform_fmt" }
+    formatting = { "terraform_fmt" }
   },
   tex = {
-    linters = { "chktex", "proselint", "vale" }
+    diagnostics = { "vale" }
+  },
+  text = {
+    hover = { "dictionary" }
   },
   tf = {
-    formatters = { "terraform_fmt" }
+    formatting = { "terraform_fmt" }
   },
   toml = {
-    formatters = { "taplo" }
+    formatting = { "taplo" }
   },
   typescript = {
-    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
-    linters = { "eslint", "eslint_d", "tsc" }
+    diagnostics = { "tsc" },
+    formatting = { "rustywind" }
   },
   typescriptreact = {
-    formatters = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
-    linters = { "eslint", "eslint_d", "tsc" }
+    diagnostics = { "tsc" },
+    formatting = { "rustywind" }
   },
   vim = {
-    linters = { "vint" }
+    diagnostics = { "vint" }
   },
   vue = {
-    formatters = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" },
-    linters = { "eslint", "eslint_d" }
+    diagnostics = { "eslint_d" },
+    formatting = { "rustywind" }
   },
   yaml = {
-    formatters = { "prettier", "prettier_d_slim", "prettierd" },
-    linters = { "ansiblelint", "yamllint" }
+    diagnostics = { "yamllint" },
+    formatting = { "prettierd" }
   },
   zig = {
-    formatters = { "zigfmt" }
+    formatting = { "zigfmt" }
   }
 }
