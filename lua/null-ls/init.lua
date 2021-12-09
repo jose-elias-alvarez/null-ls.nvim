@@ -28,7 +28,21 @@ M.setup = function(user_config)
         return
     end
 
-    c.setup(user_config or {})
+    user_config = user_config or {}
+    c.setup(user_config)
+
+    -- lspconfig integration is deprecated, but this allows on_attach to keep working
+    local has_lspconfig, lspconfig_configs = pcall(require, "lspconfig.configs")
+    if has_lspconfig then
+        lspconfig_configs["null-ls"] = { default_config = {} }
+        lspconfig_configs["null-ls"].setup = function(old_config)
+            log:warn("lspconfig integration is deprecated; pass options to setup instead")
+
+            if old_config.on_attach then
+                c._set({ on_attach = old_config.on_attach })
+            end
+        end
+    end
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
     vim.cmd("command! NullLsLog lua vim.fn.execute('edit ' .. require('null-ls.logger').get_path())")
@@ -42,6 +56,7 @@ M.setup = function(user_config)
     ]])
 end
 
+-- deprecated
 M.config = function(user_config)
     log:warn("config is deprecated; use setup instead")
 
