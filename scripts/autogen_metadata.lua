@@ -51,8 +51,8 @@ do
                 sources[source_name] = { filetypes = source.filetypes or {} }
                 for _, ft in ipairs(source.filetypes or {}) do
                     filetypes_map[ft] = filetypes_map[ft] or {}
-                    if filetypes_map[ft] and filetypes_map[ft].linters then
-                        table.insert(filetypes_map[ft].linters, source_name)
+                    if filetypes_map[ft] and filetypes_map[ft][method] then
+                        table.insert(filetypes_map[ft][method], source_name)
                     else
                         filetypes_map[ft][method] = { source_name }
                     end
