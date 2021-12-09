@@ -24,6 +24,7 @@ local defaults = {
 local config = vim.deepcopy(defaults)
 
 local type_overrides = {
+    diagnostics_format = { "string", "function", "nil" },
     on_attach = { "function", "nil" },
     sources = { "table", "nil" },
 }

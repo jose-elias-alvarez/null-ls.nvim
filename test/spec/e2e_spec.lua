@@ -212,6 +212,21 @@ describe("e2e", function()
 
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
         end)
+
+        it("should format diagnostics with source-specific diagnostics_format function", function()
+            sources.reset()
+            sources.register(builtins.diagnostics.write_good.with({
+                diagnostics_format = function(diagnostic)
+                    return string.format("%s: %s", diagnostic.source, diagnostic.message)
+                end,
+            }))
+            vim.cmd("e")
+            lsp_wait()
+
+            local write_good_diagnostic = vim.diagnostic.get(0)[1]
+
+            assert.equals(write_good_diagnostic.message, 'write-good: "really" can weaken meaning')
+        end)
     end)
 
     describe("formatting", function()

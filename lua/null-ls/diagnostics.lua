@@ -63,6 +63,11 @@ local postprocess = function(diagnostic, _, generator)
         return
     end
 
+    if type(formatted) == "function" then
+        diagnostic.message = formatted(diagnostic)
+        return
+    end
+
     formatted = formatted:gsub("#{m}", diagnostic.message)
     formatted = formatted:gsub("#{s}", diagnostic.source)
     formatted = formatted:gsub("#{c}", diagnostic.code or "")

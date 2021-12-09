@@ -394,6 +394,18 @@ describe("diagnostics", function()
                 assert.equals(mock_diagnostic.message, "[code] message (source)")
             end)
 
+            it("should format message using a function", function()
+                c._set({
+                    diagnostics_format = function(diagnostic)
+                        return string.format("<%s> %s {%s}", diagnostic.code, diagnostic.message, diagnostic.source)
+                    end,
+                })
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.equals(mock_diagnostic.message, "<code> message {source}")
+            end)
+
             it("should format message from generator format", function()
                 mock_generator.opts.diagnostics_format = "#{c}! #{m} [#{s}]"
 

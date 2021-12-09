@@ -71,7 +71,7 @@ If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The
 integration will register them independently.
 
-### diagnostics_format (string)
+### diagnostics_format (one of string, function)
 
 Sets the default format used for diagnostics. The plugin will replace the
 following special components with the relevant diagnostic information:
@@ -91,6 +91,22 @@ Formats diagnostics as follows:
 ```txt
 [2148] Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive. (shellcheck)
 ```
+
+Alternatively, a function taking a diagnostic and returning a string can be
+provided:
+
+```lua
+diagnostics_format = function(diagnostic)
+	if diagnostic.code then
+		return string.format("[%s: %s] %s", diagnostic.source, diagnostic.code, diagnostic.message)
+	end
+
+	return string.format("[%s] %s", diagnostic.source, diagnostic.message)
+end,
+```
+
+The structure of the diagnostic passed in matches the definition in
+[MAIN](MAIN.md).
 
 You can also set `diagnostics_format` for built-ins by using the `with` method,
 described in [BUILTINS](BUILTINS.md).
