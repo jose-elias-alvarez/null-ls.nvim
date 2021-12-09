@@ -9,8 +9,6 @@ jobs:
         contents: write
       steps:
         - uses: actions/checkout@v2
-          with:
-            ref: ${{ github.head_ref }}
         - uses: rhysd/action-setup-vim@v1
           with:
             neovim: true
@@ -19,7 +17,26 @@ jobs:
         - name: Run autogen_metadata.sh script
           run: bash ./scripts/autogen_metadata.sh
         
-        - uses: stefanzweifel/git-auto-commit-action@v4
-          with:
-            file_pattern: lua/null-ls/builtins/_meta/*.lua
-            commit_message: update metdata
+        - name: Ensure there are no diffs
+          run: |
+            git update-index --refresh
+            git diff-index --quiet HEAD --
+
+        # - name: commit updates
+        #   env:
+        #     COMMIT_MSG: |
+        #       ci(docgen): update metdata
+        #       skip-checks: true
+        #   run: |
+        #     git config user.name github-actions
+        #     git config user.email github-actions@github.com
+        #     git add lua/null-ls/builtins/_meta/*
+        #     # Only commit and push if we have changes
+        #     git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push)
+      
+        # # alternative method
+        # - uses: stefanzweifel/git-auto-commit-action@v4
+        #   with:
+        #     file_pattern: lua/null-ls/builtins/_meta/*.lua
+        #     commit_message: update metdata
+      
