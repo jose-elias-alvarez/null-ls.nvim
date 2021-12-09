@@ -1,0 +1,35 @@
+name: docgen
+
+on:
+  push:
+    branches:
+      - main
+      - no-lspconfig
+  pull_request:
+
+jobs:
+  metadata-diff:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: write
+      steps:
+          - uses: actions/checkout@v2
+          - uses: rhysd/action-setup-vim@v1
+            with:
+              neovim: true
+              version: nightly
+
+          - name: Run autogen_metadata.sh script
+            run: bash ./scripts/autogen_metadata.sh
+
+          - name: check for updates
+            env:
+              COMMIT_MSG: |
+                ci(docgen): update metdata
+                skip-checks: true
+            run: |
+              git config user.name github-actions
+              git config user.email github-actions@github.com
+              git add lua/null-ls/builtins/_meta/*
+              # Only commit and push if we have changes
+              git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push)
