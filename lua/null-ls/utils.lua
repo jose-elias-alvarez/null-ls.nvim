@@ -200,6 +200,14 @@ M.table = {
     end,
 }
 
+M.handle_function_opt = function(opt, ...)
+    if type(opt) == "function" then
+        return opt(...)
+    end
+
+    return vim.deepcopy(opt)
+end
+
 -- everything below is adapted from nvim-lspconfig's path utils
 M.path = (function()
     local exists = function(filename)

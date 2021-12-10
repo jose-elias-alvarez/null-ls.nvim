@@ -889,13 +889,6 @@ describe("helpers", function()
                 assert.equals(copy._opts.timeout, 5000)
             end)
 
-            it("should override single nested value", function()
-                local copy = builtin.with({ nested = { nested_key = "new_val" } })
-
-                assert.equals(copy._opts.nested.nested_key, "new_val")
-                assert.equals(copy._opts.nested.other_nested, "original_val")
-            end)
-
             it("should extend args with extra_args table", function()
                 local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
@@ -994,7 +987,7 @@ describe("helpers", function()
                 assert.is_not.equals(wrapped_copy(), builtin)
             end)
 
-            it("should retrun nil if callback returns false", function()
+            it("should return nil if callback returns false", function()
                 local wrapped_copy = builtin.with({
                     condition = function()
                         return false
@@ -1022,12 +1015,12 @@ describe("helpers", function()
             end)
 
             it("should use default factory function to assign opts to generator", function()
-                local default_opts = { generator = {}, generator_opts = { test_key = "test-val" } }
+                local default_opts = { generator = {}, generator_opts = { cwd = "mock-cwd" } }
                 builtin = helpers.make_builtin(default_opts)
 
                 local generator = builtin.generator
 
-                assert.same(generator, default_opts.generator)
+                assert.same(generator, { opts = default_opts.generator_opts })
             end)
         end)
     end)

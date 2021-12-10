@@ -124,10 +124,7 @@ end
 M.get_available = function(filetype, method)
     local available = {}
     for _, source in ipairs(require("null-ls.sources").get_available(filetype, method)) do
-        local generator_copy = vim.deepcopy(source.generator)
-        generator_copy.source_id = source.id
-
-        table.insert(available, generator_copy)
+        table.insert(available, source.generator)
     end
     return available
 end

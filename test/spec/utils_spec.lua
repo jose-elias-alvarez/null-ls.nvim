@@ -422,4 +422,48 @@ describe("utils", function()
             end)
         end)
     end)
+
+    describe("handle_function_opt", function()
+        local function_opt = stub.new()
+        -- stubs aren't functions, so wrap
+        local wrapper = function(...)
+            return function_opt(...)
+        end
+
+        after_each(function()
+            function_opt:clear()
+            function_opt.returns(nil)
+        end)
+
+        it("should pass args to function opt", function()
+            u.handle_function_opt(wrapper, "arg1", "arg2")
+
+            assert.stub(function_opt).was_called_with("arg1", "arg2")
+        end)
+
+        it("should return opt return val", function()
+            function_opt.returns("mock val")
+
+            local ret = u.handle_function_opt(wrapper)
+
+            assert.equals(ret, "mock val")
+        end)
+
+        it("should return copy of table opt", function()
+            local table_opt = { key = "val" }
+
+            local ret = u.handle_function_opt(table_opt)
+
+            assert.is_not.equals(ret, table_opt)
+            assert.same(ret, table_opt)
+        end)
+
+        it("should return non-function opt", function()
+            local opt = 1
+
+            local ret = u.handle_function_opt(opt)
+
+            assert.equals(ret, opt)
+        end)
+    end)
 end)
