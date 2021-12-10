@@ -5,12 +5,9 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     method = FORMATTING,
-    filetypes = {
-        "sh",
-    },
+    filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {
-        command = "shellharden",
-        args = { "--transform", "" },
+        command = "djhtml",
         to_stdin = true,
     },
     factory = h.formatter_factory,

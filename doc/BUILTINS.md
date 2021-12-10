@@ -443,6 +443,24 @@ local sources = { null_ls.builtins.formatting.dfmt }
 - `command = "dfmt"`
 - `args = {}`
 
+#### [djhtml](https://github.com/rtts/djhtml)
+
+##### About
+
+A pure-Python Django/Jinja template indenter without dependencies.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.djhtml }
+```
+
+##### Defaults
+
+- `filetypes = { "django", "jinja.html", "htmldjango" }`
+- `command = "djhtml"`
+- `args = {}`
+
 #### [elm-format](https://github.com/avh4/elm-format)
 
 ##### About
