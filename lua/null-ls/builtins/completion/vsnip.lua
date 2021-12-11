@@ -21,8 +21,8 @@ return h.make_builtin({
                     table.insert(documentation, line)
                 end
                 table.insert(documentation, "```")
-				documentation = vim.lsp.util.convert_input_to_markdown_lines(documentation)
-				documentation = table.concat(documentation, "\n")
+                documentation = vim.lsp.util.convert_input_to_markdown_lines(documentation)
+                documentation = table.concat(documentation, "\n")
 
                 table.insert(items, {
                     label = item.abbr,
