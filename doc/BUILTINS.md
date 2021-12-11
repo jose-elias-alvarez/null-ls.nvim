@@ -878,7 +878,7 @@ local sources = { null_ls.builtins.diagnostics.php }
 
 - `filetypes = { "php" }`
 - `command = "php"`
-- `args = { "-l" }`
+- `args = { "-l", "-d", "display_errors=STDERR", "-d", " log_errors=Off" }`
 
 #### [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer)
 
