@@ -2351,10 +2351,3 @@ local sources = { null_ls.builtins.completion.vsnip }
 Registering this source will show available snippets in the completion list, but
 vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation for
 setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
-
-Setting the following auto-command somewhere in `init.vim` or `init.lua` will
-automatically expand the snippet when completion is done:
-
-```
-autocmd dotfiles-settings CompleteDone * call vsnip#expand()
-```
