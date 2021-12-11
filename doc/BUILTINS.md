@@ -893,6 +893,24 @@ local sources = { null_ls.builtins.formatting.perltidy }
 - `command = "perltidy"`
 - `args = { "-q" }`
 
+#### [php](https://www.php.net)
+
+##### About
+
+Uses the php command-line tool's built in `-l` flag to check for syntax errors.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.php }
+```
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "php"`
+- `args = { "-l", "-d", "display_errors=STDERR", "-d", " log_errors=Off" }`
+
 #### [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer)
 
 ##### About
