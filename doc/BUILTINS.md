@@ -2369,3 +2369,19 @@ local sources = { null_ls.builtins.completion.vsnip }
 Registering this source will show available snippets in the completion list, but
 vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation for
 setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
+
+
+#### [luasnip](https://github.com/L3MON4D3/LuaSnip)
+
+##### About
+
+Snippet Engine For Neovim written in lua.
+
+
+##### Usage
+```lua
+local sources = { null_ls.builtins.completion.luasnip }
+```
+
+Registering this source will show available snippets in the completion list, but
+currently luasnip is in charge of expanding them. Consult luasnip's documentation [here](https://github.com/L3MON4D3/LuaSnip#keymaps) for setting up keymaps for expansion and jumping
