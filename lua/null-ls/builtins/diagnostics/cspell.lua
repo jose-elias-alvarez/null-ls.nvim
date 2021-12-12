@@ -19,8 +19,8 @@ return h.make_builtin({
             [[.*:(%d+):(%d+)%s*-%s*(.*%((.*)%))]],
             { "row", "col", "message", "_quote" },
             {
-              adapters = { h.diagnostics.adapters.end_col.from_quote },
-              offsets = { end_col = 1 },
+                adapters = { h.diagnostics.adapters.end_col.from_quote },
+                offsets = { end_col = 1 },
             }
         ),
     },
