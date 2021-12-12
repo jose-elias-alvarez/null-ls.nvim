@@ -12,23 +12,6 @@ describe("utils", function()
         c.reset()
     end)
 
-    describe("echo", function()
-        local echo
-        before_each(function()
-            echo = stub(vim.api, "nvim_echo")
-        end)
-        after_each(function()
-            echo:revert()
-        end)
-
-        it("should call nvim_echo with formatted args", function()
-            local hlgroup = "MockHlgroup"
-            u.echo(hlgroup, "message goes here")
-
-            assert.stub(echo).was_called_with({ { "null-ls: message goes here", hlgroup } }, true, {})
-        end)
-    end)
-
     describe("join_at_newline", function()
         after_each(function()
             vim.bo.fileformat = "unix"
@@ -86,35 +69,6 @@ describe("utils", function()
             local split = u.split_at_newline(0, "line1\rline2\rline3")
 
             assert.same(split, { "line1", "line2", "line3" })
-        end)
-    end)
-
-    describe("get_client", function()
-        local get_active_clients
-        before_each(function()
-            get_active_clients = stub(vim.lsp, "get_active_clients")
-        end)
-        after_each(function()
-            get_active_clients:revert()
-        end)
-
-        it("should return matching client", function()
-            local client = { name = "null-ls" }
-            get_active_clients.returns({ client })
-
-            local found_client = u.get_client()
-
-            assert.truthy(found_client)
-            assert.equals(found_client, client)
-        end)
-
-        it("should nil if no client matches", function()
-            local client = { name = "other-client" }
-            get_active_clients.returns({ client })
-
-            local found_client = u.get_client()
-
-            assert.falsy(found_client)
         end)
     end)
 
@@ -433,6 +387,16 @@ describe("utils", function()
                 assert.equals(content, 'print("I am a test file!")')
             end)
         end)
+
+        describe("for_each_bufnr", function()
+            local callback = stub.new()
+            it("should call callback once per loaded bufnr", function()
+                u.buf.for_each_bufnr(callback)
+
+                assert.stub(callback).was_called(1)
+                assert.stub(callback).was_called_with(vim.api.nvim_get_current_buf())
+            end)
+        end)
     end)
 
     describe("table", function()
@@ -456,47 +420,6 @@ describe("utils", function()
 
                 assert.equals(#unique_table, 2)
             end)
-        end)
-    end)
-
-    describe("resolve_handler", function()
-        local method = methods.lsp.FORMATTING
-        local original_handler = vim.lsp.handlers[method]
-
-        local get_client
-        before_each(function()
-            get_client = stub(u, "get_client")
-            vim.lsp.handlers[method] = "default-handler"
-        end)
-        after_each(function()
-            get_client:revert()
-            vim.lsp.handlers[method] = original_handler
-        end)
-
-        it("should get handler from client when available", function()
-            local mock_client = { handlers = { [method] = "custom-handler" } }
-            get_client.returns(mock_client)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "custom-handler")
-        end)
-
-        it("should get default handler when client handler is not set", function()
-            local mock_client = { handlers = { ["otherMethod"] = "custom-handler" } }
-            get_client.returns(mock_client)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "default-handler")
-        end)
-
-        it("should get default handler when client is unavailable", function()
-            get_client.returns(nil)
-
-            local resolved = u.resolve_handler(method)
-
-            assert.equals(resolved, "default-handler")
         end)
     end)
 end)

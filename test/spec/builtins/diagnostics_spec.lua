@@ -29,7 +29,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with error severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "issues": [
                 {
@@ -59,7 +59,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with warning severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "issues": [{
                 "category": "readability",
@@ -87,7 +87,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with information severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "issues": [{
                 "category": "design",
@@ -115,7 +115,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic falling back to hint severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "issues": [{
                 "category": "refactor",
@@ -312,7 +312,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with info severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "comments": [{
                 "file": "./OpenCast.sh",
@@ -340,7 +340,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with style severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
             {
               "comments": [{
                 "file": "./OpenCast.sh",
@@ -409,7 +409,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            local output = vim.fn.json_decode([[ 
+            local output = vim.json.decode([[ 
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -447,7 +447,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with error severity", function()
-            local output = vim.fn.json_decode([[ 
+            local output = vim.json.decode([[ 
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -491,7 +491,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
                   [{
                     "line": 24,
                     "code": "DL3008",
@@ -513,7 +513,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with info severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
                   [{
                     "line": 24,
                     "code": "DL3059",
@@ -600,7 +600,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            local output = vim.fn.json_decode([[
+            local output = vim.json.decode([[
                   [{
                     "file_path": "/home/luc/Projects/Test/vim-scriptease/plugin/scriptease.vim",
                     "line_number": 5,

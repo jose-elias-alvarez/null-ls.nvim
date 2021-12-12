@@ -1,22 +1,23 @@
 local validate = vim.validate
 
 local defaults = {
-    diagnostics_format = "#{m}",
+    cmd = { "nvim" },
     debounce = 250,
-    default_timeout = 5000,
-    update_on_insert = false,
-    ---@usage setting this to true will enable debug logging
     debug = false,
+    default_timeout = 5000,
+    diagnostics_format = "#{m}",
+    ---@usage setting this to true will enable debug logging
     log = {
         ---@usage disable logging completely
         enable = true,
         ---@usage set logging level
-        --- possible valuse: {"error", "warn", "info", "debug", "trace"}
+        --- possible values: { "error", "warn", "info", "debug", "trace" }
         level = "warn",
         ---@usage whether to print the output to neovim's
         --- possible values: 'sync','async', false
         use_console = "async",
     },
+    update_on_insert = false,
     -- prevent double setup
     _setup = false,
 }

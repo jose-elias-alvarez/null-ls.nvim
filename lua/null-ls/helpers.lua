@@ -1,7 +1,7 @@
-local u = require("null-ls.utils")
 local c = require("null-ls.config")
-local s = require("null-ls.state")
 local log = require("null-ls.logger")
+local s = require("null-ls.state")
+local u = require("null-ls.utils")
 
 local api = vim.api
 local validate = vim.validate
@@ -57,7 +57,7 @@ local parse_args = function(args, params)
 end
 
 local json_output_wrapper = function(params, done, on_output, format)
-    local ok, decoded = pcall(vim.fn.json_decode, params.output)
+    local ok, decoded = pcall(vim.json.decode, params.output)
     if decoded == vim.NIL or decoded == "" then
         decoded = nil
     end
@@ -254,7 +254,7 @@ M.generator_factory = function(opts)
                 return done()
             end
 
-            local client = u.get_client()
+            local client = require("null-ls.client").get_client()
             local root = client and client.config.root_dir or vim.loop.cwd()
             params.root = root
 
@@ -434,8 +434,6 @@ M.make_builtin = function(opts)
 
         if prefer_local or only_local then
             builtin_copy._opts.dynamic_command = function(params)
-                local lsputil = require("lspconfig.util")
-
                 local resolved = s.get_resolved_command(params.bufnr, params.command)
                 -- a string means command was resolved on last run
                 -- false means the command already failed to resolve, so don't bother checking again
@@ -445,15 +443,15 @@ M.make_builtin = function(opts)
 
                 local maybe_prefix = prefer_local or only_local
                 local prefix = type(maybe_prefix) == "string" and maybe_prefix
-                local executable_to_find = prefix and lsputil.path.join(prefix, params.command) or params.command
+                local executable_to_find = prefix and u.path.join(prefix, params.command) or params.command
                 log:debug("attempting to find local executable " .. executable_to_find)
 
-                local client = u.get_client()
+                local client = require("null-ls.client").get_client()
                 local root = client and client.root_dir or vim.fn.getcwd()
 
                 local found, resolved_cwd
-                lsputil.path.traverse_parents(params.bufname, function(dir)
-                    found = lsputil.path.join(dir, executable_to_find)
+                u.path.traverse_parents(params.bufname, function(dir)
+                    found = u.path.join(dir, executable_to_find)
                     if u.is_executable(found) then
                         resolved_cwd = dir
                         return true

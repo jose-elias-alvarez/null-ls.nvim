@@ -1,20 +1,17 @@
-local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
 local methods = require("null-ls.methods")
-local u = mock(require("null-ls.utils"), true)
+
 local diagnostics = mock(require("null-ls.diagnostics"), true)
+local client = mock(require("null-ls.client"), true)
 
 describe("sources", function()
     local sources = require("null-ls.sources")
 
-    local on_register_source = stub(require("null-ls.lspconfig"), "on_register_source")
-    local on_register_sources = stub(require("null-ls.lspconfig"), "on_register_sources")
-
     after_each(function()
-        on_register_source:clear()
-        on_register_sources:clear()
         diagnostics.hide_source_diagnostics:clear()
+        client.on_source_change:clear()
+        client.update_filetypes:clear()
 
         sources._reset()
     end)
@@ -316,6 +313,12 @@ describe("sources", function()
 
             assert.truthy(#sources.get_all() == 3)
         end)
+
+        it("should call client.update_filetypes", function()
+            sources.deregister("mock")
+
+            assert.stub(client.update_filetypes).was_called()
+        end)
     end)
 
     describe("enable", function()
@@ -335,7 +338,12 @@ describe("sources", function()
             sources.enable("mock")
 
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(on_register_source).was_called_with(mock_source)
+        end)
+
+        it("should call client.on_source_change", function()
+            sources.enable("mock")
+
+            assert.stub(client.on_source_change).was_called()
         end)
     end)
 
@@ -377,7 +385,12 @@ describe("sources", function()
 
             sources.toggle("mock")
             assert.truthy(#sources.get_available() == 1)
-            assert.stub(on_register_source).was_called_with(mock_source)
+        end)
+
+        it("should call client.on_source_change", function()
+            sources.toggle("mock")
+
+            assert.stub(client.on_source_change).was_called()
         end)
     end)
 
@@ -562,10 +575,11 @@ describe("sources", function()
             end
         end)
 
-        it("should call on_register_source", function()
+        it("should call client methods", function()
             sources.register(mock_raw_source)
 
-            assert.stub(on_register_source).was_called()
+            assert.stub(client.on_source_change).was_called()
+            assert.stub(client.update_filetypes).was_called()
         end)
 
         it("should handle large number of duplicates", function()
@@ -582,18 +596,6 @@ describe("sources", function()
 
             local registered = sources.get_all()
             assert.equals(vim.tbl_count(registered), 2)
-        end)
-
-        it("should call on_register_source once per source", function()
-            sources.register({ mock_raw_source, mock_raw_source })
-
-            assert.stub(on_register_source).was_called(2)
-        end)
-
-        it("should call on_register_sources only once", function()
-            sources.register({ mock_raw_source, mock_raw_source })
-
-            assert.stub(on_register_sources).was_called(1)
         end)
 
         it("should register multiple sources with shared configuration", function()

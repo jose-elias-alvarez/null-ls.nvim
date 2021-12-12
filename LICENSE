@@ -22,3 +22,8 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <https://unlicense.org>
+
+This project uses modified and unmodified code from
+https://github.com/neovim/neovim and https://github.com/neovim/nvim-lspconfig,
+copyright Neovim contributors, licensed under the Apache 2.0 license, which can
+be obtained from http://www.apache.org/licenses/LICENSE-2.0.

@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 return h.make_builtin({
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
@@ -27,11 +28,11 @@ return h.make_builtin({
                 code = code,
                 message = message,
                 severity = severity,
-                filename = require("lspconfig.util").path.join(params.root, name),
+                filename = u.path.join(params.root, name),
             }
         end,
         cwd = function(params)
-            return require("lspconfig.util").root_pattern("tsconfig.json")(params.bufname)
+            return u.root_pattern("tsconfig.json")(params.bufname)
         end,
         timeout = 150000,
     },

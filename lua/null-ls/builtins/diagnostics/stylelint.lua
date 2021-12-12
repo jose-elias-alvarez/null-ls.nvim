@@ -16,7 +16,7 @@ return h.make_builtin({
 
             if params.err then
                 -- NOTE: We don"t get JSON here
-                for _, v in pairs(vim.fn.json_decode(params.err)) do
+                for _, v in pairs(vim.json.decode(params.err)) do
                     for _, e in pairs(v.warnings) do
                         table.insert(params.messages, e)
                     end

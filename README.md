@@ -54,26 +54,21 @@ see [HELPERS](doc/HELPERS.md) for details.
 ## Setup
 
 Install null-ls using your favorite package manager. The plugin depends on
-[plenary.nvim](https://github.com/nvim-lua/plenary.nvim) and
-[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), both of which you
-are (probably) already using.
+[plenary.nvim](https://github.com/nvim-lua/plenary.nvim), which you are
+(probably) already using.
 
-Please see [CONFIG](doc/CONFIG.md) for information about setting up and
-configuring null-ls.
-
-To get started, you must register at least one source and set up the plugin's
-integration with nvim-lspconfig, as in this example:
+To get started, you must set up null-ls and register at least one source. See
+[BUILTINS](doc/BUILTINS.md) to learn about available built-in sources and
+[CONFIG](doc/CONFIG.md) for information about setting up and configuring
+null-ls.
 
 ```lua
--- example configuration! (see CONFIG above to make your own)
-require("null-ls").config({
+require("null-ls").setup({
     sources = {
         require("null-ls").builtins.formatting.stylua,
+        require("null-ls").builtins.diagnostics.eslint,
         require("null-ls").builtins.completion.spell,
     },
-})
-require("lspconfig")["null-ls"].setup({
-    on_attach = my_custom_on_attach,
 })
 ```
 
@@ -228,7 +223,7 @@ use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 1. Set `debug` flag to `true` in your config:
 
    ```lua
-   require("null-ls").config({
+   require("null-ls").setup({
        debug = true
    })
    ```
@@ -238,14 +233,6 @@ use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 
 As with LSP logging, debug mode will slow down Neovim. Make sure to disable the
 option after you've collected the information you're looking for.
-
-### How do I set the path to the Neovim binary?
-
-Set it when calling the lspconfig `setup` method for null-ls.
-
-```lua
-require("lspconfig")["null-ls"].setup({ cmd = { "/path/to/nvim" }, ... })
-```
 
 ### Does it work with (other plugin)?
 

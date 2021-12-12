@@ -1,8 +1,8 @@
-local methods = require("null-ls.methods")
 local c = require("null-ls.config")
-local u = require("null-ls.utils")
 local log = require("null-ls.logger")
+local methods = require("null-ls.methods")
 
+local pid = 5000
 local notification_cache = {}
 
 local should_cache = function(method)
@@ -50,41 +50,37 @@ M.capabilities = capabilities
 
 M.setup = function()
     local rpc = require("vim.lsp.rpc")
+    if rpc._null_ls_setup then
+        return
+    end
 
     local rpc_start = rpc.start
     rpc.start = function(cmd, cmd_args, dispatchers, ...)
-        local config = require("lspconfig.configs")["null-ls"]
-        if config and config.cmd and cmd == config.cmd[1] then
+        if cmd == c.get().cmd[1] then
             return M.start(dispatchers)
         end
         return rpc_start(cmd, cmd_args, dispatchers, ...)
     end
+
+    rpc._null_ls_setup = true
 end
 
-local lastpid = 5000
-
 M.start = function(dispatchers)
-    lastpid = lastpid + 1
+    pid = pid + 1
     local message_id = 1
-    local pid = lastpid
     local stopped = false
 
-    local client
     local function handle(method, params, callback, is_notify)
         params = params or {}
         callback = callback and vim.schedule_wrap(callback)
         message_id = message_id + 1
-        client = client or u.get_client()
 
         if type(params) ~= "table" then
             params = { params }
         end
 
         params.method = method
-        if client then
-            params.client_id = client.id
-            require("null-ls.handlers").setup_client(client)
-        end
+        params.client_id = require("null-ls.client").get_id()
 
         local send = function(result)
             if callback then
@@ -164,7 +160,7 @@ end
 
 M.flush = function()
     for uri, notification in pairs(notification_cache) do
-        u.notify_client(methods.lsp.DID_CHANGE, notification)
+        require("null-ls.client").notify_client(methods.lsp.DID_CHANGE, notification)
         notification_cache[uri] = nil
     end
 end
