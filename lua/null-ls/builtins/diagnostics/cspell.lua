@@ -20,9 +20,9 @@ return h.make_builtin({
             { "row", "col", "message", "_quote" },
             {
               adapters = { h.diagnostics.adapters.end_col.from_quote },
-              offsets = { end_col = 1 }
+              offsets = { end_col = 1 },
             }
-        )
+        ),
     },
     factory = h.generator_factory,
 })
