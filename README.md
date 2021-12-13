@@ -204,13 +204,14 @@ See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avo
 See the following snippet:
 
 ```lua
--- add to a specific server's on_attach,
--- or to a common on_attach callback to enable for all supported filetypes
-on_attach = function(client)
-    if client.resolved_capabilities.document_formatting then
-        vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
-    end
-end
+require("null-ls").setup({
+    -- you can reuse a shared lspconfig on_attach callback here
+    on_attach = function(client)
+        if client.resolved_capabilities.document_formatting then
+            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+        end
+    end,
+})
 ```
 
 ### How do I view project-level diagnostics?
