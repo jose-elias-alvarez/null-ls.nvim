@@ -20,6 +20,7 @@ return h.make_builtin({
         "yaml",
         "markdown",
         "graphql",
+        "solidity",
     },
     generator_opts = {
         command = "prettier",
