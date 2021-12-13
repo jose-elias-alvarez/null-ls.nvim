@@ -8,7 +8,13 @@ return h.make_builtin({
     filetypes = {},
     generator_opts = {
         command = "cspell",
-        args = { "stdin" },
+        args = function(params)
+            return {
+                "--language-id",
+                vim.api.nvim_buf_get_option(params.bufnr, "filetype"),
+                "stdin",
+            }
+        end,
         to_stdin = true,
         ignore_stderr = true,
         format = "line",
