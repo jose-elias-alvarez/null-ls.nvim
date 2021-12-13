@@ -11,7 +11,7 @@ return h.make_builtin({
         args = function(params)
             return {
                 "--language-id",
-                vim.api.nvim_buf_get_option(params.bufnr, "filetype"),
+                params.ft,
                 "stdin",
             }
         end,
