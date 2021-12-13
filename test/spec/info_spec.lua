@@ -1,10 +1,9 @@
 local stub = require("luassert.stub")
 
 local builtins = require("null-ls.builtins")
+local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
-local c = require("null-ls.config")
-local u = require("null-ls.utils")
 
 local api = vim.api
 
@@ -38,7 +37,7 @@ describe("info", function()
     end)
 
     describe("show_window", function()
-        local get_client = stub(u, "get_client")
+        local get_client = stub(require("null-ls.client"), "get_client")
         local buf_is_attached = stub(vim.lsp, "buf_is_attached")
         before_each(function()
             get_client.returns({})

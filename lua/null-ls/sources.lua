@@ -1,5 +1,5 @@
-local methods = require("null-ls.methods")
 local diagnostics = require("null-ls.diagnostics")
+local methods = require("null-ls.methods")
 
 local validate = vim.validate
 
@@ -40,8 +40,6 @@ local register_source = function(source)
 
     table.insert(registered.sources, source)
     registered.names[source.name] = true
-
-    require("null-ls.lspconfig").on_register_source(source)
 end
 
 M.is_available = function(source, filetype, method)
@@ -88,8 +86,9 @@ end
 M.enable = function(query)
     for_each_matching(query, function(source)
         source._disabled = false
-        require("null-ls.lspconfig").on_register_source(source)
     end)
+
+    require("null-ls.client").on_source_change()
 end
 
 M.disable = function(query)
@@ -104,10 +103,10 @@ M.toggle = function(query)
         source._disabled = not source._disabled
         if source._disabled then
             diagnostics.hide_source_diagnostics(source.id)
-        else
-            require("null-ls.lspconfig").on_register_source(source)
         end
     end)
+
+    require("null-ls.client").on_source_change()
 end
 
 M.get_all = function()
@@ -135,7 +134,7 @@ M.deregister = function(query)
         end
     end
 
-    require("null-ls.lspconfig").on_register_sources()
+    require("null-ls.client").update_filetypes()
 end
 
 M.validate_and_transform = function(source)
@@ -223,13 +222,15 @@ M.register = function(to_register)
         end
     end
 
-    require("null-ls.lspconfig").on_register_sources()
+    require("null-ls.client").on_source_change()
+    require("null-ls.client").update_filetypes()
 end
 
 M.reset = function()
     registered.sources = {}
     registered.names = {}
-    require("null-ls.lspconfig").on_register_sources()
+
+    require("null-ls.client").update_filetypes()
 end
 
 M.is_registered = function(query)

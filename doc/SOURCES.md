@@ -11,9 +11,6 @@ them at your own risk.
 require("null-ls").get_sources()
 ```
 
-Methods that add, remove, or otherwise change sources prompt nvim-lspconfig to
-update its list of filetypes, as displayed in `:LspConfig`.
-
 ## get_sources()
 
 Returns a list (array-like table) of all registered sources. The returned table

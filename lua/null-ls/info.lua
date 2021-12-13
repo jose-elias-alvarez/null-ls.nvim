@@ -1,10 +1,50 @@
-local methods = require("null-ls.methods")
-local u = require("null-ls.utils")
 local c = require("null-ls.config")
 local log = require("null-ls.logger")
+local methods = require("null-ls.methods")
 
 local lsp = vim.lsp
 local api = vim.api
+
+-- adapted from nvim-lspconfig's :LspInfo window
+local make_window = function(height_percentage, width_percentage)
+    local row_start_percentage = (1 - height_percentage) / 2
+    local col_start_percentage = (1 - width_percentage) / 2
+
+    local row = math.ceil(vim.o.lines * row_start_percentage)
+    local col = math.ceil(vim.o.columns * col_start_percentage)
+    local width = math.floor(vim.o.columns * width_percentage)
+    local height = math.ceil(vim.o.lines * height_percentage)
+
+    local opts = {
+        relative = "editor",
+        row = row,
+        col = col,
+        width = width,
+        height = height,
+        style = "minimal",
+        border = {
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+            { " ", "NormalFloat" },
+        },
+    }
+
+    local bufnr = api.nvim_create_buf(false, true)
+    local win_id = api.nvim_open_win(bufnr, true, opts)
+    api.nvim_win_set_buf(win_id, bufnr)
+
+    vim.cmd("setlocal nocursorcolumn ts=2 sw=2")
+
+    return {
+        bufnr = bufnr,
+        win_id = win_id,
+    }
+end
 
 local M = {}
 
@@ -23,9 +63,7 @@ M.get_active_sources = function(bufnr, ft)
 end
 
 M.show_window = function()
-    local windows = require("lspconfig.ui.windows")
-
-    local client = u.get_client()
+    local client = require("null-ls.client").get_client()
     local bufnr = api.nvim_get_current_buf()
     if not client or not lsp.buf_is_attached(bufnr, client.id) then
         log:warn("failed to get info: buffer is not attached")
@@ -52,7 +90,7 @@ M.show_window = function()
         table.insert(lines, methods.readable[method] .. ": " .. table.concat(sources, ", "))
     end
 
-    local win_info = windows.percentage_range_window(0.8, 0.7)
+    local win_info = make_window(0.8, 0.7)
     local win_bufnr, win_id = win_info.bufnr, win_info.win_id
 
     api.nvim_buf_set_lines(win_bufnr, 0, -1, true, lines)

@@ -5,7 +5,7 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "markdown" },
+    filetypes = {},
     generator_opts = {
         command = "cspell",
         args = { "stdin" },
@@ -15,7 +15,14 @@ return h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = h.diagnostics.from_pattern([[.*:(%d+):(%d+)%s*-%s*(.*)]], { "row", "col", "message" }),
+        on_output = h.diagnostics.from_pattern(
+            [[.*:(%d+):(%d+)%s*-%s*(.*%((.*)%))]],
+            { "row", "col", "message", "_quote" },
+            {
+                adapters = { h.diagnostics.adapters.end_col.from_quote },
+                offsets = { end_col = 1 },
+            }
+        ),
     },
     factory = h.generator_factory,
 })

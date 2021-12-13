@@ -1,10 +1,9 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
-local lspconfig_util = require("lspconfig.util")
+local u = require("null-ls.utils")
 
 local uv = mock(vim.loop, true)
-local lsputil = mock(lspconfig_util, true)
 
 describe("loop", function()
     stub(vim, "schedule_wrap")
@@ -519,17 +518,14 @@ describe("loop", function()
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
 
         local fs_mkstemp = uv.fs_mkstemp
-        local separator = "/"
         before_each(function()
+            u.path.is_windows = false
+
             stub(os, "tmpname")
+
             os.tmpname.returns(mock_path)
             uv.fs_mkstemp.returns(mock_fd, mock_path)
-
             uv.fs_open.returns(mock_fd)
-            lsputil.path.sep = separator
-            lsputil.path.join = function(...)
-                return table.concat({ ... }, separator)
-            end
         end)
         after_each(function()
             os.tmpname:revert()
@@ -623,7 +619,6 @@ describe("loop", function()
         end)
 
         describe("windows", function()
-            separator = "\\"
             local getenv = stub(vim.fn, "getenv")
             local windows_temp_dir = "C:\\temp"
 
@@ -635,15 +630,19 @@ describe("loop", function()
             end)
 
             it("should get TEMP env var", function()
+                u.path.is_windows = true
+
                 loop.temp_file(mock_content)
 
                 assert.stub(getenv).was_called_with("TEMP")
             end)
 
             it("should call uv.fs_mkstemp with path + pattern", function()
+                u.path.is_windows = true
+
                 loop.temp_file(mock_content)
 
-                assert.stub(uv.fs_mkstemp).was_called_with("C:\\temp\\null-ls_XXXXXX")
+                assert.stub(uv.fs_mkstemp).was_called_with(u.path.join(windows_temp_dir, "null-ls_XXXXXX"))
             end)
         end)
     end)

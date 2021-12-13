@@ -110,7 +110,7 @@ Supports the following options:
   automatically call `done` once `on_output` returns.
 
 - `"json_raw"`: same as `json`, but will not throw on errors, either from
-  `stderr` or from `json_decode`. Instead, it'll pass errors to `on_output` via
+  `stderr` or from `json.decode`. Instead, it'll pass errors to `on_output` via
   `params.err`.
 
 ### ignore_stderr

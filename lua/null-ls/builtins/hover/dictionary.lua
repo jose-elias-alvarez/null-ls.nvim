@@ -23,7 +23,7 @@ return h.make_builtin({
                         return
                     end
 
-                    local ok, decoded = pcall(vim.fn.json_decode, data.body)
+                    local ok, decoded = pcall(vim.json.decode, data.body)
                     if not ok or not (decoded and decoded[1]) then
                         send_definition("no definition available")
                         return
