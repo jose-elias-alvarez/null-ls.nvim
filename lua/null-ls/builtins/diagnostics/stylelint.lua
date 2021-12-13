@@ -11,11 +11,13 @@ return h.make_builtin({
         args = { "--formatter", "json", "--stdin-filename", "$FILENAME" },
         to_stdin = true,
         format = "json_raw",
+        from_stderr = true,
         on_output = function(params)
-            params.messages = params.output and params.output[1] and params.output[1].warnings or {}
+            local output = params.output and params.output[1] and params.output[1].warnings or {}
 
+            -- json decode failure means stylelint failed to run
             if params.err then
-                table.insert(params.messages, { text = params.err })
+                table.insert(output, { text = params.output })
             end
 
             local parser = h.diagnostics.from_json({
@@ -29,7 +31,8 @@ return h.make_builtin({
                 },
             })
 
-            return parser({ output = params.messages })
+            params.output = output
+            return parser(params)
         end,
     },
     factory = h.generator_factory,
