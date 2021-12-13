@@ -1568,7 +1568,7 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 
 - `filetypes = {}`
 - `command = "cspell"`
-- `args = { "stdin" }`
+- `args = function(params) return { "--language-id", vim.api.nvim_buf_get_option(params.bufnr, "filetype"), "stdin" } end,`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
