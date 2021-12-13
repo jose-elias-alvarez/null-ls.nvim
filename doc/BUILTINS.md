@@ -1568,7 +1568,7 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 
 - `filetypes = {}`
 - `command = "cspell"`
-- `args = { "stdin" }`
+- `args = function(params) return { "--language-id", params.ft, "stdin" } end,`
 
 #### [ESLint](https://github.com/eslint/eslint)
 

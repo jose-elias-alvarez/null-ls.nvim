@@ -8,7 +8,13 @@ return h.make_builtin({
     filetypes = {},
     generator_opts = {
         command = "cspell",
-        args = { "stdin" },
+        args = function(params)
+            return {
+                "--language-id",
+                params.ft,
+                "stdin",
+            }
+        end,
         to_stdin = true,
         ignore_stderr = true,
         format = "line",
