@@ -1,3 +1,5 @@
+local u = require("null-ls.utils")
+
 local validate = vim.validate
 
 local defaults = {
@@ -17,6 +19,7 @@ local defaults = {
         --- possible values: 'sync','async', false
         use_console = "async",
     },
+    root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     update_on_insert = false,
     -- prevent double setup
     _setup = false,
