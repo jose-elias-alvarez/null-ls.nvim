@@ -15,12 +15,7 @@ return h.make_builtin({
             params.messages = params.output and params.output[1] and params.output[1].warnings or {}
 
             if params.err then
-                -- NOTE: We don"t get JSON here
-                for _, v in pairs(vim.json.decode(params.err)) do
-                    for _, e in pairs(v.warnings) do
-                        table.insert(params.messages, e)
-                    end
-                end
+                table.insert(params.messages, { text = params.err })
             end
 
             local parser = h.diagnostics.from_json({
