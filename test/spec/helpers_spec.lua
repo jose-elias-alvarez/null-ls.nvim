@@ -155,6 +155,7 @@ describe("helpers", function()
                 helpers._json_output_wrapper({ output = bad_json }, done, on_output, format)
 
                 assert.truthy(on_output.calls[1].refs[1].err)
+                assert.truthy(on_output.calls[1].refs[1].err:match("failed to decode json"))
             end)
         end)
     end)
