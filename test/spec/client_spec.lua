@@ -14,6 +14,7 @@ describe("client", function()
     local mock_client_id = 1
     local mock_bufnr = 2
     local mock_filetypes = { "lua", "teal" }
+    local mock_initialize_result = { capabilities = { codeActionProvider = true } }
 
     local mock_client
     before_each(function()
@@ -58,6 +59,16 @@ describe("client", function()
             assert.stub(root_dir).was_called_with("mock-file")
             local opts = lsp.start_client.calls[1].refs[1]
             assert.equals(opts.root_dir, "mock-root")
+        end)
+
+        it("should call user-defined on_init with new client and initialize_result", function()
+            local on_init = stub.new()
+            c._set({ on_init = on_init })
+
+            client.start_client("mock-file")
+            lsp.start_client.calls[1].refs[1].on_init(mock_client, mock_initialize_result)
+
+            assert.stub(on_init).was_called_with(mock_client, mock_initialize_result)
         end)
 
         describe("on_init", function()

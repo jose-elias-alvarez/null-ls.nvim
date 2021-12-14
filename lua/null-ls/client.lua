@@ -24,7 +24,7 @@ local should_attach = function(bufnr)
     return false
 end
 
-local on_init = function(new_client)
+local on_init = function(new_client, initialize_result)
     -- null-ls broadcasts all capabilities on launch, so this lets us have finer control
     new_client.supports_method = function(method)
         local internal_method = methods.map[method]
@@ -35,6 +35,9 @@ local on_init = function(new_client)
         return methods.lsp[method] ~= nil
     end
 
+    if c.get().on_init then
+        c.get().on_init(new_client, initialize_result)
+    end
     client = new_client
 end
 

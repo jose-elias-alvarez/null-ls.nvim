@@ -56,6 +56,7 @@ local defaults = {
         use_console = "async",
     },
     on_attach = nil,
+    on_init = nil,
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
     update_on_insert = false,
@@ -145,6 +146,12 @@ skip the console but still log to the file specified by `:NullLsLog`.
 Defines an `on_attach` callback to run whenever null-ls attaches to a buffer. If
 you have a common `on_attach` you're using for LSP servers, you can reuse that
 here, use a custom callback for null-ls, or leave this undefined.
+
+### on_init (function, optional)
+
+Defines an `on_init` callback to run when null-ls initializes. From here, you
+can make changes to the client (the first argument) or `initialize_result` (the
+second argument, which as of now is not used).
 
 ### root_dir (function)
 
