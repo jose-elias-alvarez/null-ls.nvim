@@ -9,6 +9,9 @@ jobs:
         contents: write
       steps:
         - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.head_ref }}
+
         - uses: rhysd/action-setup-vim@v1
           with:
             neovim: true
