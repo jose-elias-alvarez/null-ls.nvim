@@ -1795,7 +1795,7 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 - `command = "psalm"`
 - `args = { "--output-format=json", "--no-progress", "$FILENAME" }`
 
-#### [pylint](https://github.com/PyCGA/pylint)
+#### [pylint](https://github.com/PyCQA/pylint)
 
 ##### About
 
