@@ -1,6 +1,6 @@
 name: docgen
 
-on: pull_request
+on: ["push", "pull"]
 
 jobs:
   metadata-diff:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"
+          ref: ${{ github.head_ref }}
 
       - uses: rhysd/action-setup-vim@v1
         with:
