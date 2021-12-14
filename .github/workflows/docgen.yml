@@ -1,6 +1,6 @@
 name: docgen
 
-on: ["push", "pull"]
+on: [push, pull_request]
 
 jobs:
   metadata-diff:
