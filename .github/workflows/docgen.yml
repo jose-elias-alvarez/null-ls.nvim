@@ -4,30 +4,24 @@ on: pull_request
 
 jobs:
   metadata-diff:
-      runs-on: ubuntu-latest
-      permissions:
-        contents: write
-      steps:
-        - uses: actions/checkout@v2
-          with:
-            ref: ${{ github.head_ref }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
 
-        - uses: rhysd/action-setup-vim@v1
-          with:
-            neovim: true
-            version: nightly
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: nightly
 
-        - name: run autogen_metadata.sh script
-          run: bash ./scripts/autogen_metadata.sh
-        
-        # - name: ensure there are no diffs
-        #   run: |
-        #     git update-index --refresh
-        #     git diff-index --quiet HEAD --
+      - name: run autogen_metadata.sh script
+        run: bash ./scripts/autogen_metadata.sh
 
-        - name: commit changes
-          uses: stefanzweifel/git-auto-commit-action@v4
-          with:
-            file_pattern: lua/null-ls/builtins/_meta/*.lua
-            commit_message: update metdata
-      
+      - name: commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: lua/null-ls/builtins/_meta/*.lua
+          commit_message: "chore: update metadata"
