@@ -274,7 +274,7 @@ describe("loop", function()
                 local on_close = uv.spawn.calls[1].refs[3]
                 on_close(255)
 
-                assert.stub(check_exit_code).was_called_with(255)
+                assert.stub(check_exit_code).was_called_with(255, "")
                 assert.stub(done).was_called_with(false, false)
             end)
 

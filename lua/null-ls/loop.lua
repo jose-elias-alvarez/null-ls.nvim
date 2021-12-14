@@ -74,17 +74,9 @@ M.spawn = function(cmd, args, opts)
 
     local handle
     local on_close = function(code)
-        local exit_ok
-        if code == TIMEOUT_EXIT_CODE then
-            exit_ok = false
-        elseif check_exit_code then
-            exit_ok = check_exit_code(code)
-        else
-            exit_ok = code == 0
-        end
-
         stdout:read_stop()
         stderr:read_stop()
+
         if on_stdout_end then
             on_stdout_end()
         end
@@ -93,6 +85,16 @@ M.spawn = function(cmd, args, opts)
         close_handle(stdout)
         close_handle(stderr)
         close_handle(handle)
+
+        local exit_ok
+        if code == TIMEOUT_EXIT_CODE then
+            exit_ok = false
+        elseif check_exit_code then
+            exit_ok = check_exit_code(code, error_output)
+        else
+            exit_ok = code == 0
+        end
+
         done(exit_ok, code == TIMEOUT_EXIT_CODE)
     end
 
