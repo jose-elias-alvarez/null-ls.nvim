@@ -1,4 +1,3 @@
-local log = require("null-ls.logger")
 local u = require("null-ls.utils")
 
 local uv = vim.loop
@@ -11,7 +10,7 @@ local close_handle = function(handle)
 end
 
 local on_error = function(errkind, ...)
-    log:debug(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
+    require("null-ls.logger"):debug(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
     -- we need to make sure to raise an error
     error(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
 end
@@ -100,7 +99,7 @@ M.spawn = function(cmd, args, opts)
 
     if timeout then
         timer = M.timer(timeout, nil, true, function()
-            log:debug(string.format("command [%s] timed out after %s ms", cmd, timeout))
+            require("null-ls.logger"):debug(string.format("command [%s] timed out after %s ms", cmd, timeout))
             on_close(TIMEOUT_EXIT_CODE)
             timer.stop(true)
         end)
