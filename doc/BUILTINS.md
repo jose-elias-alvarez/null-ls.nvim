@@ -1606,7 +1606,7 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - `command = "eslint_d"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
-#### [flake8](https://github.com/PyCGA/flake8)
+#### [flake8](https://github.com/PyCQA/flake8)
 
 ##### About
 
