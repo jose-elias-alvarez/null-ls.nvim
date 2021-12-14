@@ -48,6 +48,18 @@ describe("client", function()
             assert.equals(opts.filetypes, mock_filetypes)
         end)
 
+        it("should use custom root_dir", function()
+            local root_dir = stub.new()
+            root_dir.returns("mock-root")
+            c._set({ root_dir = root_dir })
+
+            client.start_client("mock-file")
+
+            assert.stub(root_dir).was_called_with("mock-file")
+            local opts = lsp.start_client.calls[1].refs[1]
+            assert.equals(opts.root_dir, "mock-root")
+        end)
+
         describe("on_init", function()
             local on_init
             before_each(function()

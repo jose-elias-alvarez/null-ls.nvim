@@ -155,6 +155,7 @@ describe("helpers", function()
                 helpers._json_output_wrapper({ output = bad_json }, done, on_output, format)
 
                 assert.truthy(on_output.calls[1].refs[1].err)
+                assert.truthy(on_output.calls[1].refs[1].err:match("failed to decode json"))
             end)
         end)
     end)
@@ -700,7 +701,7 @@ describe("helpers", function()
                 local wrapper = loop.spawn.calls[1].refs[3].handler
                 wrapper("error output", nil)
 
-                assert.truthy(on_output.calls[1].refs[1].err:match("bad argument"))
+                assert.equals(on_output.calls[1].refs[1].err, "error output")
             end)
 
             it("should call json_output_wrapper and return if format == json", function()

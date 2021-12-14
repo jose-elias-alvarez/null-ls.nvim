@@ -57,18 +57,21 @@ local parse_args = function(args, params)
 end
 
 local json_output_wrapper = function(params, done, on_output, format)
-    local ok, decoded = pcall(vim.json.decode, params.output)
-    if decoded == vim.NIL or decoded == "" then
-        decoded = nil
-    end
-
-    if not ok then
-        if format ~= output_formats.json_raw then
-            error("failed to decode json: " .. decoded)
+    if params.output then
+        local ok, decoded = pcall(vim.json.decode, params.output)
+        if decoded == vim.NIL or decoded == "" then
+            decoded = nil
         end
-        params.err = decoded
-    else
-        params.output = decoded
+
+        if not ok then
+            local error_message = "failed to decode json: " .. decoded
+            if format ~= output_formats.json_raw then
+                error(error_message)
+            end
+            params.err = error_message
+        else
+            params.output = decoded
+        end
     end
 
     -- don't bother calling on_output if output is empty

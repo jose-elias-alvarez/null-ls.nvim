@@ -50,7 +50,7 @@ M.start_client = function(fname)
 
     local config = {
         name = "null-ls",
-        root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git")(fname) or vim.loop.cwd(),
+        root_dir = c.get().root_dir(fname) or vim.loop.cwd(),
         on_init = on_init,
         on_exit = on_exit,
         cmd = c.get().cmd,

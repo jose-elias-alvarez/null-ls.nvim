@@ -56,6 +56,7 @@ local defaults = {
         use_console = "async",
     },
     on_attach = nil,
+    root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
     update_on_insert = false,
 }
@@ -144,6 +145,20 @@ skip the console but still log to the file specified by `:NullLsLog`.
 Defines an `on_attach` callback to run whenever null-ls attaches to a buffer. If
 you have a common `on_attach` you're using for LSP servers, you can reuse that
 here, use a custom callback for null-ls, or leave this undefined.
+
+### root_dir (function)
+
+Determines the root of the null-ls server. On startup, null-ls will call
+`root_dir` with the full path to the first file that null-ls attaches to.
+
+```lua
+local root_dir = function(fname)
+    return fname:match("my-project") and "my-project-root"
+end
+```
+
+If `root_dir` returns `nil`, the root will resolve to the current working
+directory.
 
 ### sources (table, optional)
 
