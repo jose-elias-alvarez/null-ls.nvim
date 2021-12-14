@@ -70,6 +70,9 @@ local postprocess = function(diagnostic, _, generator)
 end
 
 local handle_single_file_diagnostics = function(namespace, diagnostics, bufnr)
+    if vim.diagnostic == nil then
+        return
+    end
     vim.diagnostic.set(namespace, bufnr, diagnostics)
 end
 
