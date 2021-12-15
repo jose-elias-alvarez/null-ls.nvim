@@ -253,7 +253,7 @@ M.generator_factory = function(opts)
 
             -- if dynamic_command returns nil, don't fall back to command
             if not resolved_command then
-                log:debug(string.format("failed to resolve command [%s]; not spawning", command))
+                log:debug(string.format("unable to resolve command [%s]", command))
                 return done()
             end
 
