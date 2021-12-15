@@ -817,6 +817,24 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - `command = "lua-format"`
 - `args = { "-i" }`
 
+#### [latexindent](https://github.com/Koihik/LuaFormatter)
+
+##### About
+
+A `perl` script for formatting `LaTeX` files that is generally included in mayor `TeX` distributions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.latexindent }
+```
+
+##### Defaults
+
+- `filetypes = { "tex" }`
+- `command = "latexindent"`
+- `args = { "-" }`
+
 #### [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
 
 ##### About
@@ -855,6 +873,35 @@ local sources = { null_ls.builtins.formatting.mix }
 - `filetypes = { "elixir" }`
 - `command = "mix"`
 - `args = { "format", "-" }`
+
+#### [mypy](mypy-lang.org)
+
+##### About
+
+Mypy is an optional static type checker for Python that aims to combine the
+benefits of dynamic (or "duck") typing and static typing.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mypy }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "mypy"`
+- `args = {
+            "--hide-error-codes",
+            "--hide-error-context",
+            "--no-color-output",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--no-error-summary",
+            "--no-pretty",
+            "--command",
+            "$TEXT",
+        }`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
