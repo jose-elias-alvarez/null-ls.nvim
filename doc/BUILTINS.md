@@ -856,6 +856,35 @@ local sources = { null_ls.builtins.formatting.mix }
 - `command = "mix"`
 - `args = { "format", "-" }`
 
+#### [mypy](mypy-lang.org)
+
+##### About
+
+Mypy is an optional static type checker for Python that aims to combine the
+benefits of dynamic (or "duck") typing and static typing.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mypy }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "mypy"`
+- `args = {
+            "--hide-error-codes",
+            "--hide-error-context",
+            "--no-color-output",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--no-error-summary",
+            "--no-pretty",
+            "--command",
+            "$TEXT",
+        }`
+
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
 ##### About
