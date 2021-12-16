@@ -73,9 +73,6 @@ return {
   qmllint = {
     filetypes = { "qml" }
   },
-  revive = {
-    filetypes = { "go" }
-  },
   rubocop = {
     filetypes = { "ruby" }
   },
@@ -87,9 +84,6 @@ return {
   },
   standardrb = {
     filetypes = { "ruby" }
-  },
-  staticcheck = {
-    filetypes = { "go" }
   },
   statix = {
     filetypes = { "nix" }
