@@ -88,6 +88,9 @@ return {
   json_tool = {
     filetypes = { "json" }
   },
+  latexindent = {
+    filetypes = { "tex" }
+  },
   lua_format = {
     filetypes = { "lua" }
   },

@@ -180,7 +180,8 @@ return {
     formatting = { "terraform_fmt" }
   },
   tex = {
-    diagnostics = { "chktex", "proselint", "vale" }
+    diagnostics = { "chktex", "proselint", "vale" },
+    formatting = { "latexindent" }
   },
   text = {
     hover = { "dictionary" }
