@@ -13,8 +13,8 @@ local messages = {
 
 local function report(source)
     local name = source.name
-    local only_local = source.generator.opts.only_local
-    local command = source.generator.opts.command
+    local only_local = source.generator.opts and source.generator.opts.only_local
+    local command = source.generator.opts and source.generator.opts.command
 
     if type(command) ~= "string" then
         health.report_info(string.format(messages["unable"], name, command))
