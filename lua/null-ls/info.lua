@@ -99,7 +99,9 @@ M.show_window = function()
     api.nvim_buf_set_option(win_bufnr, "modifiable", false)
 
     api.nvim_buf_set_keymap(win_bufnr, "n", "<Esc>", "<cmd>bd<CR>", { noremap = true })
-    lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
+    vim.cmd(
+        string.format("autocmd BufHidden,BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, %d, true)", win_id)
+    )
 end
 
 return M
