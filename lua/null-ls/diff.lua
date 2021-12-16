@@ -1,5 +1,4 @@
 -- adapted from Neovim's previous vim.lsp.util.compute_diff implementation
-
 local M = {}
 
 local function first_difference(old_lines, new_lines)
@@ -140,8 +139,10 @@ function M.compute_diff(old_lines, new_lines, line_ending)
         adj_end_char = #old_lines[#old_lines + end_line + 1] + end_char + 1
     end
 
-    _, start_char = vim.str_utfindex(old_lines[start_line], start_char - 1)
-    _, end_char = vim.str_utfindex(old_lines[#old_lines + end_line + 1], adj_end_char)
+    local _, adjusted_start_char = vim.str_utfindex(old_lines[start_line], start_char - 1)
+    local _, adjusted_end_char = vim.str_utfindex(old_lines[#old_lines + end_line + 1], adj_end_char)
+    start_char = adjusted_start_char
+    end_char = adjusted_end_char
 
     local result = {
         range = {
