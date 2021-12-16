@@ -48,7 +48,9 @@ do
         for _, filename in ipairs(vim.fn.glob(method_pattern, 1, 1)) do
             local source_name = filename:gsub(".*/", ""):gsub("%.lua$", "")
             local source = b[method][source_name]
-            if source then
+            if not source then
+                string.format("failed to load builtin %s for method %s", source_name, method)
+            else
                 sources[source_name] = { filetypes = source.filetypes or {} }
                 for _, ft in ipairs(source.filetypes or {}) do
                     filetypes_map[ft] = filetypes_map[ft] or {}
