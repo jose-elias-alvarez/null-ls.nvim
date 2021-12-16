@@ -17,7 +17,7 @@ return {
     filetypes = { "elixir" }
   },
   cspell = {
-    filetypes = { "markdown" }
+    filetypes = {}
   },
   eslint = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
@@ -49,6 +49,9 @@ return {
   mypy = {
     filetypes = { "python" }
   },
+  php = {
+    filetypes = { "php" }
+  },
   phpcs = {
     filetypes = { "php" }
   },
@@ -70,6 +73,9 @@ return {
   qmllint = {
     filetypes = { "qml" }
   },
+  revive = {
+    filetypes = { "go" }
+  },
   rubocop = {
     filetypes = { "ruby" }
   },
@@ -81,6 +87,9 @@ return {
   },
   standardrb = {
     filetypes = { "ruby" }
+  },
+  staticcheck = {
+    filetypes = { "go" }
   },
   statix = {
     filetypes = { "nix" }
