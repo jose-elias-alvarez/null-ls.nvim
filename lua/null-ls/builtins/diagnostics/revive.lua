@@ -1,7 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
-
-local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
+local u = require("null-ls.utils")
 
 local severities = {
     error = vim.lsp.protocol.DiagnosticSeverity.Error,
@@ -9,7 +8,7 @@ local severities = {
 }
 
 return h.make_builtin({
-    method = DIAGNOSTICS_ON_SAVE,
+    method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {
         command = "revive",
@@ -29,7 +28,7 @@ return h.make_builtin({
         on_output = function(params)
             local diags = {}
             for _, d in ipairs(params.output) do
-                local filename = require("lspconfig.util").path.join(params.root, d.Position.Start.Filename)
+                local filename = u.path.join(params.root, d.Position.Start.Filename)
                 table.insert(diags, {
                     row = d.Position.Start.Line,
                     col = d.Position.Start.Column,
