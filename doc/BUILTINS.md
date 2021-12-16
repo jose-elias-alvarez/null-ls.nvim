@@ -818,6 +818,24 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - `command = "lua-format"`
 - `args = { "-i" }`
 
+#### [latexindent](https://github.com/Koihik/LuaFormatter)
+
+##### About
+
+A `perl` script for formatting `LaTeX` files that is generally included in mayor `TeX` distributions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.latexindent }
+```
+
+##### Defaults
+
+- `filetypes = { "tex" }`
+- `command = "latexindent"`
+- `args = { "-" }`
+
 #### [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
 
 ##### About
