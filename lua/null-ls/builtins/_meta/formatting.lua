@@ -97,9 +97,6 @@ return {
   mix = {
     filetypes = { "elixir" }
   },
-  ["my-fake-source"] = {
-    filetypes = { "my-filetype" }
-  },
   nginx_beautifier = {
     filetypes = { "nginx" }
   },
