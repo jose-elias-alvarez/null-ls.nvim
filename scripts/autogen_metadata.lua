@@ -36,6 +36,7 @@ do
         if not entry:match("_") and is_directory(entry) then
             local method = entry:gsub(".*/", "")
             table.insert(methods, method)
+            table.sort(methods)
             metadata_files[method] = join_paths(generated_dir, method .. ".lua")
         end
     end
@@ -53,6 +54,8 @@ do
                     filetypes_map[ft] = filetypes_map[ft] or {}
                     if filetypes_map[ft] and filetypes_map[ft][method] then
                         table.insert(filetypes_map[ft][method], source_name)
+                        table.sort(filetypes_map[ft])
+                        table.sort(filetypes_map[ft][method])
                     else
                         filetypes_map[ft][method] = { source_name }
                     end
