@@ -27,16 +27,18 @@ end
 local on_init = function(new_client, initialize_result)
     -- null-ls broadcasts all capabilities on launch, so this lets us have finer control
     new_client.supports_method = function(method)
-        -- user tries to disable formatting the lsp way
-        if not new_client.resolved_capabilities.document_formatting then
+        -- capability was not declared or is specifically disabled
+        if new_client.resolved_capabilities[methods.request_name_to_capability[method]] == false then
             return false
         end
 
+        -- determine capability by ability to run for the current buffer
         local internal_method = methods.map[method]
         if internal_method then
             return require("null-ls.generators").can_run(vim.bo.filetype, internal_method)
         end
 
+        -- return true for supported methods w/o a corresponding internal method (init, shutdown)
         return methods.lsp[method] ~= nil
     end
 

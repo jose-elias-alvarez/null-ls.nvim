@@ -18,7 +18,7 @@ describe("client", function()
 
     local mock_client
     before_each(function()
-        mock_client = { id = mock_client_id, config = {} }
+        mock_client = { id = mock_client_id, config = {}, resolved_capabilities = {} }
         lsp.start_client.returns(mock_client_id)
         sources.get_filetypes.returns(mock_filetypes)
     end)
@@ -111,6 +111,16 @@ describe("client", function()
 
                     assert.stub(can_run).was_not_called()
                     assert.equals(is_supported, true)
+                end)
+
+                it("should return false if resolved_capabilities disables method", function()
+                    mock_client.resolved_capabilities.code_action = false
+                    on_init(mock_client)
+
+                    local is_supported = mock_client.supports_method(methods.lsp.CODE_ACTION)
+
+                    assert.stub(can_run).was_not_called()
+                    assert.equals(is_supported, false)
                 end)
             end)
         end)
