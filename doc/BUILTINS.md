@@ -205,16 +205,17 @@ option, which should be a function that returns a boolean or `nil` indicating
 whether null-ls should register the source. null-ls will pass a single argument
 to the function, which is a table of utilities to handle common conditional
 checks (though you can use whatever you want, as long as the return value
-matches).
+matches). `root_has_file` accept either a table (indicating multiple files) or
+a string (indicating a single file).
 
 For example, to conditionally register `stylua` by checking if the root
-directory has a `stylua.toml` file:
+directory has a `stylua.toml` or `.stylua.toml` file:
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.stylua.with({
         condition = function(utils)
-            return utils.root_has_file("stylua.toml")
+            return utils.root_has_file({"stylua.toml", ".stylua.toml"})
         end,
     }),
 }

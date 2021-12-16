@@ -332,6 +332,14 @@ describe("utils", function()
                 assert.truthy(utils.root_has_file("stylua.toml"))
             end)
 
+            it("should return true if some file exists at root", function()
+                assert.truthy(utils.root_has_file({ ".stylua.toml", "stylua.toml" }))
+            end)
+
+            it("should return false if some file not exists at root", function()
+                assert.falsy(utils.root_has_file({ "bad-file", "bad-file2" }))
+            end)
+
             it("should return false if file does not exist at root", function()
                 assert.falsy(utils.root_has_file("bad-file"))
             end)
