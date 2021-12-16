@@ -26,13 +26,16 @@ return {
   },
   css = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim", "stylelint" }
   },
   d = {
     formatting = { "dfmt" }
   },
   dart = {
     formatting = { "dart_format" }
+  },
+  django = {
+    formatting = { "djhtml" }
   },
   dockerfile = {
     diagnostics = { "hadolint" }
@@ -60,40 +63,49 @@ return {
     formatting = { "fprettify" }
   },
   go = {
-    diagnostics = { "golangci_lint" },
+    diagnostics = { "golangci_lint", "revive", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "golines" }
   },
   graphql = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim" }
+  },
+  haskell = {
+    formatting = { "brittany" }
   },
   html = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim", "rustywind" }
+  },
+  htmldjango = {
+    formatting = { "djhtml" }
   },
   java = {
     formatting = { "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
     diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettierd", "prettier_d_slim", "rustywind" }
   },
   javascriptreact = {
     diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettierd", "prettier_d_slim", "rustywind" }
+  },
+  ["jinja.html"] = {
+    formatting = { "djhtml" }
   },
   json = {
-    formatting = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "fixjson", "json_tool", "prettier", "prettierd", "prettier_d_slim" }
   },
   less = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim", "stylelint" }
   },
   lua = {
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
   },
   markdown = {
-    diagnostics = { "cspell", "markdownlint", "proselint", "vale", "write_good" },
-    formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
+    diagnostics = { "markdownlint", "proselint", "vale", "write_good" },
+    formatting = { "markdownlint", "prettier", "prettierd", "prettier_d_slim" },
     hover = { "dictionary" }
   },
   nginx = {
@@ -107,7 +119,7 @@ return {
     formatting = { "perltidy" }
   },
   php = {
-    diagnostics = { "phpcs", "phpstan", "psalm" },
+    diagnostics = { "php", "phpcs", "phpstan", "psalm" },
     formatting = { "phpcbf", "phpcsfixer" }
   },
   prisma = {
@@ -143,7 +155,7 @@ return {
   },
   scss = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim", "stylelint" }
   },
   sh = {
     diagnostics = { "shellcheck" },
@@ -181,22 +193,22 @@ return {
   },
   typescript = {
     diagnostics = { "eslint", "eslint_d", "tsc" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettierd", "prettier_d_slim", "rustywind" }
   },
   typescriptreact = {
     diagnostics = { "eslint", "eslint_d", "tsc" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettierd", "prettier_d_slim", "rustywind" }
   },
   vim = {
     diagnostics = { "vint" }
   },
   vue = {
     diagnostics = { "eslint", "eslint_d" },
-    formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "eslint", "eslint_d", "prettier", "prettierd", "prettier_d_slim", "rustywind" }
   },
   yaml = {
     diagnostics = { "ansiblelint", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettier", "prettierd", "prettier_d_slim" }
   },
   zig = {
     formatting = { "zigfmt" }
