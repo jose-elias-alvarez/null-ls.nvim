@@ -25,7 +25,12 @@ function log:add_entry(msg, level)
         default_opts.level = "trace"
     end
 
-    local handle = require("plenary.log").new(default_opts)
+    local has_plenary, plenary_log = pcall(require, "plenary.log")
+    if not has_plenary then
+        return
+    end
+
+    local handle = plenary_log.new(default_opts)
     handle[level:lower()](msg)
     self.__handle = handle
 end
