@@ -29,7 +29,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with error severity", function()
-            local output = vim.json.decode([[
+            local output = [[
             {
               "issues": [
                 {
@@ -45,7 +45,7 @@ describe("diagnostics", function()
                   "trigger": "( c"
                 }
               ]
-            } ]])
+            } ]]
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
@@ -59,7 +59,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with warning severity", function()
-            local output = vim.json.decode([[
+            local output = [[
             {
               "issues": [{
                 "category": "readability",
@@ -73,7 +73,7 @@ describe("diagnostics", function()
                 "scope": null,
                 "trigger": "@impl true"
               }]
-            } ]])
+            } ]]
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
@@ -87,7 +87,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with information severity", function()
-            local output = vim.json.decode([[
+            local output = [[
             {
               "issues": [{
                 "category": "design",
@@ -101,7 +101,7 @@ describe("diagnostics", function()
                 "scope": null,
                 "trigger": "TODO: implement check"
               }]
-            } ]])
+            } ]]
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
@@ -115,7 +115,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic falling back to hint severity", function()
-            local output = vim.json.decode([[
+            local output = [[
             {
               "issues": [{
                 "category": "refactor",
@@ -129,7 +129,7 @@ describe("diagnostics", function()
                 "scope": null,
                 "trigger": "|>"
               }]
-            } ]])
+            } ]]
             local diagnostic = parser({ output = output })
             assert.are.same({
                 {
@@ -155,8 +155,8 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should handle compile warnings preceeding output", function()
-            local error = [[
-            [warn] IMPORTING DEV.SECRET
+            local output = [[
+            00:00:00.000 [warn] IMPORTING DEV.SECRET
 
             {
               "issues": [
@@ -174,7 +174,7 @@ describe("diagnostics", function()
                 }
               ]
             } ]]
-            local diagnostic = parser({ err = error })
+            local diagnostic = parser({ output = output })
             assert.are.same({
                 {
                     source = "credo",
@@ -183,6 +183,28 @@ describe("diagnostics", function()
                     col = nil,
                     end_col = nil,
                     severity = 1,
+                },
+            }, diagnostic)
+        end)
+        it("should handle messages with incomplete json", function()
+            local output = [[Some incomplete message that shouldn't really happen { "issues": ]]
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = output,
+                    row = 1,
+                },
+            }, diagnostic)
+        end)
+        it("should handle messages without json", function()
+            local output = [[Another message that shouldn't really happen]]
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    source = "credo",
+                    message = output,
+                    row = 1,
                 },
             }, diagnostic)
         end)

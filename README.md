@@ -149,8 +149,16 @@ local markdownlint = {
         from_stderr = true,
         -- choose an output format (raw, json, or line)
         format = "line",
-        check_exit_code = function(code)
-            return code <= 1
+        check_exit_code = function(code, stderr)
+            local success = code <= 1
+
+            if not success then
+              -- can be noisy for things that run often (e.g. diagnostics), but can
+              -- be useful for things that run on demand (e.g. formatting)
+              print(stderr)
+            end
+
+            return success
         end,
         -- use helpers to parse the output from string matchers,
         -- or parse it manually with a function

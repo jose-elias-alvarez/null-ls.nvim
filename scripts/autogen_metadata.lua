@@ -36,6 +36,7 @@ do
         if not entry:match("_") and is_directory(entry) then
             local method = entry:gsub(".*/", "")
             table.insert(methods, method)
+            table.sort(methods)
             metadata_files[method] = join_paths(generated_dir, method .. ".lua")
         end
     end
@@ -47,12 +48,16 @@ do
         for _, filename in ipairs(vim.fn.glob(method_pattern, 1, 1)) do
             local source_name = filename:gsub(".*/", ""):gsub("%.lua$", "")
             local source = b[method][source_name]
-            if source then
+            if not source then
+                string.format("failed to load builtin %s for method %s", source_name, method)
+            else
                 sources[source_name] = { filetypes = source.filetypes or {} }
                 for _, ft in ipairs(source.filetypes or {}) do
                     filetypes_map[ft] = filetypes_map[ft] or {}
                     if filetypes_map[ft] and filetypes_map[ft][method] then
                         table.insert(filetypes_map[ft][method], source_name)
+                        table.sort(filetypes_map[ft])
+                        table.sort(filetypes_map[ft][method])
                     else
                         filetypes_map[ft][method] = { source_name }
                     end

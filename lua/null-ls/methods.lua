@@ -56,11 +56,36 @@ local readable_map = {
     [internal_methods.COMPLETION] = "Completion",
 }
 
+-- extracted from Neovim's lsp.lua
+local request_name_to_capability = {
+    ["textDocument/hover"] = "hover",
+    ["textDocument/signatureHelp"] = "signature_help",
+    ["textDocument/definition"] = "goto_definition",
+    ["textDocument/implementation"] = "implementation",
+    ["textDocument/declaration"] = "declaration",
+    ["textDocument/typeDefinition"] = "type_definition",
+    ["textDocument/documentSymbol"] = "document_symbol",
+    ["textDocument/prepareCallHierarchy"] = "call_hierarchy",
+    ["textDocument/rename"] = "rename",
+    ["textDocument/prepareRename"] = "rename",
+    ["textDocument/codeAction"] = "code_action",
+    ["textDocument/codeLens"] = "code_lens",
+    ["codeLens/resolve"] = "code_lens_resolve",
+    ["workspace/executeCommand"] = "execute_command",
+    ["workspace/symbol"] = "workspace_symbol",
+    ["textDocument/references"] = "find_references",
+    ["textDocument/rangeFormatting"] = "document_range_formatting",
+    ["textDocument/formatting"] = "document_formatting",
+    ["textDocument/completion"] = "completion",
+    ["textDocument/documentHighlight"] = "document_highlight",
+}
+
 local M = {}
 M.lsp = lsp_methods
 M.internal = internal_methods
 M.map = lsp_to_internal_map
 M.readable = readable_map
 M.overrides = overrides
+M.request_name_to_capability = request_name_to_capability
 
 return M

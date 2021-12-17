@@ -142,8 +142,14 @@ M.make_conditional_utils = function()
     local cwd = vim.loop.cwd()
 
     return {
-        root_has_file = function(name)
-            return M.path.exists(M.path.join(cwd, name))
+        root_has_file = function(...)
+            local patterns = vim.tbl_flatten({ ... })
+            for _, name in ipairs(patterns) do
+                if M.path.exists(M.path.join(cwd, name)) then
+                    return true
+                end
+            end
+            return false
         end,
         root_matches = function(pattern)
             return cwd:find(pattern) ~= nil

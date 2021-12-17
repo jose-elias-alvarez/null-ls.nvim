@@ -1,5 +1,4 @@
 local logger = require("null-ls.logger")
-local u = require("null-ls.utils")
 
 local export_tables = {
     diagnostics = {},
@@ -27,11 +26,12 @@ for method, table in pairs(export_tables) do
     })
 end
 
-return setmetatable({}, {
-    __index = function(_, k)
-        if not export_tables[k] then
+return setmetatable(export_tables, {
+    __index = function(t, k)
+        if not t[k] then
             logger:warn(string.format("failed to load builtin table for method %s; please check your config", k))
         end
-        return export_tables[k]
+
+        return t[k]
     end,
 })

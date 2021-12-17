@@ -2,6 +2,15 @@ local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
 
+local client_id
+local get_client = function()
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+        if client.name == "tsserver" then
+            return client
+        end
+    end
+end
+
 return h.make_builtin({
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "typescript", "typescriptreact" },
@@ -21,6 +30,22 @@ return h.make_builtin({
                 return
             end
 
+            if not client_id then
+                local client = get_client()
+                if client and not client.is_stopped() then
+                    client_id = client.id
+                else
+                    client_id = nil
+                end
+            end
+
+            local filename = u.path.join(params.root, name)
+            local bufnr = vim.fn.bufadd(filename)
+            -- if tsserver client exists and is attached to buffer, don't duplicate diagnostics
+            if client_id and vim.lsp.buf_is_attached(bufnr, client_id) then
+                return
+            end
+
             local severity = err == "error" and 1 or 2
             return {
                 row = row,
@@ -28,7 +53,7 @@ return h.make_builtin({
                 code = code,
                 message = message,
                 severity = severity,
-                filename = u.path.join(params.root, name),
+                filename = filename,
             }
         end,
         cwd = function(params)

@@ -44,6 +44,7 @@ local capabilities = {
         openClose = true,
         save = true,
     },
+    hoverProvider = true,
 }
 
 M.capabilities = capabilities

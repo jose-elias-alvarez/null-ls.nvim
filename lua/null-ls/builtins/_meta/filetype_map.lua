@@ -34,6 +34,9 @@ return {
   dart = {
     formatting = { "dart_format" }
   },
+  django = {
+    formatting = { "djhtml" }
+  },
   dockerfile = {
     diagnostics = { "hadolint" }
   },
@@ -60,14 +63,20 @@ return {
     formatting = { "fprettify" }
   },
   go = {
-    diagnostics = { "golangci_lint" },
+    diagnostics = { "golangci_lint", "revive", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "golines" }
   },
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  haskell = {
+    formatting = { "brittany" }
+  },
   html = {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+  },
+  htmldjango = {
+    formatting = { "djhtml" }
   },
   java = {
     formatting = { "clang_format", "google_java_format", "uncrustify" }
@@ -79,6 +88,9 @@ return {
   javascriptreact = {
     diagnostics = { "eslint", "eslint_d" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+  },
+  ["jinja.html"] = {
+    formatting = { "djhtml" }
   },
   json = {
     formatting = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
@@ -92,7 +104,7 @@ return {
     formatting = { "lua_format", "stylua" }
   },
   markdown = {
-    diagnostics = { "cspell", "markdownlint", "proselint", "vale", "write_good" },
+    diagnostics = { "markdownlint", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
     hover = { "dictionary" }
   },
@@ -107,7 +119,7 @@ return {
     formatting = { "perltidy" }
   },
   php = {
-    diagnostics = { "phpcs", "phpstan", "psalm" },
+    diagnostics = { "php", "phpcs", "phpstan", "psalm" },
     formatting = { "phpcbf", "phpcsfixer" }
   },
   prisma = {
@@ -168,7 +180,8 @@ return {
     formatting = { "terraform_fmt" }
   },
   tex = {
-    diagnostics = { "chktex", "proselint", "vale" }
+    diagnostics = { "chktex", "proselint", "vale" },
+    formatting = { "latexindent" }
   },
   text = {
     hover = { "dictionary" }

@@ -205,16 +205,17 @@ option, which should be a function that returns a boolean or `nil` indicating
 whether null-ls should register the source. null-ls will pass a single argument
 to the function, which is a table of utilities to handle common conditional
 checks (though you can use whatever you want, as long as the return value
-matches).
+matches). `root_has_file` accept either a table (indicating multiple files) or
+a string (indicating a single file).
 
 For example, to conditionally register `stylua` by checking if the root
-directory has a `stylua.toml` file:
+directory has a `stylua.toml` or `.stylua.toml` file:
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.stylua.with({
         condition = function(utils)
-            return utils.root_has_file("stylua.toml")
+            return utils.root_has_file({"stylua.toml", ".stylua.toml"})
         end,
     }),
 }
@@ -298,6 +299,24 @@ local sources = { null_ls.builtins.formatting.bean_format }
 - `filetypes = { "beancount" }`
 - `command = "bean-format"`
 - `args = { "-" }`
+
+#### [brittany](https://github.com/lspitzner/brittany)
+
+##### About
+
+haskell source code formatter
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.brittany }
+```
+
+##### Defaults
+
+- `filetypes = { "haskell" }`
+- `command = "brittany"`
+- `args = {}`
 
 #### [black](https://github.com/psf/black)
 
@@ -799,6 +818,24 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - `command = "lua-format"`
 - `args = { "-i" }`
 
+#### [latexindent](https://github.com/Koihik/LuaFormatter)
+
+##### About
+
+A `perl` script for formatting `LaTeX` files that is generally included in mayor `TeX` distributions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.latexindent }
+```
+
+##### Defaults
+
+- `filetypes = { "tex" }`
+- `command = "latexindent"`
+- `args = { "-" }`
+
 #### [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
 
 ##### About
@@ -837,6 +874,35 @@ local sources = { null_ls.builtins.formatting.mix }
 - `filetypes = { "elixir" }`
 - `command = "mix"`
 - `args = { "format", "-" }`
+
+#### [mypy](mypy-lang.org)
+
+##### About
+
+Mypy is an optional static type checker for Python that aims to combine the
+benefits of dynamic (or "duck") typing and static typing.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mypy }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "mypy"`
+- `args = {
+            "--hide-error-codes",
+            "--hide-error-context",
+            "--no-color-output",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--no-error-summary",
+            "--no-pretty",
+            "--command",
+            "$TEXT",
+        }`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -1606,7 +1672,7 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - `command = "eslint_d"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
-#### [flake8](https://github.com/PyCGA/flake8)
+#### [flake8](https://github.com/PyCQA/flake8)
 
 ##### About
 
@@ -1795,7 +1861,7 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 - `command = "psalm"`
 - `args = { "--output-format=json", "--no-progress", "$FILENAME" }`
 
-#### [pylint](https://github.com/PyCGA/pylint)
+#### [pylint](https://github.com/PyCQA/pylint)
 
 ##### About
 
@@ -2370,15 +2436,14 @@ Registering this source will show available snippets in the completion list, but
 vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation for
 setup instructions](https://github.com/hrsh7th/vim-vsnip#2-setting).
 
-
 #### [luasnip](https://github.com/L3MON4D3/LuaSnip)
 
 ##### About
 
 Snippet Engine For Neovim written in lua.
 
-
 ##### Usage
+
 ```lua
 local sources = { null_ls.builtins.completion.luasnip }
 ```

@@ -13,6 +13,9 @@ return {
   black = {
     filetypes = { "python" }
   },
+  brittany = {
+    filetypes = { "haskell" }
+  },
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
@@ -33,6 +36,9 @@ return {
   },
   dfmt = {
     filetypes = { "d" }
+  },
+  djhtml = {
+    filetypes = { "django", "jinja.html", "htmldjango" }
   },
   elm_format = {
     filetypes = { "elm" }
@@ -81,6 +87,9 @@ return {
   },
   json_tool = {
     filetypes = { "json" }
+  },
+  latexindent = {
+    filetypes = { "tex" }
   },
   lua_format = {
     filetypes = { "lua" }

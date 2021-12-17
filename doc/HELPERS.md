@@ -136,9 +136,13 @@ Sends the current buffer's content to the spawned command via `stdin`.
 ### check_exit_code
 
 Can either be a table of valid exit codes (numbers) or a callback that receives
-one argument, `code`, which containing the exit code from the spawned command as
-a number. The callback should return a boolean value indicating whether the code
-indicates success.
+two arguments:
+
+`code`: contains the exit code from the spawned command as a number
+`stderr`: error output from the job as a string
+
+The callback should return a boolean value indicating whether the code
+indicates _success_.
 
 If not specified, null-ls will assume that a non-zero exit code indicates
 failure.
