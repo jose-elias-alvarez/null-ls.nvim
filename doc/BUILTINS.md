@@ -1523,6 +1523,24 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 - `command = "zig"`
 - `args = { "fmt", "--stdin" }`
 
+#### [nimpretty](https://nim-lang.org/docs/tools.html)
+
+##### About
+
+`nimpretty` is a `Nim` source code beautifier, to format code according to the official style guide.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.nimpretty }
+```
+
+##### Defaults
+
+- `filetypes = { "nim" }`
+- `command = "nimpretty"`
+- `args = { "$FILENAME" }`
+
 ### Diagnostics
 
 #### [ansible-lint](https://github.com/ansible-community/ansible-lint)
