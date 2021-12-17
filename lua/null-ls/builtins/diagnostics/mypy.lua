@@ -8,17 +8,22 @@ return h.make_builtin({
     filetypes = { "python" },
     generator_opts = {
         command = "mypy",
-        args = {
-            "--hide-error-codes",
-            "--hide-error-context",
-            "--no-color-output",
-            "--show-column-numbers",
-            "--show-error-codes",
-            "--no-error-summary",
-            "--no-pretty",
-            "--command",
-            "$TEXT",
-        },
+        args = function(params)
+            return {
+                "--hide-error-codes",
+                "--hide-error-context",
+                "--no-color-output",
+                "--show-column-numbers",
+                "--show-error-codes",
+                "--no-error-summary",
+                "--no-pretty",
+                "--shadow-file",
+                params.bufname,
+                params.temp_path,
+                params.bufname,
+            }
+        end,
+        to_temp_file = true,
         format = "line",
         check_exit_code = function(code)
             return code <= 2
