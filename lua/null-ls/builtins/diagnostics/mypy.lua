@@ -24,7 +24,7 @@ return h.make_builtin({
             return code <= 2
         end,
         on_output = h.diagnostics.from_pattern(
-            "<string>:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
+            "[^:]+:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
             { "row", "col", "severity", "message", "code" },
             {
                 severities = {
