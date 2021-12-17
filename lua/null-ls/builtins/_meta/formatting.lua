@@ -103,6 +103,9 @@ return {
   nginx_beautifier = {
     filetypes = { "nginx" }
   },
+  nimpretty = {
+    filetypes = { "nim" }
+  },
   nixfmt = {
     filetypes = { "nix" }
   },

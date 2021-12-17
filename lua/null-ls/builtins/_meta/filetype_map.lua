@@ -111,6 +111,9 @@ return {
   nginx = {
     formatting = { "nginx_beautifier" }
   },
+  nim = {
+    formatting = { "nimpretty" }
+  },
   nix = {
     diagnostics = { "statix" },
     formatting = { "nixfmt" }
