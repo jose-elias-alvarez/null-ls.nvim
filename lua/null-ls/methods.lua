@@ -47,13 +47,13 @@ local overrides = {
 }
 
 local readable_map = {
-    [internal_methods.CODE_ACTION] = "Code actions",
-    [internal_methods.DIAGNOSTICS] = "Diagnostics",
-    [internal_methods.DIAGNOSTICS_ON_SAVE] = "Diagnostics on save",
-    [internal_methods.FORMATTING] = "Formatting",
-    [internal_methods.RANGE_FORMATTING] = "Range formatting",
-    [internal_methods.HOVER] = "Hover",
-    [internal_methods.COMPLETION] = "Completion",
+    [internal_methods.CODE_ACTION] = "code_actions",
+    [internal_methods.DIAGNOSTICS] = "diagnostics",
+    -- [internal_methods.DIAGNOSTICS_ON_SAVE] = "diagnostics",
+    [internal_methods.FORMATTING] = "formatting",
+    -- [internal_methods.RANGE_FORMATTING] = "formatting",
+    [internal_methods.HOVER] = "hover",
+    [internal_methods.COMPLETION] = "completion",
 }
 
 -- extracted from Neovim's lsp.lua

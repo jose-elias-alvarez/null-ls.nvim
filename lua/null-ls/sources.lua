@@ -96,6 +96,15 @@ M.get_available = function(filetype, method)
     return available
 end
 
+M.get_supported = function(filetype, method)
+    local ft_map = require("null-ls.builtins._meta.filetype_map")
+    local supported = ft_map[filetype] or {}
+    if method then
+        return supported[method] or {}
+    end
+    return supported
+end
+
 M.get = function(query)
     local matching = {}
     for_each_matching(query, function(source)
