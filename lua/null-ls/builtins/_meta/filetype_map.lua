@@ -11,6 +11,9 @@ return {
     diagnostics = { "cppcheck", "gccdiag" },
     formatting = { "clang_format", "uncrustify" }
   },
+  clj = {
+    formatting = { "joker" }
+  },
   cmake = {
     formatting = { "cmake_format" }
   },

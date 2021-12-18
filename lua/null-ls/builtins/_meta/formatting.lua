@@ -85,6 +85,9 @@ return {
   isort = {
     filetypes = { "python" }
   },
+  joker = {
+    filetypes = { "clj" }
+  },
   json_tool = {
     filetypes = { "json" }
   },
