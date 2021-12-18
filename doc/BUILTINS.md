@@ -1559,6 +1559,24 @@ local sources = { null_ls.builtins.formatting.nimpretty }
 - `command = "nimpretty"`
 - `args = { "$FILENAME" }`
 
+#### [ptop](https://www.freepascal.org/tools/ptop.html)
+
+##### About
+
+The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal". 
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ptop }
+```
+
+##### Defaults
+
+- `filetypes = { "pascal" }`
+- `command = "ptop"`
+- `args = { "$FILENAME", "$FILENAME" }`
+
 ### Diagnostics
 
 #### [ansible-lint](https://github.com/ansible-community/ansible-lint)
