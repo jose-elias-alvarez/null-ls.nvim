@@ -37,6 +37,9 @@ return {
   dart = {
     formatting = { "dart_format" }
   },
+  delphi = {
+    formatting = { "ptop" }
+  },
   django = {
     formatting = { "djhtml" }
   },
@@ -120,6 +123,9 @@ return {
   nix = {
     diagnostics = { "statix" },
     formatting = { "nixfmt" }
+  },
+  pascal = {
+    formatting = { "ptop" }
   },
   perl = {
     formatting = { "perltidy" }

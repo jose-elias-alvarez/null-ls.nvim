@@ -133,6 +133,9 @@ return {
   prismaFmt = {
     filetypes = { "prisma" }
   },
+  ptop = {
+    filetypes = { "pascal", "delphi" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },
