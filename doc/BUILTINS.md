@@ -764,6 +764,24 @@ local sources = { null_ls.builtins.formatting.isort }
 - `command = "isort"`
 - `args = { "--stdout", "--profile", "black", "-" }`
 
+#### [joker](https://github.com/candid82/joker)
+
+##### About
+
+`joker` is a small Clojure interpreter, linter and formatter written in Go.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.joker }
+```
+
+##### Defaults
+
+- `filetypes = { "clj" }`
+- `command = "joker"`
+- `args = { "--format", "-" }`
+
 #### [reorder_python_imports](https://github.com/asottile/reorder_python_imports)
 
 ##### About
