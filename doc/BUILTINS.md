@@ -1203,7 +1203,7 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 
 - `filetypes = { "rust" }`
 - `command = "rustfmt"`
-- `args = { "--emit=stdout", "--edition=2018" }`
+- `args = { "--emit=stdout" }`
 
 #### [rustywind](https://github.com/avencera/rustywind)
 

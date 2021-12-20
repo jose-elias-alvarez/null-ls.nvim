@@ -8,7 +8,7 @@ return h.make_builtin({
     filetypes = { "rust" },
     generator_opts = {
         command = "rustfmt",
-        args = { "--emit=stdout", "--edition=2018" },
+        args = { "--emit=stdout" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
