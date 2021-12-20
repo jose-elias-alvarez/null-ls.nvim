@@ -910,7 +910,8 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 - `filetypes = { "python" }`
 - `command = "mypy"`
-- `args = {
+- `args = function(params)
+        return {
             "--hide-error-codes",
             "--hide-error-context",
             "--no-color-output",
@@ -918,9 +919,12 @@ local sources = { null_ls.builtins.diagnostics.mypy }
             "--show-error-codes",
             "--no-error-summary",
             "--no-pretty",
-            "--command",
-            "$TEXT",
+            "--shadow-file",
+            params.bufname,
+            params.temp_path,
+            params.bufname,
         }`
+    end
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -1563,7 +1567,7 @@ local sources = { null_ls.builtins.formatting.nimpretty }
 
 ##### About
 
-The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal". 
+The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal".
 
 ##### Usage
 
