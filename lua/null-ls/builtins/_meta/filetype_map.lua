@@ -88,17 +88,18 @@ return {
     formatting = { "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
-    diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
   },
   javascriptreact = {
-    diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
   },
   ["jinja.html"] = {
     formatting = { "djhtml" }
   },
   json = {
+    diagnostics = { "jsonlint" },
     formatting = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   less = {
@@ -110,7 +111,7 @@ return {
     formatting = { "lua_format", "stylua" }
   },
   markdown = {
-    diagnostics = { "markdownlint", "proselint", "vale", "write_good" },
+    diagnostics = { "markdownlint", "mdl", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
     hover = { "dictionary" }
   },

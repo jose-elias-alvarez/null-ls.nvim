@@ -283,6 +283,36 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("mdl", function()
+        local linter = diagnostics.mdl
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic", function()
+            local output = vim.json.decode([[
+              [
+                {
+                  "filename": "rules.md",
+                  "line": 1,
+                  "rule": "MD022",
+                  "aliases": [
+                    "blanks-around-headers"
+                  ],
+                  "description": "Headers should be surrounded by blank lines"
+                }
+              ]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.are.same({
+                {
+                    code = "MD022",
+                    row = 1,
+                    severity = 2,
+                    message = "Headers should be surrounded by blank lines",
+                },
+            }, diagnostic)
+        end)
+    end)
+
     describe("tl check", function()
         local linter = diagnostics.teal
         local parser = linter._opts.on_output
@@ -508,6 +538,25 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("standardjs", function()
+        local linter = diagnostics.standardjs
+        local parser = linter._opts.on_output
+        local file = {
+            [[export const foo = () => { return "hello" }]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[rules.js:1:35: Strings must use singlequote.]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "35",
+                severity = 1,
+                message = "Strings must use singlequote.",
+            }, diagnostic)
+        end)
+    end)
+
     describe("hadolint", function()
         local linter = diagnostics.hadolint
         local parser = linter._opts.on_output
@@ -662,6 +711,25 @@ describe("diagnostics", function()
                 severity = 2,
                 code = "document-start",
                 message = 'missing document start "---"',
+            }, diagnostic)
+        end)
+    end)
+
+    describe("jsonlint", function()
+        local linter = diagnostics.jsonlint
+        local parser = linter._opts.on_output
+        local file = {
+            [[{ "name"* "foo" }]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[rules.json: line 1, col 8, found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "8",
+                severity = 1,
+                message = "found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.",
             }, diagnostic)
         end)
     end)

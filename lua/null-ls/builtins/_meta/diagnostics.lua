@@ -37,10 +37,16 @@ return {
   hadolint = {
     filetypes = { "dockerfile" }
   },
+  jsonlint = {
+    filetypes = { "json" }
+  },
   luacheck = {
     filetypes = { "lua" }
   },
   markdownlint = {
+    filetypes = { "markdown" }
+  },
+  mdl = {
     filetypes = { "markdown" }
   },
   misspell = {
@@ -84,6 +90,9 @@ return {
   },
   shellcheck = {
     filetypes = { "sh" }
+  },
+  standardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   standardrb = {
     filetypes = { "ruby" }
