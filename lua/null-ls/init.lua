@@ -42,13 +42,6 @@ M.setup = function(user_config)
                 c._set({ on_attach = old_config.on_attach })
             end
         end
-
-        -- temporary workaround to avoid errors on :LspRestart
-        lspconfig_configs["null-ls"].launch = function()
-            require("null-ls.utils").buf.for_each_bufnr(function(bufnr)
-                require("null-ls.client").try_add(bufnr)
-            end)
-        end
     end
 
     vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
