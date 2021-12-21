@@ -319,6 +319,9 @@ end
 M.root_pattern = function(...)
     local patterns = vim.tbl_flatten({ ... })
     local function matcher(path)
+        -- Escape wildcard characters in the path so that it itself is not treated like a glob.
+        path = vim.fn.escape(path, "?*[]")
+
         for _, pattern in ipairs(patterns) do
             for _, p in ipairs(vim.fn.glob(M.path.join(path, pattern), true, true)) do
                 if M.path.exists(p) then
