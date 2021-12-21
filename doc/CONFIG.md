@@ -68,6 +68,10 @@ null-ls allows configuring a subset of the options used by nvim-lspconfig's
 [here](https://github.com/neovim/nvim-lspconfig/wiki/Understanding-setup-%7B%7D).
 If an option you want to use is missing, open an issue or PR.
 
+Note that setting `autostart = true` is unnecessary (and unsupported), as
+null-ls will always attempt to attach to buffers automatically if you've
+configured and registered sources.
+
 ### cmd (table)
 
 Defines the command used to start the null-ls server. If you do not have an
