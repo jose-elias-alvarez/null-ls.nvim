@@ -199,7 +199,7 @@ Please **do not** link to or post your entire Neovim configuration.
 ### How do I format files?
 
 null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
+`vim.lsp.buf.formatting_seq_sync()`. If a source supports it, you can run range
 formatting by visually selecting part of the buffer and calling
 `vim.lsp.buf.range_formatting()`.
 
@@ -216,7 +216,7 @@ require("null-ls").setup({
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client)
         if client.resolved_capabilities.document_formatting then
-            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()")
         end
     end,
 })
