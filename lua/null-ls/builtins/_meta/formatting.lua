@@ -127,6 +127,9 @@ return {
   prettier_d_slim = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }
   },
+  prettier_standard = {
+    filetypes = { "javascript", "javascriptreact" }
+  },
   prettierd = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }
   },
