@@ -45,9 +45,9 @@ M.setup = function(user_config)
 
         -- temporary workaround to avoid errors on :LspRestart
         lspconfig_configs["null-ls"].launch = function()
-            for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+            require("null-ls.utils").buf.for_each_bufnr(function(bufnr)
                 require("null-ls.client").try_add(bufnr)
-            end
+            end)
         end
     end
 
