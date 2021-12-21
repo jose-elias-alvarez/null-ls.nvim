@@ -28,10 +28,10 @@ end
 
 return setmetatable(export_tables, {
     __index = function(t, k)
-        if not t[k] then
+        if not rawget(t, k) then
             logger:warn(string.format("failed to load builtin table for method %s; please check your config", k))
         end
 
-        return t[k]
+        return rawget(t, k)
     end,
 })
