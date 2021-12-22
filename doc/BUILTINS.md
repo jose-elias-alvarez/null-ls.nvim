@@ -910,17 +910,7 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 - `filetypes = { "python" }`
 - `command = "mypy"`
-- `args = {
-            "--hide-error-codes",
-            "--hide-error-context",
-            "--no-color-output",
-            "--show-column-numbers",
-            "--show-error-codes",
-            "--no-error-summary",
-            "--no-pretty",
-            "--command",
-            "$TEXT",
-        }`
+- `args = { "--hide-error-codes", "--hide-error-context", "--no-color-output", "--show-column-numbers", "--show-error-codes", "--no-error-summary", "--no-pretty", "--command", "$TEXT", }`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -1192,6 +1182,11 @@ local sources = { null_ls.builtins.formatting.rufo }
 ##### About
 
 A tool for formatting `rust` code according to style guidelines.
+
+- `--edition` defaults to `2015`. To set a different edition, use `extra_args`.
+- See [the
+  wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#rustfmt)
+  for other workarounds.
 
 ##### Usage
 
@@ -1563,7 +1558,7 @@ local sources = { null_ls.builtins.formatting.nimpretty }
 
 ##### About
 
-The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal". 
+The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal".
 
 ##### Usage
 
