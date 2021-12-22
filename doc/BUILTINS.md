@@ -910,7 +910,21 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 - `filetypes = { "python" }`
 - `command = "mypy"`
-- `args = { "--hide-error-codes", "--hide-error-context", "--no-color-output", "--show-column-numbers", "--show-error-codes", "--no-error-summary", "--no-pretty", "--command", "$TEXT", }`
+- `args = function(params)
+        return {
+            "--hide-error-codes",
+            "--hide-error-context",
+            "--no-color-output",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--no-error-summary",
+            "--no-pretty",
+            "--shadow-file",
+            params.bufname,
+            params.temp_path,
+            params.bufname,
+        }`
+    end
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -1085,6 +1099,25 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
+
+#### [prettier-standard](https://github.com/sheerun/prettier-standard)
+
+##### About
+
+- Formats with `prettier` (actually `prettierx`) and lints with `eslint` preconfigured with [standard rules](https://standardjs.com/)
+- Does not support `textDocument/rangeFormatting`.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettier_standard }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact" }`
+- `command = "prettier-standard"`
+- `args = { "--stdin" }`
 
 #### [prismaFmt](https://github.com/prisma/prisma-engines)
 
@@ -1775,6 +1808,24 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 - `command = "hadolint"`
 - `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
+#### [jsonlint](https://github.com/zaach/jsonlint)
+
+##### About
+
+A pure JavaScript version of the service provided at jsonlint.com.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.jsonlint }
+```
+
+##### Defaults
+
+- `filetypes = { "json" }`
+- `command = "jsonlint"`
+- `args = { "--compact" }`
+
 #### [luacheck](https://github.com/mpeterv/luacheck)
 
 ##### About
@@ -1810,6 +1861,24 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - `filetypes = { "markdown" }`
 - `command = "markdownlint"`
 - `args = { "--stdin" }`
+
+#### [mdl](https://github.com/markdownlint/markdownlint)
+
+##### About
+
+A tool to check markdown files and flag style issues.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mdl }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "mdl"`
+- `args = { "--json" }`
 
 #### [misspell](https://github.com/client9/misspell)
 
@@ -2000,6 +2069,24 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
 - `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
+
+#### [standardjs](https://standardjs.com/)
+
+##### About
+
+JavaScript style guide, linter, and formatter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.standardjs }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact" }`
+- `command = "standard"`
+- `args = { "--stdin" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 

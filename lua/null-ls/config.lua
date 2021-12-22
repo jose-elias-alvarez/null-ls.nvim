@@ -20,7 +20,7 @@ local defaults = {
         use_console = "async",
     },
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
-    update_on_insert = false,
+    update_in_insert = false,
     -- prevent double setup
     _setup = false,
 }

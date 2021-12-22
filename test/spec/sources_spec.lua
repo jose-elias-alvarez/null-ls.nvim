@@ -60,6 +60,28 @@ describe("sources", function()
             assert.truthy(is_available)
         end)
 
+        it("should return true if multiple filetypes are set and one matches", function()
+            local is_available = sources.is_available(mock_source, "foo.lua.bar")
+
+            assert.truthy(is_available)
+        end)
+
+        it("should return true if a dotted filetype is specified", function()
+            mock_source.filetypes["jinja.html"] = true
+
+            local is_available = sources.is_available(mock_source, "jinja.html")
+
+            assert.truthy(is_available)
+        end)
+
+        it("should return false if multiple filetypes are set and one is disabled", function()
+            mock_source.filetypes["bar"] = false
+
+            local is_available = sources.is_available(mock_source, "foo.lua.bar")
+
+            assert.falsy(is_available)
+        end)
+
         it("should return true if filetype includes _all key", function()
             mock_source.filetypes["_all"] = true
 
