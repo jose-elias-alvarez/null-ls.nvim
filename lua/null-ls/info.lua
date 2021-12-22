@@ -89,7 +89,7 @@ M.show_window = function()
         local active_sources = {}
         local supported_sources = {}
 
-        for _, source in ipairs(sources.get_available(ft, method) or {}) do
+        for _, source in ipairs(sources.get_available(ft, method)) do
             table.insert(active_sources, source.name)
         end
 
