@@ -59,7 +59,7 @@ local defaults = {
     on_init = nil,
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
-    update_on_insert = false,
+    update_in_insert = false,
 }
 ```
 
@@ -83,7 +83,7 @@ path to the binary.
 The `debounce` setting controls the amount of time between the last change to a
 buffer and the next `textDocument/didChange` notification. These notifications
 cause null-ls to generate diagnostics, so this setting indirectly controls the
-rate of diagnostic generation (affected by `update_on_insert`, described below).
+rate of diagnostic generation (affected by `update_in_insert`, described below).
 
 Lowering `debounce` will result in quicker diagnostic refreshes at the cost of
 running diagnostic sources more frequently, which can affect performance. The
@@ -186,7 +186,7 @@ If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The
 integration will register them independently.
 
-### update_on_insert (boolean)
+### update_in_insert (boolean)
 
 Controls whether diagnostic sources run in insert mode. If set to `false`,
 diagnostic sources will run upon exiting insert mode, which greatly improves
