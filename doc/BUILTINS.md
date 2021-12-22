@@ -1216,6 +1216,11 @@ local sources = { null_ls.builtins.formatting.rufo }
 
 A tool for formatting `rust` code according to style guidelines.
 
+- `--edition` defaults to `2015`. To set a different edition, use `extra_args`.
+- See [the
+  wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#rustfmt)
+  for other workarounds.
+
 ##### Usage
 
 ```lua
@@ -1226,7 +1231,7 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 
 - `filetypes = { "rust" }`
 - `command = "rustfmt"`
-- `args = { "--emit=stdout", "--edition=2018" }`
+- `args = { "--emit=stdout" }`
 
 #### [rustywind](https://github.com/avencera/rustywind)
 
