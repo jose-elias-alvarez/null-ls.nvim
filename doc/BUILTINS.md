@@ -205,8 +205,14 @@ option, which should be a function that returns a boolean or `nil` indicating
 whether null-ls should register the source. null-ls will pass a single argument
 to the function, which is a table of utilities to handle common conditional
 checks (though you can use whatever you want, as long as the return value
-matches). `root_has_file` accept either a table (indicating multiple files) or
-a string (indicating a single file).
+matches).
+
+- `utils.root_has_file`: accepts either a table (indicating more than one file)
+  or a string (indicating a single file). Returns `true` if at least one file
+  exists at the project's root.
+
+- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
+  the root matches the specified pattern.
 
 For example, to conditionally register `stylua` by checking if the root
 directory has a `stylua.toml` or `.stylua.toml` file:
@@ -721,7 +727,7 @@ local sources = { null_ls.builtins.formatting.golines }
 
 ##### About
 
-Reformats Java source code to comply with Google Java Style.
+Reformats Java source code according to Google Java Style.
 
 ##### Usage
 
@@ -786,7 +792,8 @@ local sources = { null_ls.builtins.formatting.joker }
 
 ##### About
 
-`python` utility tool for automatically reordering python imports. Similar to isort but uses static analysis more.
+`python` utility tool for automatically reordering python imports. Like `isort`,
+but uses static analysis more.
 
 ##### Usage
 
@@ -910,21 +917,7 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 - `filetypes = { "python" }`
 - `command = "mypy"`
-- `args = function(params)
-        return {
-            "--hide-error-codes",
-            "--hide-error-context",
-            "--no-color-output",
-            "--show-column-numbers",
-            "--show-error-codes",
-            "--no-error-summary",
-            "--no-pretty",
-            "--shadow-file",
-            params.bufname,
-            params.temp_path,
-            params.bufname,
-        }`
-    end
+- `args = function(params) return { "--hide-error-codes", "--hide-error-context", "--no-color-output", "--show-column-numbers", "--show-error-codes", "--no-error-summary", "--no-pretty", "--shadow-file", params.bufname, params.temp_path, params.bufname, } end`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -948,7 +941,7 @@ local sources = { null_ls.builtins.formatting.nginx_beautifier }
 
 ##### About
 
-`nixfmt` is a formatter for Nix code, intended to easily apply a uniform style.
+`nixfmt` is a formatter for Nix code, intended to apply a uniform style.
 
 ##### Usage
 
@@ -1141,8 +1134,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 ##### About
 
-`qmlformat` is a tool that automatically formats QML files in accordance with
-the QML Coding Conventions.
+`qmlformat` is a tool that automatically formats QML files according to the QML
+Coding Conventions.
 
 ##### Usage
 
@@ -1160,7 +1153,7 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 
 ##### About
 
-Tool for automatically reordering python imports. Similar to `isort` but uses static analysis more.
+Tool for automatically reordering python imports. Like `isort`, but uses static analysis more.
 
 ##### Usage
 
@@ -1309,8 +1302,8 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### About
 
-The `sqlformat` command-line tool can be used to reformat SQL file
-according to specified options.
+The `sqlformat` command-line tool can reformat SQL files according to specified
+options.
 
 ##### Usage
 
@@ -1460,8 +1453,8 @@ local sources = { null_ls.builtins.formatting.taplo }
 
 ##### About
 
-The `terraform-fmt` command is used to rewrite `terraform`
-configuration files to a canonical format and style.
+The `terraform-fmt` command rewrites `terraform` configuration files to a
+canonical format and style.
 
 ##### Usage
 
@@ -1685,8 +1678,11 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 
 Static analysis for `elixir` files for enforcing code consistency.
 
-- Searches upwards from the buffer to the project root and tries to find the first `.credo.exs` file in case nested credo configs are used.
-- When not using a global credo install, the diagnostic can be disable with a conditional checking for the config file with `utils.root_has_file('.credo.exs')`
+- Searches upwards from the buffer to the project root and tries to find the
+  first `.credo.exs` file in case the project has nested credo configs.
+- When not using a global credo install, the diagnostic can be disable with a
+  conditional checking for the config file with
+  `utils.root_has_file('.credo.exs')`
 
 ##### Usage
 
@@ -2585,4 +2581,6 @@ local sources = { null_ls.builtins.completion.luasnip }
 ```
 
 Registering this source will show available snippets in the completion list, but
-currently luasnip is in charge of expanding them. Consult luasnip's documentation [here](https://github.com/L3MON4D3/LuaSnip#keymaps) for setting up keymaps for expansion and jumping
+luasnip is in charge of expanding them. Consult luasnip's documentation
+[here](https://github.com/L3MON4D3/LuaSnip#keymaps) to set up keymaps for
+expansion and jumping.
