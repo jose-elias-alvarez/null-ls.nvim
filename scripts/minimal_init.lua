@@ -1,4 +1,4 @@
--- borrowed from nvim-lspconfig
+-- this template is borrowed from nvim-lspconfig
 local on_windows = vim.loop.os_uname().version:match("Windows")
 
 local function join_paths(...)
@@ -24,9 +24,9 @@ local compile_path = join_paths(install_path, "plugin", "packer_compiled.lua")
 
 local null_ls_config = function()
     local null_ls = require("null-ls")
-    -- add required config to reproduce here
-
+    -- add only what you need to reproduce your issue
     null_ls.setup({
+        sources = {},
         debug = true,
     })
 end
@@ -53,7 +53,6 @@ if vim.fn.isdirectory(install_path) == 0 then
     vim.fn.system({ "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path })
     load_plugins()
     require("packer").sync()
-    vim.cmd([[autocmd User PackerComplete ++once lua load_config()]])
 else
     load_plugins()
     require("packer").sync()
