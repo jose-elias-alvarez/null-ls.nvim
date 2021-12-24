@@ -42,10 +42,7 @@ local make_window = function(height_percentage, width_percentage)
 
     vim.cmd("setlocal nocursorcolumn ts=2 sw=2")
 
-    return {
-        bufnr = bufnr,
-        win_id = win_id,
-    }
+    return bufnr, win_id
 end
 
 local function indent_lines(lines, offset)
@@ -56,105 +53,112 @@ local function indent_lines(lines, offset)
 end
 
 local function str_list(list)
-    return fmt("[%s]", table.concat(list, ", "))
+    return fmt("%s", table.concat(list, " | "))
 end
 
 local M = {}
 
-M.get_active_sources = function(bufnr, ft)
-    bufnr = bufnr or api.nvim_get_current_buf()
-    ft = ft or api.nvim_buf_get_option(bufnr, "filetype")
-
-    local active_sources = {}
-    for _, source in ipairs(require("null-ls.sources").get_available(ft)) do
-        for method in pairs(source.methods) do
-            active_sources[method] = active_sources[method] or {}
-            table.insert(active_sources[method], source.name)
-        end
-    end
-    return active_sources
-end
-
 M.show_window = function()
     local client = require("null-ls.client").get_client()
     local bufnr = api.nvim_get_current_buf()
-    local ft = api.nvim_buf_get_option(bufnr, "filetype")
+    local filetype = api.nvim_buf_get_option(bufnr, "filetype")
+    local highlights = {}
     if not client or not lsp.buf_is_attached(bufnr, client.id) then
         log:warn("failed to get info: buffer is not attached")
         return
     end
 
-    local create_method_info = function(method)
-        local name = methods.readable[method]
-        local active_sources = {}
-        local supported_sources = {}
+    local get_methods_per_source = function(source)
+        local available_methods = vim.tbl_keys(source.methods)
+        return vim.tbl_map(function(method)
+            return methods.internal[method]:lower()
+        end, available_methods)
+    end
 
-        for _, source in ipairs(sources.get_available(ft, method)) do
-            table.insert(active_sources, source.name)
-        end
+    local get_supported_filestypes = function(source)
+        local filetypes = vim.tbl_keys(source.filetypes)
+        return vim.tbl_map(function(ft)
+            return ft == "_all" and "*" or ft
+        end, filetypes)
+    end
 
-        -- the metadata is indexed by the builtin-names
-        for _, source in ipairs(sources.get_supported(ft, name) or {}) do
-            table.insert(supported_sources, source)
-        end
-
+    local create_source_info = function(source)
         local info_lines = {
-            name,
-            fmt("* Active: %s", str_list(active_sources)),
-            fmt("* Supported: %s", str_list(supported_sources)),
+            fmt("* name: %s", source.name),
+            fmt("* filetypes: %s", str_list(get_supported_filestypes(source))),
+            fmt("* methods: %s", str_list(get_methods_per_source(source))),
             "",
         }
+        return info_lines
+    end
 
-        vim.fn.matchadd("Type", name .. "\\ze")
+    local create_active_sources_info = function(ft)
+        local info_lines = {
+            "Active source(s)",
+        }
+
+        for _, source in ipairs(sources.get_available(ft)) do
+            info_lines = vim.list_extend(info_lines, create_source_info(source))
+            table.insert(highlights, { "Title", "name:.*\\zs" .. source.name .. "\\ze" })
+        end
+        table.insert(highlights, { "Type", info_lines[1] })
+        return info_lines
+    end
+
+    local create_supported_methods_info = function(ft)
+        local supported_methods = sources.get_supported(ft)
+
+        local info_lines = {
+            "Supported source(s)",
+        }
+        -- the metadata is indexed by the builtin-names
+        for method, names in pairs(supported_methods) do
+            info_lines = vim.list_extend(info_lines, {
+                fmt("* %s: %s", method, str_list(names)),
+            })
+        end
+
+        table.insert(highlights, { "Type", info_lines[1] })
         return info_lines
     end
 
     local create_logging_info = function()
         local info_lines = {
-            "current level: " .. c.get().log.level,
-            "path: " .. log:get_path(),
+            "Logging",
+            "* current level: " .. c.get().log.level,
+            "* path: " .. log:get_path(),
         }
+        table.insert(highlights, { "Type", info_lines[1] })
         return info_lines
     end
 
     local lines = {}
 
     local header = {
-        [[  | \ | | _   _ | || |        | |  __   ]],
-        [[  | . ` || | | || || | ______ | |/ __|  ]],
-        [[  | |\  || |_| || || ||______|| |\__ \  ]],
-        [[  \_| \_/ \__,_||_||_|        |_||___/  ]],
+        "Null-LS",
+        "https://github.com/jose-elias-alvarez/null-ls.nvim",
     }
+    table.insert(highlights, { "Label", header[1] })
 
-    local buf_info = {
-        "Buffer number: " .. bufnr,
-        "Detected filetype: " .. ft,
-    }
+    local methods_info = create_supported_methods_info(filetype)
+    local sources_info = create_active_sources_info(filetype)
 
-    local methods_info = {}
-    for method, _ in pairs(methods.readable) do
-        vim.list_extend(methods_info, create_method_info(method))
-    end
-
-    local logger_header = { "Logging" }
     local logger_info = create_logging_info()
 
     for _, section in ipairs({
         { "" },
         header,
         { "" },
-        buf_info,
+        logger_info,
+        { "" },
+        sources_info,
         { "" },
         methods_info,
-        { "" },
-        logger_header,
-        indent_lines(logger_info),
     }) do
         vim.list_extend(lines, indent_lines(section))
     end
 
-    local win_info = make_window(0.8, 0.7)
-    local win_bufnr, win_id = win_info.bufnr, win_info.win_id
+    local win_bufnr, win_id = make_window(0.8, 0.7)
 
     api.nvim_buf_set_lines(win_bufnr, 0, -1, true, lines)
     api.nvim_buf_set_option(win_bufnr, "buftype", "nofile")
@@ -162,9 +166,9 @@ M.show_window = function()
     api.nvim_buf_set_option(win_bufnr, "modifiable", false)
 
     vim.cmd([[highlight link NullLsInfoHeader Type]])
-    for method, _ in pairs(methods.readable) do
-        local name = methods.readable[method]
-        vim.fn.matchadd("NullLsInfoHeader", name .. "\\ze")
+
+    for _, hi in ipairs(highlights) do
+        vim.fn.matchadd(hi[1], hi[2])
     end
 
     api.nvim_buf_set_keymap(win_bufnr, "n", "<Esc>", "<cmd>bd<CR>", { noremap = true })
