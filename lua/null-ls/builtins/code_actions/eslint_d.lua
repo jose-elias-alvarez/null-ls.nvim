@@ -12,24 +12,13 @@ local get_offset_positions = function(content, start_offset, end_offset)
     start_offset = vim.str_byteindex(to_string, start_offset + 1)
     end_offset = vim.str_byteindex(to_string, end_offset + 1)
 
-    -- save original window position and virtualedit setting
-    local view = vim.fn.winsaveview()
-    local virtualedit = vim.opt.virtualedit
-    vim.opt.virtualedit = "all"
+    -- NOTE: These functions return 1-indexed lines
+    local row = vim.fn.byte2line(start_offset)
+    local end_row = vim.fn.byte2line(end_offset)
 
-    vim.cmd("go " .. start_offset)
-    -- (1,0)-indexed
-    local cursor = api.nvim_win_get_cursor(0)
-    local col = cursor[2] + 1
-    vim.cmd("go " .. end_offset)
-    cursor = api.nvim_win_get_cursor(0)
-    local end_row, end_col = cursor[1], cursor[2] + 1
-
-    -- restore state
-    vim.fn.winrestview(view)
-    vim.opt.virtualedit = virtualedit
-
-    return col, end_col, end_row
+    local col = start_offset - vim.fn.line2byte(row)
+    local end_col = end_offset - vim.fn.line2byte(end_row)
+    return col + 1, row, end_col + 1, end_row
 end
 
 local is_fixable = function(problem, row)
@@ -59,11 +48,9 @@ local get_message_range = function(problem)
 end
 
 local get_fix_range = function(problem, params)
-    -- 1-indexed
-    local row = problem.line
     local offset = problem.fix.range[1]
     local end_offset = problem.fix.range[2]
-    local col, end_col, end_row = get_offset_positions(params.content, offset, end_offset)
+    local col, row, end_col, end_row = get_offset_positions(params.content, offset, end_offset)
 
     return { row = row, col = col, end_row = end_row, end_col = end_col }
 end
