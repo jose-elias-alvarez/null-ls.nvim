@@ -414,6 +414,24 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 - `command = "crystal"`
 - `args = { "tool", "format" }`
 
+#### [cue fmt](https://cuelang.org/)
+
+##### About
+
+A CUE language formatter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cue_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "cue" }`
+- `command = "cue"`
+- `args = { "fmt", "$FILENAME" }`
+
 #### [dart-format](https://dart.dev/tools/dart-format)
 
 ##### About
