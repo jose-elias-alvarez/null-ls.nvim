@@ -15,9 +15,24 @@ return h.make_builtin({
         check_exit_code = function(c)
             return c <= 1
         end,
-        on_output = h.diagnostics.from_pattern(":(%d+):(%d+): (.*)", { "row", "col", "message" }, {
-            diagnostic = {
-                severity = h.diagnostics.severities.error,
+        on_output = h.diagnostics.from_patterns({
+            {
+                pattern = ":(%d+):(%d+): Parsing error: (.*)",
+                groups = { "row", "col", "message" },
+                overrides = {
+                    diagnostic = {
+                        severity = h.diagnostics.severities.error,
+                    },
+                },
+            },
+            {
+                pattern = ":(%d+):(%d+): (.*)",
+                groups = { "row", "col", "message" },
+                overrides = {
+                    diagnostic = {
+                        severity = h.diagnostics.severities.warning,
+                    },
+                },
             },
         }),
     },

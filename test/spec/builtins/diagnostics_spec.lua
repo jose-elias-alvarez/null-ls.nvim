@@ -541,17 +541,30 @@ describe("diagnostics", function()
     describe("standardjs", function()
         local linter = diagnostics.standardjs
         local parser = linter._opts.on_output
-        local file = {
-            [[export const foo = () => { return "hello" }]],
-        }
 
-        it("should create a diagnostic", function()
+        it("should create a diagnostic with error severity", function()
+            local file = {
+                [[export const foo = () => { return 'hello']],
+            }
+            local output = [[rules.js:1:2: Parsing error: Unexpected token]]
+            local diagnostic = parser(output, { content = file })
+            assert.are.same({
+                row = "1", --
+                col = "2",
+                severity = 1,
+                message = "Unexpected token",
+            }, diagnostic)
+        end)
+        it("should create a diagnostic with warning severity", function()
+            local file = {
+                [[export const foo = () => { return "hello" }]],
+            }
             local output = [[rules.js:1:35: Strings must use singlequote.]]
             local diagnostic = parser(output, { content = file })
             assert.are.same({
                 row = "1", --
                 col = "35",
-                severity = 1,
+                severity = 2,
                 message = "Strings must use singlequote.",
             }, diagnostic)
         end)
