@@ -31,7 +31,7 @@ return h.make_builtin({
         format = "raw",
         to_stdin = true,
         from_stderr = true,
-        on_output = function(params)
+        on_output = function(params, done)
             local issues = {}
 
             -- report any unexpected errors, such as partial file attempts
@@ -93,7 +93,7 @@ return h.make_builtin({
                 table.insert(issues, err)
             end
 
-            return issues
+            done(issues)
         end,
     },
     factory = h.generator_factory,
