@@ -28,6 +28,9 @@ return {
   crystal_format = {
     filetypes = { "crystal" }
   },
+  cue_fmt = {
+    filetypes = { "cue" }
+  },
   dart_format = {
     filetypes = { "dart" }
   },
