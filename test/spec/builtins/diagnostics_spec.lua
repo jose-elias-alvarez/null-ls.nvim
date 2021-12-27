@@ -27,6 +27,13 @@ describe("diagnostics", function()
     describe("credo", function()
         local linter = diagnostics.credo
         local parser = linter._opts.on_output
+        local diagnostics
+        local done = function(_diagnostics)
+            diagnostics = _diagnostics
+        end
+        after_each(function()
+            diagnostics = nil
+        end)
 
         it("should create a diagnostic with error severity", function()
             local output = [[
@@ -46,7 +53,7 @@ describe("diagnostics", function()
                 }
               ]
             } ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
@@ -56,7 +63,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 1,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should create a diagnostic with warning severity", function()
             local output = [[
@@ -74,7 +81,7 @@ describe("diagnostics", function()
                 "trigger": "@impl true"
               }]
             } ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
@@ -84,7 +91,7 @@ describe("diagnostics", function()
                     end_col = 13,
                     severity = 2,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should create a diagnostic with information severity", function()
             local output = [[
@@ -102,7 +109,7 @@ describe("diagnostics", function()
                 "trigger": "TODO: implement check"
               }]
             } ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
@@ -112,7 +119,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 3,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should create a diagnostic falling back to hint severity", function()
             local output = [[
@@ -130,7 +137,7 @@ describe("diagnostics", function()
                 "trigger": "|>"
               }]
             } ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
@@ -140,19 +147,19 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 4,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("returns errors as diagnostics", function()
             local error =
                 [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
-            local diagnostic = parser({ err = error })
+            parser({ err = error }, done)
             assert.are.same({
                 {
                     source = "credo",
                     message = error,
                     row = 1,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should handle compile warnings preceeding output", function()
             local output = [[
@@ -174,7 +181,7 @@ describe("diagnostics", function()
                 }
               ]
             } ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
@@ -184,29 +191,29 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 1,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should handle messages with incomplete json", function()
             local output = [[Some incomplete message that shouldn't really happen { "issues": ]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
                     message = output,
                     row = 1,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
         it("should handle messages without json", function()
             local output = [[Another message that shouldn't really happen]]
-            local diagnostic = parser({ output = output })
+            parser({ output = output }, done)
             assert.are.same({
                 {
                     source = "credo",
                     message = output,
                     row = 1,
                 },
-            }, diagnostic)
+            }, diagnostics)
         end)
     end)
 
