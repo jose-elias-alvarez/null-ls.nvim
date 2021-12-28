@@ -48,7 +48,10 @@ local on_init = function(new_client, initialize_result)
     client = new_client
 end
 
-local on_exit = function()
+local on_exit = function(...)
+    if c.get().on_exit then
+        c.get().on_exit(...)
+    end
     client = nil
     id = nil
 end
