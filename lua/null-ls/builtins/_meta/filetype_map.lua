@@ -7,6 +7,9 @@ return {
   beancount = {
     formatting = { "bean_format" }
   },
+  bzl = {
+    formatting = { "buildifier" }
+  },
   c = {
     diagnostics = { "cppcheck", "gccdiag" },
     formatting = { "clang_format", "uncrustify" }

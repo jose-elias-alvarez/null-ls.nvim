@@ -16,6 +16,9 @@ return {
   brittany = {
     filetypes = { "haskell" }
   },
+  buildifier = {
+    filetypes = { "bzl" }
+  },
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
