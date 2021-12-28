@@ -71,6 +71,32 @@ describe("client", function()
             assert.stub(on_init).was_called_with(mock_client, mock_initialize_result)
         end)
 
+        describe("on_exit", function()
+            local on_exit
+            before_each(function()
+                client.start_client()
+                lsp.start_client.calls[1].refs[1].on_init(mock_client)
+
+                on_exit = lsp.start_client.calls[1].refs[1].on_exit
+            end)
+
+            it("should clear client and id", function()
+                on_exit()
+
+                assert.falsy(client.get_client())
+                assert.falsy(client.get_id())
+            end)
+
+            it("should call user-defined on_exit with exit code and signal", function()
+                local user_on_exit = stub.new()
+                c._set({ on_exit = user_on_exit })
+
+                on_exit(0, 0)
+
+                assert.stub(user_on_exit).was_called_with(0, 0)
+            end)
+        end)
+
         describe("on_init", function()
             local on_init
             before_each(function()
