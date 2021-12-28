@@ -228,6 +228,7 @@ describe("diagnostics", function()
             local output = [[test.lua:2:1-1: (E011) expected expression near <eof>]]
             local diagnostic = parser(output, { content = file })
             assert.are.same({
+                filename = "test.lua",
                 code = "011",
                 row = "2",
                 col = "1",
