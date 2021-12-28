@@ -57,6 +57,7 @@ local defaults = {
     },
     on_attach = nil,
     on_init = nil,
+    on_exit = nil,
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
     update_in_insert = false,
@@ -161,6 +162,10 @@ here, use a custom callback for null-ls, or leave this undefined.
 Defines an `on_init` callback to run when null-ls initializes. From here, you
 can make changes to the client (the first argument) or `initialize_result` (the
 second argument, which as of now is not used).
+
+### on_exit (function, optional)
+
+Defines an `on_exit` callback to run when null-ls is stopped.
 
 ### root_dir (function)
 

@@ -30,6 +30,7 @@ local config = vim.deepcopy(defaults)
 local type_overrides = {
     on_attach = { "function", "nil" },
     on_init = { "function", "nil" },
+    on_exit = { "function", "nil" },
     sources = { "table", "nil" },
 }
 
