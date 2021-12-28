@@ -89,7 +89,7 @@ return {
     filetypes = { "lua" }
   },
   shellcheck = {
-    filetypes = { "sh" }
+    filetypes = { "sh", "bash" }
   },
   standardjs = {
     filetypes = { "javascript", "javascriptreact" }

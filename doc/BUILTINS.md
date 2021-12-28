@@ -2080,7 +2080,7 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 
 ##### Defaults
 
-- `filetypes = { "sh" }`
+- `filetypes = { "sh", "bash" }`
 - `command = "shellcheck"`
 - `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
@@ -2503,7 +2503,7 @@ local sources = { null_ls.builtins.code_actions.shellcheck }
 
 ##### Defaults
 
-- `filetypes = { "sh" }`
+- `filetypes = { "sh", "bash" }`
 - `command = "shellcheck"`
 - `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 

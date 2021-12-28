@@ -5,7 +5,7 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     method = DIAGNOSTICS,
-    filetypes = { "sh" },
+    filetypes = { "sh", "bash" },
     generator_opts = {
         command = "shellcheck",
         args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" },
