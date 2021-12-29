@@ -138,21 +138,21 @@ M.make_params = function(original_params, method)
     return params
 end
 
-M.make_conditional_utils = function()
-    local cwd = vim.loop.cwd()
+M.make_conditional_utils = function(params)
+    local root = params and params.root or vim.loop.cwd()
 
     return {
         root_has_file = function(...)
             local patterns = vim.tbl_flatten({ ... })
             for _, name in ipairs(patterns) do
-                if M.path.exists(M.path.join(cwd, name)) then
+                if M.path.exists(M.path.join(root, name)) then
                     return true
                 end
             end
             return false
         end,
         root_matches = function(pattern)
-            return cwd:find(pattern) ~= nil
+            return root:find(pattern) ~= nil
         end,
     }
 end

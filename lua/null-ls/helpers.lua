@@ -104,7 +104,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 M.generator_factory = function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files, condition =
         opts.command,
         opts.args,
         opts.on_output,
@@ -120,7 +120,8 @@ M.generator_factory = function(opts)
         opts.runtime_condition,
         opts.cwd,
         opts.dynamic_command,
-        opts.multiple_files
+        opts.multiple_files,
+        opts.condition
 
     if type(check_exit_code) == "table" then
         local codes = check_exit_code
@@ -158,6 +159,7 @@ M.generator_factory = function(opts)
             runtime_condition = { runtime_condition, "function", true },
             cwd = { cwd, "function", true },
             dynamic_command = { dynamic_command, "function", true },
+            condition = { condition, "function", true },
         })
 
         if type(command) == "function" then
@@ -173,12 +175,25 @@ M.generator_factory = function(opts)
 
         assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
 
+        if condition then
+            local should_register = condition(u.make_conditional_utils(params))
+            if not should_register then
+                on_output = function(_, done)
+                    done({ _should_deregister = true })
+                end
+            end
+        end
+
         _validated = true
     end
 
     return {
         fn = function(params, done)
             local loop = require("null-ls.loop")
+
+            local client = require("null-ls.client").get_client()
+            local root = client and client.config.root_dir or vim.loop.cwd()
+            params.root = root
 
             if not _validated then
                 validate_opts(params)
@@ -244,6 +259,7 @@ M.generator_factory = function(opts)
             end
 
             params.command = command
+
             local resolved_command
             if dynamic_command then
                 resolved_command = dynamic_command(params)
@@ -256,10 +272,6 @@ M.generator_factory = function(opts)
                 log:debug(string.format("unable to resolve command [%s]", command))
                 return done()
             end
-
-            local client = require("null-ls.client").get_client()
-            local root = client and client.config.root_dir or vim.loop.cwd()
-            params.root = root
 
             local resolved_cwd = cwd and cwd(params) or root
             params.cwd = resolved_cwd
@@ -372,6 +384,7 @@ M.make_builtin = function(opts)
         runtime_condition = opts.runtime_condition,
         timeout = opts.timeout,
         use_cache = opts.use_cache,
+        condition = opts.condition,
     })
 
     local builtin = {
@@ -467,18 +480,6 @@ M.make_builtin = function(opts)
     generator_opts._last_command = nil
     generator_opts._last_args = nil
     generator_opts._last_cwd = nil
-
-    if opts.condition then
-        return function()
-            local should_register = opts.condition(u.make_conditional_utils())
-            if should_register then
-                log:debug("registering conditional source " .. builtin.name)
-                return builtin
-            end
-
-            log:debug("not registering conditional source " .. builtin.name)
-        end
-    end
 
     builtin.with = function(user_opts)
         return M.make_builtin(vim.tbl_extend("force", opts, user_opts))

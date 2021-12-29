@@ -322,6 +322,7 @@ describe("utils", function()
 
     describe("make_conditional_utils", function()
         local utils = u.make_conditional_utils()
+
         it("should return object containing utils", function()
             assert.truthy(type(utils.root_has_file) == "function")
             assert.truthy(type(utils.root_matches) == "function")
@@ -353,6 +354,12 @@ describe("utils", function()
             it("should return false if root does not match pattern", function()
                 assert.falsy(utils.root_has_file("other%-plugin"))
             end)
+        end)
+
+        it("should get root from params if available", function()
+            local param_specific_utils = u.make_conditional_utils({ root = "mock-root" })
+
+            assert.truthy(param_specific_utils.root_matches("mock"))
         end)
     end)
 

@@ -240,9 +240,10 @@ local sources = {
 ```
 
 Note that if you pass conditional sources into `null_ls.setup`, null-ls will
-check and register them at the point that you source your plugin config. To
-handle advanced dynamic registration behavior, you can use `null_ls.register`
-with a relevant `autocommand` event listener.
+register them on setup, then check the condition when the source first runs and
+deregister them if the check fails. To handle advanced dynamic registration
+behavior, you can use `null_ls.register` with a relevant `autocommand` event
+listener.
 
 ## Available Sources
 

@@ -28,10 +28,20 @@ M.run = function(generators, params, opts, callback)
                 local ok, results = protected_call(to_run, copied_params)
                 a.util.scheduler()
 
-                -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
-                if results and results._generator_err then
-                    ok = false
-                    results = results._generator_err
+                if results then
+                    -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
+                    if results._generator_err then
+                        ok = false
+                        results = results._generator_err
+                    end
+
+                    -- allow generators to deregister their parent sources
+                    if results._should_deregister then
+                        results = nil
+                        vim.schedule(function()
+                            require("null-ls.sources").deregister({ id = generator.source_id })
+                        end)
+                    end
                 end
 
                 -- TODO: pass generator error trace
