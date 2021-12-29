@@ -43,26 +43,48 @@ local register_source = function(source)
     registered.names[source.name] = true
 end
 
+local matches_filetype = function(source, filetype)
+    if filetype:find("%.") then
+        local filetypes = vim.split(filetype, ".", { plain = true })
+        table.insert(filetypes, filetype)
+
+        local is_match = source.filetypes["_all"]
+        for _, ft in ipairs(filetypes) do
+            if source.filetypes[ft] == false then
+                return false
+            end
+
+            is_match = is_match or source.filetypes[ft]
+        end
+
+        return is_match
+    end
+
+    return source.filetypes[filetype] or source.filetypes["_all"] and source.filetypes[filetype] == nil
+end
+
+local matches_method = function(source, method)
+    if source.methods[method] then
+        return true
+    end
+
+    if methods.overrides[method] then
+        for m in pairs(methods.overrides[method]) do
+            if source.methods[m] then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 M.is_available = function(source, filetype, method)
     if source._disabled or source.generator._failed then
         return false
     end
 
-    local filetype_matches = not filetype
-        or source.filetypes["_all"] and source.filetypes[filetype] == nil
-        or source.filetypes[filetype] == true
-
-    local method_matches = not method or source.methods[method] == true
-    if not method_matches and methods.overrides[method] then
-        for m in pairs(methods.overrides[method]) do
-            if source.methods[m] then
-                method_matches = true
-                break
-            end
-        end
-    end
-
-    return filetype_matches and method_matches
+    return (not filetype or matches_filetype(source, filetype)) and (not method or matches_method(source, method))
 end
 
 M.get_available = function(filetype, method)

@@ -5,10 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     method = FORMATTING,
-    filetypes = { "rust" },
+    filetypes = { "javascript", "javascriptreact" },
     generator_opts = {
-        command = "rustfmt",
-        args = { "--emit=stdout" },
+        command = "prettier-standard",
+        args = { "--stdin" },
         to_stdin = true,
     },
     factory = h.formatter_factory,

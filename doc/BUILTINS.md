@@ -205,8 +205,14 @@ option, which should be a function that returns a boolean or `nil` indicating
 whether null-ls should register the source. null-ls will pass a single argument
 to the function, which is a table of utilities to handle common conditional
 checks (though you can use whatever you want, as long as the return value
-matches). `root_has_file` accept either a table (indicating multiple files) or
-a string (indicating a single file).
+matches).
+
+- `utils.root_has_file`: accepts either a table (indicating more than one file)
+  or a string (indicating a single file). Returns `true` if at least one file
+  exists at the project's root.
+
+- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
+  the root matches the specified pattern.
 
 For example, to conditionally register `stylua` by checking if the root
 directory has a `stylua.toml` or `.stylua.toml` file:
@@ -336,6 +342,24 @@ local sources = { null_ls.builtins.formatting.black }
 - `command = "black"`
 - `args = { "--quiet", "--fast", "-" }`
 
+#### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
+
+##### About
+
+buildifier is a tool for formatting bazel BUILD and .bzl files with a standard convention.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.buildifier }
+```
+
+##### Defaults
+
+- `filetypes = { "bzl" }`
+- `command = "buildifier"`
+- `args = { "-path=<FILENAME>" }`
+
 #### [clang-format](https://www.kernel.org/doc/html/latest/process/clang-format.html)
 
 ##### About
@@ -407,6 +431,24 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 - `filetypes = { "crystal" }`
 - `command = "crystal"`
 - `args = { "tool", "format" }`
+
+#### [cue fmt](https://cuelang.org/)
+
+##### About
+
+A CUE language formatter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cue_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "cue" }`
+- `command = "cue"`
+- `args = { "fmt", "$FILENAME" }`
 
 #### [dart-format](https://dart.dev/tools/dart-format)
 
@@ -721,7 +763,7 @@ local sources = { null_ls.builtins.formatting.golines }
 
 ##### About
 
-Reformats Java source code to comply with Google Java Style.
+Reformats Java source code according to Google Java Style.
 
 ##### Usage
 
@@ -764,11 +806,30 @@ local sources = { null_ls.builtins.formatting.isort }
 - `command = "isort"`
 - `args = { "--stdout", "--profile", "black", "-" }`
 
+#### [joker](https://github.com/candid82/joker)
+
+##### About
+
+`joker` is a small Clojure interpreter, linter and formatter written in Go.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.joker }
+```
+
+##### Defaults
+
+- `filetypes = { "clj" }`
+- `command = "joker"`
+- `args = { "--format", "-" }`
+
 #### [reorder_python_imports](https://github.com/asottile/reorder_python_imports)
 
 ##### About
 
-`python` utility tool for automatically reordering python imports. Similar to isort but uses static analysis more.
+`python` utility tool for automatically reordering python imports. Like `isort`,
+but uses static analysis more.
 
 ##### Usage
 
@@ -892,17 +953,7 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 - `filetypes = { "python" }`
 - `command = "mypy"`
-- `args = {
-            "--hide-error-codes",
-            "--hide-error-context",
-            "--no-color-output",
-            "--show-column-numbers",
-            "--show-error-codes",
-            "--no-error-summary",
-            "--no-pretty",
-            "--command",
-            "$TEXT",
-        }`
+- `args = function(params) return { "--hide-error-codes", "--hide-error-context", "--no-color-output", "--show-column-numbers", "--show-error-codes", "--no-error-summary", "--no-pretty", "--shadow-file", params.bufname, params.temp_path, params.bufname, } end`
 
 #### [nginxbeautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -926,7 +977,7 @@ local sources = { null_ls.builtins.formatting.nginx_beautifier }
 
 ##### About
 
-`nixfmt` is a formatter for Nix code, intended to easily apply a uniform style.
+`nixfmt` is a formatter for Nix code, intended to apply a uniform style.
 
 ##### Usage
 
@@ -1078,6 +1129,25 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
 
+#### [prettier-standard](https://github.com/sheerun/prettier-standard)
+
+##### About
+
+- Formats with `prettier` (actually `prettierx`) and lints with `eslint` preconfigured with [standard rules](https://standardjs.com/)
+- Does not support `textDocument/rangeFormatting`.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettier_standard }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact" }`
+- `command = "prettier-standard"`
+- `args = { "--stdin" }`
+
 #### [prismaFmt](https://github.com/prisma/prisma-engines)
 
 ##### About
@@ -1100,8 +1170,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 ##### About
 
-`qmlformat` is a tool that automatically formats QML files in accordance with
-the QML Coding Conventions.
+`qmlformat` is a tool that automatically formats QML files according to the QML
+Coding Conventions.
 
 ##### Usage
 
@@ -1119,7 +1189,7 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 
 ##### About
 
-Tool for automatically reordering python imports. Similar to `isort` but uses static analysis more.
+Tool for automatically reordering python imports. Like `isort`, but uses static analysis more.
 
 ##### Usage
 
@@ -1175,6 +1245,11 @@ local sources = { null_ls.builtins.formatting.rufo }
 
 A tool for formatting `rust` code according to style guidelines.
 
+- `--edition` defaults to `2015`. To set a different edition, use `extra_args`.
+- See [the
+  wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#rustfmt)
+  for other workarounds.
+
 ##### Usage
 
 ```lua
@@ -1185,7 +1260,7 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 
 - `filetypes = { "rust" }`
 - `command = "rustfmt"`
-- `args = { "--emit=stdout", "--edition=2018" }`
+- `args = { "--emit=stdout" }`
 
 #### [rustywind](https://github.com/avencera/rustywind)
 
@@ -1263,8 +1338,8 @@ local sources = { null_ls.builtins.formatting.shfmt }
 
 ##### About
 
-The `sqlformat` command-line tool can be used to reformat SQL file
-according to specified options.
+The `sqlformat` command-line tool can reformat SQL files according to specified
+options.
 
 ##### Usage
 
@@ -1414,8 +1489,8 @@ local sources = { null_ls.builtins.formatting.taplo }
 
 ##### About
 
-The `terraform-fmt` command is used to rewrite `terraform`
-configuration files to a canonical format and style.
+The `terraform-fmt` command rewrites `terraform` configuration files to a
+canonical format and style.
 
 ##### Usage
 
@@ -1523,6 +1598,42 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 - `command = "zig"`
 - `args = { "fmt", "--stdin" }`
 
+#### [nimpretty](https://nim-lang.org/docs/tools.html)
+
+##### About
+
+`nimpretty` is a `Nim` source code beautifier, to format code according to the official style guide.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.nimpretty }
+```
+
+##### Defaults
+
+- `filetypes = { "nim" }`
+- `command = "nimpretty"`
+- `args = { "$FILENAME" }`
+
+#### [ptop](https://www.freepascal.org/tools/ptop.html)
+
+##### About
+
+The FPC Pascal configurable source beautifier. Name means "Pascal-TO-Pascal".
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ptop }
+```
+
+##### Defaults
+
+- `filetypes = { "pascal" }`
+- `command = "ptop"`
+- `args = { "$FILENAME", "$FILENAME" }`
+
 ### Diagnostics
 
 #### [ansible-lint](https://github.com/ansible-community/ansible-lint)
@@ -1603,8 +1714,11 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 
 Static analysis for `elixir` files for enforcing code consistency.
 
-- Searches upwards from the buffer to the project root and tries to find the first `.credo.exs` file in case nested credo configs are used.
-- When not using a global credo install, the diagnostic can be disable with a conditional checking for the config file with `utils.root_has_file('.credo.exs')`
+- Searches upwards from the buffer to the project root and tries to find the
+  first `.credo.exs` file in case the project has nested credo configs.
+- When not using a global credo install, the diagnostic can be disable with a
+  conditional checking for the config file with
+  `utils.root_has_file('.credo.exs')`
 
 ##### Usage
 
@@ -1726,6 +1840,24 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 - `command = "hadolint"`
 - `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
+#### [jsonlint](https://github.com/zaach/jsonlint)
+
+##### About
+
+A pure JavaScript version of the service provided at jsonlint.com.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.jsonlint }
+```
+
+##### Defaults
+
+- `filetypes = { "json" }`
+- `command = "jsonlint"`
+- `args = { "--compact" }`
+
 #### [luacheck](https://github.com/mpeterv/luacheck)
 
 ##### About
@@ -1761,6 +1893,24 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - `filetypes = { "markdown" }`
 - `command = "markdownlint"`
 - `args = { "--stdin" }`
+
+#### [mdl](https://github.com/markdownlint/markdownlint)
+
+##### About
+
+A tool to check markdown files and flag style issues.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mdl }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "mdl"`
+- `args = { "--json" }`
 
 #### [misspell](https://github.com/client9/misspell)
 
@@ -1951,6 +2101,24 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 - `filetypes = { "sh" }`
 - `command = "shellcheck"`
 - `args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
+
+#### [standardjs](https://standardjs.com/)
+
+##### About
+
+JavaScript style guide, linter, and formatter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.standardjs }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact" }`
+- `command = "standard"`
+- `args = { "--stdin" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
@@ -2449,4 +2617,6 @@ local sources = { null_ls.builtins.completion.luasnip }
 ```
 
 Registering this source will show available snippets in the completion list, but
-currently luasnip is in charge of expanding them. Consult luasnip's documentation [here](https://github.com/L3MON4D3/LuaSnip#keymaps) for setting up keymaps for expansion and jumping
+luasnip is in charge of expanding them. Consult luasnip's documentation
+[here](https://github.com/L3MON4D3/LuaSnip#keymaps) to set up keymaps for
+expansion and jumping.

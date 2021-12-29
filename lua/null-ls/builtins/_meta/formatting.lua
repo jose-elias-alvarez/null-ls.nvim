@@ -16,6 +16,9 @@ return {
   brittany = {
     filetypes = { "haskell" }
   },
+  buildifier = {
+    filetypes = { "bzl" }
+  },
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
@@ -27,6 +30,9 @@ return {
   },
   crystal_format = {
     filetypes = { "crystal" }
+  },
+  cue_fmt = {
+    filetypes = { "cue" }
   },
   dart_format = {
     filetypes = { "dart" }
@@ -85,6 +91,9 @@ return {
   isort = {
     filetypes = { "python" }
   },
+  joker = {
+    filetypes = { "clj" }
+  },
   json_tool = {
     filetypes = { "json" }
   },
@@ -102,6 +111,9 @@ return {
   },
   nginx_beautifier = {
     filetypes = { "nginx" }
+  },
+  nimpretty = {
+    filetypes = { "nim" }
   },
   nixfmt = {
     filetypes = { "nix" }
@@ -121,11 +133,17 @@ return {
   prettier_d_slim = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }
   },
+  prettier_standard = {
+    filetypes = { "javascript", "javascriptreact" }
+  },
   prettierd = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }
   },
   prismaFmt = {
     filetypes = { "prisma" }
+  },
+  ptop = {
+    filetypes = { "pascal", "delphi" }
   },
   qmlformat = {
     filetypes = { "qml" }

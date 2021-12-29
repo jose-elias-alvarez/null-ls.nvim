@@ -5,11 +5,15 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     method = FORMATTING,
-    filetypes = { "rust" },
+    filetypes = { "cue" },
     generator_opts = {
-        command = "rustfmt",
-        args = { "--emit=stdout" },
-        to_stdin = true,
+        command = "cue",
+        args = {
+            "fmt",
+            "$FILENAME",
+        },
+        to_stdin = false,
+        to_temp_file = true,
     },
     factory = h.formatter_factory,
 })

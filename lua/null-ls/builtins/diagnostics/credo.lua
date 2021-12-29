@@ -31,7 +31,7 @@ return h.make_builtin({
         format = "raw",
         to_stdin = true,
         from_stderr = true,
-        on_output = function(params)
+        on_output = function(params, done)
             local issues = {}
 
             -- report any unexpected errors, such as partial file attempts
@@ -41,7 +41,7 @@ return h.make_builtin({
 
             -- if no output to parse, stop
             if not params.output then
-                return issues
+                return done(issues)
             end
 
             local json_index, _ = params.output:find("{")
@@ -50,7 +50,7 @@ return h.make_builtin({
             if not json_index then
                 table.insert(issues, generic_issue(params.output))
 
-                return issues
+                return done(issues)
             end
 
             local maybe_json_string = params.output:sub(json_index)
@@ -61,7 +61,7 @@ return h.make_builtin({
             if not ok then
                 table.insert(issues, generic_issue(params.output))
 
-                return issues
+                return done(issues)
             end
 
             for _, issue in ipairs(decoded.issues or {}) do
@@ -93,7 +93,7 @@ return h.make_builtin({
                 table.insert(issues, err)
             end
 
-            return issues
+            done(issues)
         end,
     },
     factory = h.generator_factory,

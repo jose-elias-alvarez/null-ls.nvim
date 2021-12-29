@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a problem in null-ls
+description: Report a problem with null-ls
 labels: [bug]
 body:
   - type: checkboxes
@@ -28,14 +28,14 @@ body:
   - type: textarea
     attributes:
       label: "null-ls config"
-      description: "The minimal configuration required to reproduce your bug. Do not post or link to your entire Neovim configuration!"
+      description: "Download the minimal config using `curl -fLO https://raw.githubusercontent.com/jose-elias-alvarez/null-ls.nvim/main/scripts/minimal_init.lua`. Edit it to include the configuration necessary to reproduce your bug and paste it here."
     validations:
       required: true
 
   - type: textarea
     attributes:
       label: "Steps to reproduce"
-      description: "Full reproduction steps. Include a sample file if your issue relates to a specific filetype."
+      description: "Full reproduction steps, starting with `nvim --clean -u minimal_init.lua`. Include a sample file if your issue relates to a specific filetype."
     validations:
       required: true
 
@@ -56,7 +56,7 @@ body:
   - type: textarea
     attributes:
       label: "Debug log"
-      description: "Debug log output (see README for instructions)"
+      description: "Debug log output from `:NullLsLog`."
     validations:
       required: true
 

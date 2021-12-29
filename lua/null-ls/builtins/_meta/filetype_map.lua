@@ -7,9 +7,15 @@ return {
   beancount = {
     formatting = { "bean_format" }
   },
+  bzl = {
+    formatting = { "buildifier" }
+  },
   c = {
     diagnostics = { "cppcheck", "gccdiag" },
     formatting = { "clang_format", "uncrustify" }
+  },
+  clj = {
+    formatting = { "joker" }
   },
   cmake = {
     formatting = { "cmake_format" }
@@ -28,11 +34,17 @@ return {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
   },
+  cue = {
+    formatting = { "cue_fmt" }
+  },
   d = {
     formatting = { "dfmt" }
   },
   dart = {
     formatting = { "dart_format" }
+  },
+  delphi = {
+    formatting = { "ptop" }
   },
   django = {
     formatting = { "djhtml" }
@@ -82,17 +94,18 @@ return {
     formatting = { "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
-    diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
   },
   javascriptreact = {
-    diagnostics = { "eslint", "eslint_d" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
   },
   ["jinja.html"] = {
     formatting = { "djhtml" }
   },
   json = {
+    diagnostics = { "jsonlint" },
     formatting = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   less = {
@@ -104,16 +117,22 @@ return {
     formatting = { "lua_format", "stylua" }
   },
   markdown = {
-    diagnostics = { "markdownlint", "proselint", "vale", "write_good" },
+    diagnostics = { "markdownlint", "mdl", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
     hover = { "dictionary" }
   },
   nginx = {
     formatting = { "nginx_beautifier" }
   },
+  nim = {
+    formatting = { "nimpretty" }
+  },
   nix = {
     diagnostics = { "statix" },
     formatting = { "nixfmt" }
+  },
+  pascal = {
+    formatting = { "ptop" }
   },
   perl = {
     formatting = { "perltidy" }
