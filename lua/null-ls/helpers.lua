@@ -123,7 +123,7 @@ M.generator_factory = function(opts)
         opts.multiple_files
 
     if type(check_exit_code) == "table" then
-        local codes = vim.deepcopy(check_exit_code)
+        local codes = check_exit_code
         check_exit_code = function(code)
             return vim.tbl_contains(codes, code)
         end
