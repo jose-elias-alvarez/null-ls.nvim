@@ -64,6 +64,8 @@ Built-in sources have access to a special method, `with()`, which modifies a
 subset of the source's default options. See the descriptions below or the
 relevant source file to see the default options passed to each built-in source.
 
+Some options apply only to built-in sources that spawn external commands.
+
 ### Filetypes
 
 You can override a source's default filetypes as follows:
@@ -280,9 +282,9 @@ whenever you want using the methods described in [SOURCES](./SOURCES.md). To
 handle advanced dynamic registration behavior, you can use `null_ls.register`
 with a relevant `autocommand` event listener.
 
-You can determine whether a source runs by using the `runtime_condition` option,
-as described in [HELPERS](./HELPERS.md). Note that this option can affect
-performance.
+You can determine whether a source runs at all by using the `runtime_condition`
+option, as described in [HELPERS](./HELPERS.md). Note that this option can
+affect performance.
 
 ## Available Sources
 
