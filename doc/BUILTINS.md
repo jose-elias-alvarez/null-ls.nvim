@@ -64,7 +64,7 @@ Built-in sources have access to a special method, `with()`, which modifies a
 subset of the source's default options. See the descriptions below or the
 relevant source file to see the default options passed to each built-in source.
 
-Some options apply only to built-in sources that spawn external commands.
+Some options are specific to built-in sources that spawn external commands.
 
 ### Filetypes
 
@@ -93,7 +93,7 @@ local sources = {
 ```
 
 null-ls is always inactive in non-file buffers (e.g. file trees and finders) so
-theres's no need to specify them here.
+theres's no need to specify them.
 
 ### Arguments
 
@@ -247,44 +247,60 @@ Another solution is to use the `dynamic_command` option, as described in
 
 ## Conditional sources
 
+### `condition`
+
 Built-ins have access to the `condition` option, which should be a function that
 returns a boolean or `nil` indicating whether null-ls should register the
-source. null-ls will pass a single argument to the function, which is a table of
-utilities to handle common conditional checks (though you can use whatever you
-want, as long as the return value matches).
-
-- `utils.root_has_file`: accepts either a table (indicating more than one file)
-  or a string (indicating a single file). Returns `true` if at least one file
-  exists at the project's root.
-
-- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
-  the root matches the specified pattern.
-
-For example, to conditionally register `stylua` by checking if the root
-directory has a `stylua.toml` or `.stylua.toml` file:
+source. `condition` should return `true` (indicating that the source should
+continue to run) or a falsy value (indicating that the source should not run
+anymore).
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.stylua.with({
         condition = function(utils)
-            return utils.root_has_file({"stylua.toml", ".stylua.toml"})
+            return utils.root_has_file({ "stylua.toml", ".stylua.toml" })
         end,
     }),
 }
 ```
 
+For more information, see `condition` in [HELPERS](./HELPERS.md).
+
 Note that if you pass conditional sources into `null_ls.setup`, null-ls will
 register them on setup, then check the condition when the source first runs and
-deregister them if the check fails.
+deregister them if the check fails. After a successful or failed check, null-ls
+will not check the same condition again.
+
+### `runtime_condition`
+
+You can force null-ls to check whether a source should run each time by using
+the `runtime_condition` option, which is a callback called when generating a
+list of sources to run for a given method. If the callback's return value is
+falsy, the source does not run.
+
+Be aware that `runtime_condition` runs _every_ time a source can run and thus
+should avoid doing anything overly expensive.
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.pylint.with({
+        -- this will run every time the source runs,
+        -- so you should prefer caching results if possible
+        runtime_condition = function(params)
+            return params.root:match("my-monorepo-subdir") ~= nil
+        end,
+    }),
+}
+```
+
+### Other cases
 
 null-ls supports dynamic registration, meaning that you can register sources
 whenever you want using the methods described in [SOURCES](./SOURCES.md). To
-handle advanced dynamic registration behavior, you can use `null_ls.register`
-with a relevant `autocommand` event listener.
-
-You can determine whether a source runs at all by using the `runtime_condition`
-option, as described in [HELPERS](./HELPERS.md). Note that this option can
-affect performance.
+handle advanced registration behavior not covered by the above, you can use
+`null_ls.register` with a relevant `autocommand` event listener (or register
+sources on demand).
 
 ## Available Sources
 
