@@ -227,18 +227,6 @@ local sources = {
 }
 ```
 
-To conditionally register one of two or more sources, you can use the
-`conditional` helper, which should return a source or `nil` and will register
-the first source returned.
-
-```lua
-local sources = {
-    require("null-ls.helpers").conditional(function(utils)
-        return utils.root_has_file(".eslintrc.js") and b.formatting.eslint_d or b.formatting.prettier
-    end),
-}
-```
-
 Note that if you pass conditional sources into `null_ls.setup`, null-ls will
 register them on setup, then check the condition when the source first runs and
 deregister them if the check fails. To handle advanced dynamic registration

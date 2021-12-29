@@ -305,11 +305,6 @@ null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag)
 - `end_arg` (optional): the name of the argument that indicates the end of the
   range. Defaults to `"--range-end"`.
 
-## conditional
-
-Used to conditionally register sources. See [HELPERS](HELPERS.md) for
-more information.
-
 ## diagnostics
 
 Helpers used to convert CLI output into diagnostics. See the source for details
