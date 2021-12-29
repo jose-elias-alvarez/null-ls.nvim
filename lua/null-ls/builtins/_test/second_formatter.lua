@@ -1,7 +1,10 @@
+local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-return {
-    method = methods.internal.FORMATTING,
+local FORMATTING = methods.internal.FORMATTING
+
+return h.make_builtin({
+    method = FORMATTING,
     generator = {
         fn = function(params, done)
             return done({ { text = params.content[1] == "first" and "sequential" or "second" } })
@@ -9,4 +12,4 @@ return {
         async = true,
     },
     filetypes = { "text" },
-}
+})
