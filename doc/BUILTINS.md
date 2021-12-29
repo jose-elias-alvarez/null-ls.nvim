@@ -1391,7 +1391,7 @@ local sources = { null_ls.builtins.formatting.sqlformat }
 
 - `filetypes = { "sql" }`
 - `command = "sqlformat"`
-- `args = { "--reindent", "-" }`
+- `args = { "-" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
@@ -1789,6 +1789,24 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 - `filetypes = {}`
 - `command = "cspell"`
 - `args = function(params) return { "--language-id", params.ft, "stdin" } end,`
+
+#### [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
+
+##### About
+
+A tool to verify that your files are in harmony with your .editorconfig
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.editorconfig_checker }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "ec"`
+- `args = { "-no-color", "$FILENAME" }`
 
 #### [ESLint](https://github.com/eslint/eslint)
 
