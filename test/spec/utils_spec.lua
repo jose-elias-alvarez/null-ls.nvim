@@ -322,6 +322,7 @@ describe("utils", function()
 
     describe("make_conditional_utils", function()
         local utils = u.make_conditional_utils()
+
         it("should return object containing utils", function()
             assert.truthy(type(utils.root_has_file) == "function")
             assert.truthy(type(utils.root_matches) == "function")
@@ -353,6 +354,12 @@ describe("utils", function()
             it("should return false if root does not match pattern", function()
                 assert.falsy(utils.root_has_file("other%-plugin"))
             end)
+        end)
+
+        it("should get root from params if available", function()
+            local param_specific_utils = u.make_conditional_utils({ root = "mock-root" })
+
+            assert.truthy(param_specific_utils.root_matches("mock"))
         end)
     end)
 
@@ -428,6 +435,50 @@ describe("utils", function()
 
                 assert.equals(#unique_table, 2)
             end)
+        end)
+    end)
+
+    describe("handle_function_opt", function()
+        local function_opt = stub.new()
+        -- stubs aren't functions, so wrap
+        local wrapper = function(...)
+            return function_opt(...)
+        end
+
+        after_each(function()
+            function_opt:clear()
+            function_opt.returns(nil)
+        end)
+
+        it("should pass args to function opt", function()
+            u.handle_function_opt(wrapper, "arg1", "arg2")
+
+            assert.stub(function_opt).was_called_with("arg1", "arg2")
+        end)
+
+        it("should return opt return val", function()
+            function_opt.returns("mock val")
+
+            local ret = u.handle_function_opt(wrapper)
+
+            assert.equals(ret, "mock val")
+        end)
+
+        it("should return copy of table opt", function()
+            local table_opt = { key = "val" }
+
+            local ret = u.handle_function_opt(table_opt)
+
+            assert.is_not.equals(ret, table_opt)
+            assert.same(ret, table_opt)
+        end)
+
+        it("should return non-function opt", function()
+            local opt = 1
+
+            local ret = u.handle_function_opt(opt)
+
+            assert.equals(ret, opt)
         end)
     end)
 end)

@@ -138,21 +138,21 @@ M.make_params = function(original_params, method)
     return params
 end
 
-M.make_conditional_utils = function()
-    local cwd = vim.loop.cwd()
+M.make_conditional_utils = function(params)
+    local root = params and params.root or M.get_root()
 
     return {
         root_has_file = function(...)
             local patterns = vim.tbl_flatten({ ... })
             for _, name in ipairs(patterns) do
-                if M.path.exists(M.path.join(cwd, name)) then
+                if M.path.exists(M.path.join(root, name)) then
                     return true
                 end
             end
             return false
         end,
         root_matches = function(pattern)
-            return cwd:find(pattern) ~= nil
+            return root:find(pattern) ~= nil
         end,
     }
 end
@@ -205,6 +205,19 @@ M.table = {
         return new_table
     end,
 }
+
+M.handle_function_opt = function(opt, ...)
+    if type(opt) == "function" then
+        return opt(...)
+    end
+
+    return vim.deepcopy(opt)
+end
+
+M.get_root = function()
+    local client = require("null-ls.client").get_client()
+    return client and client.config.root_dir or vim.loop.cwd()
+end
 
 -- everything below is adapted from nvim-lspconfig's path utils
 M.path = (function()

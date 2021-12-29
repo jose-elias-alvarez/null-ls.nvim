@@ -1,8 +1,10 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
+local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
+
 return h.make_builtin({
-    method = methods.internal.DIAGNOSTICS_ON_SAVE,
+    method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "markdown" },
     generator_opts = {
         command = "ls",

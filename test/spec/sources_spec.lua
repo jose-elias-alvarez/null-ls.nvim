@@ -582,6 +582,7 @@ describe("sources", function()
             local found = find_source(mock_raw_source.name)
             assert.truthy(found)
             assert.equals(found.id, 1)
+            assert.equals(found.generator.source_id, 1)
 
             assert.truthy(sources.is_registered(mock_raw_source.name))
         end)

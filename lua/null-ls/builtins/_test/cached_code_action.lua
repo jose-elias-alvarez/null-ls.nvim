@@ -1,8 +1,10 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
+local CODE_ACTION = methods.internal.CODE_ACTION
+
 return h.make_builtin({
-    method = methods.internal.CODE_ACTION,
+    method = CODE_ACTION,
     filetypes = { "text" },
     generator_opts = {
         command = "ls",

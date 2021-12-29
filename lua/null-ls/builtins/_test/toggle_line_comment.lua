@@ -1,7 +1,10 @@
+local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-return {
-    method = methods.internal.CODE_ACTION,
+local CODE_ACTION = methods.internal.CODE_ACTION
+
+return h.make_builtin({
+    method = CODE_ACTION,
     name = "toggle_line_comment",
     filetypes = {},
     generator = {
@@ -37,4 +40,4 @@ return {
             }
         end,
     },
-}
+})

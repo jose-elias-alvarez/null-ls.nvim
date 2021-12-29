@@ -60,9 +60,11 @@ run the following (Vim, not Lua) command:
 
 ## Configuration
 
-Built-in sources have access to a special method, `with()`, which modifies the
-source's default options. See the descriptions below or the relevant source file
-to see the default options passed to each built-in source.
+Built-in sources have access to a special method, `with()`, which modifies a
+subset of the source's default options. See the descriptions below or the
+relevant source file to see the default options passed to each built-in source.
+
+Some options are specific to built-in sources that spawn external commands.
 
 ### Filetypes
 
@@ -90,8 +92,8 @@ local sources = {
 }
 ```
 
-null-ls is always inactive in non-file buffers (e.g. file trees, finders) so
-theres's no need to specify them here.
+null-ls is always inactive in non-file buffers (e.g. file trees and finders) so
+theres's no need to specify them.
 
 ### Arguments
 
@@ -171,7 +173,39 @@ local sources = {
 }
 ```
 
-## Local executables
+### Spawn directory
+
+By default, null-ls spawns commands using the root directory of its client, as
+specified in [CONFIG](./CONFIG.md). You can override this on a per-source basis
+by setting `cwd` to a function that returns your preferred spawn directory:
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+        cwd = function(params)
+            -- falls back to root if return value is nil
+            return params.root:match("my-special-project") and "my-special-cwd"
+        end
+    }),
+}
+```
+
+### Timeout
+
+Commands will time out after the timeout specified in [CONFIG](./CONFIG.md). If
+a specific command is consistently timing out due to your environment, you can
+set a different `timeout`:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        -- milliseconds
+        timeout = 10000
+    }),
+}
+```
+
+## Using local executables
 
 To prefer using a local executable for a built-in, use the `prefer_local`
 option. This will cause null-ls to search upwards from the current buffer's
@@ -195,54 +229,78 @@ accepts the same options.
 
 By default, these options will also set the `cwd` of the spawned process to the
 parent directory of the local executable (if found). You can override this by
-manually setting `cwd` to a function that should return your preferred `cwd`.
+manually setting `cwd`, as described above.
 
-## Conditional registration
+You can also choose to override a source's command and specify an absolute path
+if the command is not available on your `$PATH`:
 
-null-ls supports dynamic registration, meaning that you can register sources
-whenever you want. To simplify this, built-ins have access to the `conditional`
-option, which should be a function that returns a boolean or `nil` indicating
-whether null-ls should register the source. null-ls will pass a single argument
-to the function, which is a table of utilities to handle common conditional
-checks (though you can use whatever you want, as long as the return value
-matches).
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        command = "/path/to/prettier"
+    }),
+}
+```
 
-- `utils.root_has_file`: accepts either a table (indicating more than one file)
-  or a string (indicating a single file). Returns `true` if at least one file
-  exists at the project's root.
+Another solution is to use the `dynamic_command` option, as described in
+[HELPERS](./HELPERS.md). Note that this option can affect performance.
 
-- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
-  the root matches the specified pattern.
+## Conditional sources
 
-For example, to conditionally register `stylua` by checking if the root
-directory has a `stylua.toml` or `.stylua.toml` file:
+### `condition`
+
+Built-ins have access to the `condition` option, which should be a function that
+returns a boolean or `nil` indicating whether null-ls should register the
+source. `condition` should return `true` (indicating that the source should
+continue to run) or a falsy value (indicating that the source should not run
+anymore).
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.stylua.with({
         condition = function(utils)
-            return utils.root_has_file({"stylua.toml", ".stylua.toml"})
+            return utils.root_has_file({ "stylua.toml", ".stylua.toml" })
         end,
     }),
 }
 ```
 
-To conditionally register one of two or more sources, you can use the
-`conditional` helper, which should return a source or `nil` and will register
-the first source returned.
+For more information, see `condition` in [HELPERS](./HELPERS.md).
+
+Note that if you pass conditional sources into `null_ls.setup`, null-ls will
+register them on setup, then check the condition when the source first runs and
+deregister them if the check fails. After a successful or failed check, null-ls
+will not check the same condition again.
+
+### `runtime_condition`
+
+You can force null-ls to check whether a source should run each time by using
+the `runtime_condition` option, which is a callback called when generating a
+list of sources to run for a given method. If the callback's return value is
+falsy, the source does not run.
+
+Be aware that `runtime_condition` runs _every_ time a source can run and thus
+should avoid doing anything overly expensive.
 
 ```lua
 local sources = {
-    require("null-ls.helpers").conditional(function(utils)
-        return utils.root_has_file(".eslintrc.js") and b.formatting.eslint_d or b.formatting.prettier
-    end),
+    null_ls.builtins.formatting.pylint.with({
+        -- this will run every time the source runs,
+        -- so you should prefer caching results if possible
+        runtime_condition = function(params)
+            return params.root:match("my-monorepo-subdir") ~= nil
+        end,
+    }),
 }
 ```
 
-Note that if you pass conditional sources into `null_ls.setup`, null-ls will
-check and register them at the point that you source your plugin config. To
-handle advanced dynamic registration behavior, you can use `null_ls.register`
-with a relevant `autocommand` event listener.
+### Other cases
+
+null-ls supports dynamic registration, meaning that you can register sources
+whenever you want using the methods described in [SOURCES](./SOURCES.md). To
+handle advanced registration behavior not covered by the above, you can use
+`null_ls.register` with a relevant `autocommand` event listener (or register
+sources on demand).
 
 ## Available Sources
 

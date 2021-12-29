@@ -25,36 +25,28 @@ All options are **required** unless specified otherwise.
 local helpers = require("null-ls.helpers")
 
 helpers.generator_factory({
-    command, -- string or function
     args, -- table (optional)
-    on_output, -- function
-    format, -- "raw", "line", "json", or "json_raw" (optional)
-    ignore_stderr, -- boolean (optional)
-    from_stderr, -- boolean (optional)
-    to_stdin, -- boolean (optional)
     check_exit_code, -- function or table of numbers (optional)
-    timeout, -- number (optional)
-    to_temp_file, -- boolean (optional)
-    use_cache, -- boolean (optional)
-    runtime_condition, -- function (optional)
+    command, -- string or function
+    condition, -- function (optional)
     cwd, -- function (optional)
     dynamic_command, -- function (optional)
+    format, -- "raw", "line", "json", or "json_raw" (optional)
+    from_stderr, -- boolean (optional)
+    from_temp_file, -- boolean (optional)
+    ignore_stderr, -- boolean (optional)
     multiple_files, -- boolean (optional)
+    on_output, -- function
+    runtime_condition, -- function (optional)
+    timeout, -- number (optional)
+    to_stdin, -- boolean (optional)
+    to_temp_file, -- boolean (optional)
+    use_cache, -- boolean (optional)
 })
 ```
 
 null-ls validates each option using `vim.validate` when the generator runs for
 the first time.
-
-### command
-
-A string containing the command that the generator will spawn or a function that
-takes one argument, `params` (an object containing information about the current
-editor status) and returns a command string.
-
-If `command` is a function, it will run once when the generator first runs and
-keep the same return value as long as the same Neovim instance is running,
-making it suitable for resolving executables based on the current project.
 
 ### args
 
@@ -64,74 +56,14 @@ null-ls will transform the following special arguments before spawning:
 
 - `$FILENAME`: replaced with the current buffer's full path
 
+- `$DIRNAME`: replaced with the current buffer's parent directory
+
 - `$TEXT`: replaced with the current buffer's content
 
 - `$FILEEXT`: replaced with the current buffer's file extension (e.g.
   `my-file.lua` produces `"lua"`)
 
 - `$ROOT`: replaced with the LSP workspace root path
-
-### on_output
-
-A callback function that receives a `params` object, which contains information
-about the current buffer and editor state (see _Generators_ in
-[MAIN](MAIN.md) for details).
-
-Generators created by `generator_factory` have access to an extra parameter,
-`params.output`, which contains the output from the spawned command. The
-structure of `params.output` depends on `format`, described below.
-
-### format
-
-Specifies the format used to transform output before passing it to `on_output`.
-Supports the following options:
-
-- `"raw"`: passes command output directly as `params.output` (string) and error
-  output as `params.err` (string).
-
-  This format will call `on_output(params, done)`, where `done()` is a callback that
-  `on_output` must call with its results (see _Generators_ in
-  [MAIN](MAIN.md) for details).
-
-- `nil`: same as `raw`, but does not receive error output. Instead, any output
-  to `stderr` will cause the generator to throw an error, unless `ignore_stderr`
-  is also enabled (see below).
-
-- `"line"`: splits generator output into lines and calls `on_output(line, params)`
-  once for each line, where `line` is a string.
-
-  `on_output` should return `nil` or an object that matches the structure
-  expected for its method, **not** a list of results (see _Generators_ in
-  [MAIN](MAIN.md) for details). The wrapper will automatically call `done`
-  when once it's done iterating over output lines.
-
-- `"json"`: decodes generator output into JSON, sets `params.output` to the
-  resulting JSON object, and calls `on_output(params)`. The wrapper will
-  automatically call `done` once `on_output` returns.
-
-- `"json_raw"`: same as `json`, but will not throw on errors, either from
-  `stderr` or from `json.decode`. Instead, it'll pass errors to `on_output` via
-  `params.err`.
-
-### ignore_stderr
-
-For non-`raw` output formats, any output to `stderr` causes a command to fail
-(unless `from_stderr` is `true`, as described below).
-
-This option tells the runner to ignore the command's `stderr` output. This is
-like redirecting a command's output with `2>/dev/null`, but any error output is
-still logged when `debug` mode is on.
-
-### from_stderr
-
-Captures a command's `stderr` output and assigns it to `params.output`. Note
-that setting `from_stderr = true` will discard any `stdin` output.
-
-Not compatible with `ignore_stderr`.
-
-### to_stdin
-
-Sends the current buffer's content to the spawned command via `stdin`.
 
 ### check_exit_code
 
@@ -147,51 +79,35 @@ indicates _success_.
 If not specified, null-ls will assume that a non-zero exit code indicates
 failure.
 
-### timeout
+### command
 
-The amount of time, in milliseconds, until null-ls aborts the command and
-returns an empty response. If not set, will default to the user's
-`default_timeout` setting.
+A string containing the command that the generator will spawn or a function that
+takes one argument, `params` (an object containing information about the current
+editor status) and returns a command string.
 
-### to_temp_file
+If `command` is a function, it will run once when the generator first runs and
+keep the same return value as long as the same Neovim instance is running,
+making it suitable for resolving executables based on the current project.
 
-Writes the current buffer's content to a temporary file and replaces the special
-argument `$FILENAME` with the path to the temporary file. Useful for formatters
-and linters that don't accept input via `stdin`.
+### condition
 
-Setting `to_temp_file = true` will also assign the path to the temp file to
-`params.temp_path`.
+An optional callback that accepts one argument, a table of utils to handle
+common conditional checks:
 
-### from_temp_file
+- `utils.root_has_file`: accepts either a table (indicating more than one file)
+  or a string (indicating a single file). Returns `true` if at least one file
+  exists at the project's root.
 
-Reads the contents of the temp file created by `to_temp_file` after running
-`command` and assigns it to `params.content`. Useful for formatters that don't
-output to `stdin` (see `formatter_factory`).
+- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
+  the root matches the specified pattern.
 
-This option depends on `to_temp_file`.
+null-ls will first register the source, then check `condition` when the source
+first runs. If `condition` returns a truthy value, the source will run and
+remain registered. If not, null-ls will deregister the source.
 
-### use_cache
-
-Caches command output on run. When available, the generator will use cached
-output instead of spawning the command, which can increase performance for slow
-commands.
-
-The plugin resets cached output when Neovim's LSP client notifies it of a buffer
-change, meaning that cache validity depends on a user's `debounce` setting.
-Sources that rely on up-to-date buffer content should avoid using this option.
-
-Note that this option effectively does nothing for diagnostics, since the
-handler will always invalidate the buffer's cache before running generators.
-
-### runtime_condition
-
-Optional callback called when generating a list of sources to run for a given
-method. Takes a single argument, `params`, which is a table containing
-information about the current editor state (described in [MAIN](./MAIN.md)). If
-the callback's return value is falsy, the source does not run.
-
-Be aware that the callback runs _every_ time a source can run and thus should
-avoid doing anything overly expensive.
+Once checked, null-ls will not check the same conditional source again. To check
+a condition more than once (i.e. in a monorepo), use `runtime_condition`
+(described below).
 
 ### cwd
 
@@ -213,12 +129,125 @@ performance, so it's best to cache its output when possible.
 
 Note that setting `dynamic_command` will disable `command` validation.
 
+### format
+
+Specifies the format used to transform output before passing it to `on_output`.
+Supports the following options:
+
+- `"raw"`: passes command output directly as `params.output` (string) and error
+  output as `params.err` (string).
+
+  This format will call `on_output(params, done)`, where `done()` is a callback that
+  `on_output` must call with its results (see _Generators_ in
+  [MAIN](MAIN.md) for details).
+
+- `nil`: same as `raw`, but does not receive error output. Instead, any output
+  to `stderr` will cause the generator to throw an error, unless `ignore_stderr`
+  is also enabled (see below).
+
+- `"line"`: splits generator output into lines and calls `on_output(line, params)`
+  once for each line, where `line` is a string.
+
+- `"json"`: decodes generator output into JSON, sets `params.output` to the
+  resulting JSON object, and calls `on_output(params)`. The wrapper will
+  automatically call `done` once `on_output` returns.
+
+- `"json_raw"`: same as `json`, but will not throw on errors, either from
+  `stderr` or from `json.decode`. Instead, it'll pass errors to `on_output` via
+  `params.err`.
+
+To sum up:
+
+- If you want to handle each line of a source's output, use `format = "line"`.
+
+- If you are handling JSON output, use `format = "json"` if you don't intend on handling
+  errors and `format = "json_raw"` if you do.
+
+- If you are processing a source's entire output, use `format = nil` if you don't
+  intend on handling errors and `format = "raw"` if you do.
+
+### from_stderr
+
+Captures a command's `stderr` output and assigns it to `params.output`. Note
+that setting `from_stderr = true` will discard any `stdin` output.
+
+Not compatible with `ignore_stderr`.
+
+### from_temp_file
+
+Reads the contents of the temp file created by `to_temp_file` after running
+`command` and assigns it to `params.content`. Useful for formatters that don't
+output to `stdin` (see `formatter_factory`).
+
+This option depends on `to_temp_file`.
+
+### ignore_stderr
+
+For non-`raw` output formats, any output to `stderr` causes a command to fail
+(unless `from_stderr` is `true`, as described above).
+
+This option tells the runner to ignore the command's `stderr` output. This is
+like redirecting a command's output with `2>/dev/null`, but any error output is
+still logged when `debug` mode is on.
+
 ### multiple_files
 
 If set, signals that the generator will return results that apply to more than
 one file. The null-ls diagnostics handler allows applying results to more than
 one file if this option is `true` and each diagnostic specifies a `bufnr` or
 `filename` specifying the file to which the diagnostic applies.
+
+### on_output
+
+A callback function that receives a `params` object, which contains information
+about the current buffer and editor state (see _Generators_ in
+[MAIN](MAIN.md) for details).
+
+Generators created by `generator_factory` have access to an extra parameter,
+`params.output`, which contains the output from the spawned command. The
+structure of `params.output` depends on `format`, described below.
+
+### runtime_condition
+
+Optional callback called when generating a list of sources to run for a given
+method. Takes a single argument, `params`, which is a table containing
+information about the current editor state (described in [MAIN](./MAIN.md)). If
+the callback's return value is falsy, the source does not run.
+
+Be aware that the callback runs _every_ time a source can run and thus should
+avoid doing anything overly expensive.
+
+### timeout
+
+The amount of time, in milliseconds, until null-ls aborts the command and
+returns an empty response. If not set, will default to the user's
+`default_timeout` setting.
+
+### to_stdin
+
+Sends the current buffer's content to the spawned command via `stdin`.
+
+### to_temp_file
+
+Writes the current buffer's content to a temporary file and replaces the special
+argument `$FILENAME` with the path to the temporary file. Useful for formatters
+and linters that don't accept input via `stdin`.
+
+Setting `to_temp_file = true` will also assign the path to the temp file to
+`params.temp_path`.
+
+### use_cache
+
+Caches command output on run. When available, the generator will use cached
+output instead of spawning the command, which can increase performance for slow
+commands.
+
+The plugin resets cached output when Neovim's LSP client notifies it of a buffer
+change, meaning that cache validity depends on a user's `debounce` setting.
+Sources that rely on up-to-date buffer content should avoid using this option.
+
+Note that this option effectively does nothing for diagnostics, since the
+handler will always invalidate the buffer's cache before running generators.
 
 ## formatter_factory
 
@@ -250,29 +279,13 @@ options. All options are **required** unless specified otherwise.
 local helpers = require("null-ls.helpers")
 
 helpers.make_builtin({
-    method, -- internal null-ls method (string)
-    filetypes, -- table
-    generator_opts, -- table
     factory, -- function (optional)
+    filetypes, -- table
     generator, -- function (optional, but required if factory is not set)
+    generator_opts, -- table
+    method, -- internal null-ls method (string)
 })
 ```
-
-### method
-
-Defines the source's null-ls method, as described in [MAIN](MAIN.md).
-
-### filetypes
-
-A list of filetypes for the source, as described in [MAIN](MAIN.md). A
-built-in can opt to leave this as `nil`, meaning that the user will have to
-define filetypes in `with()`.
-
-### generator_opts
-
-A table of arguments passed into `factory` when the user registers the source,
-which should conform to the `opts` object described above in
-`generator_factory`.
 
 ### factory
 
@@ -280,10 +293,26 @@ A function called when the user registers the source. Intended for use with the
 helper `factory` functions described above, but any function that returns a
 valid generator will work.
 
+Note that if defined, `factory` should handle `condition` (described above)
+
+### filetypes
+
+A list of filetypes for the source, as described in [MAIN](MAIN.md).
+
 ### generator
 
 A simple generator function. Either `factory` or `generator` must be a valid
 function, and setting `factory` will override `generator`.
+
+### generator_opts
+
+A table of arguments passed into `factory` when the user registers the source,
+which should conform to the `opts` object described above in
+`generator_factory`.
+
+### method
+
+Defines the source's null-ls method, as described in [MAIN](MAIN.md).
 
 ## range_formatting_args_factory
 
@@ -304,11 +333,6 @@ null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag)
 
 - `end_arg` (optional): the name of the argument that indicates the end of the
   range. Defaults to `"--range-end"`.
-
-## conditional
-
-Used to conditionally register sources. See [HELPERS](HELPERS.md) for
-more information.
 
 ## diagnostics
 

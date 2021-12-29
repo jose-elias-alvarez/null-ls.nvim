@@ -37,6 +37,7 @@ local register_source = function(source)
 
     registered.id = registered.id + 1
     source.id = registered.id
+    source.generator.source_id = registered.id
 
     table.insert(registered.sources, source)
     registered.names[source.name] = true
