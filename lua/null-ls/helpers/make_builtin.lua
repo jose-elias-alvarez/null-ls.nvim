@@ -16,20 +16,16 @@ local function make_builtin(opts)
         return generator
     end
 
-    -- merge user opts w/ generator opts
+    -- merge valid user opts w/ generator opts
     generator_opts = vim.tbl_deep_extend("force", generator_opts, {
         args = opts.args,
-        check_exit_code = opts.check_exit_code,
         command = opts.command,
+        condition = opts.condition,
         cwd = opts.cwd,
         diagnostics_format = opts.diagnostics_format,
         dynamic_command = opts.dynamic_command,
-        format = opts.format,
-        on_output = opts.on_output,
         runtime_condition = opts.runtime_condition,
         timeout = opts.timeout,
-        use_cache = opts.use_cache,
-        condition = opts.condition,
     })
 
     local builtin = {
