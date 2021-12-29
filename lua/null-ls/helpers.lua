@@ -4,7 +4,6 @@ local s = require("null-ls.state")
 local u = require("null-ls.utils")
 
 local api = vim.api
-local validate = vim.validate
 
 local output_formats = {
     raw = "raw", -- receive error_output and output directly
@@ -132,7 +131,7 @@ M.generator_factory = function(opts)
 
     local _validated
     local validate_opts = function(params)
-        validate({
+        local validated, validation_err = pcall(vim.validate, {
             args = {
                 args,
                 function(v)
@@ -162,6 +161,11 @@ M.generator_factory = function(opts)
             condition = { condition, "function", true },
         })
 
+        if not validated then
+            log:error(validation_err)
+            return false
+        end
+
         if type(command) == "function" then
             command = command(params)
             -- prevent issues displaying / attempting to serialize generator.opts.command
@@ -170,21 +174,17 @@ M.generator_factory = function(opts)
 
         if not dynamic_command then
             local is_executable, err_msg = u.is_executable(command)
-            assert(is_executable, err_msg)
-        end
-
-        assert(not from_temp_file or to_temp_file, "from_temp_file requires to_temp_file to be true")
-
-        if condition then
-            local should_register = condition(u.make_conditional_utils(params))
-            if not should_register then
-                on_output = function(_, done)
-                    done({ _should_deregister = true })
-                end
+            if not is_executable then
+                log:error(err_msg)
+                return false
             end
         end
 
-        _validated = true
+        if condition then
+            return condition(u.make_conditional_utils(params), params)
+        end
+
+        return true
     end
 
     return {
@@ -196,7 +196,12 @@ M.generator_factory = function(opts)
             params.root = root
 
             if not _validated then
-                validate_opts(params)
+                local validated = validate_opts(params)
+                if not validated then
+                    return done({ _should_deregister = true })
+                end
+
+                _validated = true
             end
 
             local wrapper = function(error_output, output)

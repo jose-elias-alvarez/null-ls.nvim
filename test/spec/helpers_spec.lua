@@ -1,15 +1,19 @@
 local stub = require("luassert.stub")
+local mock = require("luassert.mock")
+
 local loop = require("null-ls.loop")
 
 local c = require("null-ls.config")
 local s = require("null-ls.state")
 local test_utils = require("test.utils")
 
+mock(require("null-ls.logger"), true)
+
 describe("helpers", function()
     _G._TEST = true
     local root = vim.fn.getcwd()
 
-    stub(vim, "validate")
+    local validate = stub(vim, "validate")
 
     local done = stub.new()
     local on_output = stub.new()
@@ -17,7 +21,7 @@ describe("helpers", function()
     after_each(function()
         done:clear()
         on_output:clear()
-        vim.validate:clear()
+        validate:clear()
     end)
 
     local helpers = require("null-ls.helpers")
@@ -217,138 +221,191 @@ describe("helpers", function()
             loop.temp_file:clear()
             s.get_cache:clear()
             s.set_cache:clear()
+            vim.validate = validate
         end)
 
-        it("should validate opts on first run", function()
-            local generator = helpers.generator_factory(generator_args)
+        describe("validate", function()
+            it("should validate opts on first run", function()
+                local generator = helpers.generator_factory(generator_args)
 
-            generator.fn({})
+                generator.fn({})
 
-            assert.stub(vim.validate).was_called()
+                assert.stub(validate).was_called()
+            end)
+
+            it("should trigger deregistration if validation fails", function()
+                vim.validate = function()
+                    error("validation failed")
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({}, done)
+
+                assert.stub(done).was_called_with({ _should_deregister = true })
+            end)
+
+            it("should not validate opts on subsequent runs", function()
+                local generator = helpers.generator_factory(generator_args)
+
+                generator.fn({})
+                generator.fn({})
+
+                assert.stub(validate).was_called(1)
+            end)
         end)
 
-        it("should not validate opts on subsequent runs", function()
-            local generator = helpers.generator_factory(generator_args)
+        describe("command", function()
+            it("should trigger deregistration if command is not executable", function()
+                generator_args.command = "nonexistent"
 
-            generator.fn({})
-            generator.fn({})
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-            assert.stub(vim.validate).was_called(1)
+                assert.stub(done).was_called_with({ _should_deregister = true })
+            end)
+
+            it("should not validate command if dynamic_command is set", function()
+                generator_args.command = "nonexistent"
+                generator_args.dynamic_command = function()
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                assert.stub(done).was_not_called()
+            end)
+
+            it("should call command function with params ", function()
+                local params
+                generator_args.command = function(_params)
+                    params = _params
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({ test_key = "test_val" })
+
+                assert.truthy(params)
+                assert.equals(params.test_key, "test_val")
+            end)
+
+            it("should set command from function return value", function()
+                generator_args.command = function()
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({})
+
+                assert.stub(loop.spawn).was_called()
+                assert.equals(loop.spawn.calls[1].refs[1], "cat")
+                assert.equals(generator_args.command, "cat")
+            end)
+
+            it("should only set command once", function()
+                local count = 0
+                generator_args.command = function()
+                    count = count + 1
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({})
+                generator.fn({})
+
+                assert.equals(count, 1)
+            end)
+
+            it("should call dynamic_command with params but not override original command", function()
+                local original_command
+                generator_args.dynamic_command = function(params)
+                    original_command = params.command
+                    return "tldr"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({})
+
+                assert.equals(loop.spawn.calls[1].refs[1], "tldr")
+                assert.equals(generator_args.command, original_command)
+                assert.equals(generator_args.command, "cat")
+            end)
+
+            it("should not spawn command and return done if dynamic_command returns nil", function()
+                generator_args.dynamic_command = function()
+                    return nil
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
+
+                assert.stub(loop.spawn).was_not_called()
+                assert.stub(done).was_called()
+            end)
+
+            it("should call dynamic_command once on each run", function()
+                local count = 0
+                generator_args.dynamic_command = function()
+                    count = count + 1
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({})
+                generator.fn({})
+
+                assert.equals(count, 2)
+            end)
+
+            it("should set generator.opts.command to function return value", function()
+                generator_args.command = function()
+                    return "cat"
+                end
+
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({})
+
+                assert.equals(generator.opts.command, "cat")
+            end)
         end)
 
-        it("should throw error if command is not executable", function()
-            generator_args.command = "nonexistent"
+        describe("condition", function()
+            it("should call condition with conditional utils and params", function()
+                local condition = stub.new()
+                generator_args.condition = condition
 
-            local generator = helpers.generator_factory(generator_args)
-            local _, err = pcall(generator.fn, {})
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-            assert.truthy(err)
-            assert.truthy(err:match("command nonexistent is not executable"))
-        end)
+                local utils = condition.calls[1].refs[1]
+                assert.truthy(type(utils) == "table")
+                local params = condition.calls[1].refs[2]
+                assert.equals(params.root, root)
+            end)
 
-        it("should not validate command if dynamic_command is set", function()
-            generator_args.command = "nonexistent"
-            generator_args.dynamic_command = function()
-                return "cat"
-            end
+            it("should run normally if condition returns true", function()
+                generator_args.condition = function()
+                    return true
+                end
 
-            local generator = helpers.generator_factory(generator_args)
-            local _, err = pcall(generator.fn, {})
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-            assert.falsy(err)
-        end)
+                assert.stub(done).was_not_called()
+            end)
 
-        it("should call command function with params ", function()
-            local params
-            generator_args.command = function(_params)
-                params = _params
-                return "cat"
-            end
+            it("should trigger deregistration if condition returns falsy value", function()
+                generator_args.condition = function()
+                    return false
+                end
 
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({ test_key = "test_val" })
+                local generator = helpers.generator_factory(generator_args)
+                generator.fn({}, done)
 
-            assert.truthy(params)
-            assert.equals(params.test_key, "test_val")
-        end)
-
-        it("should set command from function return value", function()
-            generator_args.command = function()
-                return "cat"
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({})
-
-            assert.stub(loop.spawn).was_called()
-            assert.equals(loop.spawn.calls[1].refs[1], "cat")
-            assert.equals(generator_args.command, "cat")
-        end)
-
-        it("should only set command once", function()
-            local count = 0
-            generator_args.command = function()
-                count = count + 1
-                return "cat"
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({})
-            generator.fn({})
-
-            assert.equals(count, 1)
-        end)
-
-        it("should call dynamic_command with params but not override original command", function()
-            local original_command
-            generator_args.dynamic_command = function(params)
-                original_command = params.command
-                return "tldr"
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({})
-
-            assert.equals(loop.spawn.calls[1].refs[1], "tldr")
-            assert.equals(generator_args.command, original_command)
-            assert.equals(generator_args.command, "cat")
-        end)
-
-        it("should not spawn command and return done if dynamic_command returns nil", function()
-            generator_args.dynamic_command = function()
-                return nil
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({}, done)
-
-            assert.stub(loop.spawn).was_not_called()
-            assert.stub(done).was_called()
-        end)
-
-        it("should call dynamic_command once on each run", function()
-            local count = 0
-            generator_args.dynamic_command = function()
-                count = count + 1
-                return "cat"
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({})
-            generator.fn({})
-
-            assert.equals(count, 2)
-        end)
-
-        it("should set generator.opts.command to function return value", function()
-            generator_args.command = function()
-                return "cat"
-            end
-
-            local generator = helpers.generator_factory(generator_args)
-            generator.fn({})
-
-            assert.equals(generator.opts.command, "cat")
+                assert.stub(done).was_called_with({ _should_deregister = true })
+            end)
         end)
 
         it("should set _last_args, _last_command, and _last_cwd from last resolved", function()
@@ -365,16 +422,6 @@ describe("helpers", function()
             assert.equals(generator.opts._last_command, "cat")
             assert.same(generator.opts._last_args, { "-b" })
             assert.same(generator.opts._last_cwd, vim.loop.cwd())
-        end)
-
-        it("should throw error if from_temp_file = true but to_temp_file is not", function()
-            generator_args.from_temp_file = true
-            local generator = helpers.generator_factory(generator_args)
-
-            local _, err = pcall(generator.fn, {})
-
-            assert.truthy(err)
-            assert.truthy(err:match("from_temp_file requires to_temp_file"))
         end)
 
         it("should set async to true", function()
@@ -974,28 +1021,6 @@ describe("helpers", function()
                 assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
                 -- Multiple calls should yield the same results
                 assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
-            end)
-
-            it("should wrap builtin with condition and return copy if callback returns true", function()
-                local wrapped_copy = builtin.with({
-                    condition = function()
-                        return true
-                    end,
-                })
-
-                assert.equals(type(wrapped_copy), "function")
-
-                assert.is_not.equals(wrapped_copy(), builtin)
-            end)
-
-            it("should return nil if callback returns false", function()
-                local wrapped_copy = builtin.with({
-                    condition = function()
-                        return false
-                    end,
-                })
-
-                assert.falsy(wrapped_copy())
             end)
         end)
 
