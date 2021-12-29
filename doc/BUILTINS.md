@@ -1351,7 +1351,7 @@ local sources = { null_ls.builtins.formatting.sqlformat }
 
 - `filetypes = { "sql" }`
 - `command = "sqlformat"`
-- `args = { "--reindent", "-" }`
+- `args = { "-" }`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
