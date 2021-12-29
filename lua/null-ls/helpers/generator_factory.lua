@@ -187,8 +187,7 @@ return function(opts)
         fn = function(params, done)
             local loop = require("null-ls.loop")
 
-            local client = require("null-ls.client").get_client()
-            local root = client and client.config.root_dir or vim.loop.cwd()
+            local root = u.get_root()
             params.root = root
 
             if not _validated then

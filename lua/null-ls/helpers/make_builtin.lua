@@ -78,8 +78,7 @@ local function make_builtin(opts)
             local executable_to_find = prefix and u.path.join(prefix, params.command) or params.command
             log:debug("attempting to find local executable " .. executable_to_find)
 
-            local client = require("null-ls.client").get_client()
-            local root = client and client.config.root_dir or vim.fn.getcwd()
+            local root = u.get_root()
 
             local found, resolved_cwd
             u.path.traverse_parents(params.bufname, function(dir)

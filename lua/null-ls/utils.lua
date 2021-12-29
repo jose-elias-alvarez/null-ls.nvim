@@ -139,7 +139,7 @@ M.make_params = function(original_params, method)
 end
 
 M.make_conditional_utils = function(params)
-    local root = params and params.root or vim.loop.cwd()
+    local root = params and params.root or M.get_root()
 
     return {
         root_has_file = function(...)
@@ -212,6 +212,11 @@ M.handle_function_opt = function(opt, ...)
     end
 
     return vim.deepcopy(opt)
+end
+
+M.get_root = function()
+    local client = require("null-ls.client").get_client()
+    return client and client.config.root_dir or vim.loop.cwd()
 end
 
 -- everything below is adapted from nvim-lspconfig's path utils
