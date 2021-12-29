@@ -19,6 +19,9 @@ return {
   cspell = {
     filetypes = {}
   },
+  editorconfig_checker = {
+    filetypes = {}
+  },
   eslint = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },
