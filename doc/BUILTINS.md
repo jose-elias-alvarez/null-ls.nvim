@@ -200,7 +200,7 @@ manually setting `cwd` to a function that should return your preferred `cwd`.
 ## Conditional registration
 
 null-ls supports dynamic registration, meaning that you can register sources
-whenever you want. To simplify this, built-ins have access to the `conditional`
+whenever you want. To simplify this, built-ins have access to the `condition`
 option, which should be a function that returns a boolean or `nil` indicating
 whether null-ls should register the source. null-ls will pass a single argument
 to the function, which is a table of utilities to handle common conditional
