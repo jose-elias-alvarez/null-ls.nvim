@@ -135,7 +135,7 @@ M.show_window = function()
     local lines = {}
 
     local header = {
-        "Null-LS",
+        "null-ls",
         "https://github.com/jose-elias-alvarez/null-ls.nvim",
     }
     table.insert(highlights, { "Label", header[1] })
