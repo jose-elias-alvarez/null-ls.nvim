@@ -5,109 +5,95 @@ local M = {}
 M.run = function(generators, params, opts, callback)
     local a = require("plenary.async")
 
-    local runner = function()
-        log:trace("running generators for method " .. params.method)
-
-        if vim.tbl_isempty(generators) then
-            log:debug("no generators available")
-            return {}
-        end
-
-        local futures, all_results = {}, {}
-        for _, generator in ipairs(generators) do
-            table.insert(futures, function()
-                local copied_params = vim.deepcopy(params)
-
-                local runtime_condition = generator.opts and generator.opts.runtime_condition
-                if runtime_condition and not runtime_condition(copied_params) then
-                    return
-                end
-
-                local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
-                local protected_call = generator.async and a.util.apcall or pcall
-                local ok, results = protected_call(to_run, copied_params)
-                a.util.scheduler()
-
-                if results then
-                    -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
-                    if results._generator_err then
-                        ok = false
-                        results = results._generator_err
-                    end
-
-                    -- allow generators to deregister their parent sources
-                    if results._should_deregister then
-                        results = nil
-                        vim.schedule(function()
-                            require("null-ls.sources").deregister({ id = generator.source_id })
-                        end)
-                    end
-                end
-
-                -- TODO: pass generator error trace
-                if not ok then
-                    log:warn("failed to run generator: " .. results)
-                    generator._failed = true
-                    return
-                end
-
-                results = results or {}
-                local postprocess, after_each = opts.postprocess, opts.after_each
-                for _, result in ipairs(results) do
-                    if postprocess then
-                        postprocess(result, copied_params, generator)
-                    end
-
-                    table.insert(all_results, result)
-                end
-
-                if after_each then
-                    after_each(results, copied_params, generator)
-                end
-            end)
-        end
-
-        a.util.join(futures)
-        return all_results
-    end
-
-    a.run(runner, function(results)
-        if callback then
-            callback(results, params)
-        end
-    end)
-end
-
-M.run_sequentially = function(generators, make_params, opts, callback)
-    local postprocess, after_each, after_all = opts.postprocess, opts.after_each, opts.after_all
-
-    local generator_index, wrapped_callback = 1, nil
-    local run_next = function()
-        local next_generator = generators[generator_index]
-        if not next_generator then
-            if after_all then
-                after_all()
-            end
+    local all_results = {}
+    local safe_callback = function()
+        if not callback then
             return
         end
-        -- schedule to make sure params reflect current buffer state
-        vim.schedule(function()
-            M.run(
-                { next_generator },
-                make_params(),
-                { postprocess = postprocess, after_each = after_each },
-                wrapped_callback
-            )
+
+        callback(all_results)
+    end
+
+    log:trace("running generators for method " .. params.method)
+
+    if vim.tbl_isempty(generators) then
+        log:debug("no generators available")
+        safe_callback()
+        return
+    end
+
+    local futures = {}
+    for _, generator in ipairs(generators) do
+        table.insert(futures, function()
+            local copied_params = vim.deepcopy(opts.make_params and opts.make_params() or params)
+
+            local runtime_condition = generator.opts and generator.opts.runtime_condition
+            if runtime_condition and not runtime_condition(copied_params) then
+                return
+            end
+
+            local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
+            local protected_call = generator.async and a.util.apcall or pcall
+            local ok, results = protected_call(to_run, copied_params)
+            a.util.scheduler()
+
+            if results then
+                -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
+                if results._generator_err then
+                    ok = false
+                    results = results._generator_err
+                end
+
+                -- allow generators to deregister their parent sources
+                if results._should_deregister and generator.source_id then
+                    results = nil
+                    vim.schedule(function()
+                        require("null-ls.sources").deregister({ id = generator.source_id })
+                    end)
+                end
+            end
+
+            -- TODO: pass generator error trace
+            if not ok then
+                log:warn("failed to run generator: " .. results)
+                generator._failed = true
+                return
+            end
+
+            results = results or {}
+            local postprocess, after_each = opts.postprocess, opts.after_each
+            for _, result in ipairs(results) do
+                if postprocess then
+                    postprocess(result, copied_params, generator)
+                end
+
+                table.insert(all_results, result)
+            end
+
+            if after_each then
+                after_each(results, copied_params, generator)
+            end
         end)
     end
 
-    wrapped_callback = function(...)
-        callback(...)
-        generator_index = generator_index + 1
-        run_next()
-    end
+    a.run(function()
+        if opts.sequential then
+            for _, future in ipairs(futures) do
+                future()
+            end
+        else
+            a.util.join(futures)
+        end
+    end, safe_callback)
+end
 
-    run_next()
+M.run_sequentially = function(generators, make_params, opts, callback)
+    M.run(generators, make_params(), {
+        sequential = true,
+        postprocess = opts.postprocess,
+        after_each = opts.after_each,
+        make_params = make_params,
+    }, callback)
 end
 
 M.run_registered = function(opts)

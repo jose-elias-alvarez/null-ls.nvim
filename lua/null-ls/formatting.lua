@@ -55,14 +55,14 @@ M.handler = function(method, original_params, handler)
             return params
         end
 
-        local callback = function(edits)
+        local after_each = function(edits)
             local ok, err = pcall(lsp.util.apply_text_edits, edits, temp_bufnr)
             if not ok then
                 handle_err(err)
             end
         end
 
-        local after_all = function()
+        local callback = function()
             local ok, err = pcall(function()
                 local edits = require("null-ls.diff").compute_diff(
                     u.buf.content(bufnr),
@@ -76,7 +76,7 @@ M.handler = function(method, original_params, handler)
                     log:trace(edits)
                 end
 
-                handler_wrapper(is_actual_edit and { edits })
+                handler_wrapper(is_actual_edit and { edits } or nil)
             end)
 
             if not ok then
@@ -91,8 +91,8 @@ M.handler = function(method, original_params, handler)
             method = methods.map[method],
             make_params = make_params,
             postprocess = postprocess,
+            after_each = after_each,
             callback = callback,
-            after_all = after_all,
         })
 
         original_params._null_ls_handled = true
