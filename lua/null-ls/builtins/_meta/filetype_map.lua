@@ -35,6 +35,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
   },
   cue = {
+    diagnostics = { "cue_fmt" },
     formatting = { "cue_fmt" }
   },
   d = {

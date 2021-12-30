@@ -19,6 +19,9 @@ return {
   cspell = {
     filetypes = {}
   },
+  cue_fmt = {
+    filetypes = { "cue" }
+  },
   editorconfig_checker = {
     filetypes = {}
   },
