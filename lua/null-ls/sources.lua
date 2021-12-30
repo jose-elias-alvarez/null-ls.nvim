@@ -1,5 +1,8 @@
 local diagnostics = require("null-ls.diagnostics")
+local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
+local s = require("null-ls.state")
+local u = require("null-ls.utils")
 
 local validate = vim.validate
 
@@ -35,9 +38,24 @@ local register_source = function(source)
         return
     end
 
-    registered.id = registered.id + 1
-    source.id = registered.id
-    source.generator.source_id = registered.id
+    if source.condition then
+        local condition = source.condition
+        source.try_register = function()
+            if condition(u.make_conditional_utils()) then
+                log:debug("registering conditional source " .. source.name)
+                M.register(source)
+            else
+                log:debug("not registering conditional source " .. source.name)
+            end
+
+            source.try_register = nil
+        end
+
+        -- prevent infinite loop
+        source.condition = nil
+        s.push_conditional_source(source)
+        return
+    end
 
     table.insert(registered.sources, source)
     registered.names[source.name] = true
@@ -168,15 +186,21 @@ M.validate_and_transform = function(source)
         end
     end
 
+    if source._validated then
+        return source
+    end
+
+    local filetypes, disabled_filetypes, condition = source.filetypes, source.disabled_filetypes, source.condition
+    local source_methods = type(source.method) == "table" and source.method or { source.method }
+
     local generator, name = source.generator, source.name or "anonymous source"
     generator.opts = generator.opts or {}
-    local source_methods = type(source.method) == "table" and source.method or { source.method }
-    local filetypes, disabled_filetypes = source.filetypes, source.disabled_filetypes
 
     validate({
         generator = { generator, "table" },
         filetypes = { filetypes, "table" },
         disabled_filetypes = { disabled_filetypes, "table", true },
+        condition = { condition, "function", true },
         name = { name, "string" },
         fn = { generator.fn, "function" },
         opts = { generator.opts, "table" },
@@ -218,16 +242,26 @@ M.validate_and_transform = function(source)
         method_map[method] = true
     end
 
+    registered.id = registered.id + 1
+    local id = registered.id
+    generator.source_id = id
+
     return {
+        id = id,
         name = name,
         generator = generator,
         filetypes = filetype_map,
         methods = method_map,
+        condition = condition,
+        _validated = true,
     }
 end
 
 M.register = function(to_register)
-    if type(to_register) == "function" or (type(to_register) == "table" and to_register.method) then
+    if
+        type(to_register) == "function"
+        or (type(to_register) == "table" and (to_register.method or to_register._validated))
+    then
         -- register a single source
         register_source(to_register)
     elseif not to_register.sources then
