@@ -36,7 +36,7 @@ M.run = function(generators, params, opts, callback)
                     end
 
                     -- allow generators to deregister their parent sources
-                    if results._should_deregister then
+                    if results._should_deregister and generator.source_id then
                         results = nil
                         vim.schedule(function()
                             require("null-ls.sources").deregister({ id = generator.source_id })
