@@ -994,7 +994,7 @@ local sources = { null_ls.builtins.formatting.mix }
 - `command = "mix"`
 - `args = { "format", "-" }`
 
-#### [mypy](mypy-lang.org)
+#### [mypy](https://github.com/python/mypy)
 
 ##### About
 
