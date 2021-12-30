@@ -216,7 +216,6 @@ describe("e2e", function()
 
         local formatted = 'import { User } from "./test-types";\n'
 
-        local bufnr
         before_each(function()
             sources.register(builtins.formatting.prettier)
 
@@ -224,7 +223,6 @@ describe("e2e", function()
             -- make sure file wasn't accidentally saved
             assert.is_not.equals(u.buf.content(nil, true), formatted)
 
-            bufnr = api.nvim_get_current_buf()
             lsp_wait()
         end)
 
@@ -233,44 +231,6 @@ describe("e2e", function()
             lsp_wait(500)
 
             assert.equals(u.buf.content(nil, true), formatted)
-        end)
-
-        it("should keep marks", function()
-            -- set mark at end of line
-            vim.cmd("normal $ma")
-
-            local start_pos
-            for _, mark in pairs(vim.fn.getmarklist(bufnr)) do
-                if mark.mark == "'a" then
-                    start_pos = mark.pos
-                end
-            end
-            assert.truthy(start_pos)
-
-            lsp.buf.formatting()
-            lsp_wait()
-
-            local found = false
-            for _, mark in pairs(vim.fn.getmarklist(bufnr)) do
-                if mark.mark == "'a" then
-                    found = true
-                    assert.same(start_pos, mark.pos)
-                end
-            end
-            assert.truthy(found)
-        end)
-
-        it("should keep cursor position in other window", function()
-            local pos = { 1, 5 }
-            vim.cmd("vsplit")
-            local split_win = api.nvim_get_current_win()
-            api.nvim_win_set_cursor(split_win, pos)
-            vim.cmd("wincmd w")
-
-            lsp.buf.formatting()
-            lsp_wait()
-
-            assert.same(api.nvim_win_get_cursor(split_win), pos)
         end)
 
         describe("from_temp_file", function()
@@ -291,7 +251,7 @@ describe("e2e", function()
 
             it("should format file", function()
                 lsp.buf.formatting()
-                lsp_wait(500)
+                lsp_wait(600)
 
                 assert.equals(u.buf.content(nil, true), formatted)
             end)
@@ -502,6 +462,19 @@ describe("e2e", function()
             lsp_wait(0)
 
             assert.equals(u.buf.content(nil, true), "sequential\n")
+        end)
+
+        it("should only create one undo step", function()
+            sources.register(builtins._test.first_formatter)
+            sources.register(builtins._test.second_formatter)
+            tu.edit_test_file("test-file.txt")
+            lsp_wait(0)
+            lsp.buf.formatting()
+            lsp_wait(0)
+
+            vim.cmd("silent normal u")
+
+            assert.equals(u.buf.content(nil, true), "intentionally left blank\n")
         end)
 
         it("should format file according to source order", function()

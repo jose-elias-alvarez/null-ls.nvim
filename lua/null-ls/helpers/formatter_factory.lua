@@ -15,16 +15,7 @@ return function(opts)
             return done()
         end
 
-        return done({
-            {
-                row = 1,
-                col = 1,
-                -- wraps to end of document
-                end_row = #params.content + 1,
-                end_col = 1,
-                text = output,
-            },
-        })
+        return done({ { text = output } })
     end
 
     return require("null-ls.helpers").generator_factory(opts)
