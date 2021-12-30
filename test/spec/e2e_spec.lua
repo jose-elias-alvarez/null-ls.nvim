@@ -251,7 +251,7 @@ describe("e2e", function()
 
             it("should format file", function()
                 lsp.buf.formatting()
-                lsp_wait(600)
+                lsp_wait(800)
 
                 assert.equals(u.buf.content(nil, true), formatted)
             end)
@@ -459,7 +459,7 @@ describe("e2e", function()
             lsp_wait(0)
 
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(100)
 
             assert.equals(u.buf.content(nil, true), "sequential\n")
         end)
@@ -470,7 +470,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             lsp_wait(0)
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(100)
 
             vim.cmd("silent normal u")
 
@@ -484,7 +484,7 @@ describe("e2e", function()
             lsp_wait(0)
 
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(100)
 
             assert.equals(u.buf.content(nil, true), "first\n")
         end)
@@ -501,7 +501,7 @@ describe("e2e", function()
             lsp_wait(0)
 
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(50)
 
             assert.equals(#sources.get({}), 1)
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -517,7 +517,7 @@ describe("e2e", function()
             lsp_wait(0)
 
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(50)
 
             assert.equals(#sources.get({}), 0)
             assert.equals(u.buf.content(nil, true), "intentionally left blank\n")
@@ -534,7 +534,7 @@ describe("e2e", function()
             lsp_wait()
 
             lsp.buf.formatting()
-            lsp_wait()
+            lsp_wait(100)
 
             assert.equals(#sources.get({}), 2)
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -557,7 +557,7 @@ describe("e2e", function()
 
         it("should use client handler", function()
             lsp.buf.formatting()
-            lsp_wait(0)
+            lsp_wait(50)
 
             assert.stub(mock_handler).was_called()
         end)

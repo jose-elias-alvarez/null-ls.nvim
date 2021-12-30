@@ -7,7 +7,9 @@ return h.make_builtin({
     method = FORMATTING,
     generator = {
         fn = function(_, done)
-            return done({ { text = "first" } })
+            vim.defer_fn(function()
+                return done({ { text = "first" } })
+            end, math.random(50))
         end,
         async = true,
     },
