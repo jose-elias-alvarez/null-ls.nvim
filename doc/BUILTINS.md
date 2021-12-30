@@ -1826,6 +1826,24 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 - `command = "cspell"`
 - `args = function(params) return { "--language-id", params.ft, "stdin" } end,`
 
+#### [cue fmt](https://github.com/cue-lang/cue)
+
+##### About
+
+Report on formatting errors in `.cue` language files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cue_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "cue" }`
+- `command = "cue"`
+- `args = { "fmt", "$FILENAME" }`
+
 #### [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
 ##### About

@@ -27,12 +27,12 @@ describe("diagnostics", function()
     describe("credo", function()
         local linter = diagnostics.credo
         local parser = linter._opts.on_output
-        local diagnostics
+        local credo_diagnostics
         local done = function(_diagnostics)
-            diagnostics = _diagnostics
+            credo_diagnostics = _diagnostics
         end
         after_each(function()
-            diagnostics = nil
+            credo_diagnostics = nil
         end)
 
         it("should create a diagnostic with error severity", function()
@@ -63,7 +63,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 1,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should create a diagnostic with warning severity", function()
             local output = [[
@@ -91,7 +91,7 @@ describe("diagnostics", function()
                     end_col = 13,
                     severity = 2,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should create a diagnostic with information severity", function()
             local output = [[
@@ -119,7 +119,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 3,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should create a diagnostic falling back to hint severity", function()
             local output = [[
@@ -147,7 +147,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 4,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("returns errors as diagnostics", function()
             local error =
@@ -159,7 +159,7 @@ describe("diagnostics", function()
                     message = error,
                     row = 1,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should handle compile warnings preceeding output", function()
             local output = [[
@@ -191,7 +191,7 @@ describe("diagnostics", function()
                     end_col = nil,
                     severity = 1,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should handle messages with incomplete json", function()
             local output = [[Some incomplete message that shouldn't really happen { "issues": ]]
@@ -202,7 +202,7 @@ describe("diagnostics", function()
                     message = output,
                     row = 1,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
         it("should handle messages without json", function()
             local output = [[Another message that shouldn't really happen]]
@@ -213,7 +213,7 @@ describe("diagnostics", function()
                     message = output,
                     row = 1,
                 },
-            }, diagnostics)
+            }, credo_diagnostics)
         end)
     end)
 
@@ -468,7 +468,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            local output = vim.json.decode([[ 
+            local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -506,7 +506,7 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
         it("should create a diagnostic with error severity", function()
-            local output = vim.json.decode([[ 
+            local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -751,6 +751,33 @@ describe("diagnostics", function()
                 severity = 1,
                 message = "found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.",
             }, diagnostic)
+        end)
+    end)
+
+    describe("cue_fmt", function()
+        local linter = diagnostics.cue_fmt
+        local parser = linter._opts.on_output
+        local cue_fmt_diagnostics
+        local done = function(_diagnostics)
+            cue_fmt_diagnostics = _diagnostics
+        end
+
+        it("should create a diagnostic", function()
+            local output = vim.trim([[
+            expected label or ':', found 'INT' 42:
+                ../../../../../../../tmp/null-ls_GLJOFJ.cue:3:2
+            ]])
+            parser({ output = output }, done)
+            assert.are.same({
+                {
+                    row = "3",
+                    col = "2",
+                    end_col = 3,
+                    severity = 1,
+                    message = "expected label or ':', found 'INT' 42:",
+                    source = "cue_fmt",
+                },
+            }, cue_fmt_diagnostics)
         end)
     end)
 end)
