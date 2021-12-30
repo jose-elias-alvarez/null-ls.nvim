@@ -50,12 +50,12 @@ null_ls.setup({ sources = sources })
 ```
 
 To run built-in sources, the command specified below must be available on your
-`$PATH` and visible to Neovim. For example, to check if `eslint` is available,
+`$PATH` and visible to Neovim. For example, to check if `stylua` is available,
 run the following (Vim, not Lua) command:
 
 ```vim
 " should echo 1 if available (and 0 if not)
-:echo executable("eslint")
+:echo executable("stylua")
 ```
 
 ## Configuration
@@ -661,6 +661,7 @@ local sources = { null_ls.builtins.formatting.eslint }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "--fix-dry-run", "--format", "JSON", "--stdin", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [eslint_d](https://github.com/mantoni/eslint_d.js)
 
@@ -679,6 +680,7 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint_d"`
 - `args = { "--fix-to-stdout", "--stdin", "--stdin-filepath", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [fish_indent](https://linux.die.net/man/1/fish_indent)
 
@@ -1203,6 +1205,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier"`
 - `args = { "--stdin-filepath", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [prettier_d_slim](https://github.com/mikew/prettier_d_slim)
 
@@ -1225,6 +1228,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettier_d_slim"`
 - `args = { "--stdin", "--stdin-filepath", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [prettierd](https://github.com/fsouza/prettierd)
 
@@ -1245,6 +1249,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "yaml", "markdown", "graphql" }`
 - `command = "prettierd"`
 - `args = { "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [prettier-standard](https://github.com/sheerun/prettier-standard)
 
@@ -1262,8 +1267,9 @@ local sources = { null_ls.builtins.formatting.prettier_standard }
 ##### Defaults
 
 - `filetypes = { "javascript", "javascriptreact" }`
-- `command = "prettier-standard"`
+- `command = "prettier_standard"`
 - `args = { "--stdin" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [prismaFmt](https://github.com/prisma/prisma-engines)
 
@@ -1396,6 +1402,7 @@ local sources = { null_ls.builtins.formatting.rustywind }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "html", }`
 - `command = "rustywind"`
 - `args = { "--stdin" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [scalafmt](https://github.com/scalameta/scalafmt)
 
@@ -1920,6 +1927,7 @@ local sources = { null_ls.builtins.diagnostics.eslint }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [eslint_d](https://github.com/mantoni/eslint_d.js/)
 
@@ -1938,6 +1946,7 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint_d"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [flake8](https://github.com/PyCQA/flake8)
 
@@ -2290,6 +2299,7 @@ local sources = { null_ls.builtins.diagnostics.standardjs }
 - `filetypes = { "javascript", "javascriptreact" }`
 - `command = "standard"`
 - `args = { "--stdin" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [standardrb](https://github.com/testdouble/standard)
 
@@ -2344,6 +2354,7 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 - `filetypes = { "scss", "less", "css", "sass" }`
 - `command = "stylelint"`
 - `args = { "--formatter", "json", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [teal](https://github.com/teal-language/tl)
 
@@ -2609,6 +2620,7 @@ local sources = { null_ls.builtins.code_actions.eslint }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [eslint_d](https://github.com/mantoni/eslint_d.js)
 
@@ -2628,6 +2640,7 @@ local sources = { null_ls.builtins.code_actions.eslint_d }
 - `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }`
 - `command = "eslint_d"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
 
