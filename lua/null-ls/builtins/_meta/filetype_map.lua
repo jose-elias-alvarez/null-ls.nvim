@@ -82,7 +82,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   haskell = {
-    formatting = { "brittany" }
+    formatting = { "brittany", "fourmolu" }
   },
   html = {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }

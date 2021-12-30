@@ -70,6 +70,9 @@ return {
   format_r = {
     filetypes = { "r", "rmd" }
   },
+  fourmolu = {
+    filetypes = { "haskell" }
+  },
   fprettify = {
     filetypes = { "fortran" }
   },

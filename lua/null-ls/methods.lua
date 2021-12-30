@@ -46,16 +46,6 @@ local overrides = {
     },
 }
 
-local readable_map = {
-    [internal_methods.CODE_ACTION] = "Code actions",
-    [internal_methods.DIAGNOSTICS] = "Diagnostics",
-    [internal_methods.DIAGNOSTICS_ON_SAVE] = "Diagnostics on save",
-    [internal_methods.FORMATTING] = "Formatting",
-    [internal_methods.RANGE_FORMATTING] = "Range formatting",
-    [internal_methods.HOVER] = "Hover",
-    [internal_methods.COMPLETION] = "Completion",
-}
-
 -- extracted from Neovim's lsp.lua
 local request_name_to_capability = {
     ["textDocument/hover"] = "hover",
@@ -84,7 +74,6 @@ local M = {}
 M.lsp = lsp_methods
 M.internal = internal_methods
 M.map = lsp_to_internal_map
-M.readable = readable_map
 M.overrides = overrides
 M.request_name_to_capability = request_name_to_capability
 
