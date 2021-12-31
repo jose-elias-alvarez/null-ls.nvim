@@ -12,34 +12,15 @@ local function make_builtin(opts)
         vim.deepcopy(opts.generator_opts) or {},
         vim.deepcopy(opts.generator) or {}
 
-    factory = factory
-        or function()
-            -- factory is responsible for handling conditions,
-            -- so we wrap it manually if unspecified
-            if condition then
-                local original_fn = generator.fn
-                generator.fn = function(params, done)
-                    local should_register = condition(u.make_conditional_utils(params), params)
-                    if not should_register then
-                        if generator.async then
-                            return done({ _should_deregister = true })
-                        end
-                        return { _should_deregister = true }
-                    end
-
-                    return original_fn(params, done)
-                end
-            end
-
-            generator.opts = generator_opts
-            return generator
-        end
+    factory = factory or function()
+        generator.opts = generator_opts
+        return generator
+    end
 
     -- merge valid user opts w/ generator opts
     generator_opts = vim.tbl_deep_extend("force", generator_opts, {
         args = opts.args,
         command = opts.command,
-        condition = opts.condition,
         cwd = opts.cwd,
         diagnostics_format = opts.diagnostics_format,
         dynamic_command = opts.dynamic_command,
@@ -49,9 +30,10 @@ local function make_builtin(opts)
 
     local builtin = {
         method = method,
-        name = opts.name or generator_opts.command,
         filetypes = filetypes,
         disabled_filetypes = disabled_filetypes,
+        condition = condition,
+        name = opts.name or generator_opts.command,
         _opts = generator_opts,
     }
 

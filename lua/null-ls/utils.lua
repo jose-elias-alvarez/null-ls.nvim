@@ -140,8 +140,8 @@ M.make_params = function(original_params, method)
     return params
 end
 
-M.make_conditional_utils = function(params)
-    local root = params and params.root or M.get_root()
+M.make_conditional_utils = function()
+    local root = M.get_root()
 
     return {
         root_has_file = function(...)
@@ -217,8 +217,26 @@ M.handle_function_opt = function(opt, ...)
 end
 
 M.get_root = function()
+    local root
+
+    -- prefer getting from client
     local client = require("null-ls.client").get_client()
-    return client and client.config.root_dir or vim.loop.cwd()
+    if client then
+        root = client.config.root_dir
+    end
+
+    -- if in named buffer, resolve directly from root_dir
+    if not root then
+        local fname = api.nvim_buf_get_name(0)
+        if fname ~= "" then
+            root = require("null-ls.config").get().root_dir(fname)
+        end
+    end
+
+    -- fall back to cwd
+    root = root or vim.loop.cwd()
+
+    return root
 end
 
 -- everything below is adapted from nvim-lspconfig's path utils

@@ -507,7 +507,7 @@ describe("e2e", function()
             assert.equals(u.buf.content(nil, true), "first\n")
         end)
 
-        it("should deregister and not run formatter that fails condition", function()
+        it("should not register formatter that fails condition", function()
             sources.register(builtins._test.first_formatter.with({
                 condition = function()
                     return false

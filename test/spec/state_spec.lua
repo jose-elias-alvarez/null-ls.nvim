@@ -216,4 +216,51 @@ describe("state", function()
             end)
         end)
     end)
+
+    describe("conditional sources", function()
+        local mock_source = {
+            try_register = stub.new(),
+        }
+        after_each(function()
+            mock_source.try_register:clear()
+        end)
+
+        describe("push_conditional_source", function()
+            it("should add source to table", function()
+                s.push_conditional_source(mock_source)
+
+                assert.equals(#s.get().conditional_sources, 1)
+            end)
+        end)
+
+        describe("has_conditional_sources", function()
+            it("should return false if no sources", function()
+                assert.falsy(s.has_conditional_sources())
+            end)
+
+            it("should return true if has sources", function()
+                s.push_conditional_source(mock_source)
+
+                assert.truthy(s.has_conditional_sources())
+            end)
+        end)
+
+        describe("register_conditional_sources", function()
+            it("should call source.try_register on pushed sources", function()
+                s.push_conditional_source(mock_source)
+
+                s.register_conditional_sources()
+
+                assert.stub(mock_source.try_register).was_called()
+            end)
+
+            it("should clear conditional source table", function()
+                s.push_conditional_source(mock_source)
+
+                s.register_conditional_sources()
+
+                assert.falsy(s.has_conditional_sources())
+            end)
+        end)
+    end)
 end)

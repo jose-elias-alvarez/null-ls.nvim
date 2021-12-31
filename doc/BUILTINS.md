@@ -268,9 +268,8 @@ local sources = {
 For more information, see `condition` in [HELPERS](./HELPERS.md).
 
 Note that if you pass conditional sources into `null_ls.setup`, null-ls will
-register them on setup, then check the condition when the source first runs and
-deregister them if the check fails. After a successful or failed check, null-ls
-will not check the same condition again.
+check the condition at the first opportunity (typically upon entering a named
+buffer). After checking, null-ls will not check the same condition again.
 
 ### `runtime_condition`
 
