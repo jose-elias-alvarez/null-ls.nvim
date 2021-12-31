@@ -12,6 +12,7 @@ local get_client = function()
 end
 
 return h.make_builtin({
+    name = "tsc",
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "typescript", "typescriptreact" },
     generator_opts = {

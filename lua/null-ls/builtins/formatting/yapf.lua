@@ -24,6 +24,7 @@ local function range_formatting_args_factory(base_args, start_arg)
 end
 
 return h.make_builtin({
+    name = "yapf",
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "python" },
     generator_opts = {

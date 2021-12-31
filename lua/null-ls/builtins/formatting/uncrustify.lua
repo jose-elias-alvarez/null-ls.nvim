@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "uncrustify",
     method = FORMATTING,
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {

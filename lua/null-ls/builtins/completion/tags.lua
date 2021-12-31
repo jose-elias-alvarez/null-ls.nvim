@@ -5,9 +5,9 @@ local utils = require("null-ls.utils")
 local COMPLETION = methods.internal.COMPLETION
 
 return h.make_builtin({
+    name = "tags",
     method = COMPLETION,
     filetypes = {},
-    name = "tags",
     generator_opts = {
         runtime_condition = function(_)
             return #vim.fn.tagfiles() > 0

@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
+    name = "cppcheck",
     method = DIAGNOSTICS,
     filetypes = { "cpp", "c" },
     generator_opts = {

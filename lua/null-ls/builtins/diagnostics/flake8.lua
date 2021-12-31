@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
+    name = "flake8",
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

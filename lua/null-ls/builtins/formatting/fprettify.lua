@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "fprettify",
     method = FORMATTING,
     filetypes = { "fortran" },
     generator_opts = {

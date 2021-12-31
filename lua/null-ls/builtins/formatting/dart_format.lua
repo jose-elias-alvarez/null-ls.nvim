@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "dart_format",
     method = FORMATTING,
     filetypes = { "dart" },
     generator_opts = {
