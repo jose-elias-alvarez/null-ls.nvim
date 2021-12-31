@@ -199,14 +199,11 @@ M.validate_and_transform = function(source)
         return source
     end
 
-    local filetypes, disabled_filetypes, condition = source.filetypes, source.disabled_filetypes, source.condition
-    local source_methods = type(source.method) == "table" and source.method or { source.method }
-
     local generator, name = source.generator, source.name or "anonymous source"
     generator.opts = generator.opts or {}
     generator.opts.name = name
     local source_methods = type(source.method) == "table" and source.method or { source.method }
-    local filetypes, disabled_filetypes = source.filetypes, source.disabled_filetypes
+    local condition, filetypes, disabled_filetypes = source.condition, source.filetypes, source.disabled_filetypes
 
     validate({
         generator = { generator, "table" },
