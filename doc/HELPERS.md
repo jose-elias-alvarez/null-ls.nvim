@@ -272,8 +272,6 @@ A function called when the user registers the source. Intended for use with the
 helper `factory` functions described above, but any function that returns a
 valid generator will work.
 
-Note that if defined, `factory` should handle `condition` (described above)
-
 ### filetypes
 
 A list of filetypes for the source, as described in [MAIN](MAIN.md).
