@@ -36,13 +36,9 @@ which runs in response to a request matching the source's method, and a list of
 To see a list of active sources for the current buffer in a human-readable
 format, use the command `:NullLsInfo`.
 
-You can also programatically get the same information using the Lua method
-`require("null-ls.info").get_active_sources()`, which returns a table where each
-key is a null-ls method (see below) and each value is a list containing the name
-of each active source.
-
-Sources must be
-**registered**, either by the user or by an integration, before they are active.
+Sources must be **registered**, either by the user or by an integration, before
+they are active. You can get, set, and manipulate sources using the source API,
+as described in [SOURCES](./SOURCES.md).
 
 Sources can also define a **name**, which allows integrations to see if sources
 null-ls has already registered their sources to prevent duplicate registration.

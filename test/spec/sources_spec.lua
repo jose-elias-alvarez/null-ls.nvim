@@ -421,7 +421,7 @@ describe("sources", function()
         before_each(function()
             mock_source = {
                 generator = { fn = function() end, opts = {}, async = false },
-                name = "mock generator",
+                name = "mock source",
                 filetypes = { "lua" },
                 method = methods.internal.FORMATTING,
             }
@@ -468,13 +468,13 @@ describe("sources", function()
             assert.equals(validated.name, "anonymous source")
         end)
 
-        it("should set default generator opts", function()
+        it("should set default generator opts + name", function()
             mock_source.generator.opts = nil
 
             local validated = sources.validate_and_transform(mock_source)
 
             assert.truthy(validated)
-            assert.same(validated.generator.opts, {})
+            assert.same(validated.generator.opts, { name = mock_source.name })
         end)
 
         it("should handle function source", function()
