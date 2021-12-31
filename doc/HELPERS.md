@@ -28,7 +28,6 @@ helpers.generator_factory({
     args, -- table (optional)
     check_exit_code, -- function or table of numbers (optional)
     command, -- string or function
-    condition, -- function (optional)
     cwd, -- function (optional)
     dynamic_command, -- function (optional)
     format, -- "raw", "line", "json", or "json_raw" (optional)
@@ -88,26 +87,6 @@ editor status) and returns a command string.
 If `command` is a function, it will run once when the generator first runs and
 keep the same return value as long as the same Neovim instance is running,
 making it suitable for resolving executables based on the current project.
-
-### condition
-
-An optional callback that accepts one argument, a table of utils to handle
-common conditional checks:
-
-- `utils.root_has_file`: accepts either a table (indicating more than one file)
-  or a string (indicating a single file). Returns `true` if at least one file
-  exists at the project's root.
-
-- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
-  the root matches the specified pattern.
-
-null-ls will first register the source, then check `condition` when the source
-first runs. If `condition` returns a truthy value, the source will run and
-remain registered. If not, null-ls will deregister the source.
-
-Once checked, null-ls will not check the same conditional source again. To check
-a condition more than once (i.e. in a monorepo), use `runtime_condition`
-(described below).
 
 ### cwd
 
