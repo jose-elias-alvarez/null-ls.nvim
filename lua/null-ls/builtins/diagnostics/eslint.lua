@@ -1,4 +1,3 @@
--- this and builtins/diagnostics/eslint_d.lua should be kept in sync
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
