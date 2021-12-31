@@ -355,12 +355,6 @@ describe("utils", function()
                 assert.falsy(utils.root_has_file("other%-plugin"))
             end)
         end)
-
-        it("should get root from params if available", function()
-            local param_specific_utils = u.make_conditional_utils({ root = "mock-root" })
-
-            assert.truthy(param_specific_utils.root_matches("mock"))
-        end)
     end)
 
     describe("buf", function()
@@ -479,6 +473,44 @@ describe("utils", function()
             local ret = u.handle_function_opt(opt)
 
             assert.equals(ret, opt)
+        end)
+    end)
+
+    describe("get_root", function()
+        local get_client = stub(require("null-ls.client"), "get_client")
+        local nvim_buf_get_name = stub(vim.api, "nvim_buf_get_name")
+
+        before_each(function()
+            nvim_buf_get_name.returns("")
+        end)
+
+        after_each(function()
+            get_client.returns(nil)
+            get_client:clear()
+
+            nvim_buf_get_name:clear()
+        end)
+
+        it("should get root from client", function()
+            get_client.returns({ config = { root_dir = "client_root" } })
+
+            local root = u.get_root()
+
+            assert.equals(root, "client_root")
+        end)
+
+        it("should get root from config", function()
+            nvim_buf_get_name.returns(test_utils.test_dir)
+
+            local root = u.get_root()
+
+            assert.equals(root, c.get().root_dir(test_utils.test_dir))
+        end)
+
+        it("should fall back to cwd", function()
+            local root = u.get_root()
+
+            assert.equals(root, vim.loop.cwd())
         end)
     end)
 end)
