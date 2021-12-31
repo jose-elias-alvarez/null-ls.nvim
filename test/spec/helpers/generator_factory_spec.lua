@@ -399,43 +399,6 @@ describe("generator_factory", function()
         end)
     end)
 
-    describe("condition", function()
-        it("should call condition with conditional utils and params", function()
-            local condition = stub.new()
-            generator_opts.condition = condition
-
-            local generator = helpers.generator_factory(generator_opts)
-            generator.fn({}, done)
-
-            local utils = condition.calls[1].refs[1]
-            assert.truthy(type(utils) == "table")
-            local params = condition.calls[1].refs[2]
-            assert.equals(params.root, root)
-        end)
-
-        it("should run normally if condition returns true", function()
-            generator_opts.condition = function()
-                return true
-            end
-
-            local generator = helpers.generator_factory(generator_opts)
-            generator.fn({}, done)
-
-            assert.stub(done).was_not_called()
-        end)
-
-        it("should trigger deregistration if condition returns falsy value", function()
-            generator_opts.condition = function()
-                return false
-            end
-
-            local generator = helpers.generator_factory(generator_opts)
-            generator.fn({}, done)
-
-            assert.stub(done).was_called_with({ _should_deregister = true })
-        end)
-    end)
-
     it("should set _last_args, _last_command, and _last_cwd from last resolved", function()
         generator_opts.command = function()
             return "cat"

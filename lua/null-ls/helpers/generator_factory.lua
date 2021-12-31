@@ -99,7 +99,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 return function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files, condition =
+    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files =
         opts.command,
         opts.args,
         opts.on_output,
@@ -115,8 +115,7 @@ return function(opts)
         opts.runtime_condition,
         opts.cwd,
         opts.dynamic_command,
-        opts.multiple_files,
-        opts.condition
+        opts.multiple_files
 
     if type(check_exit_code) == "table" then
         local codes = check_exit_code
@@ -154,7 +153,6 @@ return function(opts)
             runtime_condition = { runtime_condition, "function", true },
             cwd = { cwd, "function", true },
             dynamic_command = { dynamic_command, "function", true },
-            condition = { condition, "function", true },
         })
 
         if not validated then
@@ -174,10 +172,6 @@ return function(opts)
                 log:error(err_msg)
                 return false
             end
-        end
-
-        if condition then
-            return condition(u.make_conditional_utils(params), params)
         end
 
         return true

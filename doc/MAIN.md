@@ -43,8 +43,10 @@ as described in [SOURCES](./SOURCES.md).
 Sources can also define a **name**, which allows integrations to see if sources
 null-ls has already registered their sources to prevent duplicate registration.
 
-The document describes methods, filetypes, registration, and names below.
-It describes generators separately in the [generators](#generators) section.
+Sources may define a **condition**, which determines whether null-ls should
+register the source.
+
+The document describes these parameters below.
 
 ### Methods
 
@@ -157,6 +159,26 @@ print(null_ls.is_registered(name)) -- false
 null_ls.register({ name = "my-sources", ... })
 print(null_ls.is_registered(name)) -- true
 ```
+
+### Conditions
+
+A source may define a condition, which is an optional callback that accepts one
+argument. The argument (described here as `utils`) is a table of utilities to
+handle common conditional checks.
+
+- `utils.root_has_file`: accepts either a table (indicating more than one file)
+  or a string (indicating a single file). Returns `true` if at least one file
+  exists at the project's root.
+
+- `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
+  the root matches the specified pattern.
+
+On registration, null-ls will store conditional sources in state and check
+`condition` at the first opportunity (typically upon entering a named buffer).
+If `condition` returns a truthy value at that point, null-ls will register the
+source.
+
+Once checked, null-ls will not check the same condition again.
 
 ## Generators
 

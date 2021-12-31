@@ -2,16 +2,18 @@ local mock = require("luassert.mock")
 
 local methods = require("null-ls.methods")
 
-local diagnostics = mock(require("null-ls.diagnostics"), true)
 local client = mock(require("null-ls.client"), true)
+local diagnostics = mock(require("null-ls.diagnostics"), true)
+local s = mock(require("null-ls.state"), true)
 
 describe("sources", function()
     local sources = require("null-ls.sources")
 
     after_each(function()
-        diagnostics.hide_source_diagnostics:clear()
         client.on_source_change:clear()
         client.update_filetypes:clear()
+        diagnostics.hide_source_diagnostics:clear()
+        s.push_conditional_source:clear()
 
         sources._reset()
     end)
@@ -439,6 +441,14 @@ describe("sources", function()
             assert.same(validated.methods, { [methods.internal.FORMATTING] = true })
         end)
 
+        it("should return immediately if source is already validated", function()
+            mock_source._validated = true
+
+            local validated = sources.validate_and_transform(mock_source)
+
+            assert.equals(mock_source, validated)
+        end)
+
         it("should set disabled filetypes", function()
             mock_source.disabled_filetypes = { "teal" }
 
@@ -645,6 +655,72 @@ describe("sources", function()
             local found = find_source("mock source")
             assert.truthy(found)
             assert.same(found.filetypes, { ["txt"] = true, ["markdown"] = true })
+        end)
+
+        describe("condition", function()
+            local mock_source
+            before_each(function()
+                mock_source = {
+                    generator = { fn = function() end, opts = {}, async = false },
+                    name = "mock source",
+                    filetypes = { "lua" },
+                    method = methods.internal.FORMATTING,
+                }
+            end)
+
+            it("should push source to state instead of registering", function()
+                mock_source.condition = function() end
+
+                sources.register(mock_source)
+
+                assert.stub(s.push_conditional_source).was_called()
+                assert.equals(#sources.get({}), 0)
+            end)
+
+            it("should remove source condition and add try_register", function()
+                mock_source.condition = function() end
+                sources.register(mock_source)
+
+                local transformed = s.push_conditional_source.calls[1].refs[1]
+
+                assert.truthy(type(transformed.try_register) == "function")
+                assert.truthy(type(transformed.condition) == "nil")
+            end)
+
+            it("should clear try_register on call", function()
+                mock_source.condition = function() end
+                sources.register(mock_source)
+
+                local transformed = s.push_conditional_source.calls[1].refs[1]
+                transformed.try_register()
+
+                assert.truthy(type(transformed.try_register) == "nil")
+            end)
+
+            it("should register source on try_register if condition passes", function()
+                mock_source.condition = function()
+                    return true
+                end
+                sources.register(mock_source)
+
+                local transformed = s.push_conditional_source.calls[1].refs[1]
+                transformed.try_register()
+
+                assert.equals(#sources.get({}), 1)
+            end)
+
+            it("should not register source on try_register if condition fails", function()
+                mock_source.condition = function()
+                    return false
+                end
+                sources.register(mock_source)
+
+                local transformed = s.push_conditional_source.calls[1].refs[1]
+                assert.truthy(type(transformed.try_register) == "function")
+                transformed.try_register()
+
+                assert.equals(#sources.get({}), 0)
+            end)
         end)
 
         describe("is_registered", function()

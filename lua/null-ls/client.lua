@@ -1,6 +1,7 @@
 local c = require("null-ls.config")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
+local s = require("null-ls.state")
 local sources = require("null-ls.sources")
 local u = require("null-ls.utils")
 
@@ -158,9 +159,15 @@ end
 
 M.on_source_change = vim.schedule_wrap(function()
     local current_bufnr = api.nvim_get_current_buf()
+
     u.buf.for_each_bufnr(function(bufnr)
         if bufnr == current_bufnr then
             M.retry_add(bufnr)
+
+            -- if in named buffer, we can register conditional sources immediately
+            if s.has_conditional_sources() and api.nvim_buf_get_name(bufnr) ~= "" then
+                s.register_conditional_sources()
+            end
         else
             vim.cmd(
                 string.format(
@@ -171,6 +178,11 @@ M.on_source_change = vim.schedule_wrap(function()
             )
         end
     end)
+
+    -- if conditional sources remain, check on next (named) buffer read event
+    if s.has_conditional_sources() then
+        vim.cmd([[autocmd BufRead * ++once unsilent lua require("null-ls.state").register_conditional_sources()]])
+    end
 end)
 
 M.retry_add = function(bufnr)

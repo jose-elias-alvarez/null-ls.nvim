@@ -4,6 +4,7 @@ local initial_state = {
     actions = {},
     cache = {},
     commands = {},
+    conditional_sources = {},
 }
 
 local state = vim.deepcopy(initial_state)
@@ -71,6 +72,7 @@ M.clear_cache = function(uri)
     state.cache[uri] = nil
 end
 
+-- commands
 M.set_resolved_command = function(bufnr, base, resolved)
     state.commands[bufnr] = state.commands[bufnr] or {}
     state.commands[bufnr][base] = resolved
@@ -82,6 +84,23 @@ end
 
 M.clear_commands = function(bufnr)
     state.commands[bufnr] = nil
+end
+
+-- conditional sources
+M.has_conditional_sources = function()
+    return #state.conditional_sources > 0
+end
+
+M.push_conditional_source = function(source)
+    table.insert(state.conditional_sources, source)
+end
+
+M.register_conditional_sources = function()
+    vim.tbl_map(function(source)
+        source.try_register()
+    end, state.conditional_sources)
+
+    state.conditional_sources = {}
 end
 
 return M
