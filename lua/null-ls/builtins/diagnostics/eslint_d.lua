@@ -1,1 +1,1 @@
-return require("null-ls.builtins").diagnostics.eslint.with({ command = "eslint_d" })
+return require("null-ls.builtins").diagnostics.eslint.with({ name = "eslint_d", command = "eslint_d" })
