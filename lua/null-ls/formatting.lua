@@ -26,8 +26,7 @@ M.handler = function(method, original_params, handler)
         local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
 
         -- copy content and options to temp buffer
-        local temp_bufnr = vim.fn.bufadd("")
-        api.nvim_buf_set_option(temp_bufnr, "buftype", "nofile")
+        local temp_bufnr = api.nvim_create_buf(false, true)
         api.nvim_buf_set_option(temp_bufnr, "eol", api.nvim_buf_get_option(bufnr, "eol"))
         api.nvim_buf_set_option(temp_bufnr, "fileformat", api.nvim_buf_get_option(bufnr, "fileformat"))
         api.nvim_buf_set_lines(temp_bufnr, 0, -1, false, api.nvim_buf_get_lines(bufnr, 0, -1, false))
@@ -83,7 +82,7 @@ M.handler = function(method, original_params, handler)
                 handle_err(err)
             end
 
-            vim.cmd("bwipeout! " .. temp_bufnr)
+            api.nvim_buf_delete(temp_bufnr, { force = true })
         end
 
         require("null-ls.generators").run_registered_sequentially({

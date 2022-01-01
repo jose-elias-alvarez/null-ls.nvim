@@ -17,7 +17,7 @@ describe("formatting", function()
     stub(u, "make_params")
     stub(u.buf, "content")
     stub(vim, "cmd")
-    stub(vim.fn, "bufadd")
+    stub(vim.api, "nvim_create_buf")
 
     local handler = stub.new()
 
@@ -39,7 +39,7 @@ describe("formatting", function()
         diff.compute_diff.returns({})
         lsp.get_active_clients.returns({})
         u.make_params.returns({})
-        vim.fn.bufadd.returns(mock_temp_bufnr)
+        vim.api.nvim_create_buf.returns(mock_temp_bufnr)
     end)
 
     after_each(function()
