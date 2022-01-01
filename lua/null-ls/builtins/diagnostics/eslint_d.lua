@@ -24,6 +24,7 @@ local handle_eslint_output = function(params)
 end
 
 return h.make_builtin({
+    name = "eslint_d",
     method = DIAGNOSTICS,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {

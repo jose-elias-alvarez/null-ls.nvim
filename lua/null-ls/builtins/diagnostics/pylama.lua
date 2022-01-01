@@ -2,6 +2,7 @@ local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
 return h.make_builtin({
+    name = "pylama",
     method = methods.internal.DIAGNOSTICS,
     filetypes = { "python" },
     factory = h.generator_factory,

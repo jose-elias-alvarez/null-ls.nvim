@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
+    name = "codespell",
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

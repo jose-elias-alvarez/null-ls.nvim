@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
+    name = "golangci_lint",
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

@@ -10,6 +10,7 @@ local severities = {
 }
 
 return h.make_builtin({
+    name = "staticcheck",
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

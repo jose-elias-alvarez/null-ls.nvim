@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "nimpretty",
     method = FORMATTING,
     filetypes = { "nim" },
     generator_opts = {

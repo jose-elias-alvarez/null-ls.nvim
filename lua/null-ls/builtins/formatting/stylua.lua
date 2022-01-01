@@ -5,6 +5,7 @@ local FORMATTING = methods.internal.FORMATTING
 local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 return h.make_builtin({
+    name = "stylua",
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "lua" },
     generator_opts = {
