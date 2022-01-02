@@ -37,6 +37,9 @@ return {
   gccdiag = {
     filetypes = { "c", "cpp" }
   },
+  gitlint = {
+    filetypes = { "gitcommit" }
+  },
   golangci_lint = {
     filetypes = { "go" }
   },
