@@ -73,7 +73,7 @@ M.start_client = function(fname)
         on_attach = vim.schedule_wrap(function(_, bufnr)
             if bufnr == api.nvim_get_current_buf() then
                 M.setup_buffer(bufnr)
-            else
+            elseif api.nvim_buf_is_valid(bufnr) then
                 vim.cmd(
                     string.format(
                         [[autocmd BufEnter <buffer=%d> ++once unsilent lua require("null-ls.client").setup_buffer(%d)]],
