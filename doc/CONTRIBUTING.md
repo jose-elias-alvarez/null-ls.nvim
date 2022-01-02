@@ -30,6 +30,8 @@
 - Check other built-in sources for examples and, whenever possible, use helpers
   to reduce the number of lines of code in your PR.
 
+- Make sure your source has a `name`.
+
 - Make sure to add your built-in source to [BUILTINS](BUILTINS.md). Check other
   examples and follow the existing style. Make sure to insert your source's
   documentation in the correct place to maintain alphabetical order!

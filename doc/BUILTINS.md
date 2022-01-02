@@ -1915,6 +1915,24 @@ local sources = { null_ls.builtins.diagnostics.flake8 }
 - `command = "flake8"`
 - `args = { "--stdin-display-name", "$FILENAME", "-" }`
 
+#### [gitlint](https://jorisroovers.com/gitlint/)
+
+##### About
+
+Linter for git commit messages
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gitlint }
+```
+
+##### Defaults
+
+- `filetypes = { "gitcommit" }`
+- `command = "gitlint"`
+- `args = { "--msg-filename", "$FILENAME" }`
+
 #### [pylama](https://github.com/klen/pylama)
 
 ##### About

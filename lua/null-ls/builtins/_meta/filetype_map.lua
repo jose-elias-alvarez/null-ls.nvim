@@ -75,6 +75,9 @@ return {
   fortran = {
     formatting = { "fprettify" }
   },
+  gitcommit = {
+    diagnostics = { "gitlint" }
+  },
   go = {
     diagnostics = { "golangci_lint", "revive", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "golines" }
