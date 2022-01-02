@@ -38,6 +38,11 @@ M.handler = function(method, original_params, handler)
                 return
             end
 
+            -- schedule before calling handler in case handler throws
+            vim.schedule(function()
+                api.nvim_buf_delete(temp_bufnr, { force = true })
+            end)
+
             handler(...)
         end
 
@@ -81,8 +86,6 @@ M.handler = function(method, original_params, handler)
             if not ok then
                 handle_err(err)
             end
-
-            api.nvim_buf_delete(temp_bufnr, { force = true })
         end
 
         require("null-ls.generators").run_registered_sequentially({
