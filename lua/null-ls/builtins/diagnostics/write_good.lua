@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
+    name = "write_good",
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
     generator_opts = {

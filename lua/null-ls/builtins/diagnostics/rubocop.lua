@@ -39,6 +39,7 @@ local handle_rubocop_output = function(params)
 end
 
 return h.make_builtin({
+    name = "rubocop",
     method = DIAGNOSTICS,
     filetypes = { "ruby" },
     generator_opts = {

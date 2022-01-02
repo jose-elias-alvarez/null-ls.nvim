@@ -4,9 +4,9 @@ local methods = require("null-ls.methods")
 local COMPLETION = methods.internal.COMPLETION
 
 return h.make_builtin({
+    name = "spell",
     method = COMPLETION,
     filetypes = {},
-    name = "spell",
     generator = {
         fn = function(params, done)
             local get_candidates = function(entries)

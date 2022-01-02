@@ -141,6 +141,7 @@ local handler = function(params)
 end
 
 return h.make_builtin({
+    name = "eslint_d",
     method = CODE_ACTION,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {

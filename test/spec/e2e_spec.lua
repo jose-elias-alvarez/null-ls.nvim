@@ -116,7 +116,7 @@ describe("e2e", function()
 
             local write_good_diagnostic = buf_diagnostics[1]
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning')
-            assert.equals(write_good_diagnostic.source, "write-good")
+            assert.equals(write_good_diagnostic.source, "write_good")
             assert.equals(write_good_diagnostic.lnum, 0)
             assert.equals(write_good_diagnostic.end_lnum, 0)
             assert.equals(write_good_diagnostic.col, 7)
@@ -124,11 +124,11 @@ describe("e2e", function()
         end)
 
         it("should clear and regenerate buffer diagnostics on toggle", function()
-            sources.toggle("write-good")
+            sources.toggle("write_good")
 
             assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
 
-            sources.toggle("write-good")
+            sources.toggle("write_good")
             lsp_wait()
 
             assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 1)
@@ -161,7 +161,7 @@ describe("e2e", function()
                     if diagnostic.source == "markdownlint" then
                         markdownlint_diagnostic = diagnostic
                     end
-                    if diagnostic.source == "write-good" then
+                    if diagnostic.source == "write_good" then
                         write_good_diagnostic = diagnostic
                     end
                 end
@@ -204,7 +204,7 @@ describe("e2e", function()
 
             local write_good_diagnostic = vim.diagnostic.get(0)[1]
 
-            assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write-good)')
+            assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write_good)')
         end)
     end)
 

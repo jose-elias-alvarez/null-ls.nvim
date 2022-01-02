@@ -8,6 +8,7 @@ local severities = {
 }
 
 return h.make_builtin({
+    name = "revive",
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

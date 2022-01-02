@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "djhtml",
     method = FORMATTING,
     filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {

@@ -13,8 +13,8 @@ local function get_documentation(snip, data)
 end
 
 return h.make_builtin({
-    method = COMPLETION,
     name = "luasnip",
+    method = COMPLETION,
     filetypes = {},
     generator = {
         fn = function(params, done)

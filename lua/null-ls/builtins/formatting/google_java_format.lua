@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "google_java_format",
     method = FORMATTING,
     filetypes = { "java" },
     generator_opts = {

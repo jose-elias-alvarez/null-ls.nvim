@@ -139,6 +139,7 @@ local code_action_handler = function(params)
 end
 
 return h.make_builtin({
+    name = "shellcheck",
     method = CODE_ACTION,
     filetypes = { "sh" },
     generator_opts = {

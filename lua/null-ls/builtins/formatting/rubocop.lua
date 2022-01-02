@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
+    name = "rubocop",
     method = FORMATTING,
     filetypes = { "ruby" },
     generator_opts = {
