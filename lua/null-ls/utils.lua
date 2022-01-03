@@ -11,7 +11,7 @@ local format_line_ending = {
 }
 
 local get_line_ending = function(bufnr)
-    return format_line_ending[api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
+    return format_line_ending[api.nvim_buf_get_option(bufnr or 0, "fileformat")] or "\n"
 end
 
 local resolve_content = function(params, bufnr)
