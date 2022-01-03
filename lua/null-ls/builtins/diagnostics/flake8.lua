@@ -25,23 +25,23 @@ local custom_end_col = {
             pattern = [[%'(.*)%' imported]]
         end
 
-        if pattern == nil then
+        if not pattern then
             return default_position
-        else
-            local results = message:match(pattern)
-            _, end_col = trimmed_line:find(results, 1, true)
-
-            if end_col == nil then
-                return default_position
-            else
-                end_col = end_col + start_col
-                if end_col > tonumber(start_col) then
-                    return end_col
-                else
-                    return default_position
-                end
-            end
         end
+
+        local results = message:match(pattern)
+        _, end_col = trimmed_line:find(results, 1, true)
+
+        if not end_col then
+            return default_position
+        end
+
+        end_col = end_col + start_col
+        if end_col > tonumber(start_col) then
+            return end_col
+        end
+
+        return default_position
     end,
 }
 
