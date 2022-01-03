@@ -29,16 +29,11 @@ end
 ---@param env (table) table of environment variable assignments
 ---@returns (table) list of `"k=v"` strings
 local function env_merge(env)
-    if env == nil then
-        return env
-    end
-
     -- Merge.
-    env = vim.tbl_extend("force", vim.fn.environ(), env)
+    env = vim.tbl_extend("force", uv.os_environ(), env)
 
     local final_env = {}
     for k, v in pairs(env) do
-        assert(type(k) == "string", "env must be a dict")
         table.insert(final_env, k .. "=" .. tostring(v))
     end
 
@@ -51,7 +46,7 @@ local M = {}
 
 M.spawn = function(cmd, args, opts)
     local handler, input, check_exit_code, timeout, on_stdout_end, env =
-        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, env_merge(opts.env)
+        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, opts.env
 
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
@@ -127,9 +122,14 @@ M.spawn = function(cmd, args, opts)
         done(exit_ok, code == TIMEOUT_EXIT_CODE)
     end
 
+    local parsed_env = nil
+    if env and not vim.tbl_isempty(env) then
+        parsed_env = env_merge(env)
+    end
+
     handle = uv.spawn(
         vim.fn.exepath(cmd),
-        { args = args, env = env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
         on_close
     )
 
