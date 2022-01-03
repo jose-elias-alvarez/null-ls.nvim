@@ -21,6 +21,7 @@ local function make_builtin(opts)
     generator_opts = vim.tbl_deep_extend("force", generator_opts, {
         args = opts.args,
         command = opts.command,
+        env = opts.env,
         cwd = opts.cwd,
         diagnostics_format = opts.diagnostics_format,
         dynamic_command = opts.dynamic_command,
