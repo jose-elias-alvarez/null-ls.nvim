@@ -2326,6 +2326,24 @@ local sources = { null_ls.builtins.diagnostics.teal }
 - `command = "tl"`
 - `args = { "check", "$FILENAME" }`
 
+#### [textlint](https://github.com/textlint/textlint)
+
+##### About
+
+The pluggable linting tool for text and markdown.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.textlint }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "textlint"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 #### [vale](https://docs.errata.ai/vale/about)
 
 ##### About
