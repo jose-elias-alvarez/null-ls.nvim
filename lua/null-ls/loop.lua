@@ -29,20 +29,20 @@ end
 ---@param env (table) table of environment variable assignments
 ---@returns (table) list of `"k=v"` strings
 local function env_merge(env)
-  if env == nil then
-    return env
-  end
+    if env == nil then
+        return env
+    end
 
-  -- Merge.
-  env = vim.tbl_extend('force', vim.fn.environ(), env)
+    -- Merge.
+    env = vim.tbl_extend("force", vim.fn.environ(), env)
 
-  local final_env = {}
-  for k,v in pairs(env) do
-    assert(type(k) == 'string', 'env must be a dict')
-    table.insert(final_env, k..'='..tostring(v))
-  end
+    local final_env = {}
+    for k, v in pairs(env) do
+        assert(type(k) == "string", "env must be a dict")
+        table.insert(final_env, k .. "=" .. tostring(v))
+    end
 
-  return final_env
+    return final_env
 end
 
 local TIMEOUT_EXIT_CODE = 7451

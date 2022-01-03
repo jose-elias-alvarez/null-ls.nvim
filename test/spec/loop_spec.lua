@@ -114,7 +114,7 @@ describe("loop", function()
         it("should call uv.spawn with cmd and parse environment variables accordingly", function()
             local key = "TEST"
             local value = "TESTING"
-            local options = { env = { [key] = value} }
+            local options = { env = { [key] = value } }
             local expected = key .. "=" .. value
 
             loop.spawn(mock_cmd, mock_args, options)
