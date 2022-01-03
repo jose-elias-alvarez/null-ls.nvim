@@ -1987,7 +1987,7 @@ local sources = { null_ls.builtins.diagnostics.jsonlint }
 - `command = "jsonlint"`
 - `args = { "--compact" }`
 
-#### [luacheck](https://github.com/mpeterv/luacheck)
+#### [luacheck](https://github.com/lunarmodules/luacheck)
 
 ##### About
 
