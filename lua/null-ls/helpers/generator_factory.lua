@@ -138,6 +138,7 @@ return function(opts)
             env = {
                 env,
                 "table",
+                true
             },
             on_output = { on_output, "function" },
             format = {
