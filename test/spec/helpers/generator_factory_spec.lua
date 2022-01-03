@@ -126,6 +126,16 @@ describe("generator_factory", function()
             local parsed = loop.spawn.calls[1].refs[2]
             assert.same(parsed, generator_opts.args)
         end)
+
+        it("should pass in the environment variables to the command", function()
+            generator_opts.env = { TEST = "TESTING" }
+
+            local generator = helpers.generator_factory(generator_opts)
+            generator.fn({}, done)
+
+            local parsed = loop.spawn.calls[1].refs[3]
+            assert.same(parsed.env, generator_opts.env)
+        end)
     end)
 
     describe("json_output_wrapper", function()
