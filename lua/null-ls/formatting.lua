@@ -44,6 +44,7 @@ M.handler = function(method, original_params, handler)
             end)
 
             handler(...)
+            called_handler = true
         end
 
         local handle_err = function(err)
