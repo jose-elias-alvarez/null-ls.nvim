@@ -3,6 +3,48 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local custom_end_col = {
+    end_col = function(entries, line)
+        local start_col = entries["col"]
+        local message = entries["message"]
+        local code = entries["code"]
+
+        -- highlights only first character on error line, if not specified otherwise
+        local default_position = start_col + 1
+
+        local pattern = nil
+        local trimmed_line = line:sub(start_col, -1)
+
+        if code == "F841" or code == "F823" then
+            pattern = [[local variable %'(.*)%']]
+        elseif code == "F821" or code == "F822" then
+            pattern = [[undefined name %'(.*)%']]
+        elseif code == "F831" then
+            pattern = [[duplicate argument %'(.*)%']]
+        elseif code == "F401" then
+            pattern = [[%'(.*)%' imported]]
+        end
+
+        if not pattern then
+            return default_position
+        end
+
+        local results = message:match(pattern)
+        _, end_col = trimmed_line:find(results, 1, true)
+
+        if not end_col then
+            return default_position
+        end
+
+        end_col = end_col + start_col
+        if end_col > tonumber(start_col) then
+            return end_col
+        end
+
+        return default_position
+    end,
+}
+
 return h.make_builtin({
     name = "flake8",
     method = DIAGNOSTICS,
@@ -20,6 +62,9 @@ return h.make_builtin({
             [[:(%d+):(%d+): ((%u)%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
             {
+                adapters = {
+                    custom_end_col,
+                },
                 severities = {
                     E = h.diagnostics.severities["error"],
                     W = h.diagnostics.severities["warning"],
