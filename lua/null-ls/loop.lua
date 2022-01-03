@@ -51,7 +51,7 @@ local M = {}
 
 M.spawn = function(cmd, args, opts)
     local handler, input, check_exit_code, timeout, on_stdout_end, env =
-        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, opts.env
+        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, env_merge(opts.env)
 
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
@@ -129,7 +129,7 @@ M.spawn = function(cmd, args, opts)
 
     handle = uv.spawn(
         vim.fn.exepath(cmd),
-        { args = args, env = env_merge(env), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        { args = args, env = env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
         on_close
     )
 
