@@ -16,6 +16,35 @@ local on_error = function(errkind, ...)
     error(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
 end
 
+---@private
+--- Merges current process env with the given env and returns the result as
+--- a list of "k=v" strings.
+---
+--- <pre>
+--- Example:
+---
+---  in:    { PRODUCTION="false", PATH="/usr/bin/", PORT=123, HOST="0.0.0.0", }
+---  out:   { "PRODUCTION=false", "PATH=/usr/bin/", "PORT=123", "HOST=0.0.0.0", }
+--- </pre>
+---@param env (table) table of environment variable assignments
+---@returns (table) list of `"k=v"` strings
+local function env_merge(env)
+  if env == nil then
+    return env
+  end
+
+  -- Merge.
+  env = vim.tbl_extend('force', vim.fn.environ(), env)
+
+  local final_env = {}
+  for k,v in pairs(env) do
+    assert(type(k) == 'string', 'env must be a dict')
+    table.insert(final_env, k..'='..tostring(v))
+  end
+
+  return final_env
+end
+
 local TIMEOUT_EXIT_CODE = 7451
 
 local M = {}
@@ -100,7 +129,7 @@ M.spawn = function(cmd, args, opts)
 
     handle = uv.spawn(
         vim.fn.exepath(cmd),
-        { args = args, env = env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        { args = args, env = env_merge(env), stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
         on_close
     )
 
