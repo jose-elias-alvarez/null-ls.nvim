@@ -21,8 +21,8 @@ local TIMEOUT_EXIT_CODE = 7451
 local M = {}
 
 M.spawn = function(cmd, args, opts)
-    local handler, input, check_exit_code, timeout, on_stdout_end =
-        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end
+    local handler, input, check_exit_code, timeout, on_stdout_end, env =
+        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, opts.env
 
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
@@ -98,7 +98,11 @@ M.spawn = function(cmd, args, opts)
         done(exit_ok, code == TIMEOUT_EXIT_CODE)
     end
 
-    handle = uv.spawn(vim.fn.exepath(cmd), { args = args, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() }, on_close)
+    handle = uv.spawn(
+        vim.fn.exepath(cmd),
+        { args = args, env = env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        on_close
+    )
 
     if timeout then
         timer = M.timer(timeout, nil, true, function()
