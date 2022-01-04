@@ -111,6 +111,26 @@ describe("loop", function()
             assert.same(uv.spawn.calls[1].refs[2].args, mock_args)
         end)
 
+        it("should call uv.spawn with cmd and parse environment variables accordingly", function()
+            local key = "TEST"
+            local value = "TESTING"
+            local options = { env = { [key] = value } }
+            local expected = key .. "=" .. value
+
+            loop.spawn(mock_cmd, mock_args, options)
+
+            assert.stub(uv.spawn).was_called()
+
+            -- environment variables are converted from a dict to key-value pair table
+            local found = false
+            for _, e in ipairs(uv.spawn.calls[1].refs[2].env) do
+                if e == expected then
+                    found = true
+                end
+            end
+            assert.equal(found, true)
+        end)
+
         it("should call uv.read_start twice", function()
             loop.spawn(mock_cmd, mock_args, mock_opts)
 

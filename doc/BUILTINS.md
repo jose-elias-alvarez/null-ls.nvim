@@ -129,6 +129,21 @@ local sources = {
 }
 ```
 
+### Environment Variables
+
+You can inject additional environment variables to the process via utilizing the `env` option. This option should be in the form of a dictionary. This will extend the operating system variables.
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettierd.with({
+          env = {
+            PRETTIERD_DEFAULT_CONFIG = vim.fn.expand "~/.config/nvim/utils/linter-config/.prettierrc.json",
+          }
+    }),
+}
+```
+
+
 ### Expansion
 
 Note that environment variables and `~` aren't expanded in arguments. As a
