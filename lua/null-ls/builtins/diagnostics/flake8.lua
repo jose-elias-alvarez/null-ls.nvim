@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local custom_end_col = {
     end_col = function(entries, line)
+        if not line then
+            return
+        end
+
         local start_col = entries["col"]
         local message = entries["message"]
         local code = entries["code"]
@@ -30,7 +34,7 @@ local custom_end_col = {
         end
 
         local results = message:match(pattern)
-        _, end_col = trimmed_line:find(results, 1, true)
+        local _, end_col = trimmed_line:find(results, 1, true)
 
         if not end_col then
             return default_position
