@@ -118,6 +118,9 @@ return {
   teal = {
     filetypes = { "teal" }
   },
+  textlint = {
+    filetypes = {}
+  },
   tsc = {
     filetypes = { "typescript", "typescriptreact" }
   },
