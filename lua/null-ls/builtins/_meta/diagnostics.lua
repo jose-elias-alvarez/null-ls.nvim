@@ -130,6 +130,9 @@ return {
   vint = {
     filetypes = { "vim" }
   },
+  vulture = {
+    filetypes = { "python" }
+  },
   write_good = {
     filetypes = { "markdown" }
   },
