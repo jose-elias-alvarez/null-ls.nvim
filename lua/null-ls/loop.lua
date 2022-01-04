@@ -16,13 +16,37 @@ local on_error = function(errkind, ...)
     error(string.format("[%q] has failed with: %q", errkind, table.concat(..., ", ")))
 end
 
+---@private
+--- Merges current process env with the given env and returns the result as
+--- a list of "k=v" strings.
+---
+--- <pre>
+--- Example:
+---
+---  in:    { PRODUCTION="false", PATH="/usr/bin/", PORT=123, HOST="0.0.0.0", }
+---  out:   { "PRODUCTION=false", "PATH=/usr/bin/", "PORT=123", "HOST=0.0.0.0", }
+--- </pre>
+---@param env (table) table of environment variable assignments
+---@returns (table) list of `"k=v"` strings
+local function env_merge(env)
+    -- Merge.
+    env = vim.tbl_extend("force", uv.os_environ(), env)
+
+    local final_env = {}
+    for k, v in pairs(env) do
+        table.insert(final_env, k .. "=" .. tostring(v))
+    end
+
+    return final_env
+end
+
 local TIMEOUT_EXIT_CODE = 7451
 
 local M = {}
 
 M.spawn = function(cmd, args, opts)
-    local handler, input, check_exit_code, timeout, on_stdout_end =
-        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end
+    local handler, input, check_exit_code, timeout, on_stdout_end, env =
+        opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, opts.env
 
     local output, error_output = "", ""
     local handle_stdout = function(err, chunk)
@@ -98,7 +122,16 @@ M.spawn = function(cmd, args, opts)
         done(exit_ok, code == TIMEOUT_EXIT_CODE)
     end
 
-    handle = uv.spawn(vim.fn.exepath(cmd), { args = args, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() }, on_close)
+    local parsed_env = nil
+    if env and not vim.tbl_isempty(env) then
+        parsed_env = env_merge(env)
+    end
+
+    handle = uv.spawn(
+        vim.fn.exepath(cmd),
+        { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        on_close
+    )
 
     if timeout then
         timer = M.timer(timeout, nil, true, function()

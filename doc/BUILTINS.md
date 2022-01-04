@@ -129,6 +129,21 @@ local sources = {
 }
 ```
 
+### Environment Variables
+
+You can inject additional environment variables to the process via utilizing the `env` option. This option should be in the form of a dictionary. This will extend the operating system variables.
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettierd.with({
+          env = {
+            PRETTIERD_DEFAULT_CONFIG = vim.fn.expand "~/.config/nvim/utils/linter-config/.prettierrc.json",
+          }
+    }),
+}
+```
+
+
 ### Expansion
 
 Note that environment variables and `~` aren't expanded in arguments. As a
@@ -1987,7 +2002,7 @@ local sources = { null_ls.builtins.diagnostics.jsonlint }
 - `command = "jsonlint"`
 - `args = { "--compact" }`
 
-#### [luacheck](https://github.com/mpeterv/luacheck)
+#### [luacheck](https://github.com/lunarmodules/luacheck)
 
 ##### About
 
@@ -2326,6 +2341,24 @@ local sources = { null_ls.builtins.diagnostics.teal }
 - `command = "tl"`
 - `args = { "check", "$FILENAME" }`
 
+#### [textlint](https://github.com/textlint/textlint)
+
+##### About
+
+The pluggable linting tool for text and markdown.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.textlint }
+```
+
+##### Defaults
+
+- `filetypes = {}`
+- `command = "textlint"`
+- `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 #### [vale](https://docs.errata.ai/vale/about)
 
 ##### About
@@ -2365,6 +2398,24 @@ local sources = { null_ls.builtins.diagnostics.vint }
 - `filetypes = { "vim" }`
 - `command = "vint"`
 - `args = { "-s", "-j", "$FILENAME" }`
+
+#### [vulture](https://github.com/jendrikseipp/vulture)
+
+##### About
+
+Vulture finds unused code in Python programs.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.vulture }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "vulture"`
+- `args = { "$FILENAME" }`
 
 #### [write-good](https://github.com/btford/write-good)
 

@@ -28,6 +28,7 @@ helpers.generator_factory({
     args, -- table (optional)
     check_exit_code, -- function or table of numbers (optional)
     command, -- string or function
+    env, -- table (optional)
     cwd, -- function (optional)
     dynamic_command, -- function (optional)
     format, -- "raw", "line", "json", or "json_raw" (optional)

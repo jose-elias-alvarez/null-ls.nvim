@@ -3,7 +3,7 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
-local handle_eslint_output = function(params)
+local handle_output = function(params)
     params.messages = params.output and params.output[1] and params.output[1].messages or {}
     if params.err then
         table.insert(params.messages, { message = params.err })
@@ -23,19 +23,16 @@ local handle_eslint_output = function(params)
 end
 
 return h.make_builtin({
-    name = "eslint",
+    name = "textlint",
     method = DIAGNOSTICS,
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+    filetypes = {},
     generator_opts = {
-        command = "eslint",
-        args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
+        command = "textlint",
         to_stdin = true,
+        args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" },
         format = "json_raw",
-        check_exit_code = function(code)
-            return code <= 1
-        end,
-        use_cache = true,
-        on_output = handle_eslint_output,
+        check_exit_code = { 0, 1 },
+        on_output = handle_output,
     },
     factory = h.generator_factory,
 })

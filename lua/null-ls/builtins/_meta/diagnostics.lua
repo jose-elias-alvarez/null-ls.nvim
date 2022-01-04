@@ -118,6 +118,9 @@ return {
   teal = {
     filetypes = { "teal" }
   },
+  textlint = {
+    filetypes = {}
+  },
   tsc = {
     filetypes = { "typescript", "typescriptreact" }
   },
@@ -126,6 +129,9 @@ return {
   },
   vint = {
     filetypes = { "vim" }
+  },
+  vulture = {
+    filetypes = { "python" }
   },
   write_good = {
     filetypes = { "markdown" }

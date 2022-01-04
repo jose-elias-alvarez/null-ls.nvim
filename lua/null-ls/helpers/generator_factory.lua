@@ -99,9 +99,10 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 return function(opts)
-    local command, args, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files =
+    local command, args, env, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files =
         opts.command,
         opts.args,
+        opts.env,
         opts.on_output,
         opts.format,
         opts.ignore_stderr,
@@ -133,6 +134,11 @@ return function(opts)
                     return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
                 end,
                 "function or table",
+            },
+            env = {
+                env,
+                "table",
+                true,
             },
             on_output = { on_output, "function" },
             format = {
@@ -276,6 +282,7 @@ return function(opts)
                 handler = wrapper,
                 check_exit_code = check_exit_code,
                 timeout = timeout or c.get().default_timeout,
+                env = env,
             }
 
             if to_temp_file then

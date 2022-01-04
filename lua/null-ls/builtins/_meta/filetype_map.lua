@@ -149,7 +149,7 @@ return {
     formatting = { "prismaFmt" }
   },
   python = {
-    diagnostics = { "flake8", "mypy", "pylama", "pylint" },
+    diagnostics = { "flake8", "mypy", "pylama", "pylint", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }
   },
   qml = {

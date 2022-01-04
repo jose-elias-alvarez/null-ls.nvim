@@ -51,8 +51,10 @@ do
             if not source then
                 string.format("failed to load builtin %s for method %s", source_name, method)
             else
-                sources[source_name] = { filetypes = source.filetypes or {} }
-                for _, ft in ipairs(source.filetypes or {}) do
+                -- we need the deepcopy to resolve references when `source.with()` is used
+                local filetypes = type(source.filetypes) and vim.deepcopy(source.filetypes) or {}
+                sources[source_name] = { filetypes = filetypes }
+                for _, ft in ipairs(source.filetypes) do
                     filetypes_map[ft] = filetypes_map[ft] or {}
                     if filetypes_map[ft] and filetypes_map[ft][method] then
                         table.insert(filetypes_map[ft][method], source_name)

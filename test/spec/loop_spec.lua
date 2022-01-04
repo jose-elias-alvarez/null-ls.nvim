@@ -9,6 +9,7 @@ describe("loop", function()
     stub(vim, "schedule_wrap")
     after_each(function()
         vim.schedule_wrap:clear()
+        uv.os_environ.returns({})
     end)
 
     local loop = require("null-ls.loop")
@@ -109,6 +110,35 @@ describe("loop", function()
             assert.stub(uv.spawn).was_called()
             assert.equals(uv.spawn.calls[1].refs[1], vim.fn.exepath(mock_cmd))
             assert.same(uv.spawn.calls[1].refs[2].args, mock_args)
+        end)
+
+        it("should parse user env vars", function()
+            local key = "TEST"
+            local value = "TESTING"
+            local options = { env = { [key] = value } }
+            -- environment variables are converted from a dict to key-value pair table
+            local expected = key .. "=" .. value
+
+            loop.spawn(mock_cmd, mock_args, options)
+
+            local env = uv.spawn.calls[1].refs[2].env
+            assert.equals(#env, 1)
+            assert.truthy(vim.tbl_contains(env, expected))
+        end)
+
+        it("should merge user env vars with os env", function()
+            local key = "TEST"
+            local value = "TESTING"
+            local options = { env = { [key] = value } }
+            uv.os_environ.returns({ OS_KEY = "OS_VAL" })
+
+            local expected = "OS_KEY" .. "=" .. "OS_VAL"
+
+            loop.spawn(mock_cmd, mock_args, options)
+
+            local env = uv.spawn.calls[1].refs[2].env
+            assert.equals(#env, 2)
+            assert.truthy(vim.tbl_contains(env, expected))
         end)
 
         it("should call uv.read_start twice", function()

@@ -11,14 +11,14 @@ local format_line_ending = {
 }
 
 local get_line_ending = function(bufnr)
-    return format_line_ending[api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
+    return format_line_ending[api.nvim_buf_get_option(bufnr or 0, "fileformat")] or "\n"
 end
 
 local resolve_content = function(params, bufnr)
     -- diagnostic notifications will send full buffer content on open and change
     -- so we can avoid unnecessary api calls
     if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
-        return M.split_at_newline(params.bufnr, params.textDocument.text)
+        return M.split_at_newline(bufnr, params.textDocument.text)
     end
     if
         params.method == methods.lsp.DID_CHANGE
@@ -26,7 +26,7 @@ local resolve_content = function(params, bufnr)
         and params.contentChanges[1]
         and params.contentChanges[1].text
     then
-        return M.split_at_newline(params.bufnr, params.contentChanges[1].text)
+        return M.split_at_newline(bufnr, params.contentChanges[1].text)
     end
 
     return M.buf.content(bufnr)
