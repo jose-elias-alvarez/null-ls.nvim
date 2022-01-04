@@ -2399,6 +2399,24 @@ local sources = { null_ls.builtins.diagnostics.vint }
 - `command = "vint"`
 - `args = { "-s", "-j", "$FILENAME" }`
 
+#### [vulture](https://github.com/jendrikseipp/vulture)
+
+##### About
+
+Vulture finds unused code in Python programs.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.vulture }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "vulture"`
+- `args = { "$FILENAME" }`
+
 #### [write-good](https://github.com/btford/write-good)
 
 ##### About
