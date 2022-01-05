@@ -649,6 +649,8 @@ Fixes problems in your JavaScript code.
 
 - Slow and not suitable for formatting on save. If at all possible, use
   `eslint_d` (described below).
+- It's recommended to add the [`--cache`](https://eslint.org/docs/user-guide/command-line-interface#--cache)
+  flag as an extra argument, see [Expansion](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#arguments).
 
 ##### Usage
 
@@ -667,6 +669,9 @@ local sources = { null_ls.builtins.formatting.eslint }
 ##### About
 
 An absurdly fast formatter (and linter).
+
+- Similar to esling, it's recommended to add the [`--cache`](https://eslint.org/docs/user-guide/command-line-interface#--cache)
+  flag as an extra argument, see [Expansion](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#arguments).
 
 ##### Usage
 
