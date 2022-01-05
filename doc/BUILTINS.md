@@ -78,6 +78,17 @@ local sources = {
 }
 ```
 
+You can also add extra filetypes if your source supports them via a plugin or
+configuration:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        extra_filetypes = { "toml" },
+    }),
+}
+```
+
 If you see `filetypes = {}` in a source's description, that means the source is
 active for all filetypes by default. You may want to define a specific list of
 filetypes to avoid conflicts or other issues.
@@ -142,7 +153,6 @@ local sources = {
     }),
 }
 ```
-
 
 ### Expansion
 

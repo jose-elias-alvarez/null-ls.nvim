@@ -3,9 +3,10 @@ local s = require("null-ls.state")
 local u = require("null-ls.utils")
 
 local function make_builtin(opts)
-    local method, filetypes, disabled_filetypes, factory, condition, generator_opts, generator =
+    local method, filetypes, extra_filetypes, disabled_filetypes, factory, condition, generator_opts, generator =
         opts.method,
         opts.filetypes,
+        opts.extra_filetypes,
         opts.disabled_filetypes,
         opts.factory,
         opts.condition,
@@ -15,6 +16,10 @@ local function make_builtin(opts)
     factory = factory or function()
         generator.opts = generator_opts
         return generator
+    end
+
+    if extra_filetypes then
+        filetypes = u.table.uniq(vim.list_extend(filetypes, extra_filetypes))
     end
 
     -- merge valid user opts w/ generator opts
