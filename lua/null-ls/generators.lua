@@ -1,6 +1,9 @@
+local client = require("null-ls.client")
 local log = require("null-ls.logger")
 
 local M = {}
+
+local progress_token = 0
 
 M.run = function(generators, params, opts, callback)
     local a = require("plenary.async")
@@ -22,8 +25,11 @@ M.run = function(generators, params, opts, callback)
         return
     end
 
+    progress_token = progress_token + 1
+    local token = progress_token
+
     local futures = {}
-    for _, generator in ipairs(generators) do
+    for i, generator in ipairs(generators) do
         table.insert(futures, function()
             local copied_params = vim.deepcopy(opts.make_params and opts.make_params() or params)
 
@@ -36,6 +42,12 @@ M.run = function(generators, params, opts, callback)
             local protected_call = generator.async and a.util.apcall or pcall
             local ok, results = protected_call(to_run, copied_params)
             a.util.scheduler()
+
+            client.send_progress_notification(token, {
+                kind = "report",
+                message = generator.opts and generator.opts.name,
+                percentage = math.floor(i / #generators * 100),
+            })
 
             if results then
                 -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
@@ -77,6 +89,12 @@ M.run = function(generators, params, opts, callback)
     end
 
     a.run(function()
+        client.send_progress_notification(token, {
+            kind = "begin",
+            title = require("null-ls.methods").internal[params.method]:lower(),
+            percentage = 0,
+        })
+
         if opts.sequential then
             for _, future in ipairs(futures) do
                 future()
@@ -84,7 +102,13 @@ M.run = function(generators, params, opts, callback)
         else
             a.util.join(futures)
         end
-    end, safe_callback)
+    end, function()
+        client.send_progress_notification(token, {
+            kind = "end",
+            percentage = 100,
+        })
+        safe_callback()
+    end)
 end
 
 M.run_sequentially = function(generators, make_params, opts, callback)
