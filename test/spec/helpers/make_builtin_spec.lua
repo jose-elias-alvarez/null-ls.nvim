@@ -61,6 +61,12 @@ describe("make_builtin", function()
             assert.same(copy.disabled_filetypes, { "teal" })
         end)
 
+        it("should add extra filetypes", function()
+            local copy = builtin.with({ extra_filetypes = { "teal" } })
+
+            assert.same(copy.filetypes, { "lua", "teal" })
+        end)
+
         it("should override values on opts", function()
             local copy = builtin.with({ timeout = 5000 })
 
