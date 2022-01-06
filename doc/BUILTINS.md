@@ -1770,7 +1770,7 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 
 - `filetypes = { "tex" }`
 - `command = "chktex"`
-- `args = { "-q", "-I0", "-f%l:%c:%d:%k:%m\n" }`
+- `args = { "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
 #### [codespell](https://github.com/codespell-project/codespell)
 
