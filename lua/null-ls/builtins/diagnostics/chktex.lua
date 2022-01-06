@@ -14,15 +14,15 @@ return h.make_builtin({
             -- Disable printing version information to stderr
             "-q",
             -- Format output
-            "-f%l:%c:%d:%k:%m\n",
+            "-f%l:%c:%d:%k:%n:%m\n",
         },
         format = "line",
         check_exit_code = function(code)
             return code <= 1
         end,
         on_output = h.diagnostics.from_pattern(
-            [[(%d+):(%d+):(%d+):(%w+):(.+)]], --
-            { "row", "col", "_length", "severity", "message" },
+            [[(%d+):(%d+):(%d+):(%w+):(%d+):(.+)]],
+            { "row", "col", "_length", "severity", "code", "message" },
             {
                 adapters = {
                     h.diagnostics.adapters.end_col.from_length,
