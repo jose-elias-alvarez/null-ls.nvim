@@ -86,7 +86,8 @@ local line_output_wrapper = function(params, done, on_output)
     end
 
     local all_results = {}
-    for _, line in ipairs(u.split_at_newline(params.bufnr, output)) do
+    -- FIXME: detect line ending from output instead of assuming \n
+    for _, line in ipairs(vim.split(output, "\n")) do
         if line ~= "" then
             local results = on_output(line, params)
             if type(results) == "table" then
