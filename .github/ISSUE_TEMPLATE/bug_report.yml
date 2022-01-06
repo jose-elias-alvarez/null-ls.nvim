@@ -25,6 +25,13 @@ body:
     validations:
       required: true
 
+  - type: input
+    attributes:
+      label: "Operating System"
+      description: "The operating system you are using null-ls on."
+    validations:
+      required: true
+
   - type: textarea
     attributes:
       label: "null-ls config"
