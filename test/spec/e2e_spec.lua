@@ -11,12 +11,6 @@ local tu = require("test.utils")
 local lsp = vim.lsp
 local api = vim.api
 
--- need to wait for most LSP commands to pass through the client
--- setting this lower reduces testing time but is more likely to cause failures
-local lsp_wait = function(wait_time)
-    vim.wait(wait_time or 400)
-end
-
 main.setup({ log = { enable = false } })
 
 local get_code_actions = function()
@@ -43,7 +37,7 @@ describe("e2e", function()
             sources.register(builtins._test.toggle_line_comment)
 
             tu.edit_test_file("test-file.lua")
-            lsp_wait(0)
+            tu.wait()
 
             actions = get_code_actions()
             null_ls_action = actions[1].result[1]
@@ -107,7 +101,7 @@ describe("e2e", function()
             sources.register(builtins.diagnostics.write_good)
 
             tu.edit_test_file("test-file.md")
-            lsp_wait()
+            tu.wait_for_real_source()
         end)
 
         it("should get buffer diagnostics on attach", function()
@@ -129,7 +123,7 @@ describe("e2e", function()
             assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
 
             sources.toggle("write_good")
-            lsp_wait()
+            tu.wait_for_real_source()
 
             assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 1)
         end)
@@ -137,7 +131,7 @@ describe("e2e", function()
         it("should update buffer diagnostics on text change", function()
             -- remove "really"
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 6, 0, 13, {})
-            lsp_wait()
+            tu.wait_for_real_source()
 
             assert.equals(vim.tbl_count(vim.diagnostic.get(0)), 0)
         end)
@@ -151,7 +145,7 @@ describe("e2e", function()
             it("should show diagnostics from multiple sources", function()
                 sources.register(builtins.diagnostics.markdownlint)
                 vim.cmd("e")
-                lsp_wait()
+                tu.wait_for_real_source()
 
                 local diagnostics = vim.diagnostic.get(0)
                 assert.equals(vim.tbl_count(diagnostics), 2)
@@ -175,17 +169,17 @@ describe("e2e", function()
                 sources.reset()
                 sources.register(builtins._test.mock_multiple_file_diagnostics)
                 vim.cmd("e")
-                lsp_wait()
+                tu.wait_for_real_source()
 
                 local diagnostics = vim.diagnostic.get()
                 assert.equals(vim.tbl_count(diagnostics), 2)
 
                 local lua_diagnostic, javascript_diagnostic
                 for _, diagnostic in ipairs(diagnostics) do
-                    if diagnostic.filename == tu.test_file_path("test-file.lua") then
+                    if diagnostic.filename == tu.get_test_file_path("test-file.lua") then
                         lua_diagnostic = diagnostic
                     end
-                    if diagnostic.filename == tu.test_file_path("test-file.js") then
+                    if diagnostic.filename == tu.get_test_file_path("test-file.js") then
                         javascript_diagnostic = diagnostic
                     end
                 end
@@ -200,7 +194,7 @@ describe("e2e", function()
             sources.reset()
             sources.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
             vim.cmd("e")
-            lsp_wait()
+            tu.wait_for_real_source()
 
             local write_good_diagnostic = vim.diagnostic.get(0)[1]
 
@@ -214,6 +208,11 @@ describe("e2e", function()
             return
         end
 
+        local wait_for_prettier = function()
+            -- prettier is annoying and can take a long time
+            tu.wait(800)
+        end
+
         local formatted = 'import { User } from "./test-types";\n'
 
         before_each(function()
@@ -222,13 +221,11 @@ describe("e2e", function()
             tu.edit_test_file("test-file.js")
             -- make sure file wasn't accidentally saved
             assert.is_not.equals(u.buf.content(nil, true), formatted)
-
-            lsp_wait()
         end)
 
         it("should format file", function()
             lsp.buf.formatting()
-            lsp_wait(500)
+            wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)
         end)
@@ -251,7 +248,7 @@ describe("e2e", function()
 
             it("should format file", function()
                 lsp.buf.formatting()
-                lsp_wait(800)
+                wait_for_prettier()
 
                 assert.equals(u.buf.content(nil, true), formatted)
             end)
@@ -264,6 +261,10 @@ describe("e2e", function()
             return
         end
 
+        local wait_for_prettier = function()
+            tu.wait(800)
+        end
+
         -- only first line should be formatted
         local formatted = 'import { User } from "./test-types";\nimport {Other} from "./test-types"\n'
 
@@ -271,15 +272,13 @@ describe("e2e", function()
             sources.register(builtins.formatting.prettier)
             tu.edit_test_file("range-formatting.js")
             assert.is_not.equals(u.buf.content(nil, true), formatted)
-
-            lsp_wait()
         end)
 
         it("should format specified range", function()
             vim.cmd("normal ggV")
 
             lsp.buf.range_formatting()
-            lsp_wait(500)
+            wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)
         end)
@@ -304,7 +303,7 @@ describe("e2e", function()
             sources.register(builtins.diagnostics.teal)
 
             tu.edit_test_file("test-file.tl")
-            lsp_wait()
+            tu.wait_for_real_source()
         end)
         after_each(function()
             api.nvim_exec(
@@ -321,7 +320,7 @@ describe("e2e", function()
         it("should handle source that uses temp file", function()
             -- replace - with .., which will mess up the return type
             api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 52, 0, 53, { ".." })
-            lsp_wait()
+            tu.wait_for_real_source()
 
             local buf_diagnostics = vim.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
@@ -341,7 +340,7 @@ describe("e2e", function()
         before_each(function()
             sources.register(builtins._test.cached_code_action)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             actions = get_code_actions()
             null_ls_action = actions[1].result[1]
@@ -364,7 +363,7 @@ describe("e2e", function()
             assert.equals(null_ls_action.title, "Not cached")
 
             api.nvim_buf_set_lines(0, 0, 1, false, { "print('new content')" })
-            lsp_wait(0)
+            tu.wait()
 
             actions = get_code_actions()
             null_ls_action = actions[1].result[1]
@@ -386,10 +385,10 @@ describe("e2e", function()
                     prefer_local = true,
                 })
                 sources.register(copy)
-                lsp_wait(0)
+                tu.wait()
 
                 local actions = get_code_actions()
-                lsp_wait(0)
+                tu.wait()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
@@ -403,10 +402,10 @@ describe("e2e", function()
                     prefer_local = true,
                 })
                 sources.register(copy)
-                lsp_wait(0)
+                tu.wait()
 
                 local actions = get_code_actions()
-                lsp_wait(0)
+                tu.wait()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, "ls")
@@ -422,10 +421,10 @@ describe("e2e", function()
                     only_local = true,
                 })
                 sources.register(copy)
-                lsp_wait(0)
+                tu.wait()
 
                 local actions = get_code_actions()
-                lsp_wait(0)
+                tu.wait()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
@@ -439,10 +438,10 @@ describe("e2e", function()
                     only_local = true,
                 })
                 sources.register(copy)
-                lsp_wait(0)
+                tu.wait()
 
                 local actions = get_code_actions()
-                lsp_wait(0)
+                tu.wait()
 
                 assert.equals(vim.tbl_count(actions[1].result), 0)
                 assert.equals(copy._opts.last_command, nil)
@@ -456,10 +455,10 @@ describe("e2e", function()
             sources.register(builtins._test.first_formatter)
             sources.register(builtins._test.second_formatter)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             lsp.buf.formatting()
-            lsp_wait(100)
+            tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "sequential\n")
         end)
@@ -468,9 +467,9 @@ describe("e2e", function()
             sources.register(builtins._test.first_formatter)
             sources.register(builtins._test.second_formatter)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
             lsp.buf.formatting()
-            lsp_wait(100)
+            tu.wait_for_mock_source(2)
 
             vim.cmd("silent normal u")
 
@@ -481,10 +480,10 @@ describe("e2e", function()
             sources.register(builtins._test.second_formatter)
             sources.register(builtins._test.first_formatter)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             lsp.buf.formatting()
-            lsp_wait(100)
+            tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "first\n")
         end)
@@ -498,10 +497,10 @@ describe("e2e", function()
                 end,
             }))
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             lsp.buf.formatting()
-            lsp_wait(50)
+            tu.wait_for_mock_source()
 
             assert.equals(#sources.get({}), 1)
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -514,10 +513,10 @@ describe("e2e", function()
                 end,
             }))
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             lsp.buf.formatting()
-            lsp_wait(50)
+            tu.wait_for_mock_source()
 
             assert.equals(#sources.get({}), 0)
             assert.equals(u.buf.content(nil, true), "intentionally left blank\n")
@@ -531,10 +530,10 @@ describe("e2e", function()
                 end,
             }))
             tu.edit_test_file("test-file.txt")
-            lsp_wait()
+            tu.wait()
 
             lsp.buf.formatting()
-            lsp_wait(100)
+            tu.wait_for_mock_source(2)
 
             assert.equals(#sources.get({}), 2)
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -549,7 +548,6 @@ describe("e2e", function()
 
             sources.register(builtins._test.first_formatter)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
         end)
         after_each(function()
             require("null-ls.client").get_client().handlers[methods.lsp.CODE_ACTION] = nil
@@ -557,7 +555,7 @@ describe("e2e", function()
 
         it("should use client handler", function()
             lsp.buf.formatting()
-            lsp_wait(50)
+            tu.wait_for_mock_source()
 
             assert.stub(mock_handler).was_called()
         end)
@@ -569,7 +567,7 @@ describe("e2e", function()
         before_each(function()
             sources.register(builtins._test.mock_hover)
             tu.edit_test_file("test-file.txt")
-            lsp_wait(0)
+            tu.wait()
 
             local client = require("null-ls.client").get_client()
             client.handlers[methods.lsp.HOVER] = mock_handler
@@ -580,7 +578,7 @@ describe("e2e", function()
 
         it("should call handler with results", function()
             vim.lsp.buf.hover()
-            lsp_wait(0)
+            tu.wait()
 
             assert.stub(mock_handler).was_called()
             assert.same(mock_handler.calls[1].refs[2], { contents = { { "test" } } })
