@@ -188,6 +188,17 @@ return function(opts)
         fn = function(params, done)
             local loop = require("null-ls.loop")
 
+            local original_done = done
+            local done_called = false
+            done = function(...)
+                -- plenary will throw an error if its async callback is called more than once
+                if done_called then
+                    return
+                end
+                done_called = true
+                original_done(...)
+            end
+
             local root = u.get_root()
             params.root = root
 
