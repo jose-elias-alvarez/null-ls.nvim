@@ -205,7 +205,8 @@ return function(opts)
             if not _validated then
                 local validated = validate_opts(params)
                 if not validated then
-                    return done({ _should_deregister = true })
+                    done({ _should_deregister = true })
+                    return
                 end
 
                 _validated = true
@@ -254,6 +255,7 @@ return function(opts)
                 local ok, err = pcall(handle_output)
                 if not ok then
                     done({ _generator_err = err })
+                    return
                 end
             end
 
