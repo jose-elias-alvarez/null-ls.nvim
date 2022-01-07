@@ -286,6 +286,27 @@ describe("loop", function()
                 done:clear()
             end)
 
+            it("should call done with exit and timeout results", function()
+                mock_opts.check_exit_code = nil
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+
+                local on_close = uv.spawn.calls[1].refs[3]
+                on_close(0)
+
+                assert.stub(done).was_called_with(true, false)
+            end)
+
+            it("should only call done once", function()
+                mock_opts.check_exit_code = nil
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+
+                local on_close = uv.spawn.calls[1].refs[3]
+                on_close(0)
+                on_close(0)
+
+                assert.stub(done).was_called(1)
+            end)
+
             it("should check that code is 0 when check_exit_code is nil", function()
                 mock_opts.check_exit_code = nil
                 loop.spawn(mock_cmd, mock_args, mock_opts)

@@ -98,6 +98,10 @@ M.spawn = function(cmd, args, opts)
 
     local handle
     local on_close = function(code)
+        if not handle then
+            return
+        end
+
         stdout:read_stop()
         stderr:read_stop()
 
@@ -120,6 +124,7 @@ M.spawn = function(cmd, args, opts)
         end
 
         done(exit_ok, code == TIMEOUT_EXIT_CODE)
+        handle = nil
     end
 
     local parsed_env = nil
