@@ -188,28 +188,40 @@ return function(opts)
         fn = function(params, done)
             local loop = require("null-ls.loop")
 
+            local original_done = done
+            local done_called = false
+            done = function(...)
+                -- plenary will throw an error if its async callback is called more than once
+                if done_called then
+                    return
+                end
+                done_called = true
+                original_done(...)
+            end
+
             local root = u.get_root()
             params.root = root
 
             if not _validated then
                 local validated = validate_opts(params)
                 if not validated then
-                    return done({ _should_deregister = true })
+                    done({ _should_deregister = true })
+                    return
                 end
 
                 _validated = true
             end
 
             local wrapper = function(error_output, output)
-                log:trace("error output: " .. (error_output or "nil"))
-                log:trace("output: " .. (output or "nil"))
-
                 if ignore_stderr then
                     error_output = nil
                 elseif from_stderr then
                     output = error_output
                     error_output = nil
                 end
+
+                log:trace("error output: " .. (error_output or "nil"))
+                log:trace("output: " .. (output or "nil"))
 
                 local handle_output = function()
                     if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
@@ -243,6 +255,7 @@ return function(opts)
                 local ok, err = pcall(handle_output)
                 if not ok then
                     done({ _generator_err = err })
+                    return
                 end
             end
 
