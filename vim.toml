@@ -39,6 +39,9 @@ type = "any"
 [[assert.truthy.args]]
 type = "any"
 
+[[assert.falsy.args]]
+type = "any"
+
 [[assert.spy.args]]
 type = "any"
 

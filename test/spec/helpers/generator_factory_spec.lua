@@ -654,7 +654,7 @@ describe("generator_factory", function()
     end)
 
     describe("wrapper", function()
-        it("should set params.output and call on_output with params and done", function()
+        it("should set params.output and call on_output with params", function()
             local generator = helpers.generator_factory(generator_opts)
             generator.fn({}, done)
 
@@ -662,7 +662,31 @@ describe("generator_factory", function()
             wrapper(nil, "output")
 
             assert.equals(on_output.calls[1].refs[1].output, "output")
-            assert.equals(on_output.calls[1].refs[2], done)
+        end)
+
+        it("should call done when on_output is called", function()
+            local generator = helpers.generator_factory(generator_opts)
+            generator.fn({}, done)
+            local wrapper = loop.spawn.calls[1].refs[3].handler
+            wrapper(nil, "output")
+
+            local wrapped_done = on_output.calls[1].refs[2]
+            wrapped_done()
+
+            assert.stub(done).was_called()
+        end)
+
+        it("should call done only once when wrapper is called multiple times", function()
+            local generator = helpers.generator_factory(generator_opts)
+            generator.fn({}, done)
+            local wrapper = loop.spawn.calls[1].refs[3].handler
+            wrapper(nil, "output")
+
+            local wrapped_done = on_output.calls[1].refs[2]
+            wrapped_done()
+            wrapped_done()
+
+            assert.stub(done).was_called(1)
         end)
 
         it("should set output to error_output and error_output to nil if from_stderr = true", function()
@@ -674,7 +698,6 @@ describe("generator_factory", function()
             wrapper("error output", nil)
 
             assert.equals(on_output.calls[1].refs[1].output, "error output")
-            assert.equals(on_output.calls[1].refs[2], done)
         end)
 
         it("should ignore error output if ignore_stderr = true", function()
@@ -686,7 +709,6 @@ describe("generator_factory", function()
             wrapper("error output", "normal output")
 
             assert.equals(on_output.calls[1].refs[1].output, "normal output")
-            assert.equals(on_output.calls[1].refs[2], done)
         end)
 
         it("should not override params.output if already set", function()
@@ -698,7 +720,6 @@ describe("generator_factory", function()
             wrapper(nil, "new output")
 
             assert.equals(on_output.calls[1].refs[1].output, "original output")
-            assert.equals(on_output.calls[1].refs[2], done)
         end)
 
         it("should catch error thrown in handle_output", function()
@@ -738,7 +759,6 @@ describe("generator_factory", function()
             wrapper("error output", nil)
 
             assert.equals(on_output.calls[1].refs[1].err, "error output")
-            assert.equals(on_output.calls[1].refs[2], done)
         end)
 
         it("should set params.err if format == json_raw", function()

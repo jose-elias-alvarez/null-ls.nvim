@@ -25,9 +25,9 @@ local handle_rubocop_output = function(params)
                     ruleId = offense.cop_name,
                     level = offense.severity,
                     line = offense.location.start_line,
-                    column = offense.start_column,
+                    column = offense.location.start_column,
                     endLine = offense.location.last_line,
-                    endColumn = offense.last_column,
+                    endColumn = offense.location.last_column + 1,
                 })
             end
 
