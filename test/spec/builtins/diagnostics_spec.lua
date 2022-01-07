@@ -12,9 +12,10 @@ describe("diagnostics", function()
         }
 
         it("should create a diagnostic", function()
-            local output = [[3:23:1:Warning:Command terminated with space.]]
+            local output = [[3:23:1:Warning:1:Command terminated with space.]]
             local diagnostic = parser(output, { content = file })
             assert.are.same({
+                code = "1",
                 row = "3",
                 col = "23",
                 end_col = 24,
