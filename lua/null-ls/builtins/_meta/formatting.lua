@@ -124,6 +124,9 @@ return {
   perltidy = {
     filetypes = { "perl" }
   },
+  pg_format = {
+    filetypes = { "sql", "pgsql" }
+  },
   phpcbf = {
     filetypes = { "php" }
   },

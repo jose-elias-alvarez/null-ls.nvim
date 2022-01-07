@@ -7,7 +7,6 @@ local log = {}
 ---@param msg any
 ---@param level string [same as vim.log.log_levels]
 function log:add_entry(msg, level)
-    assert(type(level) == "string")
     if self.__handle then
         -- plenary uses lower-case log levels
         self.__handle[level:lower()](msg)
