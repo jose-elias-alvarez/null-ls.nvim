@@ -141,6 +141,9 @@ return {
   perl = {
     formatting = { "perltidy" }
   },
+  pgsql = {
+    formatting = { "pg_format" }
+  },
   php = {
     diagnostics = { "php", "phpcs", "phpstan", "psalm" },
     formatting = { "phpcbf", "phpcsfixer" }
@@ -185,7 +188,7 @@ return {
     formatting = { "shellharden", "shfmt" }
   },
   sql = {
-    formatting = { "sqlformat" }
+    formatting = { "pg_format", "sqlformat" }
   },
   surface = {
     formatting = { "surface" }

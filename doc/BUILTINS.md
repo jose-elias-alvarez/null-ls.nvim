@@ -1110,6 +1110,23 @@ local sources = { null_ls.builtins.formatting.perltidy }
 - `command = "perltidy"`
 - `args = { "-q" }`
 
+#### [pgFormatter](https://github.com/darold/pgFormatter)
+
+##### About
+
+PostgreSQL SQL syntax beautifier
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.pg_format }
+```
+
+##### Defaults
+
+- `filetypes = { "sql", "pgsql" }`
+- `command = "pg_format"`
+
 #### [php](https://www.php.net)
 
 ##### About
