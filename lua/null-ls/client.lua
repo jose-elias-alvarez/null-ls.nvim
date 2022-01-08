@@ -197,6 +197,29 @@ M.retry_add = function(bufnr)
     end
 end
 
+M.send_progress_notification = function(token, opts)
+    if not id then
+        return
+    end
+
+    local handler = M.resolve_handler("$/progress")
+    if not handler then
+        return
+    end
+
+    handler(nil, {
+        token = token,
+        value = {
+            kind = opts.kind,
+            title = opts.title,
+            percentage = opts.percentage,
+            message = opts.message,
+        },
+    }, {
+        client_id = id,
+    })
+end
+
 M._reset = function()
     client = nil
     id = nil

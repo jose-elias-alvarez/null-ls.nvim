@@ -1,6 +1,10 @@
+local client = require("null-ls.client")
 local log = require("null-ls.logger")
+local methods = require("null-ls.methods")
 
 local M = {}
+
+local progress_token = 0
 
 M.run = function(generators, params, opts, callback)
     local a = require("plenary.async")
@@ -22,14 +26,30 @@ M.run = function(generators, params, opts, callback)
         return
     end
 
+    local current_progress_token = nil
+    if params.method ~= methods.internal.COMPLETION then
+        -- progress messages for completion lead to too
+        -- much noise in the tests.
+        progress_token = progress_token + 1
+        current_progress_token = progress_token
+    end
+
     local futures = {}
-    for _, generator in ipairs(generators) do
+    for i, generator in ipairs(generators) do
         table.insert(futures, function()
             local copied_params = vim.deepcopy(opts.make_params and opts.make_params() or params)
 
             local runtime_condition = generator.opts and generator.opts.runtime_condition
             if runtime_condition and not runtime_condition(copied_params) then
                 return
+            end
+
+            if current_progress_token then
+                client.send_progress_notification(current_progress_token, {
+                    kind = "report",
+                    message = generator.opts and generator.opts.name,
+                    percentage = math.floor((i - 1) / #generators * 100),
+                })
             end
 
             local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
@@ -77,6 +97,14 @@ M.run = function(generators, params, opts, callback)
     end
 
     a.run(function()
+        if current_progress_token then
+            client.send_progress_notification(current_progress_token, {
+                kind = "begin",
+                title = require("null-ls.methods").internal[params.method]:lower(),
+                percentage = 0,
+            })
+        end
+
         if opts.sequential then
             for _, future in ipairs(futures) do
                 future()
@@ -84,7 +112,15 @@ M.run = function(generators, params, opts, callback)
         else
             a.util.join(futures)
         end
-    end, safe_callback)
+    end, function()
+        if current_progress_token then
+            client.send_progress_notification(current_progress_token, {
+                kind = "end",
+                percentage = 100,
+            })
+        end
+        safe_callback()
+    end)
 end
 
 M.run_sequentially = function(generators, make_params, opts, callback)
