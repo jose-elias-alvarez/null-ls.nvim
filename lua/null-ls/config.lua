@@ -98,7 +98,7 @@ M.setup = function(user_config)
     config.log = vim.tbl_extend("keep", config.log, defaults.log)
 
     if config.sources then
-        require("null-ls.sources").register(config.sources, true)
+        require("null-ls.sources").register(config.sources)
     end
 
     config._setup = true
