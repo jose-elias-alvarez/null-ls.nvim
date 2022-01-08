@@ -7,9 +7,12 @@ local M = {}
 
 local postprocess = function(action)
     s.register_action(action)
+    action.action = nil
 
     action.command = methods.internal.CODE_ACTION
-    action.action = nil
+    action.arguments = {
+        title = action.title,
+    }
 end
 
 M.handler = function(method, original_params, handler)
@@ -43,7 +46,7 @@ M.handler = function(method, original_params, handler)
     end
 
     if method == methods.lsp.EXECUTE_COMMAND and original_params.command == methods.internal.CODE_ACTION then
-        s.run_action(original_params.title)
+        s.run_action(original_params.arguments and original_params.arguments.title)
         original_params._null_ls_handled = true
     end
 end

@@ -128,7 +128,9 @@ describe("code_actions", function()
         it("should set handled flag on params", function()
             local params = {
                 command = methods.internal.CODE_ACTION,
-                title = "Mock action",
+                arguments = {
+                    title = "Mock action",
+                },
             }
 
             code_actions.handler(method, params, handler)
@@ -139,7 +141,9 @@ describe("code_actions", function()
         it("should run action when command matches", function()
             code_actions.handler(method, {
                 command = methods.internal.CODE_ACTION,
-                title = "Mock action",
+                arguments = {
+                    title = "Mock action",
+                },
             }, handler)
 
             assert.stub(s.run_action).was_called_with("Mock action")
