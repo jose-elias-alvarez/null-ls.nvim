@@ -1,5 +1,6 @@
 local client = require("null-ls.client")
 local log = require("null-ls.logger")
+local methods = require("null-ls.methods")
 
 local M = {}
 
@@ -25,8 +26,13 @@ M.run = function(generators, params, opts, callback)
         return
     end
 
-    progress_token = progress_token + 1
-    local token = progress_token
+    local current_progress_token = nil
+    if params.method ~= methods.internal.COMPLETION then
+        -- progress messages for completion lead to too
+        -- much noise in the tests.
+        progress_token = progress_token + 1
+        current_progress_token = progress_token
+    end
 
     local futures = {}
     for i, generator in ipairs(generators) do
@@ -38,16 +44,18 @@ M.run = function(generators, params, opts, callback)
                 return
             end
 
+            if current_progress_token then
+                client.send_progress_notification(current_progress_token, {
+                    kind = "report",
+                    message = generator.opts and generator.opts.name,
+                    percentage = math.floor((i - 1) / #generators * 100),
+                })
+            end
+
             local to_run = generator.async and a.wrap(generator.fn, 2) or generator.fn
             local protected_call = generator.async and a.util.apcall or pcall
             local ok, results = protected_call(to_run, copied_params)
             a.util.scheduler()
-
-            client.send_progress_notification(token, {
-                kind = "report",
-                message = generator.opts and generator.opts.name,
-                percentage = math.floor(i / #generators * 100),
-            })
 
             if results then
                 -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
@@ -89,11 +97,13 @@ M.run = function(generators, params, opts, callback)
     end
 
     a.run(function()
-        client.send_progress_notification(token, {
-            kind = "begin",
-            title = require("null-ls.methods").internal[params.method]:lower(),
-            percentage = 0,
-        })
+        if current_progress_token then
+            client.send_progress_notification(current_progress_token, {
+                kind = "begin",
+                title = require("null-ls.methods").internal[params.method]:lower(),
+                percentage = 0,
+            })
+        end
 
         if opts.sequential then
             for _, future in ipairs(futures) do
@@ -103,10 +113,12 @@ M.run = function(generators, params, opts, callback)
             a.util.join(futures)
         end
     end, function()
-        client.send_progress_notification(token, {
-            kind = "end",
-            percentage = 100,
-        })
+        if current_progress_token then
+            client.send_progress_notification(current_progress_token, {
+                kind = "end",
+                percentage = 100,
+            })
+        end
         safe_callback()
     end)
 end
