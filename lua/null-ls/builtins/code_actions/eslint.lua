@@ -1,4 +1,5 @@
 local h = require("null-ls.helpers")
+local cmd_resolver = require("null-ls.helpers.command_resolver")
 local methods = require("null-ls.methods")
 
 local CODE_ACTION = methods.internal.CODE_ACTION
@@ -160,6 +161,7 @@ return h.make_builtin({
             params.messages = output[1].messages
             return code_action_handler(params)
         end,
+        dynamic_command = cmd_resolver.from_node_modules,
     },
     factory = h.generator_factory,
 })

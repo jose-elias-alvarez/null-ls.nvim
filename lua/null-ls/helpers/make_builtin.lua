@@ -1,5 +1,6 @@
 local log = require("null-ls.logger")
 local s = require("null-ls.state")
+local cmd_resolver = require("null-ls.helpers.command_resolver")
 local u = require("null-ls.utils")
 
 local function make_builtin(opts)
@@ -75,58 +76,20 @@ local function make_builtin(opts)
     end
 
     if prefer_local or only_local then
+        log:debug("Using local resolved command for: " .. builtin.name)
         generator_opts.dynamic_command = function(params)
-            local resolved = s.get_resolved_command(params.bufnr, params.command)
-            -- a string means command was resolved on last run
-            -- false means the command already failed to resolve, so don't bother checking again
-            if resolved and (type(resolved.command) == "string" or resolved.command == false) then
-                return resolved.command
-            end
-
             local maybe_prefix = prefer_local or only_local
             local prefix = type(maybe_prefix) == "string" and maybe_prefix
-            local executable_to_find = prefix and u.path.join(prefix, params.command) or params.command
-            log:debug("attempting to find local executable " .. executable_to_find)
-
-            local root = u.get_root()
-
-            local found, resolved_cwd
-            u.path.traverse_parents(params.bufname, function(dir)
-                found = u.path.join(dir, executable_to_find)
-                if u.is_executable(found) then
-                    resolved_cwd = dir
-                    return true
-                end
-
-                found = nil
-                resolved_cwd = nil
-                -- use cwd as a stopping point to avoid scanning the entire file system
-                if dir == root then
-                    return true
-                end
-            end)
-
-            local resolved_command = found or (prefer_local and params.command)
-            if resolved_command then
-                local is_executable, err_msg = u.is_executable(resolved_command)
-                assert(is_executable, err_msg)
-            end
-
-            s.set_resolved_command(
-                params.bufnr,
-                params.command,
-                { command = resolved_command or false, cwd = resolved_cwd }
-            )
+            local resolved_command = cmd_resolver.generic(params, prefix) or (prefer_local and params.command)
             return resolved_command
         end
-
-        generator_opts.cwd = opts.cwd
-            or function(params)
-                local resolved = s.get_resolved_command(params.bufnr, params.command)
-                return resolved and resolved.cwd
-            end
     end
 
+    generator_opts.cwd = opts.cwd
+        or function(params)
+            local resolved = s.get_resolved_command(params.bufnr, params.command)
+            return resolved and resolved.cwd
+        end
     generator_opts._last_command = nil
     generator_opts._last_args = nil
     generator_opts._last_cwd = nil
