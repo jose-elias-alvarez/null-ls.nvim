@@ -83,13 +83,14 @@ local function make_builtin(opts)
             local resolved_command = cmd_resolver.generic(params, prefix) or (prefer_local and params.command)
             return resolved_command
         end
+
+        generator_opts.cwd = generator_opts.cwd
+            or function(params)
+                local resolved = s.get_resolved_command(params.bufnr, params.command)
+                return resolved and resolved.cwd
+            end
     end
 
-    generator_opts.cwd = opts.cwd
-        or function(params)
-            local resolved = s.get_resolved_command(params.bufnr, params.command)
-            return resolved and resolved.cwd
-        end
     generator_opts._last_command = nil
     generator_opts._last_args = nil
     generator_opts._last_cwd = nil

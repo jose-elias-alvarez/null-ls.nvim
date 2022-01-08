@@ -33,14 +33,14 @@ describe("make_builtin", function()
     it("should return builtin with assigned opts", function()
         assert.equals(builtin.method, opts.method)
         assert.equals(builtin.filetypes, opts.filetypes)
-        assert.are.same(builtin._opts, opts.generator_opts)
+        assert.same(builtin._opts, opts.generator_opts)
     end)
 
     describe("with", function()
         it("should create copy", function()
             local copy = builtin.with({ filetypes = { "txt" } })
 
-            assert.not_same(builtin, copy)
+            assert.is_not.same(builtin, copy)
         end)
 
         it("should override filetypes", function()
@@ -77,9 +77,9 @@ describe("make_builtin", function()
             local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
             -- Multiple calls should yield the same results
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
         end)
 
         it("should extend args with extra_args function", function()
@@ -90,8 +90,8 @@ describe("make_builtin", function()
             })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
         end)
 
         it("should keep original args if extra_args returns nil", function()
@@ -102,8 +102,8 @@ describe("make_builtin", function()
             })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "first", "second" })
-            assert.are.same(copy._opts.args(), { "first", "second" })
+            assert.same(copy._opts.args(), { "first", "second" })
+            assert.same(copy._opts.args(), { "first", "second" })
         end)
 
         it("should set args to extra_args if args is nil", function()
@@ -119,7 +119,7 @@ describe("make_builtin", function()
             local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "user_first", "user_second" })
         end)
 
         it("should set args to extra_args if args returns nil", function()
@@ -137,7 +137,7 @@ describe("make_builtin", function()
             local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "user_first", "user_second" })
+            assert.same(copy._opts.args(), { "user_first", "user_second" })
         end)
 
         it("should extend args with extra_args, but keep '-' arg last", function()
@@ -154,9 +154,9 @@ describe("make_builtin", function()
             local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
 
             assert.equals(type(copy._opts.args), "function")
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
             -- Multiple calls should yield the same results
-            assert.are.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+            assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
         end)
     end)
 
