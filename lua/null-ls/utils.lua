@@ -64,8 +64,7 @@ M.has_version = function(ver)
 end
 
 M.is_executable = function(cmd)
-    local is_executable = vim.fn.executable(cmd) > 0
-    if is_executable then
+    if cmd and vim.fn.executable(cmd) == 1 then
         return true
     end
 

@@ -277,6 +277,7 @@ return function(opts)
             local resolved_command
             if dynamic_command then
                 resolved_command = dynamic_command(params)
+                log:debug(string.format("Using dynamic command for [%s], got: %s", params.command, resolved_command))
             else
                 resolved_command = command
             end
@@ -330,7 +331,14 @@ return function(opts)
             opts._last_args = resolved_args
             opts._last_cwd = resolved_cwd
 
-            log:debug(string.format("spawning command [%s] with args %s", resolved_command, vim.inspect(resolved_args)))
+            log:debug(
+                string.format(
+                    "spawning command [%s] at %s with args %s",
+                    resolved_command,
+                    resolved_cwd,
+                    vim.inspect(resolved_args)
+                )
+            )
             loop.spawn(resolved_command, resolved_args, spawn_opts)
         end,
         filetypes = opts.filetypes,
