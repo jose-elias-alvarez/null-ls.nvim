@@ -216,11 +216,21 @@ require("null-ls").setup({
     -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client)
         if client.resolved_capabilities.document_formatting then
-            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+            vim.cmd([[
+            augroup LspFormatting
+                autocmd! * <buffer>
+                autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
+            augroup END
+            ]])
         end
     end,
 })
 ```
+
+You can also set up async formatting, as described on [this wiki
+page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Async-formatting).
+Please read the Caveats section there to understand the meaning of (and
+drawbacks of) async formatting.
 
 ### How do I view project-level diagnostics?
 
