@@ -84,31 +84,54 @@ describe("generators", function()
         sources._reset()
     end)
 
-    a.tests.describe("run", function()
-        local wrapped_run = a.wrap(generators.run, 4)
+    describe("run", function()
+        local results, received = {}, false
+        local callback
+        before_each(function()
+            callback = function(generator_results)
+                received = true
+                results = vim.list_extend(results, generator_results)
+            end
+        end)
+
+        after_each(function()
+            results = {}
+            received = false
+        end)
+
+        local wait_for_results = function(count)
+            vim.wait(50, function()
+                return received and #results == (count or 0)
+            end)
+        end
 
         it("should return empty table when generators is empty", function()
-            local results = wrapped_run({}, mock_params, mock_opts)()
+            generators.run({}, mock_params, mock_opts, callback)
+            wait_for_results()
 
             assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should get result from sync generator", function()
-            local results = wrapped_run({ sync_generator }, mock_params, mock_opts)()
+            generators.run({ sync_generator }, mock_params, mock_opts, callback)
+
+            wait_for_results(1)
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should get result from async generator", function()
-            local results = wrapped_run({ async_generator }, mock_params, mock_opts)()
+            generators.run({ async_generator }, mock_params, mock_opts, callback)
+            wait_for_results(1)
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should handle error thrown in sync generator", function()
-            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
+            generators.run({ error_generator }, mock_params, mock_opts, callback)
+            wait_for_results()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
@@ -117,7 +140,8 @@ describe("generators", function()
         it("should handle error thrown in async generator", function()
             error_generator.async = true
 
-            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
+            generators.run({ error_generator }, mock_params, mock_opts, callback)
+            wait_for_results()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
@@ -128,14 +152,17 @@ describe("generators", function()
                 return { _generator_err = "something went wrong" }
             end
 
-            local results = wrapped_run({ error_generator }, mock_params, mock_opts)()
+            generators.run({ error_generator }, mock_params, mock_opts, callback)
+            wait_for_results()
 
             assert.equals(error_generator._failed, true)
             assert.equals(vim.tbl_count(results), 0)
         end)
 
         it("should call postprocess with result, params, and generator", function()
-            wrapped_run({ sync_generator }, mock_params, mock_opts)()
+            generators.run({ sync_generator }, mock_params, mock_opts, callback)
+
+            wait_for_results()
 
             assert.stub(postprocess).was_called_with(mock_result, mock_params, sync_generator)
         end)
@@ -143,25 +170,31 @@ describe("generators", function()
         it("should call after_each with results, params, and generator", function()
             mock_opts.after_each = stub.new()
 
-            local results = wrapped_run({ sync_generator }, mock_params, mock_opts)()
+            generators.run({ sync_generator }, mock_params, mock_opts, callback)
+            wait_for_results()
 
             assert.stub(mock_opts.after_each).was_called_with(results, mock_params, sync_generator)
         end)
 
         it("should skip generators that fail runtime_condition", function()
-            local results = wrapped_run({ runtime_generator(false), runtime_generator(true) }, mock_params, mock_opts)()
+            generators.run({
+                runtime_generator(false),
+                runtime_generator(true),
+            }, mock_params, mock_opts, callback)
+
+            wait_for_results()
 
             assert.equals(vim.tbl_count(results), 1)
             assert.equals(results[1].title, mock_result.title)
         end)
 
         it("should return an empty table if all runtime_conditions fail", function()
-            local results =
-                wrapped_run(
-                    { runtime_generator(false), runtime_generator(false) },
-                    mock_params,
-                    mock_opts
-                )()
+            generators.run({
+                runtime_generator(false),
+                runtime_generator(false),
+            }, mock_params, mock_opts, callback)
+
+            wait_for_results()
 
             assert.equals(vim.tbl_count(results), 0)
         end)
@@ -181,11 +214,11 @@ describe("generators", function()
             end,
         }
 
-        local callback, results
+        local results, callback
         before_each(function()
             results = {}
             callback = function(generator_results)
-                table.insert(results, generator_results)
+                results = vim.list_extend(results, generator_results)
             end
         end)
 
@@ -200,8 +233,8 @@ describe("generators", function()
             end)
 
             assert.equals(#results, 2)
-            assert.same(results[1], { "first" })
-            assert.same(results[2], { "second" })
+            assert.same(results[1], "first")
+            assert.same(results[2], "second")
         end)
 
         it("should run generators in order", function()
@@ -214,11 +247,11 @@ describe("generators", function()
             end)
 
             assert.equals(#results, 2)
-            assert.same(results[1], { "second" })
-            assert.same(results[2], { "first" })
+            assert.same(results[1], "second")
+            assert.same(results[2], "first")
         end)
 
-        it("should call make_params once for each run", function()
+        it("should call make_params once at start and once for each run", function()
             local count = 0
             generators.run_sequentially({ first_generator, second_generator }, function()
                 count = count + 1
@@ -229,20 +262,7 @@ describe("generators", function()
                 return #results == 2
             end)
 
-            assert.equals(count, 2)
-        end)
-
-        it("should call after_all after running all generators", function()
-            mock_opts.after_all = stub.new()
-            generators.run_sequentially({ first_generator, second_generator }, function()
-                return mock_params
-            end, mock_opts, callback)
-
-            vim.wait(50, function()
-                return #results == 2
-            end)
-
-            assert.stub(mock_opts.after_all).was_called(1)
+            assert.equals(count, 3)
         end)
 
         it("should return no results when generators is empty", function()

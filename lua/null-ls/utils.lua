@@ -47,6 +47,8 @@ local resolve_bufnr = function(params)
     return api.nvim_get_current_buf()
 end
 
+M.get_line_ending = get_line_ending
+
 M.join_at_newline = function(bufnr, text)
     local line_ending = get_line_ending(bufnr)
     return table.concat(text, line_ending), line_ending

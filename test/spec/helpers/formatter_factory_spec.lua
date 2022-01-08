@@ -62,13 +62,7 @@ describe("formatter_factory", function()
             }, formatter_done)
 
             assert.stub(formatter_done).was_called_with({
-                {
-                    row = 1,
-                    col = 1,
-                    end_row = 3,
-                    end_col = 1,
-                    text = "new text",
-                },
+                { text = "new text" },
             })
         end)
     end)
