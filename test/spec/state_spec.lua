@@ -1,8 +1,5 @@
 local stub = require("luassert.stub")
 
-local loop = require("null-ls.loop")
-local methods = require("null-ls.methods")
-local c = require("null-ls.config")
 local s = require("null-ls.state")
 
 describe("state", function()

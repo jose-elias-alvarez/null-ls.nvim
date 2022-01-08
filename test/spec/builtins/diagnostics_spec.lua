@@ -14,7 +14,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[3:23:1:Warning:1:Command terminated with space.]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 code = "1",
                 row = "3",
                 col = "23",
@@ -55,7 +55,7 @@ describe("diagnostics", function()
               ]
             } ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = "There is no whitespace around parentheses/brackets most of the time, but here there is.",
@@ -83,7 +83,7 @@ describe("diagnostics", function()
               }]
             } ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = "@impl true should be @impl MyBehaviour",
@@ -111,7 +111,7 @@ describe("diagnostics", function()
               }]
             } ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = 'Found a TODO tag in a comment: "TODO: implement check"',
@@ -139,7 +139,7 @@ describe("diagnostics", function()
               }]
             } ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = "One `Enum.filter/2` is more efficient than `Enum.filter/2 |> Enum.filter/2`",
@@ -154,7 +154,7 @@ describe("diagnostics", function()
             local error =
                 [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
             parser({ err = error }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = error,
@@ -183,7 +183,7 @@ describe("diagnostics", function()
               ]
             } ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = "There is no whitespace around parentheses/brackets most of the time, but here there is.",
@@ -197,7 +197,7 @@ describe("diagnostics", function()
         it("should handle messages with incomplete json", function()
             local output = [[Some incomplete message that shouldn't really happen { "issues": ]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = output,
@@ -208,7 +208,7 @@ describe("diagnostics", function()
         it("should handle messages without json", function()
             local output = [[Another message that shouldn't really happen]]
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     source = "credo",
                     message = output,
@@ -228,7 +228,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[test.lua:2:1-1: (E011) expected expression near <eof>]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 code = "011",
                 row = "2",
                 col = "1",
@@ -249,7 +249,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[rules.md:1:46:"is deprecated" may be passive voice]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = 47,
                 end_col = 59,
@@ -270,7 +270,7 @@ describe("diagnostics", function()
         it("should create a diagnostic with a column", function()
             local output = "rules.md:1:1 MD033/no-inline-html Inline HTML [Element: a]"
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 code = "MD033/no-inline-html",
                 row = "1",
                 col = "1",
@@ -282,7 +282,7 @@ describe("diagnostics", function()
             local output =
                 "rules.md:2 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]"
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "2",
                 code = "MD012/no-multiple-blanks",
                 severity = 1,
@@ -310,7 +310,7 @@ describe("diagnostics", function()
               ]
             ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     code = "MD022",
                     row = 1,
@@ -333,7 +333,7 @@ describe("diagnostics", function()
         it("should create a diagnostic (quote field is between quotes)", function()
             local output = [[init.lua:1:8: module not found: 'settings']]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "8",
                 end_col = 17,
@@ -345,7 +345,7 @@ describe("diagnostics", function()
         it("should create a diagnostic (quote field is not between quotes)", function()
             local output = [[init.lua:2:1: unknown variable: vim]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "2", --
                 col = "1",
                 end_col = 3,
@@ -357,7 +357,7 @@ describe("diagnostics", function()
         it("should create a diagnostic by using the second pattern", function()
             local output = [[autocmds.lua:3:46: argument 1: got <unknown type>, expected {string}]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "3", --
                 col = "46",
                 severity = 1,
@@ -387,7 +387,7 @@ describe("diagnostics", function()
               }]
             } ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     code = 1091,
                     row = 21,
@@ -415,7 +415,7 @@ describe("diagnostics", function()
               }]
             } ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     code = 1091,
                     row = 21,
@@ -440,7 +440,7 @@ describe("diagnostics", function()
         it("should create a diagnostic (quote is between backquotes)", function()
             local output = [[init.lua:1:1: error[undefined_variable]: `vim` is not defined]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "1",
                 end_col = 4,
@@ -453,7 +453,7 @@ describe("diagnostics", function()
             local output =
                 [[lua/default-config.lua:2:1: warning[unused_variable]: CACHE_PATH is defined, but never used]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "2", --
                 col = "1",
                 end_col = 11,
@@ -494,7 +494,7 @@ describe("diagnostics", function()
               ]
             }] ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     row = 1, --
                     end_row = 1,
@@ -532,7 +532,7 @@ describe("diagnostics", function()
               ]
             }] ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     row = 1, --
                     end_row = 1,
@@ -556,7 +556,7 @@ describe("diagnostics", function()
             }
             local output = [[rules.js:1:2: Parsing error: Unexpected token]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "2",
                 severity = 1,
@@ -569,7 +569,7 @@ describe("diagnostics", function()
             }
             local output = [[rules.js:1:35: Strings must use singlequote.]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "35",
                 severity = 2,
@@ -594,7 +594,7 @@ describe("diagnostics", function()
                   }]
             ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     row = 24, --
                     col = 1,
@@ -616,7 +616,7 @@ describe("diagnostics", function()
                   }]
             ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     row = 24, --
                     col = 1,
@@ -638,7 +638,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[run-clang-tidy.py:3:1: E265 block comment should start with '# ']]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "3", --
                 col = "1",
                 severity = 1,
@@ -658,7 +658,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[stdin:1:15: "langauge" is a misspelling of "language"]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1",
                 col = 16,
                 severity = 3,
@@ -684,7 +684,7 @@ describe("diagnostics", function()
                   }]
             ]])
             local diagnostic = parser({ output = output })
-            assert.are.same({
+            assert.same({
                 {
                     row = 5, --
                     col = 37,
@@ -706,7 +706,7 @@ describe("diagnostics", function()
         it("should create a diagnostic with warning severity", function()
             local output = [[stdin:1:1: [warning] missing document start "---" (document-start)]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "1",
                 severity = 2,
@@ -726,7 +726,7 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[rules.json: line 1, col 8, found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.]]
             local diagnostic = parser(output, { content = file })
-            assert.are.same({
+            assert.same({
                 row = "1", --
                 col = "8",
                 severity = 1,
@@ -749,7 +749,7 @@ describe("diagnostics", function()
                 ../../../../../../../tmp/null-ls_GLJOFJ.cue:3:2
             ]])
             parser({ output = output }, done)
-            assert.are.same({
+            assert.same({
                 {
                     row = "3",
                     col = "2",

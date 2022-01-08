@@ -569,17 +569,18 @@ describe("loop", function()
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
 
         local fs_mkstemp = uv.fs_mkstemp
+        local tmpname
         before_each(function()
             u.path.is_windows = false
 
-            stub(os, "tmpname")
+            tmpname = stub(os, "tmpname")
 
-            os.tmpname.returns(mock_path)
+            tmpname.returns(mock_path)
             uv.fs_mkstemp.returns(mock_fd, mock_path)
             uv.fs_open.returns(mock_fd)
         end)
         after_each(function()
-            os.tmpname:revert()
+            tmpname:revert()
             uv.fs_write:clear()
             uv.fs_close:clear()
             uv.fs_unlink:clear()
@@ -605,7 +606,7 @@ describe("loop", function()
 
             loop.temp_file(mock_content)
 
-            assert.stub(os.tmpname).was_called()
+            assert.stub(tmpname).was_called()
         end)
 
         it("should call uv.fs_open with path and permissions", function()

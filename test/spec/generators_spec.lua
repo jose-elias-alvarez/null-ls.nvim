@@ -1,6 +1,5 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
-local a = require("plenary.async_lib")
 
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
