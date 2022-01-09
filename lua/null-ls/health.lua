@@ -1,6 +1,4 @@
 local health = require("health")
-local sources = require("null-ls.sources")
-local utils = require("null-ls.utils")
 
 local M = {}
 
@@ -21,7 +19,7 @@ local function report(source)
         return
     end
 
-    if utils.is_executable(command) then
+    if require("null-ls.utils").is_executable(command) then
         health.report_ok(string.format(messages["executable"], name, command))
         return
     end
@@ -35,7 +33,13 @@ local function report(source)
 end
 
 M.check = function()
-    for _, source in ipairs(sources.get({})) do
+    local registered_sources = require("null-ls.sources").get({})
+    if #registered_sources == 0 then
+        health.report_info("no sources registered")
+        return
+    end
+
+    for _, source in ipairs(registered_sources) do
         report(source)
     end
 end
