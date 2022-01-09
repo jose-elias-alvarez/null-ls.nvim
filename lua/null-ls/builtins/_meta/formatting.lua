@@ -19,6 +19,9 @@ return {
   buildifier = {
     filetypes = { "bzl" }
   },
+  cabal_fmt = {
+    filetypes = { "cabal" }
+  },
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
