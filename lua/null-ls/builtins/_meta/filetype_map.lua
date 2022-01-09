@@ -14,9 +14,6 @@ return {
     diagnostics = { "cppcheck", "gccdiag" },
     formatting = { "clang_format", "uncrustify" }
   },
-  cabal = {
-    formatting = { "cabal_fmt" }
-  },
   clj = {
     formatting = { "joker" }
   },
