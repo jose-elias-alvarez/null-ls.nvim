@@ -442,6 +442,24 @@ local sources = { null_ls.builtins.formatting.buildifier }
 - `command = "buildifier"`
 - `args = { "-path=<FILENAME>" }`
 
+#### [cabal-fmt](https://hackage.haskell.org/package/cabal-fmt)
+
+##### About
+
+Format `.cabal` files preserving the original field ordering, and comments.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cabal_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "cabal" }`
+- `command = "cabal-fmt"`
+- `args = {}`
+
 #### [clang-format](https://www.kernel.org/doc/html/latest/process/clang-format.html)
 
 ##### About
