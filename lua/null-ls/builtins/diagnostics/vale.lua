@@ -3,6 +3,8 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local severities = { error = 1, warning = 2, suggestion = 4 }
+
 return h.make_builtin({
     name = "vale",
     method = DIAGNOSTICS,
@@ -15,9 +17,12 @@ return h.make_builtin({
             return { "--no-exit", "--output", "JSON", "--ext", "." .. vim.fn.fnamemodify(params.bufname, ":e") }
         end,
         on_output = function(params)
+            local output = params.output["stdin." .. vim.fn.fnamemodify(params.bufname, ":e")]
+                or params.output[params.bufname]
+                or {}
+
             local diagnostics = {}
-            local severities = { error = 1, warning = 2, suggestion = 4 }
-            for _, diagnostic in ipairs(params.output["stdin." .. vim.fn.fnamemodify(params.bufname, ":e")]) do
+            for _, diagnostic in ipairs(output) do
                 table.insert(diagnostics, {
                     row = diagnostic.Line,
                     col = diagnostic.Span[1],
@@ -27,6 +32,7 @@ return h.make_builtin({
                     severity = severities[diagnostic.Severity],
                 })
             end
+
             return diagnostics
         end,
     },
