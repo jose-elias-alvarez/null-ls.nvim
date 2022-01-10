@@ -1,0 +1,11 @@
+---
+repos:
+  - repo: https://github.com/johnnymorganz/stylua
+    # TODO: Use v0.11.4 when released with support for stylua-github
+    rev: master
+    hooks:
+      - id: stylua-github
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.5.1
+    hooks:
+      - id: prettier

@@ -7,6 +7,9 @@
   [Prettier](https://github.com/prettier/prettier). Both are available as
   null-ls built-ins.
 
+- Install pre-commit hooks to enforce StyLua and Prettier are run using
+  `make install-hooks`. This requires [Pre-Commit](https://pre-commit.com/index.html#install).
+
 - Use the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
   style for your commits.
 
