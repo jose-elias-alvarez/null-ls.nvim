@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  alex = {
+    filetypes = { "markdown" }
+  },
   ansiblelint = {
     filetypes = { "yaml" }
   },

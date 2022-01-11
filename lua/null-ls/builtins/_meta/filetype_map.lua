@@ -124,7 +124,7 @@ return {
     formatting = { "lua_format", "stylua" }
   },
   markdown = {
-    diagnostics = { "markdownlint", "mdl", "proselint", "vale", "write_good" },
+    diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
     hover = { "dictionary" }
   },
