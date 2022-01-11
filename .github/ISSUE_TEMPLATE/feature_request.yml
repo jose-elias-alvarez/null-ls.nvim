@@ -2,6 +2,7 @@ name: Feature request
 description: Request an enhancement for null-ls
 labels: [enhancement]
 body:
+
   - type: checkboxes
     id: issue-prerequisite
     attributes:
