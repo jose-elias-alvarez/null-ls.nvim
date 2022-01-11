@@ -9,3 +9,4 @@ repos:
     rev: v2.5.1
     hooks:
       - id: prettier
+        exclude: "^test/"
