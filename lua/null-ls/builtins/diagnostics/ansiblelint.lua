@@ -6,30 +6,43 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 return h.make_builtin({
     name = "ansiblelint",
     method = DIAGNOSTICS,
-    filetypes = { "yaml" },
+    filetypes = { "yaml.ansible" },
     generator_opts = {
         command = "ansible-lint",
         to_stdin = true,
         ignore_stderr = true,
-        args = { "--parseable-severity", "-q", "--nocolor", "$FILENAME" },
-        format = "line",
+        args = { "-f", "codeclimate", "-q", "--nocolor", "$FILENAME" },
+        format = "json",
         check_exit_code = function(code)
             return code <= 2
         end,
-        on_output = h.diagnostics.from_pattern(
-            [[^[^:]+:(%d+): %[([%w-]+)%] %[([%w_]+)%] (.*)$]],
-            { "row", "code", "severity", "message" },
-            {
-                severities = {
-                    ["VERY_HIGH"] = h.diagnostics.severities.error,
-                    ["HIGH"] = h.diagnostics.severities.error,
-                    ["MEDIUM"] = h.diagnostics.severities.warning,
-                    ["LOW"] = h.diagnostics.severities.warning,
-                    ["VERY_LOW"] = h.diagnostics.severities.information,
-                    ["INFO"] = h.diagnostics.severities.hint,
-                },
+        multiple_files = true,
+        on_output = function(params)
+            local severities = {
+                blocker = h.diagnostics.severities.error,
+                critical = h.diagnostics.severities.error,
+                major = h.diagnostics.severities.error,
+                minor = h.diagnostics.severities.warning,
+                info = h.diagnostics.severities.information,
             }
-        ),
+            params.messages = {}
+            for _, message in ipairs(params.output) do
+                local col = nil
+                local row = message.location.lines.begin
+                if type(row) == "table" then
+                    row = row.line
+                    col = row.column
+                end
+                table.insert(params.messages, {
+                    row = row,
+                    col = col,
+                    message = message.check_name,
+                    severity = severities[message.severity],
+                    filename = message.location.path,
+                })
+            end
+            return params.messages
+        end,
     },
     factory = h.generator_factory,
 })
