@@ -761,4 +761,27 @@ describe("diagnostics", function()
             }, cue_fmt_diagnostics)
         end)
     end)
+
+    describe("alex", function()
+        local linter = diagnostics.alex
+        local parser = linter._opts.on_output
+        local file = {
+            [[ This is banging ]],
+        }
+
+        it("should create a diagnostic", function()
+            local output =
+                [[  1:9-1:16  warning  Reconsider using `banging`, it may be profane  banging  retext-profanities]]
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                row = "1",
+                col = "9",
+                end_row = "1",
+                end_col = "16",
+                severity = 2,
+                message = "Reconsider using `banging`, it may be profane ",
+                code = "retext-profanities",
+            }, diagnostic)
+        end)
+    end)
 end)
