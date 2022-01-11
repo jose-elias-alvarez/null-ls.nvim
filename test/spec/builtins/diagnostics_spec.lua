@@ -914,8 +914,7 @@ describe("diagnostics", function()
             assert.same({
                 row = "5",
                 severity = 1,
-                message = "File permissions unset or incorrect",
-                code = "risky-file-permissions",
+                message = "[risky-file-permissions] File permissions unset or incorrect",
                 filename = "playbooks/test-ansible.yaml",
             }, diagnostic)
         end)
