@@ -17,8 +17,8 @@ return h.make_builtin({
             return code <= 2
         end,
         on_output = h.diagnostics.from_pattern(
-            [[^[^:]+:(%d+): %[[%w-]+%] %[([%w]+)%] (.*)$]],
-            { "row", "severity", "message" },
+            [[^[^:]+:(%d+): %[([%w-]+)%] %[([%w_]+)%] (.*)$]],
+            { "row", "code", "severity", "message" },
             {
                 severities = {
                     ["VERY_HIGH"] = h.diagnostics.severities.error,

@@ -869,4 +869,30 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("ansiblelint", function()
+        local linter = diagnostics.ansiblelint
+        local parser = linter._opts.on_output
+        local file = {
+            [[---]],
+            [[- name: generate file]],
+            [[  assemble:]],
+            [[    src: "files"]],
+            [[    dest: "dest"]],
+            [[  run_once: true]],
+            [[  become: false]],
+        }
+
+        it("should create a diagnostic", function()
+            local output =
+                [[path/to/file.yaml:2: [risky-file-permissions] [VERY_HIGH] File permissions unset or incorrect]]
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                row = "2",
+                severity = 1,
+                message = "File permissions unset or incorrect",
+                code = "risky-file-permissions",
+            }, diagnostic)
+        end)
+    end)
 end)
