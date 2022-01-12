@@ -38,15 +38,15 @@ describe("make_builtin", function()
 
     describe("with", function()
         it("should create copy", function()
-            local copy = builtin.with({ filetypes = { "txt" } })
+            local copy = builtin.with({ filetypes = { "text" } })
 
             assert.is_not.same(builtin, copy)
         end)
 
         it("should override filetypes", function()
-            local copy = builtin.with({ filetypes = { "txt" } })
+            local copy = builtin.with({ filetypes = { "text" } })
 
-            assert.same(copy.filetypes, { "txt" })
+            assert.same(copy.filetypes, { "text" })
         end)
 
         it("should override method", function()

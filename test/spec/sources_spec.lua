@@ -566,7 +566,7 @@ describe("sources", function()
             mock_raw_source = {
                 name = "mock source",
                 method = methods.internal.CODE_ACTION,
-                filetypes = { "txt", "markdown" },
+                filetypes = { "text", "markdown" },
                 generator = {
                     fn = function()
                         print("I am a generator")
@@ -634,7 +634,7 @@ describe("sources", function()
         it("should register multiple sources with shared configuration", function()
             sources.register({
                 name = "shared config source",
-                filetypes = { "txt" }, -- should take precedence over source filetypes
+                filetypes = { "text" }, -- should take precedence over source filetypes
                 sources = { mock_raw_source, mock_raw_source },
             })
 
@@ -642,7 +642,7 @@ describe("sources", function()
             assert.equals(vim.tbl_count(registered), 2)
             local found = find_source("shared config source")
             assert.truthy(found)
-            assert.same(found.filetypes, { ["txt"] = true })
+            assert.same(found.filetypes, { ["text"] = true })
         end)
 
         it("should keep source config if not specified in shared config", function()
@@ -654,7 +654,7 @@ describe("sources", function()
             assert.equals(vim.tbl_count(registered), 2)
             local found = find_source("mock source")
             assert.truthy(found)
-            assert.same(found.filetypes, { ["txt"] = true, ["markdown"] = true })
+            assert.same(found.filetypes, { ["text"] = true, ["markdown"] = true })
         end)
 
         describe("condition", function()
@@ -727,7 +727,7 @@ describe("sources", function()
             local mock_name = "mock-name"
             local mock_sources = {
                 name = mock_name,
-                filetypes = { "txt" },
+                filetypes = { "text" },
                 sources = { mock_raw_source, mock_raw_source },
             }
 

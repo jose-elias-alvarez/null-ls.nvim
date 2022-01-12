@@ -45,7 +45,7 @@ describe("generators", function()
         async = true,
     }
     local wrong_fileytpe_generator = {
-        filetypes = { "txt" },
+        filetypes = { "text" },
         fn = function()
             return { mock_result }
         end,
@@ -356,7 +356,7 @@ describe("generators", function()
         end)
 
         it("should return empty table if no generators registered for filetype", function()
-            register(method, wrong_fileytpe_generator, { "txt" })
+            register(method, wrong_fileytpe_generator, { "text" })
 
             local available = generators.get_available("lua", method)
 
@@ -391,7 +391,7 @@ describe("generators", function()
         end)
 
         it("should return false if no generators registered for filetype", function()
-            register(method, wrong_fileytpe_generator, { "txt" })
+            register(method, wrong_fileytpe_generator, { "text" })
 
             local can_run = generators.can_run("lua", method)
 

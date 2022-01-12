@@ -2803,7 +2803,7 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 ##### Defaults
 
-- `filetypes = { "txt", "markdown" }`
+- `filetypes = { "text", "markdown" }`
 
 ### Completion
 
