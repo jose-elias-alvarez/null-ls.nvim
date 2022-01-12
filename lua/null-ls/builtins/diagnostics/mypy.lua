@@ -29,9 +29,10 @@ return h.make_builtin({
         check_exit_code = function(code)
             return code <= 2
         end,
+        multiple_files = true,
         on_output = h.diagnostics.from_pattern(
-            "[^:]+:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
-            { "row", "col", "severity", "message", "code" },
+            "([^:])+:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
+            { "filename", "row", "col", "severity", "message", "code" },
             {
                 severities = {
                     error = h.diagnostics.severities["error"],
