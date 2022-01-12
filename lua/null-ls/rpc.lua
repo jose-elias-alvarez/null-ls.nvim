@@ -6,7 +6,7 @@ local pid = 5000
 local notification_cache = {}
 
 local should_cache = function(method)
-    return not c.get().update_in_insert and method == methods.lsp.DID_CHANGE and vim.api.nvim_get_mode().mode == "i"
+    return not c.get().update_in_insert and method == methods.lsp.DID_CHANGE and vim.api.nvim_get_mode().mode:find("i")
 end
 
 local set_cache = function(params)
