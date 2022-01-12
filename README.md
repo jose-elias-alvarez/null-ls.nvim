@@ -283,6 +283,15 @@ memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
 
+### I am seeing a `vim.lsp.buf.formatting_sync: timeout` error message
+
+This seems to be an issue, when the formatter you are trying to use, takes a 
+longer time than the default timeout value of the `formatting_sync` function.
+This is an automatic mechanism, so that if you are using the formatting after
+writing a buffer, you are not stuck in the editor until the formatting is ready.
+You might want to increase the timeout in your formatting_sync call (second 
+parameter).
+
 ## Tests
 
 The test suite includes unit and integration tests and depends on plenary.nvim.
