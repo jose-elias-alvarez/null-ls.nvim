@@ -182,6 +182,11 @@ null_ls.register(markdownlint)
 
 ### Something isn't working! What do I do?
 
+**NOTE**: If you run into issues when using null-ls, please follow the steps
+below and **do not** open an issue on the Neovim repository. null-ls is not an
+actual LSP server, so we need to determine whether issues are specific to this
+plugin before sending anything upstream.
+
 1. Make sure your configuration is in line with the latest version of this
    document.
 2. Enable debug mode (see below) and check the output of your source(s). If
@@ -192,9 +197,8 @@ null_ls.register(markdownlint)
 4. If you're having trouble configuring null-ls or want to know how to achieve a
    specific result, open a discussion.
 5. If you believe the issue is with null-ls itself or you want to request a new
-   feature, open an issue and provide all the requested information.
-
-Please **do not** link to or post your entire Neovim configuration.
+   feature, open an issue and provide the information requested in the issue
+   template.
 
 ### How do I format files?
 
