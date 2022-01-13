@@ -244,6 +244,7 @@ describe("diagnostics", function()
                     source = "source",
                     message = "message",
                     code = "code",
+                    severity = vim.diagnostic.severity.WARN,
                 }
                 u.make_params.returns({ uri = mock_params.textDocument.uri })
 
@@ -419,6 +420,23 @@ describe("diagnostics", function()
 
                 assert.stub(bufadd).was_not_called()
                 assert.equals(mock_diagnostic.bufnr, mock_bufnr)
+            end)
+
+            it("should keep diagnostic severity when set", function()
+                local starting_severity = mock_diagnostic.severity
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.equals(starting_severity, mock_diagnostic.severity)
+            end)
+
+            it("should set severity to fallback when not set", function()
+                mock_diagnostic.severity = nil
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.truthy(mock_diagnostic.severity)
+                assert.equals(mock_diagnostic.severity, c.get().fallback_severity)
             end)
         end)
     end)

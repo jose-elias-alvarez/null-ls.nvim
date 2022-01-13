@@ -64,7 +64,6 @@ local make_diagnostic = function(entries, defaults, attr_adapters, params, offse
     for attr, adapter in pairs(attr_adapters) do
         entries[attr] = adapter(entries, content_line)
     end
-    entries["severity"] = entries["severity"] or default_severities["error"]
 
     -- Unset private attributes
     for k, _ in pairs(entries) do

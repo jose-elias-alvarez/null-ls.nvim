@@ -111,6 +111,7 @@ describe("e2e", function()
             local write_good_diagnostic = buf_diagnostics[1]
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning')
             assert.equals(write_good_diagnostic.source, "write_good")
+            assert.equals(write_good_diagnostic.severity, c.get().fallback_severity)
             assert.equals(write_good_diagnostic.lnum, 0)
             assert.equals(write_good_diagnostic.end_lnum, 0)
             assert.equals(write_good_diagnostic.col, 7)

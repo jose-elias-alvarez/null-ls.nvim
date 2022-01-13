@@ -250,10 +250,9 @@ describe("diagnostics", function()
             local output = [[rules.md:1:46:"is deprecated" may be passive voice]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = 47,
                 end_col = 59,
-                severity = 1,
                 message = '"is deprecated" may be passive voice',
             }, diagnostic)
         end)
@@ -274,7 +273,6 @@ describe("diagnostics", function()
                 code = "MD033/no-inline-html",
                 row = "1",
                 col = "1",
-                severity = 1,
                 message = "Inline HTML [Element: a]",
             }, diagnostic)
         end)
@@ -285,7 +283,6 @@ describe("diagnostics", function()
             assert.same({
                 row = "2",
                 code = "MD012/no-multiple-blanks",
-                severity = 1,
                 message = "Multiple consecutive blank lines [Expected: 1; Actual: 2]",
             }, diagnostic)
         end)
@@ -334,10 +331,9 @@ describe("diagnostics", function()
             local output = [[init.lua:1:8: module not found: 'settings']]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "8",
                 end_col = 17,
-                severity = 1,
                 message = "module not found: 'settings'",
                 source = "tl check",
             }, diagnostic)
@@ -346,10 +342,9 @@ describe("diagnostics", function()
             local output = [[init.lua:2:1: unknown variable: vim]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "2", --
+                row = "2",
                 col = "1",
                 end_col = 3,
-                severity = 1,
                 message = "unknown variable: vim",
                 source = "tl check",
             }, diagnostic)
@@ -358,9 +353,8 @@ describe("diagnostics", function()
             local output = [[autocmds.lua:3:46: argument 1: got <unknown type>, expected {string}]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "3", --
+                row = "3",
                 col = "46",
-                severity = 1,
                 message = "argument 1: got <unknown type>, expected {string}",
                 source = "tl check",
             }, diagnostic)
@@ -441,7 +435,7 @@ describe("diagnostics", function()
             local output = [[init.lua:1:1: error[undefined_variable]: `vim` is not defined]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "1",
                 end_col = 4,
                 severity = 1,
@@ -454,7 +448,7 @@ describe("diagnostics", function()
                 [[lua/default-config.lua:2:1: warning[unused_variable]: CACHE_PATH is defined, but never used]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "2", --
+                row = "2",
                 col = "1",
                 end_col = 11,
                 severity = 2,
@@ -496,7 +490,7 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.same({
                 {
-                    row = 1, --
+                    row = 1,
                     end_row = 1,
                     col = 19,
                     end_col = 26,
@@ -534,7 +528,7 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.same({
                 {
-                    row = 1, --
+                    row = 1,
                     end_row = 1,
                     col = 19,
                     end_col = 26,
@@ -557,7 +551,7 @@ describe("diagnostics", function()
             local output = [[rules.js:1:2: Parsing error: Unexpected token]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "2",
                 severity = 1,
                 message = "Unexpected token",
@@ -570,7 +564,7 @@ describe("diagnostics", function()
             local output = [[rules.js:1:35: Strings must use singlequote.]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "35",
                 severity = 2,
                 message = "Strings must use singlequote.",
@@ -596,7 +590,7 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.same({
                 {
-                    row = 24, --
+                    row = 24,
                     col = 1,
                     severity = 2,
                     code = "DL3008",
@@ -618,7 +612,7 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.same({
                 {
-                    row = 24, --
+                    row = 24,
                     col = 1,
                     severity = 3,
                     code = "DL3059",
@@ -639,7 +633,7 @@ describe("diagnostics", function()
             local output = [[run-clang-tidy.py:3:1: E265 block comment should start with '# ']]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "3", --
+                row = "3",
                 col = "1",
                 severity = 1,
                 code = "E265",
@@ -686,7 +680,7 @@ describe("diagnostics", function()
             local diagnostic = parser({ output = output })
             assert.same({
                 {
-                    row = 5, --
+                    row = 5,
                     col = 37,
                     severity = 3,
                     code = "ProhibitAbbreviationOption",
@@ -707,7 +701,7 @@ describe("diagnostics", function()
             local output = [[stdin:1:1: [warning] missing document start "---" (document-start)]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "1",
                 severity = 2,
                 code = "document-start",
@@ -727,9 +721,8 @@ describe("diagnostics", function()
             local output = [[rules.json: line 1, col 8, found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.]]
             local diagnostic = parser(output, { content = file })
             assert.same({
-                row = "1", --
+                row = "1",
                 col = "8",
-                severity = 1,
                 message = "found: 'INVALID' - expected: 'EOF', '}', ':', ',', ']'.",
             }, diagnostic)
         end)
