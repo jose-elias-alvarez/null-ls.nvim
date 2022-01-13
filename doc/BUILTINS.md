@@ -999,7 +999,7 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - `command = "lua-format"`
 - `args = { "-i" }`
 
-#### [latexindent](https://github.com/Koihik/LuaFormatter)
+#### [latexindent](https://github.com/cmhughes/latexindent.pl)
 
 ##### About
 
