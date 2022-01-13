@@ -134,6 +134,10 @@ M.get_client = function()
     return client
 end
 
+M.get_offset_encoding = function()
+    return client and client.offset_encoding or "utf-16"
+end
+
 M.notify_client = function(method, params)
     if not client then
         log:debug(
