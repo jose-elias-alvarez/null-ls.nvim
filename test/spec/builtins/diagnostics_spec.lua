@@ -777,4 +777,54 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("protolint", function()
+        local linter = diagnostics.protolint
+        local parser = linter._opts.on_output
+        local protolint_diagnostics
+        local done = function(_diagnostics)
+            protolint_diagnostics = _diagnostics
+        end
+        after_each(function()
+            protolint_diagnostics = nil
+        end)
+
+        it("should create a diagnostic with warning severity", function()
+            local output = [[
+            {
+              "lints": [
+                {
+                  "filename": "sletmig.proto",
+                  "line": 9,
+                  "column": 1,
+                  "message": "Found an incorrect indentation style \"\". \"  \" is correct.",
+                  "rule": "INDENT"
+                }
+              ]
+            } ]]
+            parser({ output = output }, done)
+            assert.same({
+                {
+                    row = 9,
+                    col = 1,
+                    severity = 2,
+                    code = "INDENT",
+                    message = 'Found an incorrect indentation style "". "  " is correct.',
+                    source = "protolint",
+                },
+            }, protolint_diagnostics)
+        end)
+        it("should create a diagnostic with error severity", function()
+            local output = [[found "pc" but expected [;]. Use -v for more details]]
+            parser({ output = output }, done)
+            assert.same({
+                {
+                    row = 1,
+                    severity = 1,
+                    message = 'found "pc" but expected [;]. Use -v for more details',
+                    source = "protolint",
+                },
+            }, protolint_diagnostics)
+        end)
+    end)
 end)

@@ -2189,6 +2189,24 @@ local sources = { null_ls.builtins.diagnostics.proselint }
 - `command = "proselint"`
 - `args = { "--json" }`
 
+#### [protolint](https://https://github.com/yoheimuta/protolint)
+
+##### About
+
+A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.protolint }
+```
+
+##### Defaults
+
+- `filetypes = { "proto" }`
+- `command = "protolint"`
+- `args = { "--reporter", "json", "$FILENAME" }`
+
 #### [psalm](https://psalm.dev)
 
 ##### About

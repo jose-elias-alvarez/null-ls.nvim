@@ -154,6 +154,9 @@ return {
   prisma = {
     formatting = { "prismaFmt" }
   },
+  proto = {
+    diagnostics = { "protolint" }
+  },
   python = {
     diagnostics = { "flake8", "mypy", "pylama", "pylint", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }

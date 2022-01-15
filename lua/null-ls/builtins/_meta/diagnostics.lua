@@ -79,6 +79,9 @@ return {
   proselint = {
     filetypes = { "markdown", "tex" }
   },
+  protolint = {
+    filetypes = { "proto" }
+  },
   psalm = {
     filetypes = { "php" }
   },
