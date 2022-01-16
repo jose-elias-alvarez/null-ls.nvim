@@ -1,6 +1,5 @@
 local c = require("null-ls.config")
 local helpers = require("null-ls.helpers")
-local log = require("null-ls.logger")
 local sources = require("null-ls.sources")
 
 local M = {}
@@ -41,13 +40,6 @@ M.setup = function(user_config)
         autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
       augroup end
     ]])
-end
-
--- deprecated
-M.config = function(user_config)
-    log:warn("config is deprecated; use setup instead")
-
-    M.setup(user_config)
 end
 
 return M
