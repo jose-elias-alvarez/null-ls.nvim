@@ -999,7 +999,7 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - `command = "lua-format"`
 - `args = { "-i" }`
 
-#### [latexindent](https://github.com/Koihik/LuaFormatter)
+#### [latexindent](https://github.com/cmhughes/latexindent.pl)
 
 ##### About
 
@@ -1306,6 +1306,24 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 - `filetypes = { "prisma" }`
 - `command = "prisma-fmt"`
 - `args = { "format", "-i", "$FILENAME" }`
+
+#### [protolint](https://https://github.com/yoheimuta/protolint)
+
+##### About
+
+A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.protolint }
+```
+
+##### Defaults
+
+- `filetypes = { "proto" }`
+- `command = "protolint"`
+- `args = { "--fix", "$FILENAME" }`
 
 #### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
@@ -2188,6 +2206,24 @@ local sources = { null_ls.builtins.diagnostics.proselint }
 - `filetypes = { "markdown", "tex" }`
 - `command = "proselint"`
 - `args = { "--json" }`
+
+#### [protolint](https://https://github.com/yoheimuta/protolint)
+
+##### About
+
+A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.protolint }
+```
+
+##### Defaults
+
+- `filetypes = { "proto" }`
+- `command = "protolint"`
+- `args = { "--reporter", "json", "$FILENAME" }`
 
 #### [psalm](https://psalm.dev)
 

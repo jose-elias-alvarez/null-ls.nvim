@@ -260,6 +260,30 @@ describe("generator_factory", function()
             assert.equals(on_output.calls[2].refs[1], "line2")
             assert.equals(on_output.calls[3].refs[1], "line3")
         end)
+
+        it("should normalize line endings", function()
+            generator.fn({}, done)
+            local handler = loop.spawn.calls[1].refs[3].handler
+
+            handler(nil, "line1\r\nline2\r\nline3")
+
+            assert.stub(on_output).was_called(3)
+            assert.equals(on_output.calls[1].refs[1], "line1")
+            assert.equals(on_output.calls[2].refs[1], "line2")
+            assert.equals(on_output.calls[3].refs[1], "line3")
+        end)
+
+        it("should handle mixed line endings", function()
+            generator.fn({}, done)
+            local handler = loop.spawn.calls[1].refs[3].handler
+
+            handler(nil, "line1\r\nline2\nline3")
+
+            assert.stub(on_output).was_called(3)
+            assert.equals(on_output.calls[1].refs[1], "line1")
+            assert.equals(on_output.calls[2].refs[1], "line2")
+            assert.equals(on_output.calls[3].refs[1], "line3")
+        end)
     end)
 
     describe("validate", function()

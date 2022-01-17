@@ -50,6 +50,7 @@ local defaults = {
     debug = false,
     default_timeout = 5000,
     diagnostics_format = "#{m}",
+    fallback_severity = vim.diagnostic.severity.ERROR,
     log = {
         enable = true,
         level = "warn",
@@ -131,6 +132,11 @@ Formats diagnostics as follows:
 
 You can also set `diagnostics_format` for built-ins by using the `with` method,
 described in [BUILTINS](BUILTINS.md).
+
+### fallback_severity (number)
+
+Defines the severity used when a diagnostic source does not explicitly define a
+severity. See `:help diagnostic-severity` for available values.
 
 ### log (table)
 

@@ -5,7 +5,9 @@
 - Before committing, please format Lua files with
   [StyLua](https://github.com/JohnnyMorganz/StyLua) and Markdown files with
   [Prettier](https://github.com/prettier/prettier). Both are available as
-  null-ls built-ins.
+  null-ls built-ins. Optionally, [Pre-Commit](https://pre-commit.com/index.html#install)
+  hooks can be installed with `make install-hooks` to locally enforce checks
+  on commit.
 
 - Use the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
   style for your commits.

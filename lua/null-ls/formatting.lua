@@ -12,7 +12,8 @@ local postprocess = function(edit, params)
     edit.end_col = edit.end_col or 1
 
     edit.range = u.range.to_lsp(edit)
-    edit.newText = edit.text
+    -- strip trailing newline
+    edit.newText = edit.text:gsub("[\r\n]$", "")
 end
 
 local M = {}
@@ -28,6 +29,7 @@ M.handler = function(method, original_params, handler)
         -- copy content and options to temp buffer
         local temp_bufnr = api.nvim_create_buf(false, true)
         api.nvim_buf_set_option(temp_bufnr, "eol", api.nvim_buf_get_option(bufnr, "eol"))
+        api.nvim_buf_set_option(temp_bufnr, "fixeol", api.nvim_buf_get_option(bufnr, "fixeol"))
         api.nvim_buf_set_option(temp_bufnr, "fileformat", api.nvim_buf_get_option(bufnr, "fileformat"))
         api.nvim_buf_set_lines(temp_bufnr, 0, -1, false, api.nvim_buf_get_lines(bufnr, 0, -1, false))
 
@@ -61,7 +63,12 @@ M.handler = function(method, original_params, handler)
         end
 
         local after_each = function(edits)
-            local ok, err = pcall(lsp.util.apply_text_edits, edits, temp_bufnr)
+            local ok, err = pcall(
+                lsp.util.apply_text_edits,
+                edits,
+                temp_bufnr,
+                require("null-ls.client").get_offset_encoding()
+            )
             if not ok then
                 handle_err(err)
             end

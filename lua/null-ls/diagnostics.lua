@@ -50,6 +50,7 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.end_lnum = range["end"].line
     diagnostic.col = range["start"].character
     diagnostic.end_col = range["end"].character
+    diagnostic.severity = diagnostic.severity or c.get().fallback_severity
 
     diagnostic.source = diagnostic.source or generator.opts.name or generator.opts.command or "null-ls"
     if diagnostic.filename and not diagnostic.bufnr then
