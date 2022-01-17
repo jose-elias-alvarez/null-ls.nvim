@@ -151,6 +151,9 @@ return {
   prismaFmt = {
     filetypes = { "prisma" }
   },
+  protolint = {
+    filetypes = { "proto" }
+  },
   ptop = {
     filetypes = { "pascal", "delphi" }
   },
