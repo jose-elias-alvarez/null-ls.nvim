@@ -827,4 +827,46 @@ describe("diagnostics", function()
             }, protolint_diagnostics)
         end)
     end)
+
+    describe("protoc-gen-lint", function()
+        local linter = diagnostics.protoc_gen_lint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with error severity", function()
+            local file = [[
+                syntax = "proto3";
+
+                package sample;
+
+                service Samle {
+                // Faulty rpc
+                rpc () returns () {}
+                }
+            ]]
+
+            local output = [[sample.proto:6:7: Expected method name.]]
+            local diagnostic = parser(output, { content = file })
+
+            assert.same({
+                row = "6",
+                col = "7",
+                message = "Expected method name.",
+                severity = 1,
+            }, diagnostic)
+        end)
+        it("should create a generic diagnostic with error severity", function()
+            local file = [[
+                yntax = "proto3"; // Faulty syntax definition
+            ]]
+
+            local output =
+                [[[libprotobuf WARNING google/protobuf/compiler/parser.cc:562] No syntax specified for the proto file: null-ls_1UTH9g.proto. Please use 'syntax = "proto2";' or 'syntax = "proto3";' to specify a syntax version. (Defaulted to proto2 syntax.)]]
+            local diagnostic = parser(output, { content = file })
+
+            assert.same({
+                message = "No syntax specified for the proto file: null-ls_1UTH9g.proto. Please use 'syntax = \"proto2\";' or 'syntax = \"proto3\";' to specify a syntax version. (Defaulted to proto2 syntax.)",
+                severity = 1,
+            }, diagnostic)
+        end)
+    end)
 end)

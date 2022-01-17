@@ -2189,6 +2189,24 @@ local sources = { null_ls.builtins.diagnostics.proselint }
 - `command = "proselint"`
 - `args = { "--json" }`
 
+#### [protoc-gen-lint](https://github.com/ckaznocha/protoc-gen-lint)
+
+##### About
+
+A plug-in for Google's Protocol Buffers (protobufs) compiler to lint .proto files for style violations.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.protoc_gen_lint }
+```
+
+##### Defaults
+
+- `filetypes = { "proto" }`
+- `command = "protoc"`
+- `args = { "--line_out", "$FILENAME", "-I", "/tmp", "$FILENAME"}`
+
 #### [protolint](https://https://github.com/yoheimuta/protolint)
 
 ##### About
