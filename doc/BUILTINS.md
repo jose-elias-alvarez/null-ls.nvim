@@ -1307,6 +1307,24 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 - `command = "prisma-fmt"`
 - `args = { "format", "-i", "$FILENAME" }`
 
+#### [protolint](https://https://github.com/yoheimuta/protolint)
+
+##### About
+
+A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.protolint }
+```
+
+##### Defaults
+
+- `filetypes = { "proto" }`
+- `command = "protolint"`
+- `args = { "--fix", "$FILENAME" }`
+
 #### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 ##### About
