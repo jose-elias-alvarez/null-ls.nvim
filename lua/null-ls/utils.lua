@@ -162,19 +162,15 @@ M.buf = {
     content = function(bufnr, to_string)
         bufnr = bufnr or api.nvim_get_current_buf()
 
-        local eol = api.nvim_buf_get_option(bufnr, "eol")
+        local should_add_eol = api.nvim_buf_get_option(bufnr, "eol") and api.nvim_buf_get_option(bufnr, "fixeol")
         local line_ending = get_line_ending(bufnr)
 
         local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
-        if to_string then
-            local text = table.concat(lines, line_ending)
-            return eol and text .. line_ending or text
-        end
-
-        if eol then
+        if should_add_eol then
             table.insert(lines, "")
         end
-        return lines
+
+        return to_string and table.concat(lines, line_ending) or lines
     end,
     for_each_bufnr = function(cb)
         for _, bufnr in ipairs(api.nvim_list_bufs()) do
