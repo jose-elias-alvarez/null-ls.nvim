@@ -289,8 +289,8 @@ This seems to be an issue, when the formatter you are trying to use, takes a
 longer time than the default timeout value of the `formatting_sync` function.
 This is an automatic mechanism, so that if you are using the formatting after
 writing a buffer, you are not stuck in the editor until the formatting is ready.
-You might want to increase the timeout in your formatting_sync call (second 
-parameter).
+You might want to increase the timeout in your formatting_sync call (i.e. 
+`vim.lsp.buf.formatting_sync(nil, 2000)` – this is adding a timeout of 2 seconds).
 
 ## Tests
 
