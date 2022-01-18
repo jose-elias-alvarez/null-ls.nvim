@@ -31,7 +31,7 @@ return h.make_builtin({
         end,
         multiple_files = true,
         on_output = h.diagnostics.from_pattern(
-            "([^:])+:(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
+            "([^:]+):(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
             { "filename", "row", "col", "severity", "message", "code" },
             {
                 severities = {
