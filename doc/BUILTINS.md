@@ -859,7 +859,7 @@ local sources = { null_ls.builtins.formatting.goimports }
 
 - `filetypes = { "go" }`
 - `command = "goimports"`
-- `args = {}`
+- `args = { "-srcdir", "$DIRNAME" }`
 
 #### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
