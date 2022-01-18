@@ -1,3 +1,5 @@
+-- THIS SCRIPT RUNS AUTOMATICALLY. DO NOT MANUALLY RUN IT
+
 local b = require("null-ls.builtins")
 local u = require("null-ls.utils")
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# THIS SCRIPT RUNS AUTOMATICALLY. DO NOT MANUALLY RUN IT
+
 set -ex
 
 declare -x XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
