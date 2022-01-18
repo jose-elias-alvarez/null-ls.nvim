@@ -910,13 +910,18 @@ describe("diagnostics", function()
                   }
                 ]
             ]]
-            local diagnostic = parser(output, { content = file })
-            assert.same({
-                row = "5",
-                severity = 1,
-                message = "[risky-file-permissions] File permissions unset or incorrect",
-                filename = "playbooks/test-ansible.yaml",
-            }, diagnostic)
+            local diagnostic = parser({ output = vim.json.decode(output), content = file })
+            assert.same(
+                {
+                    {
+                        row = 5,
+                        severity = 1,
+                        message = "[risky-file-permissions] File permissions unset or incorrect",
+                        filename = "playbooks/test-ansible.yaml",
+                    },
+                },
+                diagnostic
+            )
         end)
     end)
 end)
