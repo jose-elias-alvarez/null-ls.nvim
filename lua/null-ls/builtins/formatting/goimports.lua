@@ -9,6 +9,7 @@ return h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "goimports",
+        args = { "-srcdir", "$DIRNAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
