@@ -79,6 +79,9 @@ return {
   proselint = {
     filetypes = { "markdown", "tex" }
   },
+  protoc_gen_lint = {
+    filetypes = { "proto" }
+  },
   protolint = {
     filetypes = { "proto" }
   },

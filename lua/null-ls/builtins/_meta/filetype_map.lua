@@ -155,7 +155,7 @@ return {
     formatting = { "prismaFmt" }
   },
   proto = {
-    diagnostics = { "protolint" },
+    diagnostics = { "protoc_gen_lint", "protolint" },
     formatting = { "protolint" }
   },
   python = {
