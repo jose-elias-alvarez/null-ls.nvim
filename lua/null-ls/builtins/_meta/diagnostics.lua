@@ -5,7 +5,7 @@ return {
     filetypes = { "markdown" }
   },
   ansiblelint = {
-    filetypes = { "yaml" }
+    filetypes = { "yaml.ansible" }
   },
   chktex = {
     filetypes = { "tex" }

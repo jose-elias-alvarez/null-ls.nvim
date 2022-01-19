@@ -241,8 +241,11 @@ return {
     formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   yaml = {
-    diagnostics = { "ansiblelint", "yamllint" },
+    diagnostics = { "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
+  },
+  ["yaml.ansible"] = {
+    diagnostics = { "ansiblelint" }
   },
   zig = {
     formatting = { "zigfmt" }
