@@ -869,4 +869,56 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("ansiblelint", function()
+        local linter = diagnostics.ansiblelint
+        local parser = linter._opts.on_output
+        local file = {
+            [[---]],
+            [[- name: null-ls]],
+            [[  hosts: all]],
+            [[  tasks:]],
+            [[    - name: This tasks is no good]],
+            [[      assemble:]],
+            [[        src: "files"]],
+            [[        dest: "dest"]],
+            [[      become: false]],
+        }
+
+        it("should create a diagnostic", function()
+            local output = [[
+                [
+                  {
+                    "type": "issue",
+                    "check_name": "[risky-file-permissions] File permissions unset or incorrect",
+                    "categories": [
+                      "unpredictability",
+                      "experimental"
+                    ],
+                    "severity": "blocker",
+                    "description": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like ``mode: 0644`` to avoid hitting this rule. Special ``preserve`` value is accepted only by copy, template modules. See https://github.com/ansible/ansible/issues/71200",
+                    "fingerprint": "b66d9f9db860c0fedb7d1d583c5a808df9a1ed72b8abdbedeff0aad836490951",
+                    "location": {
+                      "path": "playbooks/test-ansible.yaml",
+                      "lines": {
+                        "begin": 5
+                      }
+                    },
+                    "content": {
+                      "body": "Task/Handler: This tasks is no good"
+                    }
+                  }
+                ]
+            ]]
+            local diagnostic = parser({ output = vim.json.decode(output), content = file })
+            assert.same({
+                {
+                    row = 5,
+                    severity = 1,
+                    message = "[risky-file-permissions] File permissions unset or incorrect",
+                    filename = "playbooks/test-ansible.yaml",
+                },
+            }, diagnostic)
+        end)
+    end)
 end)
