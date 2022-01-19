@@ -851,7 +851,6 @@ describe("diagnostics", function()
                 row = "6",
                 col = "7",
                 message = "Expected method name.",
-                severity = 1,
             }, diagnostic)
         end)
         it("should create a generic diagnostic with error severity", function()
@@ -865,7 +864,6 @@ describe("diagnostics", function()
 
             assert.same({
                 message = "No syntax specified for the proto file: null-ls_1UTH9g.proto. Please use 'syntax = \"proto2\";' or 'syntax = \"proto3\";' to specify a syntax version. (Defaulted to proto2 syntax.)",
-                severity = 1,
             }, diagnostic)
         end)
     end)
