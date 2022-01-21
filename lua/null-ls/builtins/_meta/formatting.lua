@@ -25,6 +25,9 @@ return {
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
+  cljstyle = {
+    filetypes = { "clojure" }
+  },
   cmake_format = {
     filetypes = { "cmake" }
   },

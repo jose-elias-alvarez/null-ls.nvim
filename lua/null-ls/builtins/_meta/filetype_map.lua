@@ -20,6 +20,9 @@ return {
   clj = {
     formatting = { "joker" }
   },
+  clojure = {
+    formatting = { "cljstyle" }
+  },
   cmake = {
     formatting = { "cmake_format" }
   },
