@@ -478,6 +478,24 @@ local sources = { null_ls.builtins.formatting.clang_format }
 - `command = "clang-format"`
 - `args = { "-assume-filename=<FILENAME>" }`
 
+#### [cljstyle](https://github.com/greglook/cljstyle)
+
+##### About
+
+Formatter for `Clojure` code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cljstyle }
+```
+
+##### Defaults
+
+- `filetypes = { "clojure" }`
+- `command = "cljstyle"`
+- `args = { "pipe" }`
+
 #### [cmake-format](https://github.com/cheshirekow/cmake_format)
 
 ##### About
