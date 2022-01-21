@@ -15,8 +15,8 @@ use helpers to create generators.
 ## generator_factory
 
 `generator_factory` is a general-purpose helper that returns a generator which
-will spawns a command with the given options, optionally transforms its output,
-then calls an `on_output` callback with the command's output. It accepts one
+spawns a command with the given options, optionally transforms its output, then
+calls an `on_output` callback with the command's output. It accepts one
 argument, `opts`, which is a table with the following structure.
 
 All options are **required** unless specified otherwise.
