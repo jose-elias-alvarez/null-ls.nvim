@@ -1344,24 +1344,6 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 - `command = "qmlformat"`
 - `args = { "-i", "$FILENAME" }`
 
-#### [reorder_python_imports](https://pypi.org/project/reorder-python-imports/)
-
-##### About
-
-Tool for automatically reordering python imports. Like `isort`, but uses static analysis more.
-
-##### Usage
-
-```lua
-local sources = { null_ls.builtins.formatting.reorder_python_imports }
-```
-
-##### Defaults
-
-- `filetypes = { "python" }`
-- `command = "reorder-python-imports"`
-- `args = { "-", "--exit-zero-even-if-changed" }`
-
 #### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
