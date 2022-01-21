@@ -9,7 +9,7 @@ return h.make_builtin({
     filetypes = { "clojure" },
     generator_opts = {
         command = "cljstyle",
-        args = { "pipe", },
+        args = { "pipe" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
