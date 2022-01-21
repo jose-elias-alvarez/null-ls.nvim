@@ -2738,7 +2738,7 @@ An English prose linter. Can fix some issues via code actions.
 ##### Usage
 
 ```lua
-local source = { null_ls.builtins.code_actions.proselint }
+local sources = { null_ls.builtins.code_actions.proselint }
 ```
 
 ##### Defaults
