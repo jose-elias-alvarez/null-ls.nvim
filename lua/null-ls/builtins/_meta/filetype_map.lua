@@ -159,7 +159,7 @@ return {
     formatting = { "protolint" }
   },
   python = {
-    diagnostics = { "flake8", "mypy", "pylama", "pylint", "vulture" },
+    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }
   },
   qml = {

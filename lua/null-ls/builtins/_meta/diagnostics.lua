@@ -85,6 +85,9 @@ return {
   psalm = {
     filetypes = { "php" }
   },
+  pydocstyle = {
+    filetypes = { "python" }
+  },
   pylama = {
     filetypes = { "python" }
   },
