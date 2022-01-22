@@ -1362,6 +1362,28 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 - `command = "qmlformat"`
 - `args = { "-i", "$FILENAME" }`
 
+#### [raco fmt](https://docs.racket-lang.org/fmt/)
+
+##### About
+
+The `fmt` package provides an extensible tool to format Racket code, using an
+expressive pretty printer library to compute the optimal layout.
+
+- Requires Racket 8.0 or later
+- Install with `raco pkg install fmt`
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.raco_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "racket" }`
+- `command = "raco"`
+- `args = { "fmt", "$FILENAME" }`
+
 #### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
