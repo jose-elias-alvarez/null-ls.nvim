@@ -25,6 +25,9 @@ return {
   cue_fmt = {
     filetypes = { "cue" }
   },
+  curlylint = {
+    filetypes = { "jinja.html", "htmldjango" }
+  },
   editorconfig_checker = {
     filetypes = {}
   },
