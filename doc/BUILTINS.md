@@ -2303,6 +2303,39 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 - `command = "psalm"`
 - `args = { "--output-format=json", "--no-progress", "$FILENAME" }`
 
+#### [pydocstyle](https://www.pydocstyle.org)
+
+##### About
+
+pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pydocstyle }
+```
+
+The `pydocstyle` config discovery ignores the CWD and searches 
+configuration starting at the file location. Since null-ls has to 
+use a temporary file to call `pydocstyle` it won't find the project 
+configuration.
+
+A workaround is to pass the config-filename to use:
+
+```lua
+local sources = {
+  null_ls.builtins.diagnostics.pydocstyle.with({
+    extra_args = { "--config=$ROOT/setup.cfg" }
+  }),
+}
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "pydocstyle"`
+- `args = { "$FILENAME" }`
+
 #### [pylint](https://github.com/PyCQA/pylint)
 
 ##### About
