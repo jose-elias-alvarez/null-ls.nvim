@@ -163,6 +163,9 @@ return {
   qmlformat = {
     filetypes = { "qml" }
   },
+  raco_fmt = {
+    filetypes = { "racket" }
+  },
   reorder_python_imports = {
     filetypes = { "python" }
   },

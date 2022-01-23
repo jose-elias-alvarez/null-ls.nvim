@@ -172,6 +172,9 @@ return {
   r = {
     formatting = { "format_r", "styler" }
   },
+  racket = {
+    formatting = { "raco_fmt" }
+  },
   rmd = {
     formatting = { "format_r", "styler" }
   },
