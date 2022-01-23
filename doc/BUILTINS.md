@@ -1950,6 +1950,24 @@ local sources = { null_ls.builtins.diagnostics.cue_fmt }
 - `command = "cue"`
 - `args = { "fmt", "$FILENAME" }`
 
+#### [curlylint](https://www.curlylint.org/)
+
+##### About
+
+Experimental HTML templates linting for Jinja, Nunjucks, Django templates, Twig, Liquid
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.curlylint }
+```
+
+##### Defaults
+
+- `filetypes = { "jinja.html", "htmldjango" }`
+- `command = "curlylint"`
+- `args = { "--quiet", "-", "--format", "json", "--stdin-filepath", "$FILENAME" }`
+
 #### [editorconfig-checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
 ##### About

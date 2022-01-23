@@ -98,6 +98,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   htmldjango = {
+    diagnostics = { "curlylint" },
     formatting = { "djhtml" }
   },
   java = {
@@ -112,6 +113,7 @@ return {
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
   },
   ["jinja.html"] = {
+    diagnostics = { "curlylint" },
     formatting = { "djhtml" }
   },
   json = {
