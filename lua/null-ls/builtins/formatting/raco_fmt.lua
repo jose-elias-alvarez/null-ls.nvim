@@ -9,7 +9,7 @@ return h.make_builtin({
     filetypes = { "racket" },
     generator_opts = {
         command = "raco",
-        args = { "fmt", "$FILENAME" },
+        args = { "fmt" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
