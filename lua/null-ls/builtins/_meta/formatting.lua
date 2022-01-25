@@ -193,6 +193,9 @@ return {
   sqlformat = {
     filetypes = { "sql" }
   },
+  standardjs = {
+    filetypes = { "javascript", "javascriptreact" }
+  },
   standardrb = {
     filetypes = { "ruby" }
   },

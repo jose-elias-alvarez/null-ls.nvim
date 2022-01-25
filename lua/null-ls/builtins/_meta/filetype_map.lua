@@ -106,11 +106,11 @@ return {
   },
   javascript = {
     diagnostics = { "eslint", "eslint_d", "standardjs" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   javascriptreact = {
     diagnostics = { "eslint", "eslint_d", "standardjs" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint" },
