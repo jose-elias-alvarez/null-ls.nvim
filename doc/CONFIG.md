@@ -187,6 +187,17 @@ end
 If `root_dir` returns `nil`, the root will resolve to the current working
 directory.
 
+### should_attach (function, optional)
+
+Defines a `should_attach` callback to run before null-ls attaches to a buffer.
+The callback receives the `bufnr` as its only argument.
+
+```lua
+local should_attach = function(bufnr)
+    return not vim.fn.bufname(bufnr):match("^git://")
+end
+```
+
 ### sources (table, optional)
 
 Defines a list (array-like table) of sources for null-ls to register. Users can

@@ -186,8 +186,12 @@ describe("client", function()
         end)
 
         it("should run checks and attach if conditions match", function()
+            local should_attach = stub.new(nil, nil, true)
+            c._set({ should_attach = should_attach })
+
             local did_attach = client.try_add(mock_bufnr)
 
+            assert.stub(should_attach).was_called_with(mock_bufnr)
             assert.stub(api.nvim_buf_get_option).was_called_with(mock_bufnr, "buftype")
             assert.stub(api.nvim_buf_get_option).was_called_with(mock_bufnr, "filetype")
             assert.stub(api.nvim_buf_get_name).was_called_with(mock_bufnr)
@@ -196,6 +200,16 @@ describe("client", function()
             assert.stub(lsp.buf_is_attached).was_called_with(mock_bufnr, mock_client_id)
             assert.stub(lsp.buf_attach_client).was_called_with(mock_bufnr, mock_client_id)
             assert.truthy(did_attach)
+        end)
+
+        it("should not attach if user-defined should_attach returns false", function()
+            local should_attach = stub.new(nil, nil, false)
+            c._set({ should_attach = should_attach })
+
+            local did_attach = client.try_add(mock_bufnr)
+
+            assert.stub(should_attach).was_called_with(mock_bufnr)
+            assert.falsy(did_attach)
         end)
 
         it("should not attach if buftype is not empty", function()

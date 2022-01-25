@@ -11,7 +11,9 @@ local lsp = vim.lsp
 local client, id
 
 local should_attach = function(bufnr)
-    if api.nvim_buf_get_option(bufnr, "buftype") ~= "" or api.nvim_buf_get_name(bufnr) == "" then
+    if c.get().should_attach and not c.get().should_attach(bufnr) then
+        return false
+    elseif api.nvim_buf_get_option(bufnr, "buftype") ~= "" or api.nvim_buf_get_name(bufnr) == "" then
         return false
     end
 
