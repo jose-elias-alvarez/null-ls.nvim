@@ -189,13 +189,19 @@ directory.
 
 ### should_attach (function, optional)
 
-Defines a `should_attach` callback to run before null-ls attaches to a buffer.
-The callback receives the `bufnr` as its only argument.
+A user-defined function that controls whether to enable null-ls for a given
+buffer. Receives `bufnr` as its only argument.
+
+In order to cut down potentially expensive calls, null-ls will only call
+`should_attach` after its own internal "should attach" checks pass, so it's not
+guaranteed to run every time.
 
 ```lua
-local should_attach = function(bufnr)
-    return not vim.fn.bufname(bufnr):match("^git://")
-end
+require("null-ls.nvim").setup({
+    should_attach = function(bufnr)
+        return not vim.api.nvim_buf_get_name(bufnr):match("^git://")
+    end,
+})
 ```
 
 ### sources (table, optional)
