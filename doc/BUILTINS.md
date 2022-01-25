@@ -1535,6 +1535,26 @@ local sources = { null_ls.builtins.formatting.sqlformat }
 - `command = "sqlformat"`
 - `args = { "-" }`
 
+#### [standardjs](https://standardjs.com/)
+
+##### About
+
+- JavaScript Standard Style, a no-configuration automatic code formatter that
+  just works.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.standardjs }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact" }`
+- `command = "standard"`
+- `args = { "--stdin" }`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
+
 #### [standardrb](https://github.com/testdouble/standard)
 
 ##### About
