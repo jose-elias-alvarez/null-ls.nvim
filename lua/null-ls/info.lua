@@ -125,7 +125,7 @@ M.show_window = function()
     local create_logging_info = function()
         local info_lines = {
             "Logging",
-            "* current level: " .. c.get().log.level,
+            "* current level: " .. log.__handle.level,
             "* path: " .. log:get_path(),
         }
         table.insert(highlights, { "Type", info_lines[1] })
