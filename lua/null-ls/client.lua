@@ -211,17 +211,19 @@ M.send_progress_notification = function(token, opts)
         return
     end
 
-    handler(nil, {
-        token = token,
-        value = {
-            kind = opts.kind,
-            title = opts.title,
-            percentage = opts.percentage,
-            message = opts.message,
-        },
-    }, {
-        client_id = id,
-    })
+    vim.schedule(function()
+        handler(nil, {
+            token = token,
+            value = {
+                kind = opts.kind,
+                title = opts.title,
+                percentage = opts.percentage,
+                message = opts.message,
+            },
+        }, {
+            client_id = id,
+        })
+    end)
 end
 
 M._reset = function()
