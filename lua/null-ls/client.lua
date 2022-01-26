@@ -15,10 +15,14 @@ local should_attach = function(bufnr)
         return false
     end
 
+    if c.get().should_attach and not c.get().should_attach(bufnr) then
+        return false
+    end
+
     local ft = api.nvim_buf_get_option(bufnr, "filetype")
     for _, source in ipairs(sources.get_all()) do
         if sources.is_available(source, ft) then
-            return not c.get().should_attach or c.get().should_attach(bufnr)
+            return true
         end
     end
 
