@@ -12,6 +12,7 @@ local lsp = vim.lsp
 local api = vim.api
 
 main.setup({ log = { enable = false } })
+vim.cmd("autocmd BufEnter *.txt set filetype=text")
 
 local get_code_actions = function()
     local current_bufnr = api.nvim_get_current_buf()
