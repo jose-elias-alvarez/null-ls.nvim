@@ -1,4 +1,3 @@
-local log = require("null-ls.logger")
 local s = require("null-ls.state")
 local cmd_resolver = require("null-ls.helpers.command_resolver")
 local u = require("null-ls.utils")
@@ -76,7 +75,6 @@ local function make_builtin(opts)
     end
 
     if prefer_local or only_local then
-        log:debug("Using local resolved command for: " .. builtin.name)
         generator_opts.dynamic_command = function(params)
             local maybe_prefix = prefer_local or only_local
             local prefix = type(maybe_prefix) == "string" and maybe_prefix
