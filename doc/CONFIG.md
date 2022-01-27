@@ -187,6 +187,23 @@ end
 If `root_dir` returns `nil`, the root will resolve to the current working
 directory.
 
+### should_attach (function, optional)
+
+A user-defined function that controls whether to enable null-ls for a given
+buffer. Receives `bufnr` as its only argument.
+
+In order to cut down potentially expensive calls, null-ls will only call
+`should_attach` after its own internal "should attach" checks pass, so it's not
+guaranteed to run every time.
+
+```lua
+require("null-ls.nvim").setup({
+    should_attach = function(bufnr)
+        return not vim.api.nvim_buf_get_name(bufnr):match("^git://")
+    end,
+})
+```
+
 ### sources (table, optional)
 
 Defines a list (array-like table) of sources for null-ls to register. Users can
