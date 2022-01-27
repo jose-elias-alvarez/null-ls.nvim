@@ -1576,7 +1576,7 @@ local sources = { null_ls.builtins.formatting.stylelint }
 ##### About
 
 - Non-invasive pretty printing of R code.
-- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
+- Supports `textDocument/formatting`.
 
 ##### Usage
 
@@ -1588,7 +1588,9 @@ local sources = { null_ls.builtins.formatting.styler }
 
 - `filetypes = { "r", "rmd" }`
 - `command = "R"`
-- `args = { "--slave", "--no-restore", "--no-save", "-e", 'con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)' }`
+- `args`
+  - For `r` filetype: `{ "--slave", "--no-restore", "--no-save", "-e", 'con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)' }`
+  - For `rmd` filetype: `string.format([[options(styler.quiet = TRUE) con = file("stdin") temp = tempfile("styler",fileext = ".%s") writeLines(readLines(con), temp) styler::style_file(temp) cat(paste0(readLines(temp), collapse = '\n')) close(con) ]], params.ft)`
 
 #### [StyLua](https://github.com/JohnnyMorganz/StyLua)
 
