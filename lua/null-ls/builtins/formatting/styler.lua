@@ -9,13 +9,32 @@ return h.make_builtin({
     filetypes = { "r", "rmd" },
     generator_opts = {
         command = "R",
-        args = h.range_formatting_args_factory({
-            "--slave",
-            "--no-restore",
-            "--no-save",
-            "-e",
-            'con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)',
-        }),
+        args = function(params)
+            local default_args = {
+                "--slave",
+                "--no-restore",
+                "--no-save",
+                "-e",
+            }
+            if params.ft == "r" then
+                return vim.list_extend(default_args, {
+                    [[con=file("stdin");output=styler::style_text(readLines(con));close(con);print(output, colored=FALSE)]],
+                })
+            end
+            return vim.list_extend(default_args, {
+                string.format(
+                    [[options(styler.quiet = TRUE)
+                          con = file("stdin")
+                          temp = tempfile("styler",fileext = ".%s")
+                          writeLines(readLines(con), temp)
+                          styler::style_file(temp)
+                          cat(paste0(readLines(temp), collapse = '\n'))
+                          close(con)
+                        ]],
+                    params.ft
+                ),
+            })
+        end,
         to_stdin = true,
     },
     factory = h.formatter_factory,
