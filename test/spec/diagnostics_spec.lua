@@ -403,6 +403,16 @@ describe("diagnostics", function()
                 assert.equals(mock_diagnostic.message, "code! message [source]")
             end)
 
+            it("should format message from a function", function()
+                mock_generator.opts.diagnostics_format = function(diagnostic)
+                    return "from a function -- #{m}: " .. diagnostic.source
+                end
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.equals(mock_diagnostic.message, "from a function -- message: source")
+            end)
+
             it("should set bufnr from filename", function()
                 mock_diagnostic.filename = "mock-file"
 

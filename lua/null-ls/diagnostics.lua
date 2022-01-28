@@ -59,6 +59,10 @@ local postprocess = function(diagnostic, _, generator)
     end
 
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
+    -- allow custom diagnostics format from a function
+    if type(formatted) == "function" then
+        formatted = formatted(diagnostic)
+    end
     -- avoid unnecessary gsub if using default
     if formatted == "#{m}" then
         return

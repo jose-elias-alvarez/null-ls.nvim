@@ -109,7 +109,7 @@ out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
 [BUILTINS.md](BUILTINS.md)).
 
-### diagnostics_format (string)
+### diagnostics_format (string or function)
 
 Sets the default format used for diagnostics. The plugin will replace the
 following special components with the relevant diagnostic information:
@@ -124,10 +124,26 @@ For example, setting `diagnostics_format` to the following:
 diagnostics_format = "[#{c}] #{m} (#{s})"
 ```
 
-Formats diagnostics as follows:
+This formats diagnostics as follows:
 
 ```txt
 [2148] Tips depend on target shell and yours is unknown. Add a shebang or a 'shell' directive. (shellcheck)
+```
+
+Alternatively, an user-defined function can be used to set the diagnostics
+message. This function receives a diagnostic (lua table) as the only argument
+and should return a format string.
+
+For example, the following will produce the same result as the previous example:
+```lua
+diagnostics_format = function(diagnostic)
+  return string.format("[%s] %s (%s)", diagnostic.code, diagnostic.message, diagnostic.source)
+end
+
+-- or alternatively,
+diagnostics_format = function(diagnostic)
+  return string.format("#{c} #{m} (%s)", diagnostic.source)
+end
 ```
 
 You can also set `diagnostics_format` for built-ins by using the `with` method,
