@@ -22,6 +22,7 @@ return h.make_builtin({
                 code = "message-id",
                 severity = "type",
                 message = "message",
+                symbol = "symbol",
                 source = "pylint",
             },
             severities = {
