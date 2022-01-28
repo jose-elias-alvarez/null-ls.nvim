@@ -1876,6 +1876,24 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - `command = "chktex"`
 - `args = { "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
+#### [clippy](https://github.com/rust-lang/rust-clippy)
+
+##### About
+
+A collection of lints to catch common mistakes and improve your Rust code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.clippy }
+```
+
+##### Defaults
+
+- `filetypes = { "trust" }`
+- `command = "cargo"`
+- `args = { "clippy", "--frozen", "--message-format=json", "-q", "--" }`
+
 #### [codespell](https://github.com/codespell-project/codespell)
 
 ##### About
