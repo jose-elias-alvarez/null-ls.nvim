@@ -36,7 +36,7 @@ M.setup = function(user_config)
     vim.cmd([[
       augroup NullLs
         autocmd!
-        autocmd FileType * unsilent lua require("null-ls.client").try_add()
+        autocmd FileType * unsilent lua vim.schedule(require("null-ls.client").try_add)
         autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
       augroup end
     ]])
