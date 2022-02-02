@@ -66,6 +66,10 @@ return {
   elm = {
     formatting = { "elm_format" }
   },
+  epuppet = {
+    diagnostics = { "puppet_lint" },
+    formatting = { "puppet_lint" }
+  },
   erlang = {
     formatting = { "erlfmt" }
   },
@@ -162,6 +166,10 @@ return {
   proto = {
     diagnostics = { "protoc_gen_lint", "protolint" },
     formatting = { "protolint" }
+  },
+  puppet = {
+    diagnostics = { "puppet_lint" },
+    formatting = { "puppet_lint" }
   },
   python = {
     diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "vulture" },

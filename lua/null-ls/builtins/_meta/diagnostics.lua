@@ -91,6 +91,9 @@ return {
   psalm = {
     filetypes = { "php" }
   },
+  puppet_lint = {
+    filetypes = { "puppet", "epuppet" }
+  },
   pydocstyle = {
     filetypes = { "python" }
   },
