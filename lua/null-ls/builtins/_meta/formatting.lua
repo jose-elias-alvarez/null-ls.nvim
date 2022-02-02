@@ -160,6 +160,9 @@ return {
   ptop = {
     filetypes = { "pascal", "delphi" }
   },
+  puppet_lint = {
+    filetypes = { "puppet", "epuppet" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },
