@@ -132,6 +132,9 @@ return {
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
   },
+  make = {
+    diagnostics = { "checkmake" }
+  },
   markdown = {
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
