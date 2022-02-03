@@ -1128,6 +1128,23 @@ local sources = { null_ls.builtins.formatting.nixfmt }
 - `filetypes = { "nix" }`
 - `command = "nixfmt"`
 
+#### [nixpkgs-fmt](https://github.com/nix-community/nixpkgs-fmt)
+
+##### About
+
+`nixpkgs-fmt` is a Nix code formatter for nixpkgs.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
+```
+
+##### Defaults
+
+- `filetypes = { "nix" }`
+- `command = "nixpkgs-fmt"`
+
 #### [perltidy](http://perltidy.sourceforge.net/)
 
 ##### About
@@ -2337,9 +2354,9 @@ pydocstyle is a static analysis tool for checking compliance with Python docstri
 local sources = { null_ls.builtins.diagnostics.pydocstyle }
 ```
 
-The `pydocstyle` config discovery ignores the CWD and searches 
-configuration starting at the file location. Since null-ls has to 
-use a temporary file to call `pydocstyle` it won't find the project 
+The `pydocstyle` config discovery ignores the CWD and searches
+configuration starting at the file location. Since null-ls has to
+use a temporary file to call `pydocstyle` it won't find the project
 configuration.
 
 A workaround is to pass the config-filename to use:
