@@ -1,4 +1,3 @@
-local c = require("null-ls.config")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
