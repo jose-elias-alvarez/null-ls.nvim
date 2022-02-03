@@ -7,6 +7,9 @@ return {
   ansiblelint = {
     filetypes = { "yaml.ansible" }
   },
+  checkmake = {
+    filetypes = { "make" }
+  },
   chktex = {
     filetypes = { "tex" }
   },

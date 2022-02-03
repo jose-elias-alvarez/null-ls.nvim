@@ -1875,6 +1875,24 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 - `command = "ansible-lint"`
 - `args = { "--parseable-severity", "-q", "--nocolor", "$FILENAME" }`
 
+#### [checkmake](https://github.com/mrtazz/checkmake)
+
+##### About
+
+`make` linter.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.checkmake }
+```
+
+##### Defaults
+
+- `filetypes = { "make" }`
+- `command = "checkmake"`
+- `args = { "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}'", "$FILENAME" }`
+
 #### [chktex](https://www.nongnu.org/chktex/)
 
 ##### About
