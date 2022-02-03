@@ -145,7 +145,7 @@ return {
   },
   nix = {
     diagnostics = { "statix" },
-    formatting = { "nixfmt" }
+    formatting = { "nixfmt", "nixpkgs_fmt" }
   },
   pascal = {
     formatting = { "ptop" }
