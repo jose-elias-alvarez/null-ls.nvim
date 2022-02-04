@@ -1780,6 +1780,25 @@ local sources = { null_ls.builtins.formatting.uncrustify }
 - `command = "uncrustify"`
 - `args = { "-q", "-l <LANG>" }`
 
+#### [xmllint](http://xmlsoft.org/xmllint.html)
+
+##### About
+
+Despite the name, `xmllint` can be used to format XML files as well as lint
+them, and that's the mode this builtin is using.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.xmllint }
+```
+
+##### Defaults
+
+- `filetypes = { "xml" }`
+- `command = "xmllint"`
+- `args = { "--format", "-" }`
+
 #### [yapf](https://github.com/google/yapf)
 
 ##### About

@@ -235,6 +235,9 @@ return {
   uncrustify = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
+  xmllint = {
+    filetypes = { "xml" }
+  },
   yapf = {
     filetypes = { "python" }
   },
