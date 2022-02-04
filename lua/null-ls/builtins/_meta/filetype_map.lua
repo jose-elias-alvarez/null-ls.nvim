@@ -259,6 +259,9 @@ return {
     diagnostics = { "eslint", "eslint_d" },
     formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
+  xml = {
+    formatting = { "xmllint" }
+  },
   yaml = {
     diagnostics = { "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
