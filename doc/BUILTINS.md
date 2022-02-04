@@ -1876,6 +1876,24 @@ local sources = { null_ls.builtins.formatting.ptop }
 
 ### Diagnostics
 
+#### [actionlint](https://github.com/rhysd/actionlint)
+
+##### About
+
+Actionlint is a static checker for GitHub Actions workflow files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.actionlint }
+```
+
+##### Defaults
+
+- `filetypes = { "yaml" }`
+- `command = "actionlint"`
+- `args = { "-no-color", "-format", "{{json .}}", "-" }`
+
 #### [ansible-lint](https://github.com/ansible-community/ansible-lint)
 
 ##### About
