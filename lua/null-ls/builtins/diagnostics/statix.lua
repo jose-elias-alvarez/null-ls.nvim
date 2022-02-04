@@ -12,6 +12,7 @@ return h.make_builtin({
         args = { "check", "--stdin", "--format=errfmt" },
         format = "line",
         to_stdin = true,
+        from_stderr = true,
         on_output = h.diagnostics.from_pattern(
             [[>(%d+):(%d+):(.):(%d+):(.*)]],
             { "row", "col", "severity", "code", "message" },
