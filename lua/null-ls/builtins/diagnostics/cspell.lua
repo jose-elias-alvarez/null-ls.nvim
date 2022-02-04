@@ -28,6 +28,9 @@ return h.make_builtin({
             {
                 adapters = { h.diagnostics.adapters.end_col.from_quote },
                 offsets = { end_col = 1 },
+                severities = {
+                    ["_fallback"] = h.diagnostics.severities["warning"],
+                },
             }
         ),
     },
