@@ -144,6 +144,7 @@ M.show_window = function()
 
     local logger_info = create_logging_info()
 
+    -- stylua: ignore
     for _, section in ipairs({
         { "" },
         header,
