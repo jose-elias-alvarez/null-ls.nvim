@@ -17,11 +17,8 @@ return h.make_builtin({
             local parser = h.diagnostics.from_json({
                 attributes = {
                     message = "message",
-                    row = "line",
-                    col = "column",
                     source = "actionlint",
                     code = "kind",
-                    file = "filename",
                     severity = 1,
                 },
             })
