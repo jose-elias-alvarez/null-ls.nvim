@@ -138,6 +138,9 @@ described in [BUILTINS](BUILTINS.md).
 Defines the severity used when a diagnostic source does not explicitly define a
 severity. See `:help diagnostic-severity` for available values.
 
+You can also set `fallback_severity` for built-ins by using the `with` method,
+described in [BUILTINS](BUILTINS.md).
+
 ### log (table)
 
 Sets options for null-ls logging.

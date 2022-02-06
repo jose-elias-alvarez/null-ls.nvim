@@ -430,13 +430,23 @@ describe("diagnostics", function()
                 assert.equals(starting_severity, mock_diagnostic.severity)
             end)
 
-            it("should set severity to fallback when not set", function()
+            it("should set severity to global fallback when not set", function()
                 mock_diagnostic.severity = nil
 
                 postprocess(mock_diagnostic, mock_params, mock_generator)
 
                 assert.truthy(mock_diagnostic.severity)
                 assert.equals(mock_diagnostic.severity, c.get().fallback_severity)
+            end)
+
+            it("should set severity to generator specified fallback when not set", function()
+                mock_diagnostic.severity = nil
+                mock_generator.opts.fallback_severity = vim.diagnostic.severity.HINT
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.truthy(mock_diagnostic.severity)
+                assert.equals(mock_diagnostic.severity, mock_generator.opts.fallback_severity)
             end)
         end)
     end)

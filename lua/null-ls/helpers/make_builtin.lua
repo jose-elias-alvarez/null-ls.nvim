@@ -28,6 +28,7 @@ local function make_builtin(opts)
         command = opts.command,
         env = opts.env,
         cwd = opts.cwd,
+        fallback_severity = opts.fallback_severity,
         diagnostics_format = opts.diagnostics_format,
         dynamic_command = opts.dynamic_command,
         runtime_condition = opts.runtime_condition,

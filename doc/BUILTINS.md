@@ -185,6 +185,22 @@ See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
 Note that specifying `diagnostics_format` for a built-in will override your
 global `diagnostics_format` for that source.
 
+### Fallback severity
+
+You can define the severity by setting `fallback_severity` when the diagnostic
+source does not explicitly define a severity.
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.cspell.with({
+        fallback_severity = vim.diagnostic.severity.HINT,
+    }),
+}
+```
+
+Note that specifying `fallback_severity` for a built-in will override your
+global `fallback_severity` specified in [CONFIG](CONFIG.md) for that source.
+
 ### Diagnostics performance
 
 If you have performance issues with a diagnostic source, you can configure any

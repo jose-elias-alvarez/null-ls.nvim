@@ -321,7 +321,7 @@ Note that `filename` (if specified) should be an absolute path to the file.
 
 `severity` should be one of the values described in `:help diagnostic-severity`.
 If unspecified, `severity` falls back to the config option `fallback_severity`,
-described in [CONFIG](./CONFIG.md).
+described in [CONFIG](./CONFIG.md) and [BUILTINS](./BUILTINS.md).
 
 #### Formatting
 
