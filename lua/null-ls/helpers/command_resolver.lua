@@ -53,4 +53,37 @@ M.from_node_modules = function(params)
     return M.generic(params, u.path.join("node_modules", ".bin")) or u.is_executable(params.command) and params.command
 end
 
+M.from_yarn_pnp = function(params)
+    local cache_key = fmt("yarn:%s", params.command)
+    local resolved = s.get_resolved_command(params.bufnr, cache_key)
+    if resolved then
+        if resolved.command then
+            log:debug(fmt("Using cached value [%s] as the resolved command for [%s]", resolved.command, params.command))
+        end
+        return resolved.command
+    end
+
+    -- older yarn versions use `.pnp.js`, so look for both new and old names
+    local root = u.get_root()
+    local pnp_loader = search_ancestors_for_command(params.bufname, root, ".pnp.cjs")
+        or search_ancestors_for_command(params.bufname, root, ".pnp.js")
+    if pnp_loader then
+        local yarn_bin = vim.fn.system(
+            fmt("cd %s && yarn bin %s", vim.fn.shellescape(pnp_loader.cwd), vim.fn.shellescape(params.command))
+        ):gsub("%s+", "")
+        if vim.v.shell_error == 0 then
+            log:trace(fmt("resolved dynamic command for [%s] to Yarn PnP with cwd=%s", params.command, pnp_loader.cwd))
+            resolved = {
+                command = { "node", "--require", pnp_loader.command, yarn_bin },
+                cwd = pnp_loader.cwd,
+            }
+        end
+    end
+
+    resolved = resolved or { command = false }
+
+    s.set_resolved_command(params.bufnr, cache_key, resolved)
+    return resolved.command
+end
+
 return M
