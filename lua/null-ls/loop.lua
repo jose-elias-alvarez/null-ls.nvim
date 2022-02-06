@@ -132,6 +132,17 @@ M.spawn = function(cmd, args, opts)
         parsed_env = env_merge(env)
     end
 
+    if type(cmd) == "table" then
+        local concat_args = {}
+        for i = 2, #cmd do
+            concat_args[#concat_args + 1] = cmd[i]
+        end
+        for _, arg in ipairs(args) do
+            concat_args[#concat_args + 1] = arg
+        end
+        cmd, args = cmd[1], concat_args
+    end
+
     handle = uv.spawn(
         vim.fn.exepath(cmd),
         { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },

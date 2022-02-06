@@ -147,6 +147,13 @@ describe("loop", function()
             assert.stub(uv.read_start).was_called(2)
         end)
 
+        it("should allow a table for cmd", function()
+            loop.spawn({ "cat", "-b" }, { "-n" }, mock_opts)
+
+            assert.equals(uv.spawn.calls[1].refs[1], vim.fn.exepath("cat"))
+            assert.same(uv.spawn.calls[1].refs[2].args, { "-b", "-n" })
+        end)
+
         describe("stdin", function()
             local mock_input = "I have content"
             before_each(function()
