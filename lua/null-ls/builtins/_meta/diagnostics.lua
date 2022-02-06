@@ -159,5 +159,8 @@ return {
   },
   yamllint = {
     filetypes = { "yaml" }
+  },
+  zsh = {
+    filetypes = { "zsh" }
   }
 }
