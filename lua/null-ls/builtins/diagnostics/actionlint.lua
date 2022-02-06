@@ -10,21 +10,17 @@ return h.make_builtin({
     generator_opts = {
         command = "actionlint",
         args = { "-no-color", "-format", "{{json .}}", "-" },
-        format = "json_raw",
+        format = "json",
         from_stderr = true,
         to_stdin = true,
-        on_output = function(params)
-            local parser = h.diagnostics.from_json({
-                attributes = {
-                    message = "message",
-                    source = "actionlint",
-                    code = "kind",
-                    severity = 1,
-                },
-            })
-
-            return parser({ output = params.output })
-        end,
+        on_output = h.diagnostics.from_json({
+            attributes = {
+                message = "message",
+                source = "actionlint",
+                code = "kind",
+                severity = 1,
+            },
+        }),
     },
     factory = h.generator_factory,
 })
