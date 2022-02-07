@@ -1401,6 +1401,24 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - `command = "raco"`
 - `args = { "fmt", "$FILENAME" }`
 
+#### [rescript](https://rescript-lang.org/)
+
+##### About
+
+The ReScript format builtin.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rescript }
+```
+
+##### Defaults
+
+- `filetypes = { "rescript" }`
+- `command = "rescript"`
+- `args = { "format", "-stdin", ".res"}`
+
 #### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
