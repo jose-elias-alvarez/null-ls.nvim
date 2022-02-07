@@ -175,6 +175,9 @@ return {
   reorder_python_imports = {
     filetypes = { "python" }
   },
+  rescript = {
+    filetypes = { "rescript" }
+  },
   rubocop = {
     filetypes = { "ruby" }
   },
