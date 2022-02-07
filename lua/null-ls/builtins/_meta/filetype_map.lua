@@ -137,7 +137,7 @@ return {
   },
   markdown = {
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd" },
+    formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd", "terrafmt" },
     hover = { "dictionary" }
   },
   nginx = {

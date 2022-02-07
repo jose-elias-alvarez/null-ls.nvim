@@ -223,6 +223,9 @@ return {
   taplo = {
     filetypes = { "toml" }
   },
+  terrafmt = {
+    filetypes = { "markdown" }
+  },
   terraform_fmt = {
     filetypes = { "terraform", "tf" }
   },
