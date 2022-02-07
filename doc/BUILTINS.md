@@ -1401,6 +1401,24 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - `command = "raco"`
 - `args = { "fmt", "$FILENAME" }`
 
+#### [remark](https://github.com/remarkjs/remark)
+
+##### About
+
+`remark` is an extensive and complex Markdown formatter/prettifier. For this integration to work specifically, you need to install [the `remark-cli` tool](https://github.com/remarkjs/remark/tree/main/packages/remark-cli).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.remark }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "remark"`
+- `args = { "--no-color", "--silent" }`
+
 #### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
