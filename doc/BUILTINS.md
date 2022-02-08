@@ -1401,6 +1401,24 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - `command = "raco"`
 - `args = { "fmt", "$FILENAME" }`
 
+#### [remark](https://github.com/remarkjs/remark)
+
+##### About
+
+`remark` is an extensive and complex Markdown formatter/prettifier. For this integration to work specifically, you need to install [the `remark-cli` tool](https://github.com/remarkjs/remark/tree/main/packages/remark-cli).
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.remark }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "remark"`
+- `args = { "--no-color", "--silent" }`
+
 #### [rubocop](https://github.com/rubocop/rubocop)
 
 ##### About
@@ -1894,6 +1912,24 @@ local sources = { null_ls.builtins.formatting.ptop }
 - `args = { "$FILENAME", "$FILENAME" }`
 
 ### Diagnostics
+
+#### [actionlint](https://github.com/rhysd/actionlint)
+
+##### About
+
+Actionlint is a static checker for GitHub Actions workflow files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.actionlint }
+```
+
+##### Defaults
+
+- `filetypes = { "yaml" }`
+- `command = "actionlint"`
+- `args = { "-no-color", "-format", "{{json .}}", "-" }`
 
 #### [ansible-lint](https://github.com/ansible-community/ansible-lint)
 
@@ -2730,6 +2766,24 @@ local sources = { null_ls.builtins.diagnostics.yamllint }
 - `filetypes = { "yaml" }`
 - `command = "yamllint"`
 - `args = { "--format", "parsable", "-" }`
+
+#### [zsh](https://www.zsh.org/)
+
+##### About
+
+Uses zsh's own `-n` option to evaluate, but not execute, zsh scripts. Effectively, this acts somewhat like a linter, although it only really checks for serious errors - and will likely only show the first error.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.zsh }
+```
+
+##### Defaults
+
+- `filetypes = { "zsh" }`
+- `command = "zsh"`
+- `args = { "-n", "$FILENAME" }`
 
 ### Diagnostics on save
 

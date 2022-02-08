@@ -137,7 +137,7 @@ return {
   },
   markdown = {
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd", "terrafmt" },
+    formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
   nginx = {
@@ -263,7 +263,7 @@ return {
     formatting = { "xmllint" }
   },
   yaml = {
-    diagnostics = { "yamllint" },
+    diagnostics = { "actionlint", "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   ["yaml.ansible"] = {
@@ -271,5 +271,8 @@ return {
   },
   zig = {
     formatting = { "zigfmt" }
+  },
+  zsh = {
+    diagnostics = { "zsh" }
   }
 }

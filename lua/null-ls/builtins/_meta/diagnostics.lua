@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  actionlint = {
+    filetypes = { "yaml" }
+  },
   alex = {
     filetypes = { "markdown" }
   },
@@ -159,5 +162,8 @@ return {
   },
   yamllint = {
     filetypes = { "yaml" }
+  },
+  zsh = {
+    filetypes = { "zsh" }
   }
 }
