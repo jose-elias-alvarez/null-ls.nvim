@@ -263,7 +263,7 @@ return {
     formatting = { "xmllint" }
   },
   yaml = {
-    diagnostics = { "yamllint" },
+    diagnostics = { "actionlint", "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   ["yaml.ansible"] = {
