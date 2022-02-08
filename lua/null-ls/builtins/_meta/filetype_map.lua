@@ -271,5 +271,8 @@ return {
   },
   zig = {
     formatting = { "zigfmt" }
+  },
+  zsh = {
+    diagnostics = { "zsh" }
   }
 }

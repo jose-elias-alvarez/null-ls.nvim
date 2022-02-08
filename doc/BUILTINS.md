@@ -2712,6 +2712,24 @@ local sources = { null_ls.builtins.diagnostics.yamllint }
 - `command = "yamllint"`
 - `args = { "--format", "parsable", "-" }`
 
+#### [zsh](https://www.zsh.org/)
+
+##### About
+
+Uses zsh's own `-n` option to evaluate, but not execute, zsh scripts. Effectively, this acts somewhat like a linter, although it only really checks for serious errors - and will likely only show the first error.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.zsh }
+```
+
+##### Defaults
+
+- `filetypes = { "zsh" }`
+- `command = "zsh"`
+- `args = { "-n", "$FILENAME" }`
+
 ### Diagnostics on save
 
 **NOTE**: These sources **do not run on change**, meaning that the diagnostics
