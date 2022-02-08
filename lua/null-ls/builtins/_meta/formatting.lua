@@ -172,6 +172,9 @@ return {
   raco_fmt = {
     filetypes = { "racket" }
   },
+  remark = {
+    filetypes = { "markdown" }
+  },
   reorder_python_imports = {
     filetypes = { "python" }
   },
