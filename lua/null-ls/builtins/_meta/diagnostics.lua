@@ -145,6 +145,9 @@ return {
   textlint = {
     filetypes = {}
   },
+  trail_space = {
+    filetypes = {}
+  },
   tsc = {
     filetypes = { "typescript", "typescriptreact" }
   },
