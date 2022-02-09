@@ -1724,6 +1724,25 @@ local sources = { null_ls.builtins.formatting.taplo }
 - `command = "taplo"`
 - `args = { "format", "-" }`
 
+#### [terrafmt](https://github.com/katbyte/terrafmt)
+
+##### About
+
+The `terrafmt` command formats `terraform` blocks embedded on `markdown` files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.terrafmt }
+```
+
+##### Defaults
+
+- `filetypes = { "markdown" }`
+- `command = "terrafmt"`
+- `args = { "fmt", "$FILENAME" }`
+
+
 #### [terraform_fmt](https://www.terraform.io/docs/cli/commands/fmt.html)
 
 ##### About
