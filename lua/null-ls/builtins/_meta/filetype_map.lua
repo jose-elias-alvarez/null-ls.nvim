@@ -188,6 +188,9 @@ return {
   racket = {
     formatting = { "raco_fmt" }
   },
+  rescript = {
+    formatting = { "rescript" }
+  },
   rmd = {
     formatting = { "format_r", "styler" }
   },

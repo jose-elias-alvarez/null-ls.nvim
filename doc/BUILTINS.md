@@ -1401,6 +1401,7 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - `command = "raco"`
 - `args = { "fmt", "$FILENAME" }`
 
+
 #### [remark](https://github.com/remarkjs/remark)
 
 ##### About
@@ -1418,6 +1419,18 @@ local sources = { null_ls.builtins.formatting.remark }
 - `filetypes = { "markdown" }`
 - `command = "remark"`
 - `args = { "--no-color", "--silent" }`
+
+#### [rescript](https://rescript-lang.org/)
+
+##### About
+
+The ReScript format builtin.
+
+##### Defaults
+
+- `filetypes = { "rescript" }`
+- `command = "rescript"`
+- `args = { "format", "-stdin", ".res"}`
 
 #### [rubocop](https://github.com/rubocop/rubocop)
 
