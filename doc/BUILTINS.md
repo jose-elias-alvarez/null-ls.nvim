@@ -586,6 +586,24 @@ local sources = { null_ls.builtins.formatting.dart_format }
 - `command = "dart"`
 - `args = { "format" }`
 
+#### [deadnix](https://github.com/astro/deadnix)
+
+##### About
+
+Scan Nix files for dead code.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.deadnix }
+```
+
+##### Defaults
+
+- `filetypes = { "nix" }`
+- `command = "deadnix"`
+- `args = { "--output-format=json", "$FILENAME" }`
+
 #### [Deno Formatter](https://deno.land/manual/tools/formatter)
 
 ##### About
