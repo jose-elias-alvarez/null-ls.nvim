@@ -34,6 +34,9 @@ return {
   curlylint = {
     filetypes = { "jinja.html", "htmldjango" }
   },
+  deadnix = {
+    filetypes = { "nix" }
+  },
   editorconfig_checker = {
     filetypes = {}
   },

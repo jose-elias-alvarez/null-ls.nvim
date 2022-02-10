@@ -147,7 +147,7 @@ return {
     formatting = { "nimpretty" }
   },
   nix = {
-    diagnostics = { "statix" },
+    diagnostics = { "deadnix", "statix" },
     formatting = { "nixfmt", "nixpkgs_fmt" }
   },
   pascal = {
