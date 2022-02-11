@@ -315,3 +315,10 @@ All tests expect the latest Neovim master.
 
 - [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
   that (surprise) focuses on formatting.
+
+## Sponsors
+
+Thanks to everyone who sponsors this project and makes continued development /
+maintenance possible!
+
+<!-- sponsors --><!-- sponsors -->
