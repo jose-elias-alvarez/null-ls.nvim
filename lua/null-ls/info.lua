@@ -62,9 +62,9 @@ M.show_window = function()
     local bufnr = api.nvim_get_current_buf()
     local filetype = api.nvim_buf_get_option(bufnr, "filetype")
     local highlights = {}
+    local is_attached = true
     if not client or not lsp.buf_is_attached(bufnr, client.id) then
-        log:warn("failed to get info: buffer is not attached")
-        return
+        is_attached = false
     end
 
     local get_methods_per_source = function(source)
@@ -140,22 +140,32 @@ M.show_window = function()
     table.insert(highlights, { "Label", header[1] })
 
     local methods_info = create_supported_methods_info(filetype)
-    local sources_info = create_active_sources_info(filetype)
-
-    local logger_info = create_logging_info()
+    local sources_info = nil
+    local logger_info = nil
+    if is_attached then
+        sources_info = create_active_sources_info(filetype)
+        logger_info = create_logging_info()
+    end
 
     -- stylua: ignore
-    for _, section in ipairs({
-        { "" },
+    for _, section in pairs({
         header,
-        { "" },
         logger_info,
-        { "" },
         sources_info,
-        { "" },
         methods_info,
     }) do
-        vim.list_extend(lines, indent_lines(section))
+        if section then
+            lines = vim.list_extend(lines, indent_lines({ "" }))
+            lines = vim.list_extend(lines, indent_lines(section))
+        end
+    end
+
+    if not is_attached then
+        local info_lines = { "* Note: current buffer has no sources attached" }
+        table.insert(highlights, { "Type", info_lines[1] })
+
+        lines = vim.list_extend(lines, indent_lines({ "" }))
+        lines = vim.list_extend(lines, indent_lines(info_lines))
     end
 
     local win_bufnr, win_id = make_window(0.8, 0.7)
