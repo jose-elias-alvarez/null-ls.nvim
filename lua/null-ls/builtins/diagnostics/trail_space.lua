@@ -9,7 +9,6 @@ return h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = {},
     generator = {
-        async = true,
         fn = function(params, done)
             local result = {}
             local regex = vim.regex("\\s\\+$")
