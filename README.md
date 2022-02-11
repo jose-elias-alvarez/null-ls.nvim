@@ -321,4 +321,4 @@ All tests expect the latest Neovim master.
 Thanks to everyone who sponsors my projects and makes continued development /
 maintenance possible!
 
-<!-- sponsors --><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/yutkat"><img src="https://github.com/yutkat.png" width="60px" alt="" /></a><a href="https://github.com/da-moon"><img src="https://github.com/da-moon.png" width="60px" alt="" /></a><!-- sponsors -->
