@@ -2,7 +2,7 @@ name: sponsors
 on:
   push:
     branches:
-      - github-sponsors-action
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
