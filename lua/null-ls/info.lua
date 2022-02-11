@@ -161,7 +161,7 @@ M.show_window = function()
     end
 
     if not is_attached then
-        local info_lines = { "* Note: currently buffer has no sources attached" }
+        local info_lines = { "* Note: current buffer has no sources attached" }
         table.insert(highlights, { "Type", info_lines[1] })
 
         lines = vim.list_extend(lines, indent_lines({ "" }))
