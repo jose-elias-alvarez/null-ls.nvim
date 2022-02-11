@@ -160,6 +160,14 @@ M.show_window = function()
         end
     end
 
+    if not is_attached then
+        local info_lines = { "* Note: currently buffer has no sources attached" }
+        table.insert(highlights, { "Type", info_lines[1] })
+
+        lines = vim.list_extend(lines, indent_lines({ "" }))
+        lines = vim.list_extend(lines, indent_lines(info_lines))
+    end
+
     local win_bufnr, win_id = make_window(0.8, 0.7)
 
     api.nvim_buf_set_lines(win_bufnr, 0, -1, true, lines)
