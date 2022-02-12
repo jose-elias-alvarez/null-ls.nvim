@@ -5,7 +5,7 @@ local helpers = require("null-ls.helpers")
 local loop = require("null-ls.loop")
 local s = require("null-ls.state")
 
-local test_utils = require("test.utils")
+local test_utils = require("null-ls.test-utils")
 local root = vim.fn.getcwd()
 
 describe("generator_factory", function()
