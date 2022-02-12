@@ -202,6 +202,21 @@ describe("e2e", function()
 
             assert.equals(write_good_diagnostic.message, '"really" can weaken meaning (write_good)')
         end)
+
+        it("should pass diagnostics through source-specific postprocess hook", function()
+            sources.reset()
+            sources.register(builtins.diagnostics.write_good.with({
+                diagnostics_postprocess = function(diagnostic)
+                    diagnostic.message = "I have been postprocessed!"
+                end,
+            }))
+            vim.cmd("e")
+            tu.wait_for_real_source()
+
+            local write_good_diagnostic = vim.diagnostic.get(0)[1]
+
+            assert.equals(write_good_diagnostic.message, "I have been postprocessed!")
+        end)
     end)
 
     describe("formatting", function()

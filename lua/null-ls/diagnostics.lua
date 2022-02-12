@@ -58,6 +58,12 @@ local postprocess = function(diagnostic, _, generator)
         diagnostic.bufnr = bufnr
     end
 
+    local user_postprocess = generator.opts.diagnostics_postprocess
+    if user_postprocess then
+        user_postprocess(diagnostic)
+        return
+    end
+
     local formatted = generator and generator.opts.diagnostics_format or c.get().diagnostics_format
     -- avoid unnecessary gsub if using default
     if formatted == "#{m}" then

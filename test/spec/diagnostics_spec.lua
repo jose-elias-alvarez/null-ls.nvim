@@ -32,10 +32,10 @@ describe("diagnostics", function()
                 bufnr = mock_bufnr,
             }
             mock_generator = {
-                opts = {},
                 source_id = mock_source_id,
                 multiple_files = nil,
             }
+            mock_generator.opts = {}
 
             u.make_params.returns(mock_params)
             vim.uri_to_bufnr.returns(mock_bufnr)
@@ -437,6 +437,20 @@ describe("diagnostics", function()
 
                 assert.truthy(mock_diagnostic.severity)
                 assert.equals(mock_diagnostic.severity, c.get().fallback_severity)
+            end)
+
+            it("should pass diagnostic through diagnostics_postprocess", function()
+                local called = false
+                local mock_postprocess = function(diagnostic)
+                    called = true
+                    diagnostic.message = "postprocess"
+                end
+                mock_generator.opts = { diagnostics_postprocess = mock_postprocess }
+
+                postprocess(mock_diagnostic, mock_params, mock_generator)
+
+                assert.truthy(called)
+                assert.equals(mock_diagnostic.message, "postprocess")
             end)
         end)
     end)

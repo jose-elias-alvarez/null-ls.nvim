@@ -142,7 +142,9 @@ local sources = {
 
 ### Environment Variables
 
-You can inject additional environment variables to the process via utilizing the `env` option. This option should be in the form of a dictionary. This will extend the operating system variables.
+You can inject environment variables to the process via utilizing the `env`
+option. This option should be in the form of a dictionary. This will extend the
+operating system variables.
 
 ```lua
 local sources = {
@@ -181,9 +183,34 @@ local sources = {
 }
 ```
 
-See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
-Note that specifying `diagnostics_format` for a built-in will override your
-global `diagnostics_format` for that source.
+- See [CONFIG](CONFIG.md) to learn about the structure of `diagnostics_format`.
+- Specifying `diagnostics_format` for a built-in will override your global
+  `diagnostics_format` for that source.
+- This option is not compatible with `diagnostics_postprocess` (see below).
+
+### Diagnostics postprocess
+
+For advanced customization of diagnostics, you can use the
+`diagnostics_postprocess` hook. The hook receives a diagnostic conforming to the
+structure described in `:help diagnostic-structure` and runs after the
+built-in's generator, so you can use it to change, override, or add data to each
+diagnostic.
+
+- Using this option may affect performance when processing a large number of
+  diagnostics, since the hook runs once for each diagnostic.
+- This option is not compatible with `diagnostics_format` (see above).
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.write_good.with({
+        diagnostics_postprocess = function(diagnostic)
+            diagnostic.severity = diagnostic.message:find("really")
+                and vim.diagnostic.severity["ERROR"]
+                or vim.diagnostic.severity["WARN"]
+        end,
+    }),
+}
+```
 
 ### Diagnostics performance
 
@@ -1419,7 +1446,6 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - `command = "raco"`
 - `args = { "fmt", "$FILENAME" }`
 
-
 #### [remark](https://github.com/remarkjs/remark)
 
 ##### About
@@ -1772,7 +1798,6 @@ local sources = { null_ls.builtins.formatting.terrafmt }
 - `filetypes = { "markdown" }`
 - `command = "terrafmt"`
 - `args = { "fmt", "$FILENAME" }`
-
 
 #### [terraform_fmt](https://www.terraform.io/docs/cli/commands/fmt.html)
 
