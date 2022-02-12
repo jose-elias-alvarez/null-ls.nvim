@@ -143,6 +143,16 @@ M.make_conditional_utils = function()
     local root = M.get_root()
 
     return {
+        has_file = function(...)
+            local patterns = vim.tbl_flatten({ ... })
+            for _, name in ipairs(patterns) do
+                local full_path = vim.loop.fs_realpath(name)
+                if full_path and M.path.exists(full_path) then
+                    return true
+                end
+            end
+            return false
+        end,
         root_has_file = function(...)
             local patterns = vim.tbl_flatten({ ... })
             for _, name in ipairs(patterns) do

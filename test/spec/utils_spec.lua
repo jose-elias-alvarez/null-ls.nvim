@@ -324,8 +324,27 @@ describe("utils", function()
         local utils = u.make_conditional_utils()
 
         it("should return object containing utils", function()
+            assert.truthy(type(utils.has_file) == "function")
             assert.truthy(type(utils.root_has_file) == "function")
             assert.truthy(type(utils.root_matches) == "function")
+        end)
+
+        describe("has_file", function()
+            it("should return true if file exists in cwd", function()
+                assert.truthy(utils.has_file("stylua.toml"))
+            end)
+
+            it("should return true if some file exists in cwd", function()
+                assert.truthy(utils.has_file({ ".stylua.toml", "stylua.toml" }))
+            end)
+
+            it("should return false if some file not exists in cwd", function()
+                assert.falsy(utils.has_file({ "bad-file", "bad-file2" }))
+            end)
+
+            it("should return false if file does not exist in cwd", function()
+                assert.falsy(utils.has_file("bad-file"))
+            end)
         end)
 
         describe("root_has_file", function()
