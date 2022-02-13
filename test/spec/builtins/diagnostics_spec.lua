@@ -642,6 +642,41 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("pylama", function()
+        local linter = diagnostics.pylama
+        local parser = linter._opts.on_output
+        local exit_func = linter._opts.check_exit_code
+
+        it("should create a diagnostic with error severity", function()
+            local output = vim.json.decode([[
+                  [{
+                    "lnum": 3,
+                    "col": 1,
+                    "etype": "E",
+                    "message": "block comment should start with '# '",
+                    "number": "E265",
+                    "source": "run-clang-tidy.py"
+                  }]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    row = 3,
+                    col = 1,
+                    severity = 1,
+                    code = "E265",
+                    message = "block comment should start with '# '",
+                    source = "run-clang-tidy.py",
+                },
+            }, diagnostic)
+        end)
+        it("should count exit code of 1 as success", function()
+            assert.is.True(exit_func(1))
+            assert.is.True(exit_func(0))
+            assert.is.False(exit_func(255))
+        end)
+    end)
+
     describe("misspell", function()
         local linter = diagnostics.misspell
         local parser = linter._opts.on_output
