@@ -4,6 +4,9 @@ return {
   asmfmt = {
     filetypes = { "asm" }
   },
+  astyle = {
+    filetypes = { "arduino", "c", "cpp", "cs", "java" }
+  },
   autopep8 = {
     filetypes = { "python" }
   },

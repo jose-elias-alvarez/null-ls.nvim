@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  arduino = {
+    formatting = { "astyle" }
+  },
   asm = {
     formatting = { "asmfmt" }
   },
@@ -12,7 +15,7 @@ return {
   },
   c = {
     diagnostics = { "cppcheck", "gccdiag" },
-    formatting = { "clang_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "uncrustify" }
   },
   cabal = {
     formatting = { "cabal_fmt" }
@@ -28,13 +31,13 @@ return {
   },
   cpp = {
     diagnostics = { "cppcheck", "gccdiag" },
-    formatting = { "clang_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {
     formatting = { "crystal_format" }
   },
   cs = {
-    formatting = { "clang_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "uncrustify" }
   },
   css = {
     diagnostics = { "stylelint" },
@@ -106,7 +109,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    formatting = { "clang_format", "google_java_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
     diagnostics = { "eslint", "eslint_d", "standardjs" },
