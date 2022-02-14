@@ -3190,3 +3190,20 @@ Registering this source will show available snippets in the completion list, but
 luasnip is in charge of expanding them. Consult luasnip's documentation
 [here](https://github.com/L3MON4D3/LuaSnip#keymaps) to set up keymaps for
 expansion and jumping.
+
+#### [astyle](http://astyle.sourceforge.net/)
+
+##### About
+
+Artistic Style is a source code indenter, formatter, and beautifier for the C, C++, C++/CLI, Objective‑C, C# and Java programming languages.
+
+This formatter works well for [Arduino](https://www.arduino.cc/) project files and it is the same formatting files in the Arduino IDE
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.astyle }
+```
+
+#### Defaults
+- `filetypes = { "arduino", "c", "cpp", "cs", "java" }`
