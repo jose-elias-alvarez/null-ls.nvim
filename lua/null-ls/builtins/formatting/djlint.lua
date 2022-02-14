@@ -11,9 +11,6 @@ return h.make_builtin({
         command = "djlint",
         args = {
             "--reformat",
-            "--stdin-filename",
-            "$FILENAME",
-            "--quiet",
             "-",
         },
         to_stdin = true,
