@@ -9,7 +9,7 @@ return h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = {},
     generator = {
-        fn = function(params, done)
+        fn = function(params)
             local result = {}
             local regex = vim.regex("\\s\\+$")
 
@@ -30,7 +30,7 @@ return h.make_builtin({
                 end
             end
 
-            return done(result)
+            return result
         end,
     },
 })
