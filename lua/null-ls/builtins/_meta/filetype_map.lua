@@ -54,7 +54,7 @@ return {
     formatting = { "ptop" }
   },
   django = {
-    formatting = { "djhtml" }
+    formatting = { "djhtml", "djlint" }
   },
   dockerfile = {
     diagnostics = { "hadolint" }
@@ -103,7 +103,7 @@ return {
   },
   htmldjango = {
     diagnostics = { "curlylint" },
-    formatting = { "djhtml" }
+    formatting = { "djhtml", "djlint" }
   },
   java = {
     formatting = { "clang_format", "google_java_format", "uncrustify" }
@@ -118,7 +118,7 @@ return {
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint" },
-    formatting = { "djhtml" }
+    formatting = { "djhtml", "djlint" }
   },
   json = {
     diagnostics = { "jsonlint" },

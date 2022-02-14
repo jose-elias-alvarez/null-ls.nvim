@@ -52,6 +52,9 @@ return {
   djhtml = {
     filetypes = { "django", "jinja.html", "htmldjango" }
   },
+  djlint = {
+    filetypes = { "django", "jinja.html", "htmldjango" }
+  },
   elm_format = {
     filetypes = { "elm" }
   },
