@@ -5,7 +5,7 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 local SEVERITIES = h.diagnostics.severities
 
 return h.make_builtin({
-    name = "trailing-space",
+    name = "trail-space",
     method = DIAGNOSTICS,
     filetypes = {},
     generator = {
@@ -25,7 +25,7 @@ return h.make_builtin({
                         col = start_byte + 1,
                         end_row = line_number,
                         end_col = end_byte + 1,
-                        source = "trail_space",
+                        source = "trail-space",
                     })
                 end
             end
