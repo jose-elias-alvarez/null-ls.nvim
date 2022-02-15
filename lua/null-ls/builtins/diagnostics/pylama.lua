@@ -9,11 +9,12 @@ return h.make_builtin({
     generator_opts = {
         command = "pylama",
         to_stdin = true,
-        from_stderr = true,
+        from_stderr = false,
+        ignore_stderr = true,
         args = { "--from-stdin", "$FILENAME", "-f", "json" },
         format = "json_raw",
         check_exit_code = function(code)
-            return code < 1
+            return code <= 1
         end,
         on_output = h.diagnostics.from_json({
             attributes = {
