@@ -12,6 +12,9 @@ return h.make_builtin({
         args = { "check", "--stdin", "--format=json" },
         format = "json",
         to_stdin = true,
+        check_exit_code = function(code)
+            return code <= 1
+        end,
         on_output = function(params)
             local actions = {}
             for _, r in ipairs(params.output.report) do
