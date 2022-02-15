@@ -2729,6 +2729,28 @@ local sources = { null_ls.builtins.diagnostics.textlint }
 - `command = "textlint"`
 - `args = { "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### `trail_space`
+
+##### About
+
+Uses inbuilt lua code to detect lines with trailing whitespace and show a diagnostic warning on each line where it's present.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.trail_space }
+```
+
+By default this source applies to all filetypes. You may wish to customize it with some `disabled_filetypes` if you have any existing `null_ls` sources or LSP providers which highlight trailing space for some filetypes already, to avoid duplicates, or if you have filetypes where you don't want to highlight whitespace. For example, to disable this source for `gitcommit` files:
+
+```
+local sources = { null_ls.builtins.diagnostics.trail_space.with({ disabled_filetypes = { "gitcommit" }})
+```
+
+##### Defaults
+
+- `filetypes = {}`
+
 #### [vale](https://docs.errata.ai/vale/about)
 
 ##### About
