@@ -1470,6 +1470,8 @@ local sources = { null_ls.builtins.formatting.remark }
 
 The ReScript format builtin.
 
+##### Usage
+
 ```lua
 local sources = { null_ls.builtins.formatting.rescript }
 ```
