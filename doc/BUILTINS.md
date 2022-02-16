@@ -1470,11 +1470,18 @@ local sources = { null_ls.builtins.formatting.remark }
 
 The ReScript format builtin.
 
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rescript }
+```
+
 ##### Defaults
 
 - `filetypes = { "rescript" }`
 - `command = "rescript"`
-- `args = { "format", "-stdin", ".res"}`
+- `args = { "format", "-stdin", "." .. vim.fn.fnamemodify(params.bufname, ":e")}`
+- `dynamic_command = require("null-ls.helpers.command_resolver").from_node_modules`
 
 #### [rubocop](https://github.com/rubocop/rubocop)
 
