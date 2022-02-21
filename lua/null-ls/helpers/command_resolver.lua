@@ -5,6 +5,23 @@ local fmt = string.format
 
 local M = {}
 
+-- Search for a local install of an executable by searching relative to
+-- startpath, then walking up directories until endpath is reached.
+function search_ancestors_for_command(startpath, endpath, executable_to_find)
+    local resolved
+    u.path.traverse_parents(startpath, function(dir)
+        local command = u.path.join(dir, executable_to_find)
+        if u.is_executable(command) then
+            resolved = { command = command, cwd = dir }
+            return true
+        end
+        if dir == endpath then
+            return true
+        end
+    end)
+    return resolved
+end
+
 M.generic = function(params, prefix)
     local resolved = s.get_resolved_command(params.bufnr, params.command)
     if resolved then
@@ -17,30 +34,15 @@ M.generic = function(params, prefix)
     local executable_to_find = prefix and u.path.join(prefix, params.command) or params.command
     log:debug("attempting to find local executable " .. executable_to_find)
 
-    local root = u.get_root()
-
-    resolved = {}
-
-    u.path.traverse_parents(params.bufname, function(dir)
-        local command = u.path.join(dir, executable_to_find)
-        if u.is_executable(command) then
-            log:trace(fmt("resolved dynamic command for [%s] with cwd=%s", executable_to_find, dir))
-            resolved.command = command
-            resolved.cwd = dir
-            return true
-        end
-
-        -- use cwd as a stopping point to avoid scanning the entire file system
-        if dir == root then
-            return true
-        end
-    end)
-
-    if not resolved.command then
+    resolved = search_ancestors_for_command(params.bufname, u.get_root(), executable_to_find)
+    if resolved then
+        log:trace(fmt("resolved dynamic command for [%s] with cwd=%s", executable_to_find, resolved.cwd))
+    else
         log:debug(fmt("Unable to resolve command [%s], skipping further lookups", executable_to_find))
+        resolved = { command = false }
     end
 
-    s.set_resolved_command(params.bufnr, params.command, { command = resolved.command or false, cwd = resolved.cwd })
+    s.set_resolved_command(params.bufnr, params.command, resolved)
     return resolved.command
 end
 
