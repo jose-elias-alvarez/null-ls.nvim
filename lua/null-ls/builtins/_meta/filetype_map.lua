@@ -222,6 +222,9 @@ return {
     diagnostics = { "shellcheck" },
     formatting = { "shellharden", "shfmt" }
   },
+  spec = {
+    diagnostics = { "rpmspec" }
+  },
   sql = {
     formatting = { "pg_format", "sqlformat" }
   },

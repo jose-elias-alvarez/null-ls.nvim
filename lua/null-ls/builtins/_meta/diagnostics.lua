@@ -118,6 +118,9 @@ return {
   revive = {
     filetypes = { "go" }
   },
+  rpmspec = {
+    filetypes = { "spec" }
+  },
   rubocop = {
     filetypes = { "ruby" }
   },
