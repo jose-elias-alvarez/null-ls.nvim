@@ -2585,6 +2585,24 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - `command = "rubocop"`
 - `args = { "-f", "json", "--stdin", "$FILENAME" }`
 
+#### [rpmspec](https://rpm.org/)
+
+##### About
+
+Command line tool to parse RPM spec files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.rpmspec }
+```
+
+##### Defaults
+
+- `filetypes = { "spec" }`
+- `command = "rpmspec"`
+- `args = { "-P", "$FILENAME" }`
+
 #### [selene](https://kampfkarren.github.io/selene/)
 
 ##### About
