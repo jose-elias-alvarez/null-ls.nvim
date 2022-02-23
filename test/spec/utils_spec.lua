@@ -213,6 +213,14 @@ describe("utils", function()
             assert.same(params.content, { 'print("I am a test file!")', "" })
         end)
 
+        it("should not set lsp method if method is internal", function()
+            local params = u.make_params({
+                method = mock_method,
+            }, mock_method)
+
+            assert.equals(params.lsp_method, nil)
+        end)
+
         it("should convert original range and assign to params.range", function()
             local original_params = {
                 range = {

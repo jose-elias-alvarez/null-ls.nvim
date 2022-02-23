@@ -3,6 +3,9 @@ local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
 local main = require("null-ls")
 
+local formatting = require("null-ls.formatting").formatting
+local range_formatting = require("null-ls.formatting").range_formatting
+
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
@@ -241,7 +244,7 @@ describe("e2e", function()
         end)
 
         it("should format file", function()
-            lsp.buf.formatting()
+            formatting()
             wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)
@@ -264,7 +267,7 @@ describe("e2e", function()
             end)
 
             it("should format file", function()
-                lsp.buf.formatting()
+                formatting()
                 wait_for_prettier()
 
                 assert.equals(u.buf.content(nil, true), formatted)
@@ -294,7 +297,7 @@ describe("e2e", function()
         it("should format specified range", function()
             vim.cmd("normal ggV")
 
-            lsp.buf.range_formatting()
+            range_formatting()
             wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)
@@ -474,7 +477,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "sequential\n")
@@ -485,7 +488,7 @@ describe("e2e", function()
             sources.register(builtins._test.second_formatter)
             tu.edit_test_file("test-file.txt")
             tu.wait()
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source(2)
 
             vim.cmd("silent normal u")
@@ -499,7 +502,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -516,7 +519,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source()
 
             assert.equals(#sources.get({}), 1)
@@ -532,7 +535,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source()
 
             assert.equals(#sources.get({}), 0)
@@ -549,7 +552,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source(2)
 
             assert.equals(#sources.get({}), 2)
@@ -571,7 +574,7 @@ describe("e2e", function()
         end)
 
         it("should use client handler", function()
-            lsp.buf.formatting()
+            formatting()
             tu.wait_for_mock_source()
 
             assert.stub(mock_handler).was_called()

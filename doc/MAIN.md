@@ -22,6 +22,8 @@ Splits into the following documents:
 - [HELPERS](HELPERS.md), which describes available helpers and how to use
   them to make new sources
 
+- [FORMATTING](FORMATTING.md), which describes the formatting API
+
 - [TESTING](TESTING.md), which describes best practices for testing null-ls
   integrations
 
@@ -56,22 +58,30 @@ definition is by referencing the `methods` object.
 
 ```lua
 local null_ls = require("null-ls")
-
 local my_source = {}
+
 -- source will run on LSP code action request
 my_source.method = null_ls.methods.CODE_ACTION
-
--- source will run on LSP diagnostics request
-my_source.method = null_ls.methods.DIAGNOSTICS
-
--- source will run on LSP formatting request
-my_source.method = null_ls.methods.FORMATTING
 
 -- source will run on LSP hover request
 my_source.method = null_ls.methods.HOVER
 
 -- source will run on LSP completion request
 my_source.method = null_ls.methods.COMPLETION
+
+-- source will run on LSP change notification
+my_source.method = null_ls.methods.DIAGNOSTICS
+```
+
+Some methods are independent from LSP methods and will run when invoked using
+the relevant API or a direct request to the client:
+
+```lua
+local null_ls = require("null-ls")
+local my_source = {}
+
+-- source will run on direct formatting request (see FORMATTING.md)
+my_source.method = null_ls.methods.FORMATTING
 ```
 
 ### Filetypes
@@ -215,7 +225,7 @@ editor state.
 ```lua
 local params = {
     content, -- current buffer content (table, split at newline)
-    lsp_method, -- lsp method that triggered request (string)
+    lsp_method, -- lsp method that triggered request (string or nil)
     method, -- null-ls method that triggered generator (string)
     row, -- cursor's current row (number, zero-indexed)
     col, -- cursor's current column (number)

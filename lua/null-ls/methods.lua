@@ -38,6 +38,7 @@ local lsp_to_internal_map = {
     [lsp_methods.HOVER] = internal_methods.HOVER,
     [lsp_methods.COMPLETION] = internal_methods.COMPLETION,
 }
+vim.tbl_add_reverse_lookup(lsp_to_internal_map)
 
 local overrides = {
     [internal_methods.DIAGNOSTICS_ON_OPEN] = {

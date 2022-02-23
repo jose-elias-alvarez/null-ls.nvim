@@ -15,6 +15,10 @@ M.register_name = sources.register_name
 M.reset_sources = sources.reset
 M.toggle = sources.toggle
 
+M.formatting = require("null-ls.formatting").formatting
+M.formatting_sync = require("null-ls.formatting").formatting_sync
+M.range_formatting = require("null-ls.formatting").range_formatting
+
 M.builtins = require("null-ls.builtins")
 M.methods = require("null-ls.methods").internal
 M.null_ls_info = require("null-ls.info").show_window

@@ -6,7 +6,7 @@ local methods = require("null-ls.methods")
 local generators = require("null-ls.generators")
 local diff = require("null-ls.diff")
 
-local method = methods.lsp.FORMATTING
+local method = methods.internal.FORMATTING
 
 local lsp = mock(vim.lsp, true)
 mock(require("null-ls.logger"), true)
@@ -65,25 +65,25 @@ describe("formatting", function()
             assert.equals(mock_params._null_ls_handled, nil)
         end)
 
-        it("should set handled flag if method is lsp.FORMATTING", function()
+        it("should set handled flag if method is internal.FORMATTING", function()
             formatting.handler(method, mock_params, handler)
 
             assert.equals(mock_params._null_ls_handled, true)
         end)
 
-        it("should set handled flag if method is lsp.RANGE_FORMATTING", function()
-            formatting.handler(methods.lsp.RANGE_FORMATTING, mock_params, handler)
+        it("should set handled flag if method is internal.RANGE_FORMATTING", function()
+            formatting.handler(methods.internal.RANGE_FORMATTING, mock_params, handler)
 
             assert.equals(mock_params._null_ls_handled, true)
         end)
 
         it("should call run_registered_sequentially with opts", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+            formatting.handler(method, mock_params, handler)
 
             local opts = generators.run_registered_sequentially.calls[1].refs[1]
 
             assert.equals(opts.filetype, vim.api.nvim_buf_get_option(mock_params.bufnr, "filetype"))
-            assert.equals(opts.method, methods.map[method])
+            assert.equals(opts.method, method)
             assert.equals(type(opts.make_params), "function")
             assert.equals(type(opts.postprocess), "function")
             assert.equals(type(opts.after_each), "function")
@@ -93,7 +93,7 @@ describe("formatting", function()
 
     describe("make_params", function()
         it("should call make_params with params and internal method", function()
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+            formatting.handler(method, mock_params, handler)
 
             local make_params = generators.run_registered_sequentially.calls[1].refs[1].make_params
             make_params()
@@ -104,7 +104,7 @@ describe("formatting", function()
 
         it("should override params.content with temp buffer content", function()
             u.buf.content.returns("temp file content")
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+            formatting.handler(method, mock_params, handler)
 
             local make_params = generators.run_registered_sequentially.calls[1].refs[1].make_params
             local updated_params = make_params()
@@ -119,7 +119,7 @@ describe("formatting", function()
             local mock_edits = { newText = "newText", rangeLength = 7 }
             diff.compute_diff.returns(mock_edits)
 
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+            formatting.handler(method, mock_params, handler)
 
             local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
             callback()
@@ -131,7 +131,7 @@ describe("formatting", function()
             local mock_edits = { newText = "", rangeLength = 0 }
             diff.compute_diff.returns(mock_edits)
 
-            formatting.handler(methods.lsp.FORMATTING, mock_params, handler)
+            formatting.handler(method, mock_params, handler)
 
             local callback = generators.run_registered_sequentially.calls[1].refs[1].callback
             callback()

@@ -23,7 +23,7 @@ M.handler = function(method, original_params, handler)
         return
     end
 
-    if method == methods.lsp.FORMATTING or method == methods.lsp.RANGE_FORMATTING then
+    if method == methods.internal.FORMATTING or method == methods.internal.RANGE_FORMATTING then
         local bufnr = vim.uri_to_bufnr(original_params.textDocument.uri)
 
         -- copy content and options to temp buffer
@@ -35,7 +35,6 @@ M.handler = function(method, original_params, handler)
 
         local called_handler = false
         local handler_wrapper = function(...)
-            -- calling handler twice breaks lsp.buf.formatting_sync()
             if called_handler then
                 return
             end
@@ -56,7 +55,7 @@ M.handler = function(method, original_params, handler)
         end
 
         local make_params = function()
-            local params = u.make_params(original_params, methods.map[method])
+            local params = u.make_params(original_params, method)
             -- override actual content w/ temp buffer content
             params.content = u.buf.content(temp_bufnr)
             return params
@@ -98,7 +97,7 @@ M.handler = function(method, original_params, handler)
 
         require("null-ls.generators").run_registered_sequentially({
             filetype = api.nvim_buf_get_option(bufnr, "filetype"),
-            method = methods.map[method],
+            method = method,
             make_params = make_params,
             postprocess = postprocess,
             after_each = after_each,
@@ -107,6 +106,64 @@ M.handler = function(method, original_params, handler)
 
         original_params._null_ls_handled = true
     end
+end
+
+M.formatting = function(options)
+    local method = methods.internal.FORMATTING
+    local bufnr = api.nvim_get_current_buf()
+    local client = require("null-ls.client").get_client()
+    if client and client.supports_method(method, bufnr) then
+        local params = lsp.util.make_formatting_params(options)
+        local handler = require("null-ls.client").resolve_handler(methods.map[method])
+        return client.request(method, params, handler, bufnr)
+    end
+
+    if options and options.fallback_to_lsp then
+        return vim.lsp.buf.formatting(options)
+    end
+
+    return false
+end
+
+M.formatting_sync = function(options, timeout_ms)
+    local client = require("null-ls.client").get_client()
+    local method = methods.internal.FORMATTING
+    local bufnr = api.nvim_get_current_buf()
+    if client and client.supports_method(method, bufnr) then
+        local params = lsp.util.make_formatting_params(options)
+        local result, err = client.request_sync(method, params, timeout_ms, bufnr)
+        if err then
+            log:error("formatting_sync: " .. err)
+        elseif result and result.result then
+            lsp.util.apply_text_edits(result.result, bufnr, client.offset_encoding)
+        end
+
+        return true
+    end
+
+    if options and options.fallback_to_lsp then
+        return vim.lsp.buf.formatting_sync(options, timeout_ms)
+    end
+
+    return false
+end
+
+M.range_formatting = function(options, start_pos, end_pos)
+    local client = require("null-ls.client").get_client()
+    local method = methods.internal.RANGE_FORMATTING
+    local bufnr = api.nvim_get_current_buf()
+    if client and client.supports_method(method, bufnr) then
+        local params = lsp.util.make_given_range_params(start_pos, end_pos)
+        params.options = lsp.util.make_formatting_params(options).options
+        local handler = require("null-ls.client").resolve_handler(methods.map[method])
+        return client.request(method, params, handler, bufnr)
+    end
+
+    if options and options.fallback_to_lsp then
+        return vim.lsp.buf.range_formatting(options, start_pos, end_pos)
+    end
+
+    return false
 end
 
 return M

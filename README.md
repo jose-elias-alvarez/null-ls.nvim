@@ -202,14 +202,10 @@ plugin before sending anything upstream.
 
 ### How do I format files?
 
-null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
-formatting by visually selecting part of the buffer and calling
-`vim.lsp.buf.range_formatting()`.
-
-### How do I stop Neovim from asking me which server I want to use for formatting?
-
-See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
+null-ls formatters run when you call `:lua require("null-ls").formatting()` or
+`:lua require("null-ls").formatting_sync()`. If a source supports it, you can run
+range formatting by visually selecting part of the buffer and calling
+`:lua require("null-ls").range_formatting()`.
 
 ### How do I format files on save?
 
@@ -217,13 +213,12 @@ See the following snippet:
 
 ```lua
 require("null-ls").setup({
-    -- you can reuse a shared lspconfig on_attach callback here
     on_attach = function(client)
         if client.resolved_capabilities.document_formatting then
             vim.cmd([[
             augroup LspFormatting
                 autocmd! * <buffer>
-                autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
+                autocmd BufWritePre <buffer> lua require("null-ls").formatting_sync()
             augroup END
             ]])
         end
@@ -231,10 +226,12 @@ require("null-ls").setup({
 })
 ```
 
-You can also set up async formatting, as described on [this wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Async-formatting).
-Please read the Caveats section there to understand the meaning of (and
-drawbacks of) async formatting.
+If you want to try formatting with null-ls and fall back to LSP formatting, add
+the following option:
+
+```lua
+require("null-ls").formatting_sync({ fallback_to_lsp = true })
+```
 
 ### How do I view project-level diagnostics?
 
@@ -259,15 +256,8 @@ option after you've collected the information you're looking for.
 
 ### Does it work with (other plugin)?
 
-In most cases, yes. null-ls tries to act like an actual LSP server as much as
-possible, so it should work seamlessly with most LSP-related plugins. If you run
-into problems, please try to determine which plugin is causing them and open an
-issue.
-
-[This wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
-mentions plugins that require specific configuration options / tweaks to work
-with null-ls.
+In most cases, yes. If you run into problems, please try to determine which
+plugin is causing them and open an issue.
 
 ### How does it work?
 
@@ -282,18 +272,6 @@ More testing is necessary, but since null-ls uses pure Lua and runs entirely in
 memory without any external processes, in most cases it should run faster than
 similar solutions. If you notice that performance is worse with null-ls than
 with an alternative, please open an issue!
-
-### I am seeing a `vim.lsp.buf.formatting_sync: timeout` error message
-
-This issue occurs when a formatter takes longer than the default timeout value
-of the `formatting_sync` function. This is an automatic mechanism and controlled
-by Neovim. You might want to increase the timeout in your `formatting_sync`
-call:
-
-```lua
--- increase timeout to 2 seconds
-vim.lsp.buf.formatting_sync(nil, 2000)
-```
 
 ## Tests
 
