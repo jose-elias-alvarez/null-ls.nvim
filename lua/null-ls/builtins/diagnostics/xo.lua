@@ -41,4 +41,3 @@ return h.make_builtin({
     },
     factory = h.generator_factory,
 })
-
