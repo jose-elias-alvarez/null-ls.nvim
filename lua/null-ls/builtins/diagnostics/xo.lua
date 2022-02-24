@@ -29,9 +29,9 @@ return h.make_builtin({
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
     generator_opts = {
         command = "xo",
-        args = { "--stdin", "--stdin-filename", "$FILENAME" },
+        args = { "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" },
         to_stdin = true,
-        -- format = "json_raw",
+        format = "json",
         check_exit_code = function(code)
             return code <= 1
         end,
