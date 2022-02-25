@@ -2852,7 +2852,7 @@ local sources = {null_ls.builtins.diagnostics.write_good}
 - `command = "write"-good`
 - `args = { "--text=$TEXT", "--parse" }`
 
-#### [xo](https://github.com/xojs/xo)
+#### [XO](https://github.com/xojs/xo)
 
 ##### About
 
@@ -3178,7 +3178,7 @@ local sources = { null_ls.builtins.code_actions.statix }
 - `command = "statix"`
 - `args = { "check", "--stdin", "--format=json" }`
 
-#### [xo](https://github.com/xojs/xo)
+#### [XO](https://github.com/xojs/xo)
 
 ##### About
 
