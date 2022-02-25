@@ -3252,5 +3252,6 @@ This formatter works well for [Arduino](https://www.arduino.cc/) project files a
 local sources = { null_ls.builtins.formatting.astyle }
 ```
 
-#### Defaults
+##### Defaults
+
 - `filetypes = { "arduino", "c", "cpp", "cs", "java" }`
