@@ -26,8 +26,8 @@ end
 ---  in:    { PRODUCTION="false", PATH="/usr/bin/", PORT=123, HOST="0.0.0.0", }
 ---  out:   { "PRODUCTION=false", "PATH=/usr/bin/", "PORT=123", "HOST=0.0.0.0", }
 --- </pre>
----@param env (table) table of environment variable assignments
----@returns (table) list of `"k=v"` strings
+---@param env table table of environment variable assignments
+---@return table merged list of `"k=v"` strings
 local function env_merge(env)
     -- Merge.
     env = vim.tbl_extend("force", uv.os_environ(), env)
