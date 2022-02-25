@@ -2852,6 +2852,24 @@ local sources = {null_ls.builtins.diagnostics.write_good}
 - `command = "write"-good`
 - `args = { "--text=$TEXT", "--parse" }`
 
+#### [xo](https://github.com/xojs/xo)
+
+##### About
+
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.xo }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- `command = "xo"`
+- `args = { "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 #### [yamllint](https://github.com/adrienverge/yamllint)
 
 ##### About
@@ -3159,6 +3177,24 @@ local sources = { null_ls.builtins.code_actions.statix }
 - `filetypes = { "nix" }`
 - `command = "statix"`
 - `args = { "check", "--stdin", "--format=json" }`
+
+#### [xo](https://github.com/xojs/xo)
+
+##### About
+
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.xo }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- `command = "xo"`
+- `args = { "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 ### Hover
 
