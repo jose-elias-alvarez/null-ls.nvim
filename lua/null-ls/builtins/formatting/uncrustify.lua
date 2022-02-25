@@ -10,8 +10,7 @@ return h.make_builtin({
     generator_opts = {
         command = "uncrustify",
         args = function(params)
-            local format_type = "-l " .. params.ft:upper()
-            return { "-q", format_type }
+            return { "-q", "-l", params.ft:upper() }
         end,
         to_stdin = true,
     },
