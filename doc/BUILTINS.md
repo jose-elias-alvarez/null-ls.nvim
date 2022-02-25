@@ -2849,7 +2849,7 @@ local sources = {null_ls.builtins.diagnostics.write_good}
 ##### Defaults
 
 - `filetypes = { "markdown" }`
-- `command = "write"-good`
+- `command = "write-good"`
 - `args = { "--text=$TEXT", "--parse" }`
 
 #### [yamllint](https://github.com/adrienverge/yamllint)
