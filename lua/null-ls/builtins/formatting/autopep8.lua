@@ -20,7 +20,7 @@ local function range_formatting_args_factory(base_args, start_arg)
 end
 return h.make_builtin({
     name = "autopep8",
-    method = {FORMATTING, RANGE_FORMATTING},
+    method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "python" },
     generator_opts = {
         command = "autopep8",
