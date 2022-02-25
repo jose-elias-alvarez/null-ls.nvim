@@ -7,7 +7,7 @@ local M = {}
 
 -- Search for a local install of an executable by searching relative to
 -- startpath, then walking up directories until endpath is reached.
-function search_ancestors_for_command(startpath, endpath, executable_to_find)
+local function search_ancestors_for_command(startpath, endpath, executable_to_find)
     local resolved
     u.path.traverse_parents(startpath, function(dir)
         local command = u.path.join(dir, executable_to_find)
