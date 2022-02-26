@@ -1,6 +1,10 @@
 name: default
 
-on: [pull_request]
+on:
+  pull_request:
+  # Also build the default branch so cache is available to PRs.
+  push:
+    branches: [main]
 
 jobs:
   stylua:
