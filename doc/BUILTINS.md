@@ -2401,6 +2401,24 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 - `command = "misspell"`
 - `args = { "$FILENAME" }`
 
+#### [mlint](https://www.mathworks.com/help/matlab/ref/mlint.html)
+
+##### About
+
+Linter for Matlab '.m' files
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mlint }
+```
+
+##### Defaults
+
+-`filetypes = {matlab}`
+-`command = "mlint"`
+-`args = { "$FILENAME", "-id" }`
+
 #### [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
 ##### About
