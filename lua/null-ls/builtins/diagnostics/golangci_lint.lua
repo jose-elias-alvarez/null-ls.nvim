@@ -32,6 +32,7 @@ return h.make_builtin({
                 for _, d in ipairs(issues) do
                     if d.Pos.Filename == params.bufname then
                         table.insert(diags, {
+                            source = string.format("golangci-lint:%s", d.FromLinter),
                             row = d.Pos.Line,
                             col = d.Pos.Column,
                             message = d.Text,
