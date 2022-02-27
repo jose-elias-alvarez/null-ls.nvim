@@ -401,6 +401,7 @@ local sources = { null_ls.builtins.formatting.asmfmt }
 ##### About
 
 Formatter for `python` files.
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
 
 ##### Usage
 
