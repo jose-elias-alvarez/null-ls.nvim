@@ -85,6 +85,9 @@ return {
   phpcs = {
     filetypes = { "php" }
   },
+  phpmd = {
+    filetypes = { "php" }
+  },
   phpstan = {
     filetypes = { "php" }
   },

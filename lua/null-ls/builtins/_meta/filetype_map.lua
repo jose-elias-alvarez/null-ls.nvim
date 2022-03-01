@@ -166,7 +166,7 @@ return {
     formatting = { "pg_format" }
   },
   php = {
-    diagnostics = { "php", "phpcs", "phpstan", "psalm" },
+    diagnostics = { "php", "phpcs", "phpmd", "phpstan", "psalm" },
     formatting = { "phpcbf", "phpcsfixer" }
   },
   prisma = {
