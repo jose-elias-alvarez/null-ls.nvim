@@ -2425,7 +2425,7 @@ Note that `extra_args` is required, and allows you so specify the
 
 - `filetypes = { "php" }`
 - `command = "phpmd"`
-- `args = { '--ignore-violations on exit', '-', 'json' }`
+- `args = { '--ignore-violations-on-exit', '-', 'json' }`
 
 ##### Additional Notes
 
