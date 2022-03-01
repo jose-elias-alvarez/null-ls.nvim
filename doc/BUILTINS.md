@@ -1303,45 +1303,6 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 - `command = "php-cs-fixer"`
 - `args = { '--no-interaction', '--quiet', 'fix', "$FILENAME" }`
 
-#### [phpmd](https://github.com/phpmd/phpmd/)
-
-##### About
-
-Runs PHP Mess Detector against PHP files.
-
-##### Usage
-
-```lua
-local sources = {
-  null_ls.builtins.diagnostics.phpmd.with({
-    extra_args = { "phpmd.xml" }
-  }),
-}
-```
-
-Note that `extra_args` is required, and allows you so specify the
-[ruleset](https://phpmd.org/documentation/index.html#using-multiple-rule-sets).
-
-##### Defaults
-
-- `filetypes = { "php" }`
-- `command = "phpmd"`
-- `args = { '--ignore-violations on exit', '-', 'json' }`
-
-##### Additional Notes
-
-Note that PHPMD version 2.11.1 requires updating with the latest version of
-[PHP_Depend](https://github.com/pdepend/pdepend):
-
-```bash
-composer update pdepend/pdepend:dev-master
-```
-
-- Bug: https://github.com/phpmd/phpmd/issues/941
-- Fix: https://github.com/pdepend/pdepend/pull/593
-
-Later versions of PHPMD should already have the fix.
-
 #### [prettier](https://github.com/prettier/prettier)
 
 ##### About
@@ -2440,6 +2401,45 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 - `filetypes = {}`
 - `command = "misspell"`
 - `args = { "$FILENAME" }`
+
+#### [phpmd](https://github.com/phpmd/phpmd/)
+
+##### About
+
+Runs PHP Mess Detector against PHP files.
+
+##### Usage
+
+```lua
+local sources = {
+  null_ls.builtins.diagnostics.phpmd.with({
+    extra_args = { "phpmd.xml" }
+  }),
+}
+```
+
+Note that `extra_args` is required, and allows you so specify the
+[ruleset](https://phpmd.org/documentation/index.html#using-multiple-rule-sets).
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "phpmd"`
+- `args = { '--ignore-violations on exit', '-', 'json' }`
+
+##### Additional Notes
+
+Note that PHPMD version 2.11.1 requires updating with the latest version of
+[PHP_Depend](https://github.com/pdepend/pdepend):
+
+```bash
+composer update pdepend/pdepend:dev-master
+```
+
+- Bug: https://github.com/phpmd/phpmd/issues/941
+- Fix: https://github.com/pdepend/pdepend/pull/593
+
+Later versions of PHPMD should already have the fix.
 
 #### [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
