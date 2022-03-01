@@ -1,6 +1,10 @@
 name: default
 
-on: [pull_request]
+on:
+  pull_request:
+  # Also build the default branch so cache is available to PRs.
+  push:
+    branches: [main]
 
 jobs:
   stylua:
@@ -12,3 +16,32 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --color always --check .
+
+  selene:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: NTBBloodbath/selene-action@v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --color always ./lua
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: null-ls.nvim
+      - uses: actions/checkout@v2
+        with:
+          repository: nvim-lua/plenary.nvim
+          path: plenary.nvim
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: nightly
+      - run: make test
+        working-directory: null-ls.nvim
+        timeout-minutes: 1

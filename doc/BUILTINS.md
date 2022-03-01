@@ -297,6 +297,27 @@ local sources = {
 Another solution is to use the `dynamic_command` option, as described in
 [HELPERS](./HELPERS.md). Note that this option can affect performance.
 
+null-ls includes several command resolvers to handle common cases and cache
+results to prevent repeated lookups.
+
+For example, the following looks for `prettier` in `node_modules/.bin`, then
+tries to find a local Yarn Plug'n'Play install, then tries to find a global
+`prettier` executable:
+
+```lua
+local command_resolver = require("null-ls.helpers.command_resolver")
+
+local sources = {
+    null_ls.builtins.formatting.prettier.with({
+        dynamic_command = function(params)
+            return command_resolver.from_node_modules(params)
+                or command_resolver.from_yarn_pnp(params)
+                or vim.fn.executable(params.command) == 1 and params.command
+        end,
+    }),
+}
+```
+
 ## Conditional sources
 
 ### `condition`
@@ -380,6 +401,7 @@ local sources = { null_ls.builtins.formatting.asmfmt }
 ##### About
 
 Formatter for `python` files.
+- Supports both `textDocument/formatting` and `textDocument/rangeFormatting`.
 
 ##### Usage
 
@@ -2380,6 +2402,45 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 - `command = "misspell"`
 - `args = { "$FILENAME" }`
 
+#### [phpmd](https://github.com/phpmd/phpmd/)
+
+##### About
+
+Runs PHP Mess Detector against PHP files.
+
+##### Usage
+
+```lua
+local sources = {
+  null_ls.builtins.diagnostics.phpmd.with({
+    extra_args = { "phpmd.xml" }
+  }),
+}
+```
+
+Note that `extra_args` is required, and allows you so specify the
+[ruleset](https://phpmd.org/documentation/index.html#using-multiple-rule-sets).
+
+##### Defaults
+
+- `filetypes = { "php" }`
+- `command = "phpmd"`
+- `args = { '--ignore-violations-on-exit', '-', 'json' }`
+
+##### Additional Notes
+
+Note that PHPMD version 2.11.1 requires updating with the latest version of
+[PHP_Depend](https://github.com/pdepend/pdepend):
+
+```bash
+composer update pdepend/pdepend:dev-master
+```
+
+- Bug: https://github.com/phpmd/phpmd/issues/941
+- Fix: https://github.com/pdepend/pdepend/pull/593
+
+Later versions of PHPMD should already have the fix.
+
 #### [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 
 ##### About
@@ -2849,8 +2910,26 @@ local sources = {null_ls.builtins.diagnostics.write_good}
 ##### Defaults
 
 - `filetypes = { "markdown" }`
-- `command = "write"-good`
+- `command = "write-good"`
 - `args = { "--text=$TEXT", "--parse" }`
+
+#### [XO](https://github.com/xojs/xo)
+
+##### About
+
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.xo }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- `command = "xo"`
+- `args = { "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 #### [yamllint](https://github.com/adrienverge/yamllint)
 
@@ -3160,6 +3239,24 @@ local sources = { null_ls.builtins.code_actions.statix }
 - `command = "statix"`
 - `args = { "check", "--stdin", "--format=json" }`
 
+#### [XO](https://github.com/xojs/xo)
+
+##### About
+
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.xo }
+```
+
+##### Defaults
+
+- `filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- `command = "xo"`
+- `args = { "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
 ### Hover
 
 #### Dictionary definitions via [dictionaryapi.dev](https://dictionaryapi.dev)
@@ -3252,5 +3349,6 @@ This formatter works well for [Arduino](https://www.arduino.cc/) project files a
 local sources = { null_ls.builtins.formatting.astyle }
 ```
 
-#### Defaults
+##### Defaults
+
 - `filetypes = { "arduino", "c", "cpp", "cs", "java" }`

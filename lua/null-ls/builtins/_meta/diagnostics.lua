@@ -85,6 +85,9 @@ return {
   phpcs = {
     filetypes = { "php" }
   },
+  phpmd = {
+    filetypes = { "php" }
+  },
   phpstan = {
     filetypes = { "php" }
   },
@@ -168,6 +171,9 @@ return {
   },
   write_good = {
     filetypes = { "markdown" }
+  },
+  xo = {
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
   },
   yamllint = {
     filetypes = { "yaml" }

@@ -112,11 +112,11 @@ return {
     formatting = { "astyle", "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
-    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   javascriptreact = {
-    diagnostics = { "eslint", "eslint_d", "standardjs" },
+    diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   ["jinja.html"] = {
@@ -166,7 +166,7 @@ return {
     formatting = { "pg_format" }
   },
   php = {
-    diagnostics = { "php", "phpcs", "phpstan", "psalm" },
+    diagnostics = { "php", "phpcs", "phpmd", "phpstan", "psalm" },
     formatting = { "phpcbf", "phpcsfixer" }
   },
   prisma = {
@@ -257,11 +257,11 @@ return {
     formatting = { "taplo" }
   },
   typescript = {
-    diagnostics = { "eslint", "eslint_d", "tsc" },
+    diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   typescriptreact = {
-    diagnostics = { "eslint", "eslint_d", "tsc" },
+    diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   vim = {

@@ -2,21 +2,20 @@ local methods = require("null-ls.methods")
 
 local api = vim.api
 
-local M = {}
-
 local format_line_ending = {
     ["unix"] = "\n",
     ["dos"] = "\r\n",
     ["mac"] = "\r",
 }
 
-local get_line_ending = function(bufnr)
-    return format_line_ending[api.nvim_buf_get_option(bufnr or 0, "fileformat")] or "\n"
-end
+local M = {}
 
+--- gets buffer content, attempting to minimize the number of API calls
+---@param params table
+---@param bufnr number
+---@return string content
 local resolve_content = function(params, bufnr)
-    -- diagnostic notifications will send full buffer content on open and change
-    -- so we can avoid unnecessary api calls
+    -- some notifications send full buffer content
     if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
         return M.split_at_newline(bufnr, params.textDocument.text)
     end
@@ -32,8 +31,11 @@ local resolve_content = function(params, bufnr)
     return M.buf.content(bufnr)
 end
 
+--- resolves bufnr from params
+---@param params table
+---@return number bufnr
 local resolve_bufnr = function(params)
-    -- if already set, do nothing
+    -- if already set, return
     if params.bufnr then
         return params.bufnr
     end
@@ -47,22 +49,41 @@ local resolve_bufnr = function(params)
     return api.nvim_get_current_buf()
 end
 
-M.get_line_ending = get_line_ending
+--- gets the line ending for the given buffer based on fileformat
+---@param bufnr number?
+---@return string line_ending
+M.get_line_ending = function(bufnr)
+    return format_line_ending[api.nvim_buf_get_option(bufnr or 0, "fileformat")] or "\n"
+end
 
+--- joins text using the line ending for the buffer
+---@param bufnr number?
+---@param text string
+---@return string joined_text, string line_ending
 M.join_at_newline = function(bufnr, text)
-    local line_ending = get_line_ending(bufnr)
+    local line_ending = M.get_line_ending(bufnr)
     return table.concat(text, line_ending), line_ending
 end
 
+--- splits text using the line ending for the buffer
+---@param bufnr number?
+---@param text string
+---@return string split_text, string line_ending
 M.split_at_newline = function(bufnr, text)
-    local line_ending = get_line_ending(bufnr)
+    local line_ending = M.get_line_ending(bufnr)
     return vim.split(text, line_ending), line_ending
 end
 
+--- checks if the current neovim version is above the given version number
+---@param ver string version number to check
+---@return boolean has_version
 M.has_version = function(ver)
     return vim.fn.has("nvim-" .. ver) > 0
 end
 
+--- checks if a given command is executable
+---@param cmd string? command to check
+---@return boolean, string is_executable, string|nil error_message
 M.is_executable = function(cmd)
     if cmd and vim.fn.executable(cmd) == 1 then
         return true
@@ -71,10 +92,10 @@ M.is_executable = function(cmd)
     return false, string.format("command %s is not executable (make sure it's installed and on your $PATH)", cmd)
 end
 
--- lsp-compatible range is 0-indexed.
--- lua-friendly range is 1-indexed.
+-- lsp-compatible range is 0-indexed
+-- lua-friendly range is 1-indexed
 M.range = {
-    -- transform lua-friendly range to a lsp-compatible shape.
+    -- transforms lua-friendly range to a lsp-compatible shape
     ---@param range table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
     ---@return table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
     to_lsp = function(range)
@@ -90,7 +111,7 @@ M.range = {
         }
         return lsp_range
     end,
-    -- transform lsp_range to a lua-friendly shape.
+    -- transforms lsp range to a lua-friendly shape
     ---@param lsp_range table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
     ---@return table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
     from_lsp = function(lsp_range)
@@ -106,6 +127,23 @@ M.range = {
     end,
 }
 
+---@class Params
+---@field client_id number null-ls client id
+---@field lsp_method string|nil
+---@field options table|nil table of options from lsp params
+---@field content string buffer content
+---@field bufnr number
+---@field method string internal null-ls method
+---@field row number current row number
+---@field col number current column number
+---@field bufname string
+---@field ft string
+---@field range table|nil converted LSP range
+---@field word_to_complete string|nil
+
+---@param original_params table original LSP params
+---@param method string internal null-ls method
+---@return Params
 M.make_params = function(original_params, method)
     local bufnr = resolve_bufnr(original_params)
     local content = resolve_content(original_params, bufnr)
@@ -139,6 +177,13 @@ M.make_params = function(original_params, method)
     return params
 end
 
+---@class ConditionalUtils
+---@field has_file fun(patterns: ...): boolean checks if file exists
+---@field root_has_file fun(patterns: ...): boolean checks if file exists at root level
+---@field root_matches fun(pattern: string): boolean checks if root matches pattern
+
+--- creates a table of conditional utils based on the current root directory
+---@return ConditionalUtils
 M.make_conditional_utils = function()
     local root = M.get_root()
 
@@ -169,11 +214,15 @@ M.make_conditional_utils = function()
 end
 
 M.buf = {
+    --- returns buffer content as string or table
+    ---@param bufnr number
+    ---@param to_string boolean
+    ---@return string|table content
     content = function(bufnr, to_string)
         bufnr = bufnr or api.nvim_get_current_buf()
 
         local should_add_eol = api.nvim_buf_get_option(bufnr, "eol") and api.nvim_buf_get_option(bufnr, "fixeol")
-        local line_ending = get_line_ending(bufnr)
+        local line_ending = M.get_line_ending(bufnr)
 
         local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
         if should_add_eol then
@@ -182,6 +231,9 @@ M.buf = {
 
         return to_string and table.concat(lines, line_ending) or lines
     end,
+
+    --- runs callback for each loaded buffer
+    ---@param cb fun(bufnr: number)
     for_each_bufnr = function(cb)
         for _, bufnr in ipairs(api.nvim_list_bufs()) do
             if api.nvim_buf_is_loaded(bufnr) then
@@ -192,6 +244,11 @@ M.buf = {
 }
 
 M.table = {
+    --- replaces matching table element(s)
+    ---@param tbl table
+    ---@param original any
+    ---@param replacement any
+    ---@return table replaced
     replace = function(tbl, original, replacement)
         local replaced = {}
         for _, v in ipairs(tbl) do
@@ -199,6 +256,9 @@ M.table = {
         end
         return replaced
     end,
+    --- removes duplicate elements from table
+    ---@param t table
+    ---@return table new_table
     uniq = function(t)
         local new_table = {}
         local hash = {}
@@ -213,6 +273,10 @@ M.table = {
     end,
 }
 
+--- if opt is a function, call it with args; otherwise, return a copy of opt
+---@param opt any
+---@vararg any args
+---@return any
 M.handle_function_opt = function(opt, ...)
     if type(opt) == "function" then
         return opt(...)
@@ -221,6 +285,8 @@ M.handle_function_opt = function(opt, ...)
     return vim.deepcopy(opt)
 end
 
+--- gets root using best available method
+---@return string root
 M.get_root = function()
     local root
 
@@ -245,6 +311,17 @@ M.get_root = function()
 end
 
 -- everything below is adapted from nvim-lspconfig's path utils
+
+---@class PathUtils
+---@field is_windows fun(): boolean
+---@field exists fun(filename: string): boolean
+---@field dirname fun(path: string): string|nil
+---@field join fun(paths: ...): string
+---@field traverse_parents fun(path: string, cb: fun(dir: string, path: string): boolean): string|nil dir, string|nil path
+---@field iterate_parents fun(path: string): fun(_, v: string): string|nil v, string|nil path
+
+-- creates a table of path utilities
+---@return PathUtils
 M.path = (function()
     local exists = function(filename)
         local stat = vim.loop.fs_stat(filename)
@@ -336,6 +413,9 @@ M.path = (function()
     }
 end)()
 
+--- searches ancestors of startpath until f returns true
+---@param startpath string
+---@param f fun(path: string): boolean
 M.search_ancestors = function(startpath, f)
     if f(startpath) then
         return startpath
@@ -354,10 +434,13 @@ M.search_ancestors = function(startpath, f)
     end
 end
 
+--- creates a callback that returns the first root matching a specified pattern
+---@vararg string patterns
+---@return fun(startpath: string): string|nil root_dir
 M.root_pattern = function(...)
     local patterns = vim.tbl_flatten({ ... })
     local function matcher(path)
-        -- Escape wildcard characters in the path so that it itself is not treated like a glob.
+        -- escape wildcard characters in the path so that it is not treated like a glob
         path = vim.fn.escape(path, "?*[]")
 
         for _, pattern in ipairs(patterns) do

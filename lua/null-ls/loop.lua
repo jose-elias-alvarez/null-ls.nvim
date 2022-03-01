@@ -26,8 +26,8 @@ end
 ---  in:    { PRODUCTION="false", PATH="/usr/bin/", PORT=123, HOST="0.0.0.0", }
 ---  out:   { "PRODUCTION=false", "PATH=/usr/bin/", "PORT=123", "HOST=0.0.0.0", }
 --- </pre>
----@param env (table) table of environment variable assignments
----@returns (table) list of `"k=v"` strings
+---@param env table table of environment variable assignments
+---@return table merged list of `"k=v"` strings
 local function env_merge(env)
     -- Merge.
     env = vim.tbl_extend("force", uv.os_environ(), env)
@@ -130,6 +130,17 @@ M.spawn = function(cmd, args, opts)
     local parsed_env = nil
     if env and not vim.tbl_isempty(env) then
         parsed_env = env_merge(env)
+    end
+
+    if type(cmd) == "table" then
+        local concat_args = {}
+        for i = 2, #cmd do
+            concat_args[#concat_args + 1] = cmd[i]
+        end
+        for _, arg in ipairs(args) do
+            concat_args[#concat_args + 1] = arg
+        end
+        cmd, args = cmd[1], concat_args
     end
 
     handle = uv.spawn(
