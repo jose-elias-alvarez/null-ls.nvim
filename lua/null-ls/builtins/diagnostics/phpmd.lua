@@ -13,7 +13,7 @@ return h.make_builtin({
             "json",
             -- 'phpmd.xml',
         },
-        format = "json_raw",
+        format = "json",
         to_stdin = true,
         from_stderr = false,
         check_exit_code = function(code)
