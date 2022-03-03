@@ -9,6 +9,7 @@ return h.make_builtin({
         command = "phpmd",
         args = {
             "--ignore-violations-on-exit",
+            "--ignore-errors-on-exit",
             "-", -- process stdin
             "json",
             -- 'phpmd.xml',
