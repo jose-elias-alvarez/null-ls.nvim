@@ -2609,6 +2609,24 @@ local sources = { null_ls.builtins.diagnostics.pylint }
 - `command = "pylint"`
 - `args = {"--from-stdin", "$FILENAME", "-f", "json"}`
 
+#### [pyproject-flake8](https://github.com/csachs/pyproject-flake8)
+
+##### About
+
+pyproject-flake8 is a flake8 wrapper to use with `pyproject.toml` configuration.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pyproject_flake8 }
+```
+
+##### Defaults
+
+- `filetypes = { "python" }`
+- `command = "pflake8"`
+- `args = { "--stdin-display-name", "$FILENAME", "-" }`
+
 #### [qmllint](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmllint)
 
 ##### About
