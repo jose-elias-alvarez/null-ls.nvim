@@ -181,7 +181,7 @@ return {
     formatting = { "puppet_lint" }
   },
   python = {
-    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "vulture" },
+    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }
   },
   qml = {

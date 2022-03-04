@@ -115,6 +115,9 @@ return {
   pylint = {
     filetypes = { "python" }
   },
+  pyproject_flake8 = {
+    filetypes = { "python" }
+  },
   qmllint = {
     filetypes = { "qml" }
   },
