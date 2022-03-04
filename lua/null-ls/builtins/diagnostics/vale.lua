@@ -8,7 +8,7 @@ local severities = { error = 1, warning = 2, suggestion = 4 }
 return h.make_builtin({
     name = "vale",
     method = DIAGNOSTICS,
-    filetypes = { "markdown", "tex" },
+    filetypes = { "markdown", "tex", "asciidoc" },
     generator_opts = {
         command = "vale",
         format = "json",
