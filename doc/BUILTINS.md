@@ -2425,7 +2425,7 @@ Note that `extra_args` is required, and allows you so specify the
 
 - `filetypes = { "php" }`
 - `command = "phpmd"`
-- `args = { '--ignore-violations-on-exit', '-', 'json' }`
+- `args = { '--ignore-violations-on-exit', '--ignore-errors-on-exit', '-', 'json' }`
 
 ##### Additional Notes
 
@@ -2433,7 +2433,7 @@ Note that PHPMD version 2.11.1 requires updating with the latest version of
 [PHP_Depend](https://github.com/pdepend/pdepend):
 
 ```bash
-composer update pdepend/pdepend:dev-master
+composer require --dev pdepend/pdepend:dev-master
 ```
 
 - Bug: https://github.com/phpmd/phpmd/issues/941
