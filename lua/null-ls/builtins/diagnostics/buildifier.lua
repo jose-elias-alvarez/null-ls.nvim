@@ -3,14 +3,6 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
-local function rtrim(s)
-    local n = #s
-    while n > 0 and s:find("^%s", n) do
-        n = n - 1
-    end
-    return s:sub(1, n)
-end
-
 local function find_file_output(output, filename)
     if not output.files then
         return nil
@@ -50,7 +42,7 @@ local function parse_error(line)
     local row = tonumber(results[1])
     local col = tonumber(results[2])
     -- Remove trailing newline in the error message.
-    local message = rtrim(results[3])
+    local message = vim.trim(results[3])
     return {
         {
             row = row,
