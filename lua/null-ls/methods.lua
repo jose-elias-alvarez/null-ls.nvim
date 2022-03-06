@@ -77,4 +77,13 @@ M.map = lsp_to_internal_map
 M.overrides = overrides
 M.request_name_to_capability = request_name_to_capability
 
+--- converts an internal null-ls method into its readable name
+--- e.g. NULL_LS_FORMATTING > formatting
+---@param m string internal method
+---@return string
+M.get_readable_name = function(m)
+    assert(internal_methods[m], "failed to get name for method " .. m)
+    return internal_methods[m]:lower()
+end
+
 return M
