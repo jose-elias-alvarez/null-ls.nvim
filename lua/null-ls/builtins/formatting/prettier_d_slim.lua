@@ -27,7 +27,12 @@ return h.make_builtin({
     },
     generator_opts = {
         command = "prettier_d_slim",
-        args = h.range_formatting_args_factory({ "--stdin", "--stdin-filepath", "$FILENAME" }),
+        args = h.range_formatting_args_factory(
+            { "--stdin", "--stdin-filepath", "$FILENAME" },
+            "--range-start",
+            "--range-end",
+            { row_offset = -1, col_offset = -1 }
+        ),
         to_stdin = true,
         dynamic_command = cmd_resolver.from_node_modules,
     },

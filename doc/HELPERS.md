@@ -294,23 +294,32 @@ Defines the source's null-ls method, as described in [MAIN](MAIN.md).
 
 ## range_formatting_args_factory
 
-Converts the visually-selected range into character offsets and adds the
+Converts the visually-selected range into character offsets / rows and adds the
 converted range to the spawn arguments. Used for sources that provide both
 formatting and range formatting.
 
 ```lua
-null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag)
+null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag, opts)
 ```
 
-- `base_args`: the base arguments required to get formatted output. Formatting
-  requests will use `base_args` as-is, and range formatting requests will append
-  the range arguments.
+- `base_args` (string[]): the base arguments required to get formatted output.
+  Formatting requests will use `base_args` as-is and range formatting requests
+  will append range arguments.
 
-- `start_arg` (optional): the name of the argument that indicates the start of
-  the range. Defaults to `"--range-start"`.
+- `start_arg` (string): the name of the argument that indicates the start of the
+  range.
 
-- `end_arg` (optional): the name of the argument that indicates the end of the
-  range. Defaults to `"--range-end"`.
+- `end_arg` (string?): the name of the argument that indicates the end of the
+  range. If not specified, the helper will insert the start and end of the range
+  after `start_arg`.
+
+- `opts` (table?): a table containing the following options:
+  - `opts.use_rows` (boolean?): specifies whether to use rows over character
+    offsets.
+  - `opts.row_offset` (number?): offset applied to row numbers.
+  - `opts.col_offset` (number?): offset applied to column numbers.
+  - `opts.delimiter` (string?): used to join range start and end into a single
+    argument.
 
 ## diagnostics
 
