@@ -477,7 +477,7 @@ local sources = { null_ls.builtins.formatting.black }
 
 ##### About
 
-buildifier is a tool for formatting bazel BUILD and .bzl files with a standard convention.
+buildifier is a tool for formatting and linting bazel BUILD, WORKSPACE, and .bzl files.
 
 ##### Usage
 
@@ -489,7 +489,7 @@ local sources = { null_ls.builtins.formatting.buildifier }
 
 - `filetypes = { "bzl" }`
 - `command = "buildifier"`
-- `args = { "-path=<FILENAME>" }`
+- `args = { "-path=$FILENAME" }`
 
 #### [cabal-fmt](https://hackage.haskell.org/package/cabal-fmt)
 
@@ -2033,6 +2033,24 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 - `filetypes = { "yaml" }`
 - `command = "ansible-lint"`
 - `args = { "--parseable-severity", "-q", "--nocolor", "$FILENAME" }`
+
+#### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
+
+##### About
+
+buildifier is a tool for formatting and linting bazel BUILD, WORKSPACE, and .bzl files.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.buildifier }
+```
+
+##### Defaults
+
+- `filetypes = { "bzl" }`
+- `command = "buildifier"`
+- `args = { "-mode=check", "-lint=warn", "-format=json", "-path=$FILENAME" }`
 
 #### [checkmake](https://github.com/mrtazz/checkmake)
 
