@@ -26,8 +26,9 @@ As shown above, the plugin depends on
 installed that plugin, too.
 
 Below is a simple example demonstrating how you might configure null-ls. See
-[BUILTINS](BUILTINS.md) for information about built-in sources like the ones in
-the example below.
+[BUILTINS](BUILTINS.md) for a list of built-in sources like the ones in the
+example below and [BUILTIN_CONFIG](BUILTIN_CONFIG.md) for information on how to
+configure these sources.
 
 ```lua
 require("null-ls").setup({
@@ -107,7 +108,7 @@ below.
 Sets the amount of time (in milliseconds) after which built-in sources will time
 out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
-[BUILTINS.md](BUILTINS.md)).
+[BUILTIN_CONFIG.md](BUILTIN_CONFIG.md)).
 
 ### diagnostics_format (string)
 
@@ -131,7 +132,7 @@ Formats diagnostics as follows:
 ```
 
 You can also set `diagnostics_format` for built-ins by using the `with` method,
-described in [BUILTINS](BUILTINS.md).
+described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
 
 ### fallback_severity (number)
 
@@ -171,7 +172,7 @@ second argument, which as of now is not used).
 
 ### on_exit (function, optional)
 
-Defines an `on_exit` callback to run when null-ls is stopped.
+Defines an `on_exit` callback to run when the null-ls client exits.
 
 ### root_dir (function)
 
@@ -190,11 +191,10 @@ directory.
 ### should_attach (function, optional)
 
 A user-defined function that controls whether to enable null-ls for a given
-buffer. Receives `bufnr` as its only argument.
+buffer. Receives `bufnr` as its first argument.
 
-In order to cut down potentially expensive calls, null-ls will only call
-`should_attach` after its own internal "should attach" checks pass, so it's not
-guaranteed to run every time.
+To cut down potentially expensive calls, null-ls will call `should_attach` after
+its own internal checks pass, so it's not guaranteed to run on each new buffer.
 
 ```lua
 require("null-ls.nvim").setup({

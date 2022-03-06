@@ -1,4 +1,4 @@
-name: docgen
+name: autogen
 
 on: push
 
@@ -17,11 +17,10 @@ jobs:
           neovim: true
           version: nightly
 
-      - name: run autogen_metadata.sh script
-        run: bash ./scripts/autogen_metadata.sh
+      - name: run autogen.sh script
+        run: bash ./scripts/autogen.sh
 
       - name: commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          file_pattern: lua/null-ls/builtins/_meta/*.lua
-          commit_message: "chore: update metadata"
+          commit_message: "chore: autogen metadata and docs"

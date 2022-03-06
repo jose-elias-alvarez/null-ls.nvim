@@ -43,8 +43,9 @@ null-ls sources are able to hook into the following LSP features:
 - Completion
 
 null-ls includes built-in sources for each of these features to provide
-out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for instructions on
-how to set up sources and a list of available sources.
+out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for a list of
+available built-in sources and [BUILTIN_CONFIG](BUILTIN_CONFIG.md) for
+instructions on how to set up and configure these sources.
 
 null-ls also provides helpers to streamline the process of spawning and
 transforming the output of command-line processes into an LSP-friendly format.
@@ -58,7 +59,7 @@ Install null-ls using your favorite package manager. The plugin depends on
 (probably) already using.
 
 To get started, you must set up null-ls and register at least one source. See
-[BUILTINS](doc/BUILTINS.md) to learn about available built-in sources and
+[BUILTINS](doc/BUILTINS.md) for a list of available built-in sources and
 [CONFIG](doc/CONFIG.md) for information about setting up and configuring
 null-ls.
 

@@ -14,8 +14,11 @@ Splits into the following documents:
 - [CONFIG](CONFIG.md), which describes the available configuration
   options
 
-- [BUILTINS](BUILTINS.md), which describes how to use and make built-in
+- [BUILTINS](BUILTINS.md), an automatically generated list of available built-in
   sources
+
+- [BUILTIN_CONFIG.md](BUILTIN_CONFIG.md), which describes how to configure
+  built-in sources
 
 - [SOURCES](SOURCES.md), which describes the source API
 

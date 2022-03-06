@@ -45,6 +45,7 @@ local function make_builtin(opts)
         condition = condition,
         name = opts.name or generator_opts.command,
         _opts = generator_opts,
+        meta = opts.meta or {},
     }
 
     setmetatable(builtin, {

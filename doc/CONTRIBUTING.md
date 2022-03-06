@@ -32,12 +32,6 @@
 - Check other built-in sources for examples and, whenever possible, use helpers
   to reduce the number of lines of code in your PR.
 
-- Make sure your source has a `name`.
-
-- Make sure to add your built-in source to [BUILTINS](BUILTINS.md). Check other
-  examples and follow the existing style. Make sure to insert your source's
-  documentation in the correct place to maintain alphabetical order!
-
 - A built-in source's arguments are the minimal arguments required for the
   source to work. Leave out non-essential arguments.
 
@@ -45,6 +39,25 @@
   program unless there is a compelling and widespread reason to use an older
   version. If older versions require different arguments, mention that in the
   documentation. If they require a different parser, create a separate built-in.
+
+- Make sure your built-in source has a `name`.
+
+- Add the necessary `meta` field to your built-in so that we can generate extra
+  documentation (basic information comes from the built-in's definition).
+  Metadata should have the following structure:
+
+```lua
+local my_builtin = require("null-ls.helpers").make_builtin({
+    -- place after built-in definition
+    meta = {
+        url = "https://github.com/my-builtin-repo",
+        description = "Description of my built-in and what it does",
+        notes = {
+            "If present, we'll convert this table into a Markdown list",
+        },
+    },
+})
+```
 
 ## Sources
 

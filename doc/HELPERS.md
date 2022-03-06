@@ -244,9 +244,9 @@ with the following changes:
 
 ## make_builtin
 
-`make_builtin` creates built-in sources, as described in
-[BUILTINS](BUILTINS.md). It optimizes the source to reduce start-up time and
-allow the built-in library to continue expanding without affecting users.
+`make_builtin` creates built-in sources. It optimizes the source to reduce
+start-up time and allow the built-in library to continue expanding without
+affecting users.
 
 `make_builtin` is specifically intended for built-ins included in this plugin.
 Generally, integrations should opt to create sources with one of the `factory`
@@ -264,6 +264,7 @@ helpers.make_builtin({
     generator, -- function (optional, but required if factory is not set)
     generator_opts, -- table
     method, -- internal null-ls method (string)
+    meta, -- table
 })
 ```
 
@@ -291,6 +292,15 @@ which should conform to the `opts` object described above in
 ### method
 
 Defines the source's null-ls method, as described in [MAIN](MAIN.md).
+
+### meta
+
+Adds metadata to enrich the source's documentation. null-ls will use the
+following fields:
+
+- `meta.url`: the path to the source's official website / repository
+- `meta.description`: a description of the source and its capabilities
+- `meta.notes`: an array of notes converted into a Markdown list
 
 ## range_formatting_args_factory
 
