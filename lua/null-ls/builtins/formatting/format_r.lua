@@ -15,7 +15,7 @@ return h.make_builtin({
             "--no-save",
             "-e",
             'formatR::tidy_source(source="stdin")',
-        }),
+        }, "--range-start", "--range-end", { row_offset = -1, col_offset = -1 }),
         to_stdin = true,
     },
     factory = h.formatter_factory,

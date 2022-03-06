@@ -1,9 +1,27 @@
 local api = vim.api
 
-return function(base_args, start_arg, end_arg)
-    start_arg = start_arg or "--range-start"
-    end_arg = end_arg or "--range-end"
+---@class RangeFormattingArgsFactoryOpts
+---@field row_offset? number offset applied to row numbers
+---@field col_offset? number offset applied to column numbers
+---@field use_rows? boolean use rows over char offsets
+---@field delimiter? string used to join ranges
 
+--- creates a function that returns arguments depending on formatting method
+---@param base_args string[] base arguments required to run formatter
+---@param start_arg string name of argument that marks start of range
+---@param end_arg string? name of argument that marks end of range
+---@param opts RangeFormattingArgsFactoryOpts table of options
+---@return fun(params: NullLsParams): string[]
+local range_formatting_args_factory = function(base_args, start_arg, end_arg, opts)
+    vim.validate({
+        base_args = { base_args, "table" },
+        start_arg = { start_arg, "string" },
+        end_arg = { end_arg, "string", true },
+        opts = { opts, "table", true },
+    })
+    opts = opts or {}
+
+    ---@param params NullLsParams
     return function(params)
         local args = vim.deepcopy(base_args)
         if params.method == require("null-ls.methods").internal.FORMATTING then
@@ -11,19 +29,34 @@ return function(base_args, start_arg, end_arg)
         end
 
         local range = params.range
+        local row, col, end_row, end_col = range.row, range.col, range.end_row, range.end_col
+        if opts.row_offset then
+            row = row + opts.row_offset
+            end_row = end_row + opts.row_offset
+        end
+        if opts.col_offset then
+            col = col + opts.col_offset
+            end_col = end_col + opts.col_offset
+        end
 
-        local row, col = range.row - 1, range.col - 1
-        local end_row, end_col = range.end_row - 1, range.end_col - 1
-
-        -- neovim already takes care of offsets, so we can do this directly
-        local range_start = api.nvim_buf_get_offset(params.bufnr, row) + col
-        local range_end = api.nvim_buf_get_offset(params.bufnr, end_row) + end_col
-
+        -- neovim already takes care of offsets when generating the range
+        local range_start = opts.use_rows and row or api.nvim_buf_get_offset(params.bufnr, row) + col
+        local range_end = opts.use_rows and end_row or api.nvim_buf_get_offset(params.bufnr, end_row) + end_col
         table.insert(args, start_arg)
-        table.insert(args, range_start)
-        table.insert(args, end_arg)
-        table.insert(args, range_end)
+
+        if opts.delimiter then
+            local joined_range = range_start .. opts.delimiter .. range_end
+            table.insert(args, joined_range)
+        else
+            table.insert(args, range_start)
+            if end_arg then
+                table.insert(args, end_arg)
+            end
+            table.insert(args, range_end)
+        end
 
         return args
     end
 end
+
+return range_formatting_args_factory

@@ -92,12 +92,14 @@ M.is_executable = function(cmd)
     return false, string.format("command %s is not executable (make sure it's installed and on your $PATH)", cmd)
 end
 
+---@alias NullLsRange table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
+---@alias LspRange table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
 -- lsp-compatible range is 0-indexed
 -- lua-friendly range is 1-indexed
 M.range = {
     -- transforms lua-friendly range to a lsp-compatible shape
-    ---@param range table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
-    ---@return table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
+    ---@param range NullLsRange
+    ---@return LspRange
     to_lsp = function(range)
         local lsp_range = {
             ["start"] = {
@@ -112,8 +114,8 @@ M.range = {
         return lsp_range
     end,
     -- transforms lsp range to a lua-friendly shape
-    ---@param lsp_range table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
-    ---@return table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
+    ---@param lsp_range LspRange
+    ---@return NullLsRange
     from_lsp = function(lsp_range)
         local start_range = lsp_range["start"]
         local end_range = lsp_range["end"]
@@ -127,7 +129,7 @@ M.range = {
     end,
 }
 
----@class Params
+---@class NullLsParams
 ---@field client_id number null-ls client id
 ---@field lsp_method string|nil
 ---@field options table|nil table of options from lsp params
@@ -138,12 +140,12 @@ M.range = {
 ---@field col number current column number
 ---@field bufname string
 ---@field ft string
----@field range table|nil converted LSP range
+---@field range NullLsRange|nil converted LSP range
 ---@field word_to_complete string|nil
 
 ---@param original_params table original LSP params
 ---@param method string internal null-ls method
----@return Params
+---@return NullLsParams
 M.make_params = function(original_params, method)
     local bufnr = resolve_bufnr(original_params)
     local content = resolve_content(original_params, bufnr)
