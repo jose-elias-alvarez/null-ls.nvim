@@ -8,6 +8,8 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 ### luasnip
 
+Method: completion
+
 #### Usage
 
 ```lua
@@ -19,6 +21,8 @@ local sources = { null_ls.builtins.completion.luasnip }
 - Filetypes: `{}`
 
 ### spell
+
+Method: completion
 
 #### Usage
 
@@ -32,6 +36,8 @@ local sources = { null_ls.builtins.completion.spell }
 
 ### tags
 
+Method: completion
+
 #### Usage
 
 ```lua
@@ -44,6 +50,8 @@ local sources = { null_ls.builtins.completion.tags }
 
 ### vsnip
 
+Method: completion
+
 #### Usage
 
 ```lua
@@ -55,6 +63,8 @@ local sources = { null_ls.builtins.completion.vsnip }
 - Filetypes: `{}`
 
 ### actionlint
+
+Method: diagnostics
 
 #### Usage
 
@@ -70,6 +80,8 @@ local sources = { null_ls.builtins.diagnostics.actionlint }
 
 ### alex
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -83,6 +95,8 @@ local sources = { null_ls.builtins.diagnostics.alex }
 - Args: `{ "--stdin", "--quiet" }`
 
 ### ansiblelint
+
+Method: diagnostics
 
 #### Usage
 
@@ -98,6 +112,8 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 
 ### buildifier
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -111,6 +127,8 @@ local sources = { null_ls.builtins.diagnostics.buildifier }
 - Args: `{ "-mode=check", "-lint=warn", "-format=json", "-path=$FILENAME" }`
 
 ### checkmake
+
+Method: diagnostics
 
 #### Usage
 
@@ -126,6 +144,8 @@ local sources = { null_ls.builtins.diagnostics.checkmake }
 
 ### chktex
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -139,6 +159,8 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - Args: `{ "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
 ### codespell
+
+Method: diagnostics
 
 #### Usage
 
@@ -154,6 +176,8 @@ local sources = { null_ls.builtins.diagnostics.codespell }
 
 ### cppcheck
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -167,6 +191,8 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 - Args: `{ "--enable=warning,style,performance,portability", "--template=gcc", "$FILENAME" }`
 
 ### credo
+
+Method: diagnostics
 
 #### Usage
 
@@ -182,6 +208,8 @@ local sources = { null_ls.builtins.diagnostics.credo }
 
 ### cspell
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -195,6 +223,8 @@ local sources = { null_ls.builtins.diagnostics.cspell }
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/cspell.lua))
 
 ### cue_fmt
+
+Method: diagnostics
 
 #### Usage
 
@@ -210,6 +240,8 @@ local sources = { null_ls.builtins.diagnostics.cue_fmt }
 
 ### curlylint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -223,6 +255,8 @@ local sources = { null_ls.builtins.diagnostics.curlylint }
 - Args: `{ "--quiet", "-", "--format", "json", "--stdin-filepath", "$FILENAME" }`
 
 ### deadnix
+
+Method: diagnostics
 
 #### Usage
 
@@ -238,6 +272,8 @@ local sources = { null_ls.builtins.diagnostics.deadnix }
 
 ### editorconfig_checker
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -251,6 +287,8 @@ local sources = { null_ls.builtins.diagnostics.editorconfig_checker }
 - Args: `{ "-no-color", "$FILENAME" }`
 
 ### eslint
+
+Method: diagnostics
 
 #### Usage
 
@@ -266,6 +304,8 @@ local sources = { null_ls.builtins.diagnostics.eslint }
 
 ### eslint_d
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -279,6 +319,8 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 ### flake8
+
+Method: diagnostics
 
 #### Usage
 
@@ -294,6 +336,8 @@ local sources = { null_ls.builtins.diagnostics.flake8 }
 
 ### gccdiag
 
+Method: diagnostics_on_save
+
 #### Usage
 
 ```lua
@@ -307,6 +351,8 @@ local sources = { null_ls.builtins.diagnostics.gccdiag }
 - Args: `{ "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
 
 ### gitlint
+
+Method: diagnostics
 
 #### Usage
 
@@ -322,6 +368,8 @@ local sources = { null_ls.builtins.diagnostics.gitlint }
 
 ### golangci_lint
 
+Method: diagnostics_on_save
+
 #### Usage
 
 ```lua
@@ -335,6 +383,8 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - Args: `{ "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
 
 ### hadolint
+
+Method: diagnostics
 
 #### Usage
 
@@ -350,6 +400,8 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 
 ### jsonlint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -363,6 +415,8 @@ local sources = { null_ls.builtins.diagnostics.jsonlint }
 - Args: `{ "--compact" }`
 
 ### luacheck
+
+Method: diagnostics
 
 #### Usage
 
@@ -378,6 +432,8 @@ local sources = { null_ls.builtins.diagnostics.luacheck }
 
 ### markdownlint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -391,6 +447,8 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - Args: `{ "--stdin" }`
 
 ### mdl
+
+Method: diagnostics
 
 #### Usage
 
@@ -406,6 +464,8 @@ local sources = { null_ls.builtins.diagnostics.mdl }
 
 ### misspell
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -418,6 +478,8 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 - Command: `misspell`
 
 ### mypy
+
+Method: diagnostics
 
 #### Usage
 
@@ -433,6 +495,8 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 
 ### php
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -446,6 +510,8 @@ local sources = { null_ls.builtins.diagnostics.php }
 - Args: `{ "-l", "-d", "display_errors=STDERR", "-d", " log_errors=Off" }`
 
 ### phpcs
+
+Method: diagnostics
 
 #### Usage
 
@@ -461,6 +527,8 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 
 ### phpmd
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -474,6 +542,8 @@ local sources = { null_ls.builtins.diagnostics.phpmd }
 - Args: `{ "--ignore-violations-on-exit", "--ignore-errors-on-exit", "-", "json" }`
 
 ### phpstan
+
+Method: diagnostics
 
 #### Usage
 
@@ -489,6 +559,8 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 
 ### proselint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -502,6 +574,8 @@ local sources = { null_ls.builtins.diagnostics.proselint }
 - Args: `{ "--json" }`
 
 ### protoc_gen_lint
+
+Method: diagnostics
 
 #### Usage
 
@@ -517,6 +591,8 @@ local sources = { null_ls.builtins.diagnostics.protoc_gen_lint }
 
 ### protolint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -530,6 +606,8 @@ local sources = { null_ls.builtins.diagnostics.protolint }
 - Args: `{ "--reporter", "json", "$FILENAME" }`
 
 ### psalm
+
+Method: diagnostics
 
 #### Usage
 
@@ -545,6 +623,8 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 
 ### puppet_lint
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -558,6 +638,8 @@ local sources = { null_ls.builtins.diagnostics.puppet_lint }
 - Args: `{ "--json", "$FILENAME" }`
 
 ### pydocstyle
+
+Method: diagnostics
 
 #### Usage
 
@@ -573,6 +655,8 @@ local sources = { null_ls.builtins.diagnostics.pydocstyle }
 
 ### pylama
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -586,6 +670,8 @@ local sources = { null_ls.builtins.diagnostics.pylama }
 - Args: `{ "--from-stdin", "$FILENAME", "-f", "json" }`
 
 ### pylint
+
+Method: diagnostics
 
 #### Usage
 
@@ -601,6 +687,8 @@ local sources = { null_ls.builtins.diagnostics.pylint }
 
 ### pyproject_flake8
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -614,6 +702,8 @@ local sources = { null_ls.builtins.diagnostics.pyproject_flake8 }
 - Args: `{ "--format", "default", "--stdin-display-name", "$FILENAME", "-" }`
 
 ### qmllint
+
+Method: diagnostics
 
 #### Usage
 
@@ -629,6 +719,8 @@ local sources = { null_ls.builtins.diagnostics.qmllint }
 
 ### revive
 
+Method: diagnostics_on_save
+
 #### Usage
 
 ```lua
@@ -642,6 +734,8 @@ local sources = { null_ls.builtins.diagnostics.revive }
 - Args: `{ "-formatter", "json", "./..." }`
 
 ### rpmspec
+
+Method: diagnostics
 
 #### Usage
 
@@ -657,6 +751,8 @@ local sources = { null_ls.builtins.diagnostics.rpmspec }
 
 ### rubocop
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -670,6 +766,8 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - Args: `{ "-f", "json", "--stdin", "$FILENAME" }`
 
 ### selene
+
+Method: diagnostics
 
 #### Usage
 
@@ -685,6 +783,8 @@ local sources = { null_ls.builtins.diagnostics.selene }
 
 ### shellcheck
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -698,6 +798,8 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 - Args: `{ "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
 ### standardjs
+
+Method: diagnostics
 
 #### Usage
 
@@ -713,6 +815,8 @@ local sources = { null_ls.builtins.diagnostics.standardjs }
 
 ### standardrb
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -726,6 +830,8 @@ local sources = { null_ls.builtins.diagnostics.standardrb }
 - Args: `{ "--no-fix", "-f", "json", "--stdin", "$FILENAME" }`
 
 ### staticcheck
+
+Method: diagnostics_on_save
 
 #### Usage
 
@@ -741,6 +847,8 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 
 ### statix
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -754,6 +862,8 @@ local sources = { null_ls.builtins.diagnostics.statix }
 - Args: `{ "check", "--stdin", "--format=errfmt" }`
 
 ### stylelint
+
+Method: diagnostics
 
 #### Usage
 
@@ -769,6 +879,8 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 
 ### teal
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -782,6 +894,8 @@ local sources = { null_ls.builtins.diagnostics.teal }
 - Args: `{ "check", "$FILENAME" }`
 
 ### textlint
+
+Method: diagnostics
 
 #### Usage
 
@@ -797,6 +911,8 @@ local sources = { null_ls.builtins.diagnostics.textlint }
 
 ### trail_space
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -808,6 +924,8 @@ local sources = { null_ls.builtins.diagnostics.trail_space }
 - Filetypes: `{}`
 
 ### tsc
+
+Method: diagnostics_on_save
 
 #### Usage
 
@@ -823,6 +941,8 @@ local sources = { null_ls.builtins.diagnostics.tsc }
 
 ### vale
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -836,6 +956,8 @@ local sources = { null_ls.builtins.diagnostics.vale }
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/vale.lua))
 
 ### vint
+
+Method: diagnostics
 
 #### Usage
 
@@ -851,6 +973,8 @@ local sources = { null_ls.builtins.diagnostics.vint }
 
 ### vulture
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -864,6 +988,8 @@ local sources = { null_ls.builtins.diagnostics.vulture }
 - Args: `{ "$FILENAME" }`
 
 ### write_good
+
+Method: diagnostics
 
 #### Usage
 
@@ -879,6 +1005,8 @@ local sources = { null_ls.builtins.diagnostics.write_good }
 
 ### xo
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -892,6 +1020,8 @@ local sources = { null_ls.builtins.diagnostics.xo }
 - Args: `{ "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 ### yamllint
+
+Method: diagnostics
 
 #### Usage
 
@@ -907,6 +1037,8 @@ local sources = { null_ls.builtins.diagnostics.yamllint }
 
 ### zsh
 
+Method: diagnostics
+
 #### Usage
 
 ```lua
@@ -921,6 +1053,8 @@ local sources = { null_ls.builtins.diagnostics.zsh }
 
 ### asmfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -933,6 +1067,8 @@ local sources = { null_ls.builtins.formatting.asmfmt }
 - Command: `asmfmt`
 
 ### astyle
+
+Method: formatting
 
 #### Usage
 
@@ -948,6 +1084,8 @@ local sources = { null_ls.builtins.formatting.astyle }
 
 ### autopep8
 
+Methods: formatting, range_formatting
+
 #### Usage
 
 ```lua
@@ -962,6 +1100,8 @@ local sources = { null_ls.builtins.formatting.autopep8 }
 
 ### bean_format
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -974,6 +1114,8 @@ local sources = { null_ls.builtins.formatting.bean_format }
 - Command: `bean-format`
 
 ### black
+
+Method: formatting
 
 #### Usage
 
@@ -989,6 +1131,8 @@ local sources = { null_ls.builtins.formatting.black }
 
 ### brittany
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1001,6 +1145,8 @@ local sources = { null_ls.builtins.formatting.brittany }
 - Command: `brittany`
 
 ### buildifier
+
+Method: formatting
 
 #### Usage
 
@@ -1016,6 +1162,8 @@ local sources = { null_ls.builtins.formatting.buildifier }
 
 ### cabal_fmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1028,6 +1176,8 @@ local sources = { null_ls.builtins.formatting.cabal_fmt }
 - Command: `cabal-fmt`
 
 ### clang_format
+
+Method: formatting
 
 #### Usage
 
@@ -1043,6 +1193,8 @@ local sources = { null_ls.builtins.formatting.clang_format }
 
 ### cljstyle
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1056,6 +1208,8 @@ local sources = { null_ls.builtins.formatting.cljstyle }
 - Args: `{ "pipe" }`
 
 ### cmake_format
+
+Method: formatting
 
 #### Usage
 
@@ -1071,6 +1225,8 @@ local sources = { null_ls.builtins.formatting.cmake_format }
 
 ### codespell
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1084,6 +1240,8 @@ local sources = { null_ls.builtins.formatting.codespell }
 - Args: `{ "--write-changes", "$FILENAME" }`
 
 ### crystal_format
+
+Method: formatting
 
 #### Usage
 
@@ -1099,6 +1257,8 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 
 ### cue_fmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1112,6 +1272,8 @@ local sources = { null_ls.builtins.formatting.cue_fmt }
 - Args: `{ "fmt", "$FILENAME" }`
 
 ### dart_format
+
+Method: formatting
 
 #### Usage
 
@@ -1127,6 +1289,8 @@ local sources = { null_ls.builtins.formatting.dart_format }
 
 ### deno_fmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1141,6 +1305,8 @@ local sources = { null_ls.builtins.formatting.deno_fmt }
 
 ### dfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1154,6 +1320,8 @@ local sources = { null_ls.builtins.formatting.dfmt }
 
 ### djhtml
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1166,6 +1334,8 @@ local sources = { null_ls.builtins.formatting.djhtml }
 - Command: `djhtml`
 
 ### djlint
+
+Method: formatting
 
 #### Usage
 
@@ -1181,6 +1351,8 @@ local sources = { null_ls.builtins.formatting.djlint }
 
 ### elm_format
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1194,6 +1366,8 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - Args: `{ "--stdin" }`
 
 ### erlfmt
+
+Method: formatting
 
 #### Usage
 
@@ -1209,6 +1383,8 @@ local sources = { null_ls.builtins.formatting.erlfmt }
 
 ### eslint
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1222,6 +1398,8 @@ local sources = { null_ls.builtins.formatting.eslint }
 - Args: `{ "--fix-dry-run", "--format", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 ### eslint_d
+
+Method: formatting
 
 #### Usage
 
@@ -1237,6 +1415,8 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 
 ### fish_indent
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1250,6 +1430,8 @@ local sources = { null_ls.builtins.formatting.fish_indent }
 
 ### fixjson
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1262,6 +1444,8 @@ local sources = { null_ls.builtins.formatting.fixjson }
 - Command: `fixjson`
 
 ### fnlfmt
+
+Method: formatting
 
 #### Usage
 
@@ -1277,6 +1461,8 @@ local sources = { null_ls.builtins.formatting.fnlfmt }
 
 ### format_r
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1291,6 +1477,8 @@ local sources = { null_ls.builtins.formatting.format_r }
 
 ### fourmolu
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1303,6 +1491,8 @@ local sources = { null_ls.builtins.formatting.fourmolu }
 - Command: `fourmolu`
 
 ### fprettify
+
+Method: formatting
 
 #### Usage
 
@@ -1318,6 +1508,8 @@ local sources = { null_ls.builtins.formatting.fprettify }
 
 ### gofmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1331,6 +1523,8 @@ local sources = { null_ls.builtins.formatting.gofmt }
 
 ### gofumpt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1343,6 +1537,8 @@ local sources = { null_ls.builtins.formatting.gofumpt }
 - Command: `gofumpt`
 
 ### goimports
+
+Method: formatting
 
 #### Usage
 
@@ -1358,6 +1554,8 @@ local sources = { null_ls.builtins.formatting.goimports }
 
 ### golines
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1370,6 +1568,8 @@ local sources = { null_ls.builtins.formatting.golines }
 - Command: `golines`
 
 ### google_java_format
+
+Method: formatting
 
 #### Usage
 
@@ -1385,6 +1585,8 @@ local sources = { null_ls.builtins.formatting.google_java_format }
 
 ### isort
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1398,6 +1600,8 @@ local sources = { null_ls.builtins.formatting.isort }
 - Args: `{ "--stdout", "--filename", "$FILENAME", "-" }`
 
 ### joker
+
+Method: formatting
 
 #### Usage
 
@@ -1413,6 +1617,8 @@ local sources = { null_ls.builtins.formatting.joker }
 
 ### json_tool
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1426,6 +1632,8 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - Args: `{ "-m", "json.tool" }`
 
 ### latexindent
+
+Method: formatting
 
 #### Usage
 
@@ -1441,6 +1649,8 @@ local sources = { null_ls.builtins.formatting.latexindent }
 
 ### lua_format
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1454,6 +1664,8 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - Args: `{ "-i" }`
 
 ### markdownlint
+
+Method: formatting
 
 #### Usage
 
@@ -1469,6 +1681,8 @@ local sources = { null_ls.builtins.formatting.markdownlint }
 
 ### mix
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1482,6 +1696,8 @@ local sources = { null_ls.builtins.formatting.mix }
 - Args: `{ "format", "-" }`
 
 ### nginx_beautifier
+
+Method: formatting
 
 #### Usage
 
@@ -1497,6 +1713,8 @@ local sources = { null_ls.builtins.formatting.nginx_beautifier }
 
 ### nimpretty
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1511,6 +1729,8 @@ local sources = { null_ls.builtins.formatting.nimpretty }
 
 ### nixfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1524,6 +1744,8 @@ local sources = { null_ls.builtins.formatting.nixfmt }
 
 ### nixpkgs_fmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1536,6 +1758,8 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Command: `nixpkgs-fmt`
 
 ### perltidy
+
+Method: formatting
 
 #### Usage
 
@@ -1551,6 +1775,8 @@ local sources = { null_ls.builtins.formatting.perltidy }
 
 ### pg_format
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1563,6 +1789,8 @@ local sources = { null_ls.builtins.formatting.pg_format }
 - Command: `pg_format`
 
 ### phpcbf
+
+Method: formatting
 
 #### Usage
 
@@ -1577,6 +1805,8 @@ local sources = { null_ls.builtins.formatting.phpcbf }
 - Args: `{ "-q", "--stdin-path=$FILENAME", "-" }`
 
 ### phpcsfixer
+
+Method: formatting
 
 #### Usage
 
@@ -1593,6 +1823,8 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 ### [prettier](https://github.com/prettier/prettier)
 
 Prettier is an opinionated code formatter. It enforces a consistent style by parsing your code and re-printing it with its own rules that take the maximum line length into account, wrapping code when necessary.
+
+Methods: formatting, range_formatting
 
 #### Usage
 
@@ -1613,6 +1845,8 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 ### prettierd
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1626,6 +1860,8 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - Args: `{ "$FILENAME" }`
 
 ### prettier_d_slim
+
+Methods: formatting, range_formatting
 
 #### Usage
 
@@ -1641,6 +1877,8 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 ### prettier_standard
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1654,6 +1892,8 @@ local sources = { null_ls.builtins.formatting.prettier_standard }
 - Args: `{ "--stdin" }`
 
 ### prismaFmt
+
+Method: formatting
 
 #### Usage
 
@@ -1669,6 +1909,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 ### protolint
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1682,6 +1924,8 @@ local sources = { null_ls.builtins.formatting.protolint }
 - Args: `{ "--fix", "$FILENAME" }`
 
 ### ptop
+
+Method: formatting
 
 #### Usage
 
@@ -1697,6 +1941,8 @@ local sources = { null_ls.builtins.formatting.ptop }
 
 ### puppet_lint
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1710,6 +1956,8 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Args: `{ "--fix", "$FILENAME" }`
 
 ### qmlformat
+
+Method: formatting
 
 #### Usage
 
@@ -1725,6 +1973,8 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 
 ### raco_fmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1738,6 +1988,8 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - Args: `{ "fmt" }`
 
 ### remark
+
+Method: formatting
 
 #### Usage
 
@@ -1753,6 +2005,8 @@ local sources = { null_ls.builtins.formatting.remark }
 
 ### reorder_python_imports
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1766,6 +2020,8 @@ local sources = { null_ls.builtins.formatting.reorder_python_imports }
 - Args: `{ "-", "--exit-zero-even-if-changed" }`
 
 ### rescript
+
+Method: formatting
 
 #### Usage
 
@@ -1781,6 +2037,8 @@ local sources = { null_ls.builtins.formatting.rescript }
 
 ### rubocop
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1794,6 +2052,8 @@ local sources = { null_ls.builtins.formatting.rubocop }
 - Args: `{ "--auto-correct", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
 ### rufo
+
+Method: formatting
 
 #### Usage
 
@@ -1809,6 +2069,8 @@ local sources = { null_ls.builtins.formatting.rufo }
 
 ### rustfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1822,6 +2084,8 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 - Args: `{ "--emit=stdout" }`
 
 ### rustywind
+
+Method: formatting
 
 #### Usage
 
@@ -1837,6 +2101,8 @@ local sources = { null_ls.builtins.formatting.rustywind }
 
 ### scalafmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1850,6 +2116,8 @@ local sources = { null_ls.builtins.formatting.scalafmt }
 - Args: `{ "--stdin" }`
 
 ### shellharden
+
+Method: formatting
 
 #### Usage
 
@@ -1865,6 +2133,8 @@ local sources = { null_ls.builtins.formatting.shellharden }
 
 ### shfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1878,6 +2148,8 @@ local sources = { null_ls.builtins.formatting.shfmt }
 - Args: `{ "-filename", "$FILENAME" }`
 
 ### sqlformat
+
+Method: formatting
 
 #### Usage
 
@@ -1893,6 +2165,8 @@ local sources = { null_ls.builtins.formatting.sqlformat }
 
 ### standardjs
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1906,6 +2180,8 @@ local sources = { null_ls.builtins.formatting.standardjs }
 - Args: `{ "--stdin", "--fix" }`
 
 ### standardrb
+
+Method: formatting
 
 #### Usage
 
@@ -1921,6 +2197,8 @@ local sources = { null_ls.builtins.formatting.standardrb }
 
 ### stylelint
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1934,6 +2212,8 @@ local sources = { null_ls.builtins.formatting.stylelint }
 - Args: `{ "--fix", "--stdin", "--stdin-filename", "$FILENAME" }`
 
 ### styler
+
+Method: formatting
 
 #### Usage
 
@@ -1949,6 +2229,8 @@ local sources = { null_ls.builtins.formatting.styler }
 
 ### stylua
 
+Methods: formatting, range_formatting
+
 #### Usage
 
 ```lua
@@ -1962,6 +2244,8 @@ local sources = { null_ls.builtins.formatting.stylua }
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/stylua.lua))
 
 ### surface
+
+Method: formatting
 
 #### Usage
 
@@ -1977,6 +2261,8 @@ local sources = { null_ls.builtins.formatting.surface }
 
 ### swiftformat
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -1989,6 +2275,8 @@ local sources = { null_ls.builtins.formatting.swiftformat }
 - Command: `swiftformat`
 
 ### taplo
+
+Method: formatting
 
 #### Usage
 
@@ -2004,6 +2292,8 @@ local sources = { null_ls.builtins.formatting.taplo }
 
 ### terrafmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -2017,6 +2307,8 @@ local sources = { null_ls.builtins.formatting.terrafmt }
 - Args: `{ "fmt", "$FILENAME" }`
 
 ### terraform_fmt
+
+Method: formatting
 
 #### Usage
 
@@ -2032,6 +2324,8 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 
 ### trim_newlines
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -2045,6 +2339,8 @@ local sources = { null_ls.builtins.formatting.trim_newlines }
 - Args: `{ 'NF{print s $0; s=""; next} {s=s ORS}' }`
 
 ### trim_whitespace
+
+Method: formatting
 
 #### Usage
 
@@ -2060,6 +2356,8 @@ local sources = { null_ls.builtins.formatting.trim_whitespace }
 
 ### uncrustify
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -2073,6 +2371,8 @@ local sources = { null_ls.builtins.formatting.uncrustify }
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/uncrustify.lua))
 
 ### xmllint
+
+Method: formatting
 
 #### Usage
 
@@ -2088,6 +2388,8 @@ local sources = { null_ls.builtins.formatting.xmllint }
 
 ### yapf
 
+Methods: formatting, range_formatting
+
 #### Usage
 
 ```lua
@@ -2102,6 +2404,8 @@ local sources = { null_ls.builtins.formatting.yapf }
 
 ### zigfmt
 
+Method: formatting
+
 #### Usage
 
 ```lua
@@ -2115,6 +2419,8 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 - Args: `{ "fmt", "--stdin" }`
 
 ### dictionary
+
+Method: hover
 
 #### Usage
 

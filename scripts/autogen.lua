@@ -79,6 +79,16 @@ local generate_description = function(source)
     } or {}
 end
 
+local generate_methods = function(source)
+    local source_methods = type(source.method) == "table" and source.method or { source.method }
+    local methods_string = {}
+    for _, method in ipairs(source_methods) do
+        table.insert(methods_string, require("null-ls.methods").get_readable_name(method))
+    end
+
+    return { "", (#source_methods > 1 and "Methods: " or "Method: ") .. table.concat(methods_string, ", ") }
+end
+
 local generate_usage = function(method, name)
     return {
         "",
@@ -154,6 +164,7 @@ local generate_source_content = function(source, method, name)
     local content = {}
     vim.list_extend(content, generate_header(source, name))
     vim.list_extend(content, generate_description(source))
+    vim.list_extend(content, generate_methods(source))
     vim.list_extend(content, generate_usage(method, name))
     vim.list_extend(content, generate_defaults(source, method, name))
     vim.list_extend(content, generate_notes(source))
