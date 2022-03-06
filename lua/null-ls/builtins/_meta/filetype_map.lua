@@ -11,6 +11,7 @@ return {
     formatting = { "bean_format" }
   },
   bzl = {
+    diagnostics = { "buildifier" },
     formatting = { "buildifier" }
   },
   c = {
