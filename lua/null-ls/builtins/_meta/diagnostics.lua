@@ -10,6 +10,9 @@ return {
   ansiblelint = {
     filetypes = { "yaml.ansible" }
   },
+  buildifier = {
+    filetypes = { "bzl" }
+  },
   checkmake = {
     filetypes = { "make" }
   },
