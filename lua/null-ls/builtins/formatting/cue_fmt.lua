@@ -17,4 +17,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://cuelang.org/",
+        description = "A CUE language formatter.",
+    },
 })

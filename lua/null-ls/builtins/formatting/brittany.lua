@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/lspitzner/brittany",
+        description = "haskell source code formatter",
+    },
 })

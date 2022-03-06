@@ -15,4 +15,8 @@ return h.make_builtin({
         dynamic_command = cmd_resolver.from_node_modules,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/sheerun/prettier-standard",
+        description = "Formats with Prettier and lints with ESLint+Standard! (✿◠‿◠)",
+    },
 })

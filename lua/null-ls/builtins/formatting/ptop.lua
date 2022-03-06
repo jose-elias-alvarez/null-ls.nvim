@@ -13,4 +13,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://www.freepascal.org/tools/ptop.html",
+        description = "The FPC Pascal configurable source beautifier. Name means 'Pascal-TO-Pascal'.",
+    },
 })

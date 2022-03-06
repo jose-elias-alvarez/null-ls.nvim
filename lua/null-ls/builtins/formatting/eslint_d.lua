@@ -20,4 +20,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/mantoni/eslint_d.js/",
+        description = "Makes eslint the fastest linter on the planet.",
+    },
 })

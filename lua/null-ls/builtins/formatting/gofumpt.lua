@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/mvdan/gofumpt",
+        description = "Enforce a stricter format than gofmt, while being backwards compatible. That is, gofumpt is happy with a subset of the formats that gofmt is happy with.",
+    },
 })

@@ -14,4 +14,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat",
+        description = "qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.",
+    },
 })

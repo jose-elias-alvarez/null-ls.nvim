@@ -1003,7 +1003,9 @@ local sources = { null_ls.builtins.diagnostics.write_good }
 - Command: `write-good`
 - Args: `{ "--text=$TEXT", "--parse" }`
 
-### xo
+### [xo](https://github.com/xojs/xo)
+
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
 
 Method: diagnostics
 
@@ -1051,7 +1053,9 @@ local sources = { null_ls.builtins.diagnostics.zsh }
 - Command: `zsh`
 - Args: `{ "-n", "$FILENAME" }`
 
-### asmfmt
+### [asmfmt](https://github.com/klauspost/asmfmt)
+
+Format your assembler code in a similar way that `gofmt` formats your `go` code.
 
 Method: formatting
 
@@ -1066,7 +1070,9 @@ local sources = { null_ls.builtins.formatting.asmfmt }
 - Filetypes: `{ "asm" }`
 - Command: `asmfmt`
 
-### astyle
+### [astyle](http://astyle.sourceforge.net/)
+
+Artistic Style is a source code indenter, formatter, and beautifier for the C, C++, C++/CLI, Objective‑C, C# and Java programming languages. This formatter works well for [Arduino](https://www.arduino.cc/) project files and is the same formatter used in the Arduino IDE.
 
 Method: formatting
 
@@ -1082,7 +1088,9 @@ local sources = { null_ls.builtins.formatting.astyle }
 - Command: `astyle`
 - Args: `{ "--quiet" }`
 
-### autopep8
+### [autopep8](https://github.com/hhatto/autopep8)
+
+A tool that automatically formats Python code to conform to the PEP 8 style guide.
 
 Methods: formatting, range_formatting
 
@@ -1098,7 +1106,9 @@ local sources = { null_ls.builtins.formatting.autopep8 }
 - Command: `autopep8`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/autopep8.lua))
 
-### bean_format
+### [bean_format](https://beancount.github.io/docs/running_beancount_and_generating_reports.html#bean-format)
+
+This pure text processing tool will reformat `beancount` input to right-align all the numbers at the same, minimal column.
 
 Method: formatting
 
@@ -1113,7 +1123,14 @@ local sources = { null_ls.builtins.formatting.bean_format }
 - Filetypes: `{ "beancount" }`
 - Command: `bean-format`
 
-### black
+#### Notes
+
+- It left-aligns all the currencies.
+- It only modifies whitespace.
+
+### [black](https://github.com/psf/black)
+
+The uncompromising Python code formatter
 
 Method: formatting
 
@@ -1129,7 +1146,9 @@ local sources = { null_ls.builtins.formatting.black }
 - Command: `black`
 - Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
 
-### brittany
+### [brittany](https://github.com/lspitzner/brittany)
+
+haskell source code formatter
 
 Method: formatting
 
@@ -1144,7 +1163,9 @@ local sources = { null_ls.builtins.formatting.brittany }
 - Filetypes: `{ "haskell" }`
 - Command: `brittany`
 
-### buildifier
+### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
+
+buildifier is a tool for formatting and linting bazel BUILD, WORKSPACE, and .bzl files.
 
 Method: formatting
 
@@ -1160,7 +1181,9 @@ local sources = { null_ls.builtins.formatting.buildifier }
 - Command: `buildifier`
 - Args: `{ "-path=$FILENAME" }`
 
-### cabal_fmt
+### [cabal_fmt](https://hackage.haskell.org/package/cabal-fmt)
+
+Format .cabal files preserving the original field ordering, and comments.
 
 Method: formatting
 
@@ -1175,7 +1198,9 @@ local sources = { null_ls.builtins.formatting.cabal_fmt }
 - Filetypes: `{ "cabal" }`
 - Command: `cabal-fmt`
 
-### clang_format
+### [clang_format](https://www.kernel.org/doc/html/latest/process/clang-format.html)
+
+Tool to format C/C++/… code according to a set of rules and heuristics.
 
 Method: formatting
 
@@ -1191,7 +1216,9 @@ local sources = { null_ls.builtins.formatting.clang_format }
 - Command: `clang-format`
 - Args: `{ "-assume-filename", "$FILENAME" }`
 
-### cljstyle
+### [cljstyle](https://github.com/greglook/cljstyle)
+
+Formatter for Clojure code.
 
 Method: formatting
 
@@ -1207,7 +1234,9 @@ local sources = { null_ls.builtins.formatting.cljstyle }
 - Command: `cljstyle`
 - Args: `{ "pipe" }`
 
-### cmake_format
+### [cmake_format](https://github.com/cheshirekow/cmake_format)
+
+Parse cmake listfiles and format them nicely.
 
 Method: formatting
 
@@ -1223,7 +1252,9 @@ local sources = { null_ls.builtins.formatting.cmake_format }
 - Command: `cmake-format`
 - Args: `{ "-" }`
 
-### codespell
+### [codespell](https://github.com/codespell-project/codespell)
+
+Fix common misspellings in text files.
 
 Method: formatting
 
@@ -1239,7 +1270,9 @@ local sources = { null_ls.builtins.formatting.codespell }
 - Command: `codespell`
 - Args: `{ "--write-changes", "$FILENAME" }`
 
-### crystal_format
+### [crystal_format](https://github.com/crystal-lang/crystal)
+
+A tool for automatically checking and correcting the style of code in a project.
 
 Method: formatting
 
@@ -1255,7 +1288,9 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 - Command: `crystal`
 - Args: `{ "tool", "format" }`
 
-### cue_fmt
+### [cue_fmt](https://cuelang.org/)
+
+A CUE language formatter.
 
 Method: formatting
 
@@ -1271,7 +1306,9 @@ local sources = { null_ls.builtins.formatting.cue_fmt }
 - Command: `cue`
 - Args: `{ "fmt", "$FILENAME" }`
 
-### dart_format
+### [dart_format](https://dart.dev/tools/dart-format)
+
+Replace the whitespace in your program with formatting that follows Dart guidelines.
 
 Method: formatting
 
@@ -1287,7 +1324,9 @@ local sources = { null_ls.builtins.formatting.dart_format }
 - Command: `dart`
 - Args: `{ "format" }`
 
-### deno_fmt
+### [deno_fmt](https://deno.land/manual/tools/formatter)
+
+Use [Deno](https://deno.land/) to format TypeScript and JavaScript code.
 
 Method: formatting
 
@@ -1303,7 +1342,9 @@ local sources = { null_ls.builtins.formatting.deno_fmt }
 - Command: `deno`
 - Args: `{ "fmt", "-" }`
 
-### dfmt
+### [dfmt](https://github.com/dlang-community/dfmt)
+
+Formatter for D source code.
 
 Method: formatting
 
@@ -1318,7 +1359,9 @@ local sources = { null_ls.builtins.formatting.dfmt }
 - Filetypes: `{ "d" }`
 - Command: `dfmt`
 
-### djhtml
+### [djhtml](https://github.com/rtts/djhtml)
+
+A pure-Python Django/Jinja template indenter without dependencies.
 
 Method: formatting
 
@@ -1333,7 +1376,9 @@ local sources = { null_ls.builtins.formatting.djhtml }
 - Filetypes: `{ "django", "jinja.html", "htmldjango" }`
 - Command: `djhtml`
 
-### djlint
+### [djlint](https://github.com/Riverside-Healthcare/djLint)
+
+✨ 📜 🪄 ✨ HTML Template Linter and Formatter.
 
 Method: formatting
 
@@ -1349,7 +1394,9 @@ local sources = { null_ls.builtins.formatting.djlint }
 - Command: `djlint`
 - Args: `{ "--reformat", "-" }`
 
-### elm_format
+### [elm_format](https://github.com/avh4/elm-format)
+
+elm-format formats Elm source code according to a standard set of rules based on the official [Elm Style Guide](https://elm-lang.org/docs/style-guide).
 
 Method: formatting
 
@@ -1365,7 +1412,9 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - Command: `elm-format`
 - Args: `{ "--stdin" }`
 
-### erlfmt
+### [erlfmt](https://github.com/WhatsApp/erlfmt)
+
+An opinionated Erlang code formatter.
 
 Method: formatting
 
@@ -1381,7 +1430,9 @@ local sources = { null_ls.builtins.formatting.erlfmt }
 - Command: `erlfmt`
 - Args: `{ "-" }`
 
-### eslint
+### [eslint](https://github.com/eslint/eslint)
+
+Find and fix problems in your JavaScript code.
 
 Method: formatting
 
@@ -1397,7 +1448,13 @@ local sources = { null_ls.builtins.formatting.eslint }
 - Command: `eslint`
 - Args: `{ "--fix-dry-run", "--format", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
-### eslint_d
+#### Notes
+
+- Slow and not suitable for formatting on save. If at all possible, use [eslint_d](https://github.com/mantoni/eslint_d.js/).
+
+### [eslint_d](https://github.com/mantoni/eslint_d.js/)
+
+Makes eslint the fastest linter on the planet.
 
 Method: formatting
 
@@ -1413,7 +1470,9 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 - Command: `eslint_d`
 - Args: `{ "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" }`
 
-### fish_indent
+### [fish_indent](https://fishshell.com/docs/current/cmds/fish_indent.html)
+
+Indent or otherwise prettify a piece of fish code.
 
 Method: formatting
 
@@ -1428,7 +1487,9 @@ local sources = { null_ls.builtins.formatting.fish_indent }
 - Filetypes: `{ "fish" }`
 - Command: `fish_indent`
 
-### fixjson
+### [fixjson](https://github.com/rhysd/fixjson)
+
+A JSON file fixer/formatter for humans using (relaxed) JSON5.
 
 Method: formatting
 
@@ -1443,7 +1504,9 @@ local sources = { null_ls.builtins.formatting.fixjson }
 - Filetypes: `{ "json" }`
 - Command: `fixjson`
 
-### fnlfmt
+### [fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+
+fnlfmt is a Fennel code formatter which follows established Lisp conventions when determining how to format a given piece of code.
 
 Method: formatting
 
@@ -1459,7 +1522,9 @@ local sources = { null_ls.builtins.formatting.fnlfmt }
 - Command: `fnlfmt`
 - Args: `{ "-" }`
 
-### format_r
+### [format_r](https://github.com/yihui/formatR)
+
+Format R code automatically.
 
 Method: formatting
 
@@ -1475,7 +1540,9 @@ local sources = { null_ls.builtins.formatting.format_r }
 - Command: `R`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/format_r.lua))
 
-### fourmolu
+### [fourmolu](https://hackage.haskell.org/package/fourmolu)
+
+Fourmolu is a formatter for Haskell source code.
 
 Method: formatting
 
@@ -1490,7 +1557,9 @@ local sources = { null_ls.builtins.formatting.fourmolu }
 - Filetypes: `{ "haskell" }`
 - Command: `fourmolu`
 
-### fprettify
+### [fprettify](https://github.com/pseewald/fprettify)
+
+fprettify is an auto-formatter for modern Fortran code that imposes strict whitespace formatting, written in Python.
 
 Method: formatting
 
@@ -1506,7 +1575,9 @@ local sources = { null_ls.builtins.formatting.fprettify }
 - Command: `fprettify`
 - Args: `{ "--silent" }`
 
-### gofmt
+### [gofmt](https://pkg.go.dev/cmd/gofmt)
+
+Formats go programs.
 
 Method: formatting
 
@@ -1521,7 +1592,14 @@ local sources = { null_ls.builtins.formatting.gofmt }
 - Filetypes: `{ "go" }`
 - Command: `gofmt`
 
-### gofumpt
+#### Notes
+
+- It uses tabs for indentation and blanks for alignment.
+- Aligntment assumes that the editor is using a fixed-width font.
+
+### [gofumpt](https://github.com/mvdan/gofumpt)
+
+Enforce a stricter format than gofmt, while being backwards compatible. That is, gofumpt is happy with a subset of the formats that gofmt is happy with.
 
 Method: formatting
 
@@ -1536,7 +1614,9 @@ local sources = { null_ls.builtins.formatting.gofumpt }
 - Filetypes: `{ "go" }`
 - Command: `gofumpt`
 
-### goimports
+### [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports)
+
+Updates your Go import lines, adding missing ones and removing unreferenced ones.
 
 Method: formatting
 
@@ -1552,7 +1632,9 @@ local sources = { null_ls.builtins.formatting.goimports }
 - Command: `goimports`
 - Args: `{ "-srcdir", "$DIRNAME" }`
 
-### golines
+### [golines](https://pkg.go.dev/github.com/segmentio/golines)
+
+Applies a base formatter (eg. goimports or gofmt), then shortens long lines of code.
 
 Method: formatting
 
@@ -1567,7 +1649,9 @@ local sources = { null_ls.builtins.formatting.golines }
 - Filetypes: `{ "go" }`
 - Command: `golines`
 
-### google_java_format
+### [google_java_format](https://github.com/google/google-java-format)
+
+Reformats Java source code according to Google Java Style.
 
 Method: formatting
 
@@ -1583,7 +1667,9 @@ local sources = { null_ls.builtins.formatting.google_java_format }
 - Command: `google-java-format`
 - Args: `{ "-" }`
 
-### isort
+### [isort](https://github.com/PyCQA/isort)
+
+Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.
 
 Method: formatting
 
@@ -1599,7 +1685,9 @@ local sources = { null_ls.builtins.formatting.isort }
 - Command: `isort`
 - Args: `{ "--stdout", "--filename", "$FILENAME", "-" }`
 
-### joker
+### [joker](https://github.com/candid82/joker)
+
+joker is a small Clojure interpreter, linter and formatter written in Go.
 
 Method: formatting
 
@@ -1615,7 +1703,9 @@ local sources = { null_ls.builtins.formatting.joker }
 - Command: `joker`
 - Args: `{ "--format", "-" }`
 
-### json_tool
+### [json_tool](https://docs.python.org/3/library/json.html#module-json.tool)
+
+Provides a simple command line interface to validate and pretty-print JSON objects.
 
 Method: formatting
 
@@ -1631,7 +1721,9 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - Command: `python`
 - Args: `{ "-m", "json.tool" }`
 
-### latexindent
+### [latexindent](https://github.com/cmhughes/latexindent.pl)
+
+A perl script for formatting LaTeX files that is generally included in major TeX distributions.
 
 Method: formatting
 
@@ -1647,7 +1739,9 @@ local sources = { null_ls.builtins.formatting.latexindent }
 - Command: `latexindent`
 - Args: `{ "-" }`
 
-### lua_format
+### [lua_format](https://github.com/Koihik/LuaFormatter)
+
+Reformats your Lua source code.
 
 Method: formatting
 
@@ -1663,7 +1757,9 @@ local sources = { null_ls.builtins.formatting.lua_format }
 - Command: `lua-format`
 - Args: `{ "-i" }`
 
-### markdownlint
+### [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
+
+A Node.js style checker and lint tool for Markdown/CommonMark files.
 
 Method: formatting
 
@@ -1679,7 +1775,13 @@ local sources = { null_ls.builtins.formatting.markdownlint }
 - Command: `markdownlint`
 - Args: `{ "--fix", "$FILENAME" }`
 
-### mix
+#### Notes
+
+- Can fix some (but not all!) markdownlint issues. If possible, use [Prettier](https://github.com/prettier/prettier), which can also fix Markdown files.
+
+### [mix](https://hexdocs.pm/mix/1.12/Mix.html)
+
+Build tool that provides tasks for creating, compiling, and testing elixir projects, managing its dependencies, and more.
 
 Method: formatting
 
@@ -1695,7 +1797,9 @@ local sources = { null_ls.builtins.formatting.mix }
 - Command: `mix`
 - Args: `{ "format", "-" }`
 
-### nginx_beautifier
+### [nginx_beautifier](https://github.com/vasilevich/nginxbeautifier)
+
+Beautifies and formats nginx configuration files.
 
 Method: formatting
 
@@ -1711,7 +1815,9 @@ local sources = { null_ls.builtins.formatting.nginx_beautifier }
 - Command: `nginxbeautifier`
 - Args: `{ "-i", "-o", "$FILENAME" }`
 
-### nimpretty
+### [nimpretty](https://nim-lang.org/docs/tools.html)
+
+nimpretty is a Nim source code beautifier, to format code according to the official style guide.
 
 Method: formatting
 
@@ -1727,7 +1833,9 @@ local sources = { null_ls.builtins.formatting.nimpretty }
 - Command: `nimpretty`
 - Args: `{ "$FILENAME" }`
 
-### nixfmt
+### [nixfmt](https://github.com/serokell/nixfmt)
+
+nixfmt is a formatter for Nix code, intended to apply a uniform style.
 
 Method: formatting
 
@@ -1742,7 +1850,9 @@ local sources = { null_ls.builtins.formatting.nixfmt }
 - Filetypes: `{ "nix" }`
 - Command: `nixfmt`
 
-### nixpkgs_fmt
+### [nixpkgs_fmt](https://github.com/nix-community/nixpkgs-fmt)
+
+nixpkgs-fmt is a Nix code formatter for nixpkgs.
 
 Method: formatting
 
@@ -1757,7 +1867,9 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Filetypes: `{ "nix" }`
 - Command: `nixpkgs-fmt`
 
-### perltidy
+### [perltidy](http://perltidy.sourceforge.net/)
+
+perl script which indents and reformats perl scripts to make them easier to read. If you write perl scripts, or spend much time reading them, you will probably find it useful.
 
 Method: formatting
 
@@ -1773,7 +1885,9 @@ local sources = { null_ls.builtins.formatting.perltidy }
 - Command: `perltidy`
 - Args: `{ "-q" }`
 
-### pg_format
+### [pg_format](https://github.com/darold/pgFormatter)
+
+PostgreSQL SQL syntax beautifier
 
 Method: formatting
 
@@ -1788,7 +1902,9 @@ local sources = { null_ls.builtins.formatting.pg_format }
 - Filetypes: `{ "sql", "pgsql" }`
 - Command: `pg_format`
 
-### phpcbf
+### [phpcbf](https://github.com/squizlabs/PHP_CodeSniffer)
+
+Tokenizes PHP files and detects violations of a defined set of coding standards.
 
 Method: formatting
 
@@ -1804,7 +1920,9 @@ local sources = { null_ls.builtins.formatting.phpcbf }
 - Command: `phpcbf`
 - Args: `{ "-q", "--stdin-path=$FILENAME", "-" }`
 
-### phpcsfixer
+### [phpcsfixer](https://github.com/FriendsOfPhp/PHP-CS-Fixer)
+
+Formatter for php files.
 
 Method: formatting
 
@@ -1841,9 +1959,11 @@ local sources = { null_ls.builtins.formatting.prettier }
 #### Notes
 
 - Supports more filetypes such as [Svelte](https://github.com/sveltejs/prettier-plugin-svelte) and [TOML](https://github.com/bd82/toml-tools/tree/master/packages/prettier-plugin-toml) via plugins. These filetypes are not enabled by default, but you can follow the instructions [here](#filetypes) to define your own list of filetypes.
-- To increase speed, you may want to try [prettier_d](https://github.com/fsouza/prettierd). You can also set up [eslint-plugin-prettier](https://github.com/prettier/eslint-plugin-prettier) and format via [eslint_d](https://github.com/mantoni/eslint_d.js/).
+- To increase speed, you may want to try [prettierd](https://github.com/fsouza/prettierd). You can also set up [eslint-plugin-prettier](https://github.com/prettier/eslint-plugin-prettier) and format via [eslint_d](https://github.com/mantoni/eslint_d.js/).
 
-### prettierd
+### [prettierd](https://github.com/fsouza/prettierd)
+
+prettier, as a daemon, for ludicrous formatting speed.
 
 Method: formatting
 
@@ -1859,7 +1979,9 @@ local sources = { null_ls.builtins.formatting.prettierd }
 - Command: `prettierd`
 - Args: `{ "$FILENAME" }`
 
-### prettier_d_slim
+### [prettier_d_slim](https://github.com/mikew/prettier_d_slim)
+
+Makes prettier fast.
 
 Methods: formatting, range_formatting
 
@@ -1875,7 +1997,14 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 - Command: `prettier_d_slim`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettier_d_slim.lua))
 
-### prettier_standard
+#### Notes
+
+- May not work on some filetypes.
+- `prettierd` is more stable and recommended.
+
+### [prettier_standard](https://github.com/sheerun/prettier-standard)
+
+Formats with Prettier and lints with ESLint+Standard! (✿◠‿◠)
 
 Method: formatting
 
@@ -1891,7 +2020,9 @@ local sources = { null_ls.builtins.formatting.prettier_standard }
 - Command: `prettier-standard`
 - Args: `{ "--stdin" }`
 
-### prismaFmt
+### [prismaFmt](https://github.com/prisma/prisma-engines)
+
+Formatter for the prisma filetype.
 
 Method: formatting
 
@@ -1907,7 +2038,9 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 - Command: `prisma-fmt`
 - Args: `{ "format", "-i", "$FILENAME" }`
 
-### protolint
+### [protolint](https://github.com/yoheimuta/protolint)
+
+A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
 
 Method: formatting
 
@@ -1923,7 +2056,9 @@ local sources = { null_ls.builtins.formatting.protolint }
 - Command: `protolint`
 - Args: `{ "--fix", "$FILENAME" }`
 
-### ptop
+### [ptop](https://www.freepascal.org/tools/ptop.html)
+
+The FPC Pascal configurable source beautifier. Name means 'Pascal-TO-Pascal'.
 
 Method: formatting
 
@@ -1939,7 +2074,9 @@ local sources = { null_ls.builtins.formatting.ptop }
 - Command: `ptop`
 - Args: `{ "$FILENAME", "$FILENAME" }`
 
-### puppet_lint
+### [puppet_lint](http://puppet-lint.com/)
+
+Check that your Puppet manifest conforms to the style guide
 
 Method: formatting
 
@@ -1955,7 +2092,9 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--fix", "$FILENAME" }`
 
-### qmlformat
+### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
+
+qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
 
 Method: formatting
 
@@ -1971,7 +2110,9 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 - Command: `qmlformat`
 - Args: `{ "-i", "$FILENAME" }`
 
-### raco_fmt
+### [raco_fmt](https://docs.racket-lang.org/fmt/)
+
+The fmt package provides an extensible tool to format Racket code, using an expressive pretty printer library to compute the optimal layout.
 
 Method: formatting
 
@@ -1987,7 +2128,14 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - Command: `raco`
 - Args: `{ "fmt" }`
 
-### remark
+#### Notes
+
+- Requires Racket 8.0 or later
+- Install with `raco pkg install fmt`
+
+### [remark](https://github.com/remarkjs/remark)
+
+remark is an extensive and complex Markdown formatter/prettifier.
 
 Method: formatting
 
@@ -2003,7 +2151,13 @@ local sources = { null_ls.builtins.formatting.remark }
 - Command: `remark`
 - Args: `{ "--no-color", "--silent" }`
 
-### reorder_python_imports
+#### Notes
+
+- Depends on [remark-cli](https://github.com/remarkjs/remark/tree/main/packages/remark-cli).
+
+### [reorder_python_imports](https://github.com/asottile/reorder_python_imports)
+
+Tool for automatically reordering python imports. Similar to isort but uses static analysis more.
 
 Method: formatting
 
@@ -2019,7 +2173,9 @@ local sources = { null_ls.builtins.formatting.reorder_python_imports }
 - Command: `reorder-python-imports`
 - Args: `{ "-", "--exit-zero-even-if-changed" }`
 
-### rescript
+### [rescript](https://rescript-lang.org/)
+
+The ReScript format builtin.
 
 Method: formatting
 
@@ -2035,7 +2191,9 @@ local sources = { null_ls.builtins.formatting.rescript }
 - Command: `rescript`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/rescript.lua))
 
-### rubocop
+### [rubocop](https://github.com/rubocop/rubocop)
+
+Ruby static code analyzer and formatter, based on the community Ruby style guide.
 
 Method: formatting
 
@@ -2051,7 +2209,9 @@ local sources = { null_ls.builtins.formatting.rubocop }
 - Command: `rubocop`
 - Args: `{ "--auto-correct", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
-### rufo
+### [rufo](https://github.com/ruby-formatter/rufo)
+
+Opinionated ruby formatter.
 
 Method: formatting
 
@@ -2067,7 +2227,9 @@ local sources = { null_ls.builtins.formatting.rufo }
 - Command: `rufo`
 - Args: `{ "-x" }`
 
-### rustfmt
+### [rustfmt](https://github.com/rust-lang/rustfmt)
+
+A tool for formatting rust code according to style guidelines.
 
 Method: formatting
 
@@ -2083,7 +2245,14 @@ local sources = { null_ls.builtins.formatting.rustfmt }
 - Command: `rustfmt`
 - Args: `{ "--emit=stdout" }`
 
-### rustywind
+#### Notes
+
+- `--edition` defaults to `2015`. To set a different edition, use `extra_args`.
+- See [the wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#rustfmt) for other workarounds.
+
+### [rustywind](https://github.com/avencera/rustywind)
+
+CLI for organizing Tailwind CSS classes.
 
 Method: formatting
 
@@ -2099,7 +2268,9 @@ local sources = { null_ls.builtins.formatting.rustywind }
 - Command: `rustywind`
 - Args: `{ "--stdin" }`
 
-### scalafmt
+### [scalafmt](https://github.com/scalameta/scalafmt)
+
+Code formatter for Scala
 
 Method: formatting
 

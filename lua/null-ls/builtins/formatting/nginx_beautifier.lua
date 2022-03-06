@@ -14,4 +14,8 @@ return h.make_builtin({
         from_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/vasilevich/nginxbeautifier",
+        description = "Beautifies and formats nginx configuration files.",
+    },
 })

@@ -15,4 +15,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/pseewald/fprettify",
+        description = "fprettify is an auto-formatter for modern Fortran code that imposes strict whitespace formatting, written in Python.",
+    },
 })

@@ -31,4 +31,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/fsouza/prettierd",
+        description = "prettier, as a daemon, for ludicrous formatting speed.",
+    },
 })

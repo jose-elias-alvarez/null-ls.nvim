@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/cheshirekow/cmake_format",
+        description = "Parse cmake listfiles and format them nicely.",
+    },
 })

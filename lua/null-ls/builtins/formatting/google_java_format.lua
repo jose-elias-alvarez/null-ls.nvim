@@ -15,4 +15,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/google/google-java-format",
+        description = "Reformats Java source code according to Google Java Style.",
+    },
 })

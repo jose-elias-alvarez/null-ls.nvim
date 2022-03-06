@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/candid82/joker",
+        description = "joker is a small Clojure interpreter, linter and formatter written in Go.",
+    },
 })

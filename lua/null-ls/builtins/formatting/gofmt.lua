@@ -12,4 +12,12 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://pkg.go.dev/cmd/gofmt",
+        description = "Formats go programs.",
+        notes = {
+            "It uses tabs for indentation and blanks for alignment.",
+            "Aligntment assumes that the editor is using a fixed-width font.",
+        },
+    },
 })

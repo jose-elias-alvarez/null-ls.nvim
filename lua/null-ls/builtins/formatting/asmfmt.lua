@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/klauspost/asmfmt",
+        description = "Format your assembler code in a similar way that `gofmt` formats your `go` code.",
+    },
 })

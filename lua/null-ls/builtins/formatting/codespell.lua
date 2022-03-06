@@ -13,4 +13,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/codespell-project/codespell",
+        description = "Fix common misspellings in text files.",
+    },
 })

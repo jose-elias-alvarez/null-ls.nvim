@@ -14,4 +14,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://hexdocs.pm/mix/1.12/Mix.html",
+        description = "Build tool that provides tasks for creating, compiling, and testing elixir projects, managing its dependencies, and more.",
+    },
 })

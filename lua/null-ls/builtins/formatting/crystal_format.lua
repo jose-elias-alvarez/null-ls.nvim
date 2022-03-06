@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/crystal-lang/crystal",
+        description = "A tool for automatically checking and correcting the style of code in a project.",
+    },
 })

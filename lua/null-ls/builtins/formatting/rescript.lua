@@ -19,4 +19,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://rescript-lang.org/",
+        description = "The ReScript format builtin.",
+    },
 })

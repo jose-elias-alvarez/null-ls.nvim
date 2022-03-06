@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/rhysd/fixjson",
+        description = "A JSON file fixer/formatter for humans using (relaxed) JSON5.",
+    },
 })

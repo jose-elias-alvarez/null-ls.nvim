@@ -13,4 +13,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://nim-lang.org/docs/tools.html",
+        description = "nimpretty is a Nim source code beautifier, to format code according to the official style guide.",
+    },
 })

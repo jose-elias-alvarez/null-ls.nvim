@@ -19,4 +19,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/FriendsOfPhp/PHP-CS-Fixer",
+        description = "Formatter for php files.",
+    },
 })

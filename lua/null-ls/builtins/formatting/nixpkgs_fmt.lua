@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/nix-community/nixpkgs-fmt",
+        description = "nixpkgs-fmt is a Nix code formatter for nixpkgs.",
+    },
 })

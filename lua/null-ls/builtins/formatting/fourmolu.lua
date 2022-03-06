@@ -12,4 +12,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://hackage.haskell.org/package/fourmolu",
+        description = "Fourmolu is a formatter for Haskell source code.",
+    },
 })

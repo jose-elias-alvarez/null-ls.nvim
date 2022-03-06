@@ -16,4 +16,8 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "http://puppet-lint.com/",
+        description = "Check that your Puppet manifest conforms to the style guide",
+    },
 })

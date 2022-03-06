@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://git.sr.ht/~technomancy/fnlfmt",
+        description = "fnlfmt is a Fennel code formatter which follows established Lisp conventions when determining how to format a given piece of code.",
+    },
 })

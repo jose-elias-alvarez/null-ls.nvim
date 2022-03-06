@@ -18,4 +18,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://github.com/PyCQA/isort",
+        description = "Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.",
+    },
 })

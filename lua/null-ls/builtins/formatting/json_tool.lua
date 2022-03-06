@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://docs.python.org/3/library/json.html#module-json.tool",
+        description = "Provides a simple command line interface to validate and pretty-print JSON objects.",
+    },
 })

@@ -13,4 +13,12 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://docs.racket-lang.org/fmt/",
+        description = "The fmt package provides an extensible tool to format Racket code, using an expressive pretty printer library to compute the optimal layout.",
+        notes = {
+            "Requires Racket 8.0 or later",
+            "Install with `raco pkg install fmt`",
+        },
+    },
 })

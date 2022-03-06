@@ -13,4 +13,8 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
+    meta = {
+        url = "https://pkg.go.dev/golang.org/x/tools/cmd/goimports",
+        description = "Updates your Go import lines, adding missing ones and removing unreferenced ones.",
+    },
 })
