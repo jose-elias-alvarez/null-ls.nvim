@@ -23,6 +23,7 @@ return h.make_builtin({
         "yaml",
         "markdown",
         "graphql",
+        "handlebars",
     },
     generator_opts = {
         command = "prettier_d_slim",
