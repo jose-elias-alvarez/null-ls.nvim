@@ -98,6 +98,9 @@ return {
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  handlebars = {
+    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+  },
   haskell = {
     formatting = { "brittany", "fourmolu" }
   },
