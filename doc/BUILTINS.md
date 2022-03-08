@@ -1066,6 +1066,29 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - `command = "python"`
 - `args = { "-m", "json.tool" }`
 
+#### [ktlint](https://ktlint.github.io/)
+
+##### About
+
+An anti-bikeshedding Kotlin linter with built-in formatter.
+
+##### Usage
+
+```lua
+local sources = {
+  null_ls.builtins.formatting.ktlint.with({
+      -- enable the Android Kotlin Style Guide
+      extra_args = { "--android" }
+    })
+  }
+```
+
+##### Defaults
+
+- `filetypes = { "kotlin" }`
+- `command = "ktlint"`
+- `args = { "--format", "--stdin" }`
+
 #### [LuaFormatter](https://github.com/Koihik/LuaFormatter)
 
 ##### About
