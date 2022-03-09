@@ -67,6 +67,9 @@ return {
   jsonlint = {
     filetypes = { "json" }
   },
+  ktlint = {
+    filetypes = { "kotlin" }
+  },
   luacheck = {
     filetypes = { "lua" }
   },

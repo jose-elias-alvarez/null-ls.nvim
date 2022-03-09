@@ -134,6 +134,10 @@ return {
   jsonc = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  kotlin = {
+    diagnostics = { "ktlint" },
+    formatting = { "ktlint" }
+  },
   less = {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
