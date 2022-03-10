@@ -133,6 +133,9 @@ return {
   rpmspec = {
     filetypes = { "spec" }
   },
+  rstcheck = {
+    filetypes = { "rst" }
+  },
   rubocop = {
     filetypes = { "ruby" }
   },

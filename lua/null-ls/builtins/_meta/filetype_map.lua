@@ -208,6 +208,9 @@ return {
   rmd = {
     formatting = { "format_r", "styler" }
   },
+  rst = {
+    diagnostics = { "rstcheck" }
+  },
   ruby = {
     diagnostics = { "rubocop", "standardrb" },
     formatting = { "rubocop", "rufo", "standardrb" }
