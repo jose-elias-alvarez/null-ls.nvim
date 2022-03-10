@@ -64,6 +64,9 @@ return {
   hadolint = {
     filetypes = { "dockerfile" }
   },
+  haml_lint = {
+    filetypes = { "haml" }
+  },
   jsonlint = {
     filetypes = { "json" }
   },
