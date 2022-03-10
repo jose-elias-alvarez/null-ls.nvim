@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -18,6 +19,7 @@ return h.make_builtin({
         command = "pydocstyle",
         name = "pydocstyle",
         args = { "$FILENAME" },
+        cwd = root_resolver.from_python_markers,
         to_stdin = false,
         to_temp_file = true,
         format = "raw",

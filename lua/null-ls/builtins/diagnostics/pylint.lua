@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -15,6 +16,7 @@ return h.make_builtin({
         command = "pylint",
         to_stdin = true,
         args = { "--from-stdin", "$FILENAME", "-f", "json" },
+        cwd = root_resolver.from_python_markers,
         format = "json",
         check_exit_code = function(code)
             return code ~= 32

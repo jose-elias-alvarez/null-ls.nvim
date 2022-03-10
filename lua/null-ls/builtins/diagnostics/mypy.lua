@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -29,6 +30,7 @@ benefits of dynamic (or "duck") typing and static typing.]],
                 params.bufname,
             }
         end,
+        cwd = root_resolver.from_python_markers,
         to_temp_file = true,
         format = "line",
         check_exit_code = function(code)
