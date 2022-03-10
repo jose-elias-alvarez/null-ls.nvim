@@ -2746,6 +2746,24 @@ local sources = { null_ls.builtins.diagnostics.rpmspec }
 - `command = "rpmspec"`
 - `args = { "-P", "$FILENAME" }`
 
+#### [rstcheck](https://github.com/myint/rstcheck)
+
+##### About
+
+Checks syntax of reStructuredText and code blocks nested within it.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.rstcheck }
+```
+
+##### Defaults
+
+- `filetypes = { "rst" }`
+- `command = "rstcheck"`
+- `args = { "-r", "$DIRNAME" }`
+
 #### [selene](https://kampfkarren.github.io/selene/)
 
 ##### About
