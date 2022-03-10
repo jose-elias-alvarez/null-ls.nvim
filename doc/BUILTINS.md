@@ -2353,6 +2353,24 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 - `command = "hadolint"`
 - `args = { "--no-fail", "--format=json", "$FILENAME" }`
 
+#### [haml-lint](https://github.com/sds/haml-lint)
+
+##### About
+
+Tool for writing clean and consistent HAML
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.haml_lint }
+```
+
+##### Defaults
+
+- `filetypes = { "haml" }`
+- `command = "haml-lint"`
+- `args = { "--reporter", "json", "$FILENAME" }`
+
 #### [jsonlint](https://github.com/zaach/jsonlint)
 
 ##### About
