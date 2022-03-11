@@ -99,6 +99,9 @@ return {
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  haml = {
+    diagnostics = { "haml_lint" }
+  },
   handlebars = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
