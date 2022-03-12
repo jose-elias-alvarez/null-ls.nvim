@@ -1307,7 +1307,7 @@ local sources = { null_ls.builtins.diagnostics.write_good }
 
 ### [xo](https://github.com/xojs/xo)
 
-❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
+❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults.
 
 #### Usage
 
