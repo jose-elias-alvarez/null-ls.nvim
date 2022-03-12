@@ -874,6 +874,23 @@ local sources = { null_ls.builtins.diagnostics.psalm }
 - Command: `psalm`
 - Args: `{ "--output-format=json", "--no-progress", "$FILENAME" }`
 
+### [puglint](https://github.com/pugjs/pug-lint)
+
+An unopinionated and configurable linter and style checker for Pug.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.puglint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "pug" }`
+- Method: `diagnostics`
+- Command: `pug-lint`
+- Args: `{ "--reporter=inline", "$FILENAME" }`
+
 ### [puppet_lint](http://puppet-lint.com/)
 
 Check that your Puppet manifest conforms to the style guide.

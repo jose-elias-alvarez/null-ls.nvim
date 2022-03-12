@@ -112,6 +112,9 @@ return {
   psalm = {
     filetypes = { "php" }
   },
+  puglint = {
+    filetypes = { "pug" }
+  },
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },

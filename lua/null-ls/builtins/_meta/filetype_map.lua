@@ -199,6 +199,9 @@ return {
     diagnostics = { "protoc_gen_lint", "protolint" },
     formatting = { "protolint" }
   },
+  pug = {
+    diagnostics = { "puglint" }
+  },
   puppet = {
     diagnostics = { "puppet_lint" },
     formatting = { "puppet_lint" }
