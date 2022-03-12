@@ -118,7 +118,34 @@ Provides actions to disable ShellCheck errors/warnings, either for the current l
 local sources = { null_ls.builtins.code_actions.shellcheck }
 ```
 
-#### Defaults
+##### Defaults
+
+- `filetypes = { "tf", "hcl" }`
+- `command = "terraform"`
+- `args = { "fmt", "-" }`
+
+#### [tidy](https://html-tidy.org/)
+
+##### About
+
+Tidy corrects and cleans up HTML and XML documents
+by fixing markup errors and upgrading legacy code to modern standards.
+
+##### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.tidy }
+```
+
+##### Defaults
+
+- `filetypes = { "html", "xml" }`
+- `command = "tidy"`
+- `args = { "--tidy-mark", "no", "-quiet", "-indent", "-wrap", "-" }`
+
+#### trim_newlines
+
+##### About
 
 - Filetypes: `{ "sh" }`
 - Method: `code_action`
