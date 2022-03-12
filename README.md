@@ -24,7 +24,7 @@ for external processes.
 null-ls is in **beta status**. Please see below for steps to follow if something
 doesn't work the way you expect (or doesn't work at all).
 
-At the moment, null-is is compatible with Neovim 0.6.0 (stable) and 0.7 (head),
+At the moment, null-is is compatible with Neovim 0.6.1 (stable) and 0.7 (head),
 but some features and performance improvements are exclusive to the latest
 version.
 
