@@ -117,7 +117,8 @@ return {
     formatting = { "brittany", "fourmolu" }
   },
   html = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    diagnostics = { "tidy" },
+    formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind", "tidy" }
   },
   htmldjango = {
     diagnostics = { "curlylint", "djlint" },
@@ -311,7 +312,8 @@ return {
     formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   xml = {
-    formatting = { "xmllint" }
+    diagnostics = { "tidy" },
+    formatting = { "tidy", "xmllint" }
   },
   yaml = {
     diagnostics = { "actionlint", "yamllint" },

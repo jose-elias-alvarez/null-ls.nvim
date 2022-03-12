@@ -1252,6 +1252,23 @@ local sources = { null_ls.builtins.diagnostics.textlint }
 - Command: `textlint`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+### [tidy](https://www.html-tidy.org/)
+
+Tidy corrects and cleans up HTML and XML documents by fixing markup errors and upgrading legacy code to modern standards.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.tidy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "html", "xml" }`
+- Method: `diagnostics`
+- Command: `tidy`
+- Args: `{ "--gnu-emacs", "yes", "-quiet", "-errors", "$FILENAME" }`
+
 ### trail_space
 
 Uses inbuilt Lua code to detect lines with trailing whitespace and show a diagnostic warning on each line where it's present.
@@ -2811,6 +2828,23 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 - Method: `formatting`
 - Command: `terraform`
 - Args: `{ "fmt", "-" }`
+
+### [tidy](https://www.html-tidy.org/)
+
+Tidy corrects and cleans up HTML and XML documents by fixing markup errors and upgrading legacy code to modern standards.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.tidy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "html", "xml" }`
+- Method: `formatting`
+- Command: `tidy`
+- Args: `{ "--tidy-mark", "no", "-quiet", "-indent", "-wrap", "-" }`
 
 ### trim_newlines
 

@@ -178,6 +178,9 @@ return {
   textlint = {
     filetypes = {}
   },
+  tidy = {
+    filetypes = { "html", "xml" }
+  },
   trail_space = {
     filetypes = {}
   },
