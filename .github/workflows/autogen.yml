@@ -1,6 +1,9 @@
 name: autogen
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   metadata-diff:
