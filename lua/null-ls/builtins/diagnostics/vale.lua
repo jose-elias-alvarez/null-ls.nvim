@@ -15,7 +15,7 @@ return h.make_builtin({
         },
     },
     method = DIAGNOSTICS,
-    filetypes = { "markdown", "tex" },
+    filetypes = { "markdown", "tex", "asciidoc" },
     generator_opts = {
         command = "vale",
         format = "json",
