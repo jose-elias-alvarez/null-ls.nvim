@@ -256,6 +256,9 @@ return {
   sql = {
     formatting = { "pg_format", "sqlformat" }
   },
+  stylus = {
+    diagnostics = { "stylint" }
+  },
   surface = {
     formatting = { "surface" }
   },
