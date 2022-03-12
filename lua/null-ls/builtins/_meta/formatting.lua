@@ -244,6 +244,9 @@ return {
   terraform_fmt = {
     filetypes = { "terraform", "tf" }
   },
+  tidy = {
+    filetypes = { "html", "xml" }
+  },
   trim_newlines = {
     filetypes = {}
   },
