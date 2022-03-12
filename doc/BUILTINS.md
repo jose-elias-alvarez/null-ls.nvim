@@ -1167,6 +1167,23 @@ local sources = { null_ls.builtins.diagnostics.stylelint }
 - Command: `stylelint`
 - Args: `{ "--formatter", "json", "--stdin-filename", "$FILENAME" }`
 
+### [stylint](https://github.com/SimenB/stylint)
+
+A linter for the Stylus CSS preprocessor.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.stylint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "stylus" }`
+- Method: `diagnostics`
+- Command: `stylint`
+- Args: `{ "$FILENAME" }`
+
 ### [teal](https://github.com/teal-language/tl)
 
 The compiler for Teal, a typed dialect of Lua.

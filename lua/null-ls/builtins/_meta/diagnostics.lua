@@ -163,6 +163,9 @@ return {
   stylelint = {
     filetypes = { "scss", "less", "css", "sass" }
   },
+  stylint = {
+    filetypes = { "stylus" }
+  },
   teal = {
     filetypes = { "teal" }
   },
