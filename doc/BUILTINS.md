@@ -462,6 +462,23 @@ local sources = { null_ls.builtins.diagnostics.deadnix }
 - Command: `deadnix`
 - Args: `{ "--output-format=json", "$FILENAME" }`
 
+### [djlint](https://github.com/Riverside-Healthcare/djLint)
+
+✨ 📜 🪄 ✨ HTML Template Linter and Formatter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.djlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "django", "jinja.html", "htmldjango" }`
+- Method: `diagnostics`
+- Command: `djlint`
+- Args: `{ "$FILENAME" }`
+
 ### [editorconfig_checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
 A tool to verify that your files are in harmony with your `.editorconfig`.

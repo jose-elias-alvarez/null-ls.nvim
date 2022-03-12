@@ -61,6 +61,7 @@ return {
     formatting = { "ptop" }
   },
   django = {
+    diagnostics = { "djlint" },
     formatting = { "djhtml", "djlint" }
   },
   dockerfile = {
@@ -119,7 +120,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   htmldjango = {
-    diagnostics = { "curlylint" },
+    diagnostics = { "curlylint", "djlint" },
     formatting = { "djhtml", "djlint" }
   },
   java = {
@@ -136,7 +137,7 @@ return {
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   ["jinja.html"] = {
-    diagnostics = { "curlylint" },
+    diagnostics = { "curlylint", "djlint" },
     formatting = { "djhtml", "djlint" }
   },
   json = {
