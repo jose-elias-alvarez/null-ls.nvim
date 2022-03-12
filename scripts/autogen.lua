@@ -61,35 +61,33 @@ end
 local markdown_content = {}
 
 -- helpers
+local generate_method_header = function(method)
+    local header = { "##" }
+    for _, component in ipairs(vim.split(method, "_")) do
+        table.insert(header, component:sub(1, 1):upper() .. component:sub(2))
+    end
+    vim.list_extend(markdown_content, { "", table.concat(header, " "), "" })
+end
+
 local generate_repo_url = function(method, name)
     return string.format(BUILTINS_URL_TEMPLATE, method, name)
 end
 
-local generate_header = function(source, name)
+local generate_builtin_header = function(source, name)
     local url = source.meta and source.meta.url
     return {
         url and string.format("### [%s](%s)", name, url) or string.format("### %s", name),
     }
 end
 
-local generate_description = function(source)
+local generate_builtin_description = function(source)
     return source.meta.description and {
         "",
         source.meta.description,
     } or {}
 end
 
-local generate_methods = function(source)
-    local source_methods = type(source.method) == "table" and source.method or { source.method }
-    local methods_string = {}
-    for _, method in ipairs(source_methods) do
-        table.insert(methods_string, require("null-ls.methods").get_readable_name(method))
-    end
-
-    return { "", (#source_methods > 1 and "Methods: " or "Method: ") .. table.concat(methods_string, ", ") }
-end
-
-local generate_usage = function(method, name)
+local generate_builtin_usage = function(method, name)
     return {
         "",
         "#### Usage",
@@ -100,13 +98,22 @@ local generate_usage = function(method, name)
     }
 end
 
-local generate_defaults = function(source, method, name)
+local generate_builtin_defaults = function(source, method, name)
     local defaults = {
         "",
         "#### Defaults",
         "",
         string.format("- Filetypes: `%s`", vim.inspect(source.filetypes)),
     }
+
+    local source_methods = type(source.method) == "table" and source.method or { source.method }
+    local methods_string = {}
+    for _, source_method in ipairs(source_methods) do
+        table.insert(methods_string, require("null-ls.methods").get_readable_name(source_method))
+    end
+    vim.list_extend(defaults, {
+        string.format("- %s: `%s`", #source_methods > 1 and "Methods" or "Method", table.concat(methods_string, ", ")),
+    })
 
     local generator = source.generator
     local opts = generator.opts
@@ -144,7 +151,7 @@ local generate_defaults = function(source, method, name)
     return defaults
 end
 
-local generate_notes = function(source)
+local generate_builtin_notes = function(source)
     if not source.meta.notes or vim.tbl_isempty(source.meta.notes) then
         return {}
     end
@@ -160,14 +167,13 @@ local generate_notes = function(source)
     return notes
 end
 
-local generate_source_content = function(source, method, name)
+local generate_builtin_content = function(source, method, name)
     local content = {}
-    vim.list_extend(content, generate_header(source, name))
-    vim.list_extend(content, generate_description(source))
-    vim.list_extend(content, generate_methods(source))
-    vim.list_extend(content, generate_usage(method, name))
-    vim.list_extend(content, generate_defaults(source, method, name))
-    vim.list_extend(content, generate_notes(source))
+    vim.list_extend(content, generate_builtin_header(source, name))
+    vim.list_extend(content, generate_builtin_description(source))
+    vim.list_extend(content, generate_builtin_usage(method, name))
+    vim.list_extend(content, generate_builtin_defaults(source, method, name))
+    vim.list_extend(content, generate_builtin_notes(source))
 
     vim.list_extend(markdown_content, vim.list_extend(content, { "" }))
 end
@@ -182,7 +188,6 @@ local generate_documentation = function()
             "This is an automatically generated list of all null-ls built-in sources.",
             "",
             "See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure these sources.",
-            "",
         }, markdown_content),
         "\n"
     )
@@ -192,17 +197,21 @@ end
 do
     -- get methods from builtin dir folder structure
     for _, entry in ipairs(vim.fn.glob(BUILTINS_DIR .. "/*", 1, 1)) do
-        if not entry:match("_") and is_directory(entry) then
+        if is_directory(entry) then
             local method = entry:gsub(".*/", "")
-            table.insert(methods, method)
-            metadata_files[method] = join_paths(META_DIR, method .. ".lua")
-            sources[method] = {}
+            -- ignore internal
+            if method:sub(1, 1) ~= "_" then
+                table.insert(methods, method)
+                metadata_files[method] = join_paths(META_DIR, method .. ".lua")
+                sources[method] = {}
+            end
         end
     end
     table.sort(methods)
 
     -- load and handle builtins in each method dir
     for _, method in ipairs(methods) do
+        generate_method_header(method)
         local method_dir = join_paths(BUILTINS_DIR, method)
         local method_pattern = method_dir .. "/*.lua"
         -- sort order is not guaranteed, so ensure it here
@@ -218,7 +227,7 @@ do
                 string.format("failed to load builtin %s for method %s", name, method)
             else
                 generate_source_metadata(source, method, name)
-                generate_source_content(source, method, name)
+                generate_builtin_content(source, method, name)
             end
         end
 
