@@ -165,6 +165,7 @@ local sources = { null_ls.builtins.code_actions.xo }
 - Command: `xo`
 - Args: `{ "--reporter", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+
 ## Completion
 
 ### [luasnip](https://github.com/L3MON4D3/LuaSnip)
@@ -234,6 +235,7 @@ local sources = { null_ls.builtins.completion.vsnip }
 #### Notes
 
 - Registering this source will show available snippets in the completion list, but vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation](https://github.com/hrsh7th/vim-vsnip#2-setting) for setup instructions.
+
 
 ## Diagnostics
 
@@ -1355,6 +1357,7 @@ local sources = { null_ls.builtins.diagnostics.zsh }
 - Method: `diagnostics`
 - Command: `zsh`
 - Args: `{ "-n", "$FILENAME" }`
+
 
 ## Formatting
 
@@ -2862,6 +2865,7 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 - Method: `formatting`
 - Command: `zig`
 - Args: `{ "fmt", "--stdin" }`
+
 
 ## Hover
 
