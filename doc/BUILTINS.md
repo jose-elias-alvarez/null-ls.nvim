@@ -1245,7 +1245,7 @@ local sources = { null_ls.builtins.diagnostics.vale }
 
 #### Defaults
 
-- Filetypes: `{ "markdown", "tex" }`
+- Filetypes: `{ "markdown", "tex", "asciidoc" }`
 - Method: `diagnostics`
 - Command: `vale`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/vale.lua))

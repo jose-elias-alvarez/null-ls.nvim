@@ -4,6 +4,9 @@ return {
   arduino = {
     formatting = { "astyle" }
   },
+  asciidoc = {
+    diagnostics = { "vale" }
+  },
   asm = {
     formatting = { "asmfmt" }
   },

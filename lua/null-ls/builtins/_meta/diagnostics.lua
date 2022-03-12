@@ -176,7 +176,7 @@ return {
     filetypes = { "typescript", "typescriptreact" }
   },
   vale = {
-    filetypes = { "markdown", "tex" }
+    filetypes = { "markdown", "tex", "asciidoc" }
   },
   vint = {
     filetypes = { "vim" }
