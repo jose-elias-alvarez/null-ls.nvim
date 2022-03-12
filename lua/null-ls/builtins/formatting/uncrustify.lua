@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "uncrustify",
+    meta = {
+        url = "https://github.com/uncrustify/uncrustify",
+        description = "A source code beautifier for C, C++, C#, ObjectiveC, D, Java, Pawn and Vala.",
+    },
     method = FORMATTING,
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {

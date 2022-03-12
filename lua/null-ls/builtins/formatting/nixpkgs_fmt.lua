@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "nixpkgs_fmt",
+    meta = {
+        url = "https://github.com/nix-community/nixpkgs-fmt",
+        description = "nixpkgs-fmt is a Nix code formatter for nixpkgs.",
+    },
     method = FORMATTING,
     filetypes = { "nix" },
     generator_opts = {

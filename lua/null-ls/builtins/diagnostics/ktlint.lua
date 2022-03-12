@@ -5,6 +5,10 @@ local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "ktlint",
+    meta = {
+        url = "https://ktlint.github.io/",
+        description = "An anti-bikeshedding Kotlin linter with built-in formatter.",
+    },
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "kotlin" },
     generator_opts = {

@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "prettierd",
+    meta = {
+        url = "https://github.com/fsouza/prettierd",
+        description = "prettier, as a daemon, for ludicrous formatting speed.",
+    },
     method = FORMATTING,
     filetypes = {
         "javascript",

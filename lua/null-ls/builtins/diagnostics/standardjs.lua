@@ -6,6 +6,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "standardjs",
+    meta = {
+        url = "https://standardjs.com/",
+        description = "JavaScript style guide, linter, and formatter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "javascript", "javascriptreact" },
     generator_opts = {

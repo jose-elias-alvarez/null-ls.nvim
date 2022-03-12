@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "standardrb",
+    meta = {
+        url = "https://github.com/testdouble/standard",
+        description = "Ruby Style Guide, with linter & automatic code fixer. Based on Rubocop.",
+    },
     method = FORMATTING,
     filetypes = { "ruby" },
     generator_opts = {

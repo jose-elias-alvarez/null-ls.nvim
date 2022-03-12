@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "nimpretty",
+    meta = {
+        url = "https://nim-lang.org/docs/tools.html",
+        description = "nimpretty is a Nim source code beautifier, to format code according to the official style guide.",
+    },
     method = FORMATTING,
     filetypes = { "nim" },
     generator_opts = {

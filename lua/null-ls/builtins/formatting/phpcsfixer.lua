@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "phpcsfixer",
+    meta = {
+        url = "https://github.com/FriendsOfPhp/PHP-CS-Fixer",
+        description = "Formatter for php files.",
+    },
     method = FORMATTING,
     filetypes = { "php" },
     generator_opts = {

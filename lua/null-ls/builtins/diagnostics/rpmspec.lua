@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "rpmspec",
+    meta = {
+        url = "https://rpm.org/",
+        description = "Command line tool to parse RPM spec files.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "spec" },
     generator_opts = {

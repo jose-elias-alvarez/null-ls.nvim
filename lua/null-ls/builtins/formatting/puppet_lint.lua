@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "puppet-lint",
+    meta = {
+        url = "http://puppet-lint.com/",
+        description = "Check that your Puppet manifest conforms to the style guide",
+    },
     method = FORMATTING,
     filetypes = { "puppet", "epuppet" },
     generator_opts = {

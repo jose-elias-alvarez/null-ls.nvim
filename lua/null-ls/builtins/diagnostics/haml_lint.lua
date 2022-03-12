@@ -26,6 +26,10 @@ end
 
 return h.make_builtin({
     name = "haml-lint",
+    meta = {
+        url = "https://github.com/sds/haml-lint",
+        description = "Tool for writing clean and consistent HAML.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "haml" },
     generator_opts = {

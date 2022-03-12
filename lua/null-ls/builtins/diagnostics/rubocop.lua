@@ -40,6 +40,10 @@ end
 
 return h.make_builtin({
     name = "rubocop",
+    meta = {
+        url = "https://rubocop.org/",
+        description = "The Ruby Linter/Formatter that Serves and Protects.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "ruby" },
     generator_opts = {

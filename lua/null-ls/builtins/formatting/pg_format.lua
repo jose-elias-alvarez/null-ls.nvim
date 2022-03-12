@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "pg_format",
+    meta = {
+        url = "https://github.com/darold/pgFormatter",
+        description = "PostgreSQL SQL syntax beautifier",
+    },
     method = FORMATTING,
     filetypes = { "sql", "pgsql" },
     generator_opts = {

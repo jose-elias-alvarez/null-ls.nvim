@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "asmfmt",
+    meta = {
+        url = "https://github.com/klauspost/asmfmt",
+        description = "Format your assembler code in a similar way that `gofmt` formats your `go` code.",
+    },
     method = FORMATTING,
     filetypes = { "asm" },
     generator_opts = {

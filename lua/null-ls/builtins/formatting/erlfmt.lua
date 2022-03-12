@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "erlfmt",
+    meta = {
+        url = "https://github.com/WhatsApp/erlfmt",
+        description = "An opinionated Erlang code formatter.",
+    },
     method = FORMATTING,
     filetypes = { "erlang" },
     generator_opts = {

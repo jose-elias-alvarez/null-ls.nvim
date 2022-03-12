@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "phpcs",
+    meta = {
+        url = "https://github.com/squizlabs/PHP_CodeSniffer",
+        description = "PHP_CodeSniffer is a script that tokenizes PHP, JavaScript and CSS files to detect violations of a defined coding standard.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {

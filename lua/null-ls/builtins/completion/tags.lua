@@ -6,6 +6,9 @@ local COMPLETION = methods.internal.COMPLETION
 
 return h.make_builtin({
     name = "tags",
+    meta = {
+        description = "Tags completion source.",
+    },
     method = COMPLETION,
     filetypes = {},
     generator_opts = {

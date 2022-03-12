@@ -6,6 +6,9 @@ local SEVERITIES = h.diagnostics.severities
 
 return h.make_builtin({
     name = "trail-space",
+    meta = {
+        description = "Uses inbuilt Lua code to detect lines with trailing whitespace and show a diagnostic warning on each line where it's present.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator = {

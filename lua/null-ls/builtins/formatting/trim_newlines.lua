@@ -5,6 +5,9 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "trim_newlines",
+    meta = {
+        description = "A simple wrapper around `awk` to remove trailing newlines.",
+    },
     method = FORMATTING,
     filetypes = {},
     generator_opts = {

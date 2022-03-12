@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "shellharden",
+    meta = {
+        url = "https://github.com/anordal/shellharden",
+        description = [[Hardens shell scripts by quoting variables, replacing `function_call` with `$(function_call)`, and more.]],
+    },
     method = FORMATTING,
     filetypes = {
         "sh",

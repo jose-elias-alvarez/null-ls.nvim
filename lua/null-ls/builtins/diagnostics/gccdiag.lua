@@ -3,6 +3,10 @@ local methods = require("null-ls.methods")
 
 return h.make_builtin({
     name = "gccdiag",
+    meta = {
+        url = "https://gitlab.com/andrejr/gccdiag",
+        description = "gccdiag is a wrapper for any C/C++ compiler (gcc, avr-gcc, arm-none-eabi-gcc, etc) that automatically uses the correct compiler arguments for a file in your project by parsing the `compile_commands.json` file at the root of your project.",
+    },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "c", "cpp" },
     factory = h.generator_factory,

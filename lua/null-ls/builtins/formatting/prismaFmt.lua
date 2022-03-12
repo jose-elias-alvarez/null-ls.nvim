@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "prismaFmt",
+    meta = {
+        url = "https://github.com/prisma/prisma-engines",
+        description = "Formatter for the prisma filetype.",
+    },
     method = FORMATTING,
     filetypes = { "prisma" },
     generator_opts = {

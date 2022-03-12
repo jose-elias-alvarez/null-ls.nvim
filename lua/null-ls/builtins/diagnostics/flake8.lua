@@ -51,6 +51,10 @@ local custom_end_col = {
 
 return h.make_builtin({
     name = "flake8",
+    meta = {
+        url = "https://github.com/PyCQA/flake8",
+        description = "flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of Python code.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

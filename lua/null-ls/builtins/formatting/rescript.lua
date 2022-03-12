@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "rescript",
+    meta = {
+        url = "https://rescript-lang.org/",
+        description = "The ReScript format builtin.",
+    },
     method = FORMATTING,
     filetypes = {
         "rescript",

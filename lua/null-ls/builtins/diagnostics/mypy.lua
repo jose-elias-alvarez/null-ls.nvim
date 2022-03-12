@@ -5,6 +5,11 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "mypy",
+    meta = {
+        url = "https://github.com/python/mypy",
+        description = [[Mypy is an optional static type checker for Python that aims to combine the
+benefits of dynamic (or "duck") typing and static typing.]],
+    },
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

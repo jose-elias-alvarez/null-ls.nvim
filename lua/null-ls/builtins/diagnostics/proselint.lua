@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "proselint",
+    meta = {
+        url = "https://github.com/amperser/proselint",
+        description = "An English prose linter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "markdown", "tex" },
     generator_opts = {

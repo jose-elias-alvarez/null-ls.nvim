@@ -6,6 +6,13 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "eslint",
+    meta = {
+        url = "https://github.com/eslint/eslint",
+        description = "Find and fix problems in your JavaScript code.",
+        notes = {
+            "Slow and not suitable for formatting on save. If at all possible, use [eslint_d](https://github.com/mantoni/eslint_d.js/).",
+        },
+    },
     method = FORMATTING,
     filetypes = {
         "javascript",

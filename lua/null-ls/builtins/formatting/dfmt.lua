@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "dfmt",
+    meta = {
+        url = "https://github.com/dlang-community/dfmt",
+        description = "Formatter for D source code.",
+    },
     method = FORMATTING,
     filetypes = { "d" },
     generator_opts = {

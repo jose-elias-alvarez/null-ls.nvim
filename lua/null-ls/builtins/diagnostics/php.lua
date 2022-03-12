@@ -6,6 +6,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "php",
+    meta = {
+        url = "https://www.php.net/",
+        description = "Uses the php command-line tool's built in `-l` flag to check for syntax errors.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "gitlint",
+    meta = {
+        url = "https://jorisroovers.com/gitlint/",
+        description = "Linter for Git commit messages.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "gitcommit" },
     generator_opts = {

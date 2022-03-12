@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "lua_format",
+    meta = {
+        url = "https://github.com/Koihik/LuaFormatter",
+        description = "Reformats your Lua source code.",
+    },
     method = FORMATTING,
     filetypes = { "lua" },
     generator_opts = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "protoc-gen-lint",
+    meta = {
+        url = "https://github.com/ckaznocha/protoc-gen-lint",
+        description = "A plug-in for Google's Protocol Buffers (protobufs) compiler to lint .proto files for style violations.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "proto" },
     generator_opts = {

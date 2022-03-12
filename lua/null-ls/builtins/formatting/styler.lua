@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "styler",
+    meta = {
+        url = "https://github.com/r-lib/styler",
+        description = "Non-invasive pretty printing of R code.",
+    },
     method = FORMATTING,
     filetypes = { "r", "rmd" },
     generator_opts = {

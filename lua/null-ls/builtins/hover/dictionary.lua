@@ -35,4 +35,11 @@ return h.make_builtin({
         end,
         async = true,
     },
+    meta = {
+        url = "https://dictionaryapi.dev/",
+        description = "Shows the first available definition for the current word under the cursor.",
+        notes = {
+            "Depends on Plenary's `curl` module, which itself depends on having `curl` installed and available on your `$PATH`.",
+        },
+    },
 })

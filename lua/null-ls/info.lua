@@ -69,9 +69,7 @@ M.show_window = function()
 
     local get_methods_per_source = function(source)
         local available_methods = vim.tbl_keys(source.methods)
-        return vim.tbl_map(function(method)
-            return methods.internal[method]:lower()
-        end, available_methods)
+        return vim.tbl_map(methods.get_readable_name, available_methods)
     end
 
     local get_supported_filestypes = function(source)

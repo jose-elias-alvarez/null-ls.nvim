@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "fixjson",
+    meta = {
+        url = "https://github.com/rhysd/fixjson",
+        description = "A JSON file fixer/formatter for humans using (relaxed) JSON5.",
+    },
     method = FORMATTING,
     filetypes = { "json" },
     generator_opts = {

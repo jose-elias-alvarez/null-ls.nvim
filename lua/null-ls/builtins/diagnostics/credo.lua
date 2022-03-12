@@ -13,6 +13,13 @@ end
 
 return h.make_builtin({
     name = "credo",
+    meta = {
+        url = "https://hexdocs.pm/credo",
+        description = "Static analysis of `elixir` files for enforcing code consistency.",
+        notes = {
+            "Searches upwards from the buffer to the project root and tries to find the first `.credo.exs` file in case the project has nested `credo` configs.",
+        },
+    },
     method = DIAGNOSTICS,
     filetypes = { "elixir" },
     generator_opts = {

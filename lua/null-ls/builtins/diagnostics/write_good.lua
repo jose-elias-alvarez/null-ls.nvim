@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "write_good",
+    meta = {
+        url = "https://github.com/btford/write-good",
+        description = "English prose linter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
     generator_opts = {

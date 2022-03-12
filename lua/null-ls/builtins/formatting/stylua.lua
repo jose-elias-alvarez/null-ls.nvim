@@ -6,6 +6,10 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 return h.make_builtin({
     name = "stylua",
+    meta = {
+        url = "https://github.com/JohnnyMorganz/StyLua",
+        description = "An opinionated code formatter for Lua.",
+    },
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "lua" },
     generator_opts = {

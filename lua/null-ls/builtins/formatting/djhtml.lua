@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "djhtml",
+    meta = {
+        url = "https://github.com/rtts/djhtml",
+        description = "A pure-Python Django/Jinja template indenter without dependencies.",
+    },
     method = FORMATTING,
     filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "cppcheck",
+    meta = {
+        url = "https://github.com/danmar/cppcheck",
+        description = "A tool for fast static analysis of C/C++ code.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "cpp", "c" },
     generator_opts = {

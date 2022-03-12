@@ -14,6 +14,10 @@ end
 
 return h.make_builtin({
     name = "protolint",
+    meta = {
+        url = "https://https//github.com/yoheimuta/protolint",
+        description = "A pluggable linter and fixer to enforce Protocol Buffer style and conventions.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "proto" },
     generator_opts = {

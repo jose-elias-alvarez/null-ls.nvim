@@ -5,6 +5,10 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 
 return h.make_builtin({
     name = "proselint",
+    meta = {
+        url = "https://github.com/amperser/proselint",
+        description = "An English prose linter. Can fix some issues via code actions.",
+    },
     method = CODE_ACTION,
     filetypes = { "markdown", "tex" },
     generator_opts = {

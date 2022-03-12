@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "luacheck",
+    meta = {
+        url = "https://github.com/lunarmodules/luacheck",
+        description = "A tool for linting and static analysis of Lua code.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "lua" },
     generator_opts = {

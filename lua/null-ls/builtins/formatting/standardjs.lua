@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "standardjs",
+    meta = {
+        url = "https://standardjs.com/",
+        description = "JavaScript Standard Style, a no-configuration automatic code formatter that just works.",
+    },
     method = FORMATTING,
     filetypes = { "javascript", "javascriptreact" },
     generator_opts = {

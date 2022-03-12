@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "codespell",
+    meta = {
+        url = "https://github.com/codespell-project/codespell",
+        description = "Codespell finds common misspellings in text files.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

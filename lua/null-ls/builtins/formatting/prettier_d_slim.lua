@@ -7,6 +7,14 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 return h.make_builtin({
     name = "prettier_d_slim",
+    meta = {
+        url = "https://github.com/mikew/prettier_d_slim",
+        description = "Makes prettier fast.",
+        notes = {
+            "May not work on some filetypes.",
+            "`prettierd` is more stable and recommended.",
+        },
+    },
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = {
         "javascript",

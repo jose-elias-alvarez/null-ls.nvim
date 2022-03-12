@@ -6,6 +6,10 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 return h.make_builtin({
     name = "yapf",
+    meta = {
+        url = "https://github.com/google/yapf",
+        description = "Formatter for Python.",
+    },
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "python" },
     generator_opts = {

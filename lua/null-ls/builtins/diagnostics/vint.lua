@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "vint",
+    meta = {
+        url = "https://github.com/Vimjas/vint",
+        description = "Linter for Vimscript.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "vim" },
     generator_opts = {

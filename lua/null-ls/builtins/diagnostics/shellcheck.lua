@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "shellcheck",
+    meta = {
+        url = "https://www.shellcheck.net/",
+        description = "A shell script static analysis tool.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "sh" },
     generator_opts = {

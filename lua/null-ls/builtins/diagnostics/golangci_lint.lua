@@ -5,6 +5,10 @@ local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "golangci_lint",
+    meta = {
+        url = "https://golangci-lint.run/",
+        description = "A Go linter aggregator.",
+    },
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

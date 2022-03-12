@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "sqlformat",
+    meta = {
+        url = "https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html",
+        description = "The sqlformat command-line tool can reformat SQL files according to specified options.",
+    },
     method = FORMATTING,
     filetypes = { "sql" },
     generator_opts = {

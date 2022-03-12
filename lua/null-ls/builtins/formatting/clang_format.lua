@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "clang_format",
+    meta = {
+        url = "https://www.kernel.org/doc/html/latest/process/clang-format.html",
+        description = "Tool to format C/C++/… code according to a set of rules and heuristics.",
+    },
     method = FORMATTING,
     filetypes = { "c", "cpp", "cs", "java" },
     generator_opts = {

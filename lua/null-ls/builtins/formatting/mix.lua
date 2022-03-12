@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "mix",
+    meta = {
+        url = "https://hexdocs.pm/mix/1.12/Mix.html",
+        description = "Build tool that provides tasks for creating, compiling, and testing elixir projects, managing its dependencies, and more.",
+    },
     method = FORMATTING,
     filetypes = { "elixir" },
     generator_opts = {

@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "cue_fmt",
+    meta = {
+        url = "https://cuelang.org/",
+        description = "A CUE language formatter.",
+    },
     method = FORMATTING,
     filetypes = { "cue" },
     generator_opts = {

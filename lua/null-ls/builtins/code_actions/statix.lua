@@ -5,6 +5,10 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 
 return h.make_builtin({
     name = "statix",
+    meta = {
+        url = "https://github.com/nerdypepper/statix",
+        description = "Lints and suggestions for the nix programming language.",
+    },
     method = CODE_ACTION,
     filetypes = { "nix" },
     generator_opts = {

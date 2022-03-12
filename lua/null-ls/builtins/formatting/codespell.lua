@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "codespell",
+    meta = {
+        url = "https://github.com/codespell-project/codespell",
+        description = "Fix common misspellings in text files.",
+    },
     method = FORMATTING,
     filetypes = {},
     generator_opts = {

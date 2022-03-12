@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "rufo",
+    meta = {
+        url = "https://github.com/ruby-formatter/rufo",
+        description = "Opinionated ruby formatter.",
+    },
     method = FORMATTING,
     filetypes = { "ruby" },
     generator_opts = {

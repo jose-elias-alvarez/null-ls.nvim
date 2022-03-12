@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "scalafmt",
+    meta = {
+        url = "https://github.com/scalameta/scalafmt",
+        description = "Code formatter for Scala",
+    },
     method = FORMATTING,
     filetypes = { "scala" },
     generator_opts = {

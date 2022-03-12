@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "nginx_beautifier",
+    meta = {
+        url = "https://github.com/vasilevich/nginxbeautifier",
+        description = "Beautifies and formats nginx configuration files.",
+    },
     method = FORMATTING,
     filetypes = { "nginx" },
     generator_opts = {

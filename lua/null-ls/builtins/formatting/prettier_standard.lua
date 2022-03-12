@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "prettier_standard",
+    meta = {
+        url = "https://github.com/sheerun/prettier-standard",
+        description = "Formats with Prettier and lints with ESLint+Standard! (✿◠‿◠)",
+    },
     method = FORMATTING,
     filetypes = { "javascript", "javascriptreact" },
     generator_opts = {

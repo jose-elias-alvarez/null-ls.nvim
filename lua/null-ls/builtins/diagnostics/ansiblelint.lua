@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "ansiblelint",
+    meta = {
+        url = "https://github.com/ansible-community/ansible-lint",
+        description = "Linter for Ansible playbooks, roles and collections.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "yaml.ansible" },
     generator_opts = {

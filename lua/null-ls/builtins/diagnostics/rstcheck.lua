@@ -5,6 +5,10 @@ local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "rstcheck",
+    meta = {
+        url = "https://github.com/myint/rstcheck",
+        description = "Checks syntax of reStructuredText and code blocks nested within it.",
+    },
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "rst" },
     generator_opts = {

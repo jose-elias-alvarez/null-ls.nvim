@@ -8,6 +8,10 @@ local severities = {
 
 return h.make_builtin({
     name = "puppet-lint",
+    meta = {
+        url = "http://puppet-lint.com/",
+        description = "Check that your Puppet manifest conforms to the style guide.",
+    },
     method = methods.internal.DIAGNOSTICS,
     filetypes = { "puppet", "epuppet" },
     generator_opts = {
