@@ -24,6 +24,10 @@ end
 
 return h.make_builtin({
     name = "textlint",
+    meta = {
+        url = "https://github.com/textlint/textlint",
+        description = "The pluggable linting tool for text and Markdown.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "deadnix",
+    meta = {
+        url = "https://github.com/astro/deadnix",
+        description = "Scan Nix files for dead code.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "nix" },
     generator_opts = {

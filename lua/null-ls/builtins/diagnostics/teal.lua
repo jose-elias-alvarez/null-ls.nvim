@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "teal",
+    meta = {
+        url = "https://github.com/teal-language/tl",
+        description = "The compiler for Teal, a typed dialect of Lua.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "teal" },
     generator_opts = {

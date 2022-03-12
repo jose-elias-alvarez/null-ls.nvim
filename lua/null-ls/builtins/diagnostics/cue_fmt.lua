@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "cue_fmt",
+    meta = {
+        url = "https://github.com/cue-lang/cue",
+        description = "Reports on formatting errors in .cue language files.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "cue" },
     generator_opts = {

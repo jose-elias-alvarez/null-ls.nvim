@@ -40,6 +40,10 @@ end
 
 return h.make_builtin({
     name = "standardrb",
+    meta = {
+        url = "https://github.com/testdouble/standard",
+        description = "Ruby style guide, linter, and formatter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "ruby" },
     generator_opts = {

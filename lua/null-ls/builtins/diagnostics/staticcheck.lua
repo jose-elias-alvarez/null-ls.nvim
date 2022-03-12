@@ -11,6 +11,10 @@ local severities = {
 
 return h.make_builtin({
     name = "staticcheck",
+    meta = {
+        url = "https://staticcheck.io/",
+        description = "Advanced Go linter.",
+    },
     method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

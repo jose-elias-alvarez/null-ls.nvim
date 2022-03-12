@@ -3,6 +3,10 @@ local methods = require("null-ls.methods")
 
 return h.make_builtin({
     name = "pylama",
+    meta = {
+        url = "https://github.com/klen/pylama",
+        description = "Code audit tool for Python.",
+    },
     method = methods.internal.DIAGNOSTICS,
     filetypes = { "python" },
     factory = h.generator_factory,

@@ -25,6 +25,10 @@ end
 
 return h.make_builtin({
     name = "eslint",
+    meta = {
+        url = "https://github.com/eslint/eslint",
+        description = "A linter for the JavaScript ecosystem.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {

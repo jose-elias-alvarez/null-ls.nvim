@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "format_r",
+    meta = {
+        url = "https://github.com/yihui/formatR",
+        description = "Format R code automatically.",
+    },
     method = FORMATTING,
     filetypes = { "r", "rmd" },
     generator_opts = {
@@ -19,8 +23,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/yihui/formatR",
-        description = "Format R code automatically.",
-    },
 })

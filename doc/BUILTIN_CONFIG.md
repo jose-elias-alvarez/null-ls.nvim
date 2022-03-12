@@ -227,6 +227,15 @@ local sources = {
 }
 ```
 
+### Diagnostics on save
+
+If the documentation lists a source's method as `diagnostics_on_save`, that
+source **will not run on change**. The diagnostics you see will not reflect
+changes to the buffer until you write those changes to the disk.
+
+Typically, this is a workaround for linters that require project context to
+produce accurate results, and overriding the method will not work.
+
 ### Spawn directory
 
 By default, null-ls spawns commands using the root directory of its client, as

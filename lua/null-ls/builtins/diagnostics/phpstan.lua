@@ -5,6 +5,13 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "phpstan",
+    meta = {
+        url = "https://github.com/phpstan/phpstan",
+        description = "PHP static analysis tool.",
+        notes = {
+            "Requires a valid `phpstan.neon` at root.",
+        },
+    },
     method = DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {

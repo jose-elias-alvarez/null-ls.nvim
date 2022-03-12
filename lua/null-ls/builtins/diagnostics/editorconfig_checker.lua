@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "editorconfig_checker",
+    meta = {
+        url = "https://github.com/editorconfig-checker/editorconfig-checker",
+        description = "A tool to verify that your files are in harmony with your `.editorconfig`.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

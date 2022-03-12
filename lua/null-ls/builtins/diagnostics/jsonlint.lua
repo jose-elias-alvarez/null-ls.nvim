@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "jsonlint",
+    meta = {
+        url = "https://github.com/zaach/jsonlint",
+        description = "A pure JavaScript version of the service provided at jsonlint.com.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "json" },
     generator_opts = {

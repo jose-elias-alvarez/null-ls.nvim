@@ -15,6 +15,9 @@ local ACTIONS = {
 
 return h.make_builtin({
     name = "gitrebase",
+    meta = {
+        description = "Injects actions to change `gitrebase` command (e.g. using `squash` instead of `pick`).",
+    },
     method = CODE_ACTION,
     filetypes = { "gitrebase" },
     generator = {

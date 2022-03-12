@@ -112,6 +112,9 @@ return {
   json_tool = {
     filetypes = { "json" }
   },
+  ktlint = {
+    filetypes = { "kotlin" }
+  },
   latexindent = {
     filetypes = { "tex" }
   },

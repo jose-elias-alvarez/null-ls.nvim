@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "deno_fmt",
+    meta = {
+        url = "https://deno.land/manual/tools/formatter",
+        description = "Use [Deno](https://deno.land/) to format TypeScript and JavaScript code.",
+    },
     method = FORMATTING,
     filetypes = {
         "javascript",
@@ -18,8 +22,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://deno.land/manual/tools/formatter",
-        description = "Use [Deno](https://deno.land/) to format TypeScript and JavaScript code.",
-    },
 })

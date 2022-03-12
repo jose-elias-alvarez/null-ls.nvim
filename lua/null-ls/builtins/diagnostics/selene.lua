@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "selene",
+    meta = {
+        url = "https://kampfkarren.github.io/selene/",
+        description = "Command line tool designed to help write correct and idiomatic Lua code.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "lua" },
     generator_opts = {

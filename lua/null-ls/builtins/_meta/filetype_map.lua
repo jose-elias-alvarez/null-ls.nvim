@@ -92,12 +92,19 @@ return {
   gitcommit = {
     diagnostics = { "gitlint" }
   },
+  gitrebase = {
+    code_actions = { "gitrebase" }
+  },
   go = {
+    code_actions = { "refactoring" },
     diagnostics = { "golangci_lint", "revive", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "golines" }
   },
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
+  },
+  haml = {
+    diagnostics = { "haml_lint" }
   },
   handlebars = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
@@ -116,10 +123,12 @@ return {
     formatting = { "astyle", "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
+    code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   javascriptreact = {
+    code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
@@ -134,11 +143,16 @@ return {
   jsonc = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  kotlin = {
+    diagnostics = { "ktlint" },
+    formatting = { "ktlint" }
+  },
   less = {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
   },
   lua = {
+    code_actions = { "refactoring" },
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
   },
@@ -146,6 +160,7 @@ return {
     diagnostics = { "checkmake" }
   },
   markdown = {
+    code_actions = { "proselint" },
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
@@ -157,6 +172,7 @@ return {
     formatting = { "nimpretty" }
   },
   nix = {
+    code_actions = { "statix" },
     diagnostics = { "deadnix", "statix" },
     formatting = { "nixfmt", "nixpkgs_fmt" }
   },
@@ -185,6 +201,7 @@ return {
     formatting = { "puppet_lint" }
   },
   python = {
+    code_actions = { "refactoring" },
     diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }
   },
@@ -203,6 +220,9 @@ return {
   },
   rmd = {
     formatting = { "format_r", "styler" }
+  },
+  rst = {
+    diagnostics = { "rstcheck" }
   },
   ruby = {
     diagnostics = { "rubocop", "standardrb" },
@@ -223,6 +243,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
   },
   sh = {
+    code_actions = { "shellcheck" },
     diagnostics = { "shellcheck" },
     formatting = { "shellharden", "shfmt" }
   },
@@ -248,6 +269,7 @@ return {
     formatting = { "terraform_fmt" }
   },
   tex = {
+    code_actions = { "proselint" },
     diagnostics = { "chktex", "proselint", "vale" },
     formatting = { "latexindent" }
   },
@@ -261,10 +283,12 @@ return {
     formatting = { "taplo" }
   },
   typescript = {
+    code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   typescriptreact = {
+    code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
@@ -272,6 +296,7 @@ return {
     diagnostics = { "vint" }
   },
   vue = {
+    code_actions = { "eslint", "eslint_d" },
     diagnostics = { "eslint", "eslint_d" },
     formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },

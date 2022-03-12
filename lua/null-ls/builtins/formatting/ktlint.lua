@@ -4,22 +4,18 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "standardrb",
+    name = "ktlint",
     meta = {
-        url = "https://github.com/testdouble/standard",
-        description = "Ruby Style Guide, with linter & automatic code fixer. Based on Rubocop.",
+        url = "https://ktlint.github.io/",
+        description = "An anti-bikeshedding Kotlin linter with built-in formatter.",
     },
     method = FORMATTING,
-    filetypes = { "ruby" },
+    filetypes = { "kotlin" },
     generator_opts = {
-        command = "standardrb",
+        command = "ktlint",
         args = {
-            "--fix",
             "--format",
-            "quiet",
-            "--stderr",
             "--stdin",
-            "$FILENAME",
         },
         to_stdin = true,
     },

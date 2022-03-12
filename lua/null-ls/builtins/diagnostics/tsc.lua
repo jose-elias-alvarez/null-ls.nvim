@@ -13,6 +13,10 @@ end
 
 return h.make_builtin({
     name = "tsc",
+    meta = {
+        url = "https://www.typescriptlang.org/docs/handbook/compiler-options.html",
+        description = "Parses diagnostics from the TypeScript compiler.",
+    },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "typescript", "typescriptreact" },
     generator_opts = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "psalm",
+    meta = {
+        url = "https://psalm.dev/",
+        description = "A static analysis tool for finding errors in PHP applications.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {

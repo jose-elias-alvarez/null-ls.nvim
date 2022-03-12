@@ -14,6 +14,13 @@ end
 
 return h.make_builtin({
     name = "luasnip",
+    meta = {
+        url = "https://github.com/L3MON4D3/LuaSnip",
+        description = "Snippet engine for Neovim, written in Lua.",
+        notes = {
+            "Registering this source will show available snippets in the completion list, but luasnip is in charge of expanding them. Consult [luasnip's documentation](https://github.com/L3MON4D3/LuaSnip#keymaps) to set up keymaps for expansion and jumping.",
+        },
+    },
     method = COMPLETION,
     filetypes = {},
     generator = {

@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "shfmt",
+    meta = {
+        url = "https://github.com/mvdan/sh",
+        description = "A shell parser, formatter, and interpreter with `bash` support.",
+    },
     method = FORMATTING,
     filetypes = { "sh" },
     generator_opts = {

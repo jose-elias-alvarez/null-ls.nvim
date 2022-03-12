@@ -5,6 +5,13 @@ local COMPLETION = methods.internal.COMPLETION
 
 return h.make_builtin({
     name = "vsnip",
+    meta = {
+        url = "https://github.com/hrsh7th/vim-vsnip",
+        description = "Snippets managed by vim-vsnip.",
+        notes = {
+            "Registering this source will show available snippets in the completion list, but vim-vsnip is in charge of expanding them. See [vim-vsnip's documentation](https://github.com/hrsh7th/vim-vsnip#2-setting) for setup instructions.",
+        },
+    },
     method = COMPLETION,
     filetypes = {},
     generator = {

@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "pylint",
+    meta = {
+        url = "https://github.com/PyCQA/pylint",
+        description = "Pylint is a Python static code analysis tool which looks for programming errors, helps enforcing a coding standard, sniffs for code smells and offers simple refactoring suggestions.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

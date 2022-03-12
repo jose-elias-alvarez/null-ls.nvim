@@ -5,6 +5,13 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "pydocstyle",
+    meta = {
+        url = "https://www.pydocstyle.org/",
+        description = "pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.",
+        notes = {
+            "May fail to resolve config files. See [the wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#pydocstyle) for workarounds.",
+        },
+    },
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

@@ -142,6 +142,10 @@ end
 
 return h.make_builtin({
     name = "eslint",
+    meta = {
+        url = "https://github.com/eslint/eslint",
+        description = "Injects actions to fix ESLint issues or ignore broken rules.",
+    },
     method = CODE_ACTION,
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
     generator_opts = {

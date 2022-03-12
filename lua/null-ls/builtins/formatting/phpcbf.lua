@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "phpcbf",
+    meta = {
+        url = "https://github.com/squizlabs/PHP_CodeSniffer",
+        description = "Tokenizes PHP files and detects violations of a defined set of coding standards.",
+    },
     method = FORMATTING,
     filetypes = { "php" },
     generator_opts = {
@@ -24,8 +28,4 @@ return h.make_builtin({
         end,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/squizlabs/PHP_CodeSniffer",
-        description = "Tokenizes PHP files and detects violations of a defined set of coding standards.",
-    },
 })

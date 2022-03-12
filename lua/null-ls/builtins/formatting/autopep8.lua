@@ -6,6 +6,10 @@ local RANGE_FORMATTING = methods.internal.RANGE_FORMATTING
 
 return h.make_builtin({
     name = "autopep8",
+    meta = {
+        url = "https://github.com/hhatto/autopep8",
+        description = "A tool that automatically formats Python code to conform to the PEP 8 style guide.",
+    },
     method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "python" },
     generator_opts = {
@@ -16,8 +20,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/hhatto/autopep8",
-        description = "A tool that automatically formats Python code to conform to the PEP 8 style guide.",
-    },
 })

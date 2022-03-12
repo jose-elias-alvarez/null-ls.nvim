@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "curlylint",
+    meta = {
+        url = "https://www.curlylint.org/",
+        description = "Experimental HTML templates linting for Jinja, Nunjucks, Django templates, Twig, and Liquid.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "jinja.html", "htmldjango" },
     generator_opts = {

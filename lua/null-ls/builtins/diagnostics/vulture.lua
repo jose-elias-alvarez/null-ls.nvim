@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "vulture",
+    meta = {
+        url = "https://github.com/jendrikseipp/vulture",
+        description = "Vulture finds unused code in Python programs.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "python" },
     generator_opts = {

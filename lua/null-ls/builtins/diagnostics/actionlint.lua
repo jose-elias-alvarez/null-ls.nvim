@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "actionlint",
+    meta = {
+        url = "https://github.com/rhysd/actionlint",
+        description = "Actionlint is a static checker for GitHub Actions workflow files.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "yaml" },
     generator_opts = {

@@ -5,13 +5,6 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "gofmt",
-    method = FORMATTING,
-    filetypes = { "go" },
-    generator_opts = {
-        command = "gofmt",
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
     meta = {
         url = "https://pkg.go.dev/cmd/gofmt",
         description = "Formats go programs.",
@@ -20,4 +13,11 @@ return h.make_builtin({
             "Aligntment assumes that the editor is using a fixed-width font.",
         },
     },
+    method = FORMATTING,
+    filetypes = { "go" },
+    generator_opts = {
+        command = "gofmt",
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
 })

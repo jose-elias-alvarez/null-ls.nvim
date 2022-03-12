@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "alex",
+    meta = {
+        url = "https://github.com/get-alex/alex",
+        description = "Catch insensitive, inconsiderate writing.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
     generator_opts = {

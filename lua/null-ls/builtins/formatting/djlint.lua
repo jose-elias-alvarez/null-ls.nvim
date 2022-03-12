@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "djlint",
+    meta = {
+        url = "https://github.com/Riverside-Healthcare/djLint",
+        description = "✨ 📜 🪄 ✨ HTML Template Linter and Formatter.",
+    },
     method = FORMATTING,
     filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {
@@ -16,8 +20,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/Riverside-Healthcare/djLint",
-        description = "✨ 📜 🪄 ✨ HTML Template Linter and Formatter.",
-    },
 })

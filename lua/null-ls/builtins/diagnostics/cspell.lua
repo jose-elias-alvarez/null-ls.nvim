@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "cspell",
+    meta = {
+        url = "https://github.com/streetsidesoftware/cspell",
+        description = "cspell is a spell checker for code.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "taplo",
+    meta = {
+        url = "https://taplo.tamasfe.dev/",
+        description = "A versatile, feature-rich TOML toolkit.",
+    },
     method = FORMATTING,
     filetypes = { "toml" },
     generator_opts = {

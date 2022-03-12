@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "mdl",
+    meta = {
+        url = "https://github.com/markdownlint/markdownlint",
+        description = "A tool to check Markdown files and flag style issues.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
     generator_opts = {

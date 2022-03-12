@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "black",
+    meta = {
+        url = "https://github.com/psf/black",
+        description = "The uncompromising Python code formatter",
+    },
     method = FORMATTING,
     filetypes = { "python" },
     generator_opts = {
@@ -18,8 +22,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/psf/black",
-        description = "The uncompromising Python code formatter",
-    },
 })

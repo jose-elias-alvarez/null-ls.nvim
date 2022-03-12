@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "yamllint",
+    meta = {
+        url = "https://github.com/adrienverge/yamllint",
+        description = "A linter for YAML files.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "yaml" },
     generator_opts = {

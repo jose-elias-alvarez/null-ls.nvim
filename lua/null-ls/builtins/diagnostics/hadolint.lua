@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "hadolint",
+    meta = {
+        url = "https://github.com/hadolint/hadolint",
+        description = "A smarter Dockerfile linter that helps you build best practice Docker images.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "dockerfile" },
     generator_opts = {

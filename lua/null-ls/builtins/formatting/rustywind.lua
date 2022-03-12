@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "rustywind",
+    meta = {
+        url = "https://github.com/avencera/rustywind",
+        description = "CLI for organizing Tailwind CSS classes.",
+    },
     method = FORMATTING,
     filetypes = {
         "javascript",
@@ -23,8 +27,4 @@ return h.make_builtin({
         dynamic_command = cmd_resolver.from_node_modules,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/avencera/rustywind",
-        description = "CLI for organizing Tailwind CSS classes.",
-    },
 })

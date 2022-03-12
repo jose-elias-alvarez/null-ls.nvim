@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "misspell",
+    meta = {
+        url = "https://github.com/client9/misspell",
+        description = "Checks commonly misspelled English words in source files.",
+    },
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {

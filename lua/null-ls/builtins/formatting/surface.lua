@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "surface",
+    meta = {
+        url = "https://hexdocs.pm/surface_formatter/readme.html",
+        description = "A code formatter for Surface, the server-side rendering component library for Phoenix.",
+    },
     method = FORMATTING,
     filetypes = { "elixir", "surface" },
     generator_opts = {

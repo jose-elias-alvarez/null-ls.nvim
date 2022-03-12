@@ -5,6 +5,10 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 
 return h.make_builtin({
     name = "gitsigns",
+    meta = {
+        url = "https://github.com/lewis6991/gitsigns.nvim",
+        description = "Injects code actions for Git operations at the current cursor position (stage / preview / reset hunks, blame, etc.).",
+    },
     method = CODE_ACTION,
     filetypes = {},
     generator = {

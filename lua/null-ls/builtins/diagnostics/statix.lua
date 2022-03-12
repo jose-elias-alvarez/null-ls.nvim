@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "statix",
+    meta = {
+        url = "https://github.com/nerdypepper/statix",
+        description = "Lints and suggestions for the Nix programming language.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "nix" },
     generator_opts = {

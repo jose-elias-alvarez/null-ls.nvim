@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "goimports",
+    meta = {
+        url = "https://pkg.go.dev/golang.org/x/tools/cmd/goimports",
+        description = "Updates your Go import lines, adding missing ones and removing unreferenced ones.",
+    },
     method = FORMATTING,
     filetypes = { "go" },
     generator_opts = {
@@ -13,8 +17,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://pkg.go.dev/golang.org/x/tools/cmd/goimports",
-        description = "Updates your Go import lines, adding missing ones and removing unreferenced ones.",
-    },
 })

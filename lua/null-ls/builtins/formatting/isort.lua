@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "isort",
+    meta = {
+        url = "https://github.com/PyCQA/isort",
+        description = "Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.",
+    },
     method = FORMATTING,
     filetypes = { "python" },
     generator_opts = {
@@ -18,8 +22,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/PyCQA/isort",
-        description = "Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.",
-    },
 })

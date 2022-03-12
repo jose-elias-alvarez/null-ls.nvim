@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "protolint",
+    meta = {
+        url = "https://github.com/yoheimuta/protolint",
+        description = "A pluggable linter and fixer to enforce Protocol Buffer style and conventions.",
+    },
     method = { FORMATTING },
     filetypes = { "proto" },
     generator_opts = {
@@ -14,8 +18,4 @@ return h.make_builtin({
         to_temp_file = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/yoheimuta/protolint",
-        description = "A pluggable linter and fixer to enforce Protocol Buffer style and conventions.",
-    },
 })

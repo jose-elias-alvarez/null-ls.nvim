@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "zigfmt",
+    meta = {
+        url = "https://github.com/ziglang/zig",
+        description = "Reformat Zig source into canonical form.",
+    },
     method = FORMATTING,
     filetypes = { "zig" },
     generator_opts = {

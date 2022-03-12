@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "golines",
+    meta = {
+        url = "https://pkg.go.dev/github.com/segmentio/golines",
+        description = "Applies a base formatter (eg. goimports or gofmt), then shortens long lines of code.",
+    },
     method = FORMATTING,
     filetypes = { "go" },
     generator_opts = {
@@ -12,8 +16,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://pkg.go.dev/github.com/segmentio/golines",
-        description = "Applies a base formatter (eg. goimports or gofmt), then shortens long lines of code.",
-    },
 })

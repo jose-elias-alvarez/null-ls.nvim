@@ -5,14 +5,6 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "rustfmt",
-    method = FORMATTING,
-    filetypes = { "rust" },
-    generator_opts = {
-        command = "rustfmt",
-        args = { "--emit=stdout" },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
     meta = {
         url = "https://github.com/rust-lang/rustfmt",
         description = "A tool for formatting rust code according to style guidelines.",
@@ -21,4 +13,12 @@ return h.make_builtin({
             "See [the wiki](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Source-specific-Configuration#rustfmt) for other workarounds.",
         },
     },
+    method = FORMATTING,
+    filetypes = { "rust" },
+    generator_opts = {
+        command = "rustfmt",
+        args = { "--emit=stdout" },
+        to_stdin = true,
+    },
+    factory = h.formatter_factory,
 })

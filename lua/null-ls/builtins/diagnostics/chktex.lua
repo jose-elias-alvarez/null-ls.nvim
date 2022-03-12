@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "chktex",
+    meta = {
+        url = "https://www.nongnu.org/chktex/",
+        description = "`latex` semantic linter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "tex" },
     generator_opts = {

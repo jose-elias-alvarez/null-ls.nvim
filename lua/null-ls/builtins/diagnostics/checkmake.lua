@@ -5,6 +5,10 @@ local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 return h.make_builtin({
     name = "checkmake",
+    meta = {
+        url = "https://github.com/mrtazz/checkmake",
+        description = "`make` linter.",
+    },
     method = DIAGNOSTICS,
     filetypes = { "make" },
     generator_opts = {

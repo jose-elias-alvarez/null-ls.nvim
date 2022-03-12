@@ -9,6 +9,10 @@ local severities = {
 
 return h.make_builtin({
     name = "revive",
+    meta = {
+        url = "https://revive.run/",
+        description = "Fast, configurable, extensible, flexible, and beautiful linter for Go.",
+    },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
     generator_opts = {

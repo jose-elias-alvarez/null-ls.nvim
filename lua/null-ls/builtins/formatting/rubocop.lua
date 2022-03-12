@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "rubocop",
+    meta = {
+        url = "https://github.com/rubocop/rubocop",
+        description = "Ruby static code analyzer and formatter, based on the community Ruby style guide.",
+    },
     method = FORMATTING,
     filetypes = { "ruby" },
     generator_opts = {
@@ -20,8 +24,4 @@ return h.make_builtin({
         to_stdin = true,
     },
     factory = h.formatter_factory,
-    meta = {
-        url = "https://github.com/rubocop/rubocop",
-        description = "Ruby static code analyzer and formatter, based on the community Ruby style guide.",
-    },
 })

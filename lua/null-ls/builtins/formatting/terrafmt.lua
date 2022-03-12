@@ -5,6 +5,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "terrafmt",
+    meta = {
+        url = "https://github.com/katbyte/terrafmt",
+        description = "The terrafmt command formats `terraform` blocks embedded in Markdown files.",
+    },
     method = FORMATTING,
     filetypes = { "markdown" },
     generator_opts = {

@@ -5,6 +5,9 @@ local COMPLETION = methods.internal.COMPLETION
 
 return h.make_builtin({
     name = "spell",
+    meta = {
+        description = "Spell suggestions completion source.",
+    },
     method = COMPLETION,
     filetypes = {},
     generator = {

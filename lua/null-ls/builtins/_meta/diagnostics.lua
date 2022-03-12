@@ -64,8 +64,14 @@ return {
   hadolint = {
     filetypes = { "dockerfile" }
   },
+  haml_lint = {
+    filetypes = { "haml" }
+  },
   jsonlint = {
     filetypes = { "json" }
+  },
+  ktlint = {
+    filetypes = { "kotlin" }
   },
   luacheck = {
     filetypes = { "lua" }
@@ -129,6 +135,9 @@ return {
   },
   rpmspec = {
     filetypes = { "spec" }
+  },
+  rstcheck = {
+    filetypes = { "rst" }
   },
   rubocop = {
     filetypes = { "ruby" }

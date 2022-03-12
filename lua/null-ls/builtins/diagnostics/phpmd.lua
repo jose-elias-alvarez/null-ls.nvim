@@ -3,6 +3,10 @@ local h = require("null-ls.helpers")
 
 return h.make_builtin({
     name = "phpmd",
+    meta = {
+        url = "https://github.com/phpmd/phpmd/",
+        description = "Runs PHP Mess Detector against PHP files.",
+    },
     method = null_ls.methods.DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {

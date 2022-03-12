@@ -6,6 +6,10 @@ local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
     name = "stylelint",
+    meta = {
+        url = "https://github.com/stylelint/stylelint",
+        description = "A mighty, modern linter that helps you avoid errors and enforce conventions in your styles.",
+    },
     method = FORMATTING,
     filetypes = { "scss", "less", "css", "sass" },
     generator_opts = {
