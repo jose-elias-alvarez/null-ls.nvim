@@ -40,6 +40,9 @@ return {
   deadnix = {
     filetypes = { "nix" }
   },
+  djlint = {
+    filetypes = { "django", "jinja.html", "htmldjango" }
+  },
   editorconfig_checker = {
     filetypes = {}
   },
