@@ -1267,7 +1267,7 @@ local sources = { null_ls.builtins.diagnostics.tidy }
 - Filetypes: `{ "html", "xml" }`
 - Method: `diagnostics`
 - Command: `tidy`
-- Args: `{ "--gnu-emacs", "yes", "-quiet", "-errors", "$FILENAME" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/tidy.lua))
 
 ### trail_space
 
