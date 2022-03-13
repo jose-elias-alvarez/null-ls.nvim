@@ -19,13 +19,21 @@ return h.make_builtin({
     filetypes = { "html", "xml" },
     generator_opts = {
         command = "tidy",
-        args = {
-            "--gnu-emacs",
-            "yes",
-            "-quiet",
-            "-errors",
-            "$FILENAME",
-        },
+        args = function(params)
+            local common_args = {
+                "--gnu-emacs",
+                "yes",
+                "-quiet",
+                "-errors",
+                "$FILENAME",
+            }
+
+            if params.ft == "xml" then
+                table.insert(common_args, 1, "-xml")
+            end
+
+            return common_args
+        end,
         to_stdin = true,
         from_stderr = true,
         format = "line",
