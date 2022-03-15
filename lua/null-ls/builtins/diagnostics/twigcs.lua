@@ -11,7 +11,7 @@ return h.make_builtin({
     filetypes = { "twig" },
     generator_opts = {
         command = "twigcs",
-        args = { "--reporter", "json", "$FILENAME", },
+        args = { "--reporter", "json", "$FILENAME" },
         format = "json",
         to_temp_file = true,
         check_exit_code = function(code)
