@@ -44,7 +44,7 @@ null-ls sources are able to hook into the following LSP features:
 
 null-ls includes built-in sources for each of these features to provide
 out-of-the-box functionality. See [BUILTINS](doc/BUILTINS.md) for a list of
-available built-in sources and [BUILTIN_CONFIG](BUILTIN_CONFIG.md) for
+available built-in sources and [BUILTIN_CONFIG](doc/BUILTIN_CONFIG.md) for
 instructions on how to set up and configure these sources.
 
 null-ls also provides helpers to streamline the process of spawning and
