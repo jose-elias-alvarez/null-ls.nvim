@@ -15,7 +15,6 @@ local add_rule_id_to_messages = function(messages)
 end
 
 local handle_eslint_output = function(params)
-    print(vim.inspect(params))
     params.messages = params.output and params.output[1] and params.output[1].messages or {}
     if params.err then
         table.insert(params.messages, { message = params.err })
