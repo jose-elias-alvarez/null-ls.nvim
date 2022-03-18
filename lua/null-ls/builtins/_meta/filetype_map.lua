@@ -101,7 +101,7 @@ return {
   },
   go = {
     code_actions = { "refactoring" },
-    diagnostics = { "golangci_lint", "revive", "staticcheck" },
+    diagnostics = { "golangci_lint", "revive", "semgrep", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "golines" }
   },
   graphql = {
@@ -125,6 +125,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
+    diagnostics = { "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "uncrustify" }
   },
   javascript = {
@@ -210,7 +211,7 @@ return {
   },
   python = {
     code_actions = { "refactoring" },
-    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "vulture" },
+    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },
     formatting = { "autopep8", "black", "isort", "reorder_python_imports", "yapf" }
   },
   qml = {
@@ -233,7 +234,7 @@ return {
     diagnostics = { "rstcheck" }
   },
   ruby = {
-    diagnostics = { "rubocop", "standardrb" },
+    diagnostics = { "rubocop", "semgrep", "standardrb" },
     formatting = { "rubocop", "rufo", "standardrb" }
   },
   rust = {
@@ -298,12 +299,12 @@ return {
   },
   typescript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
-    diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
+    diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   typescriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
-    diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
+    diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   vim = {

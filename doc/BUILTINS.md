@@ -1099,6 +1099,23 @@ local sources = { null_ls.builtins.diagnostics.selene }
 - Command: `selene`
 - Args: `{ "--display-style", "quiet", "-" }`
 
+### [semgrep](https://semgrep.dev/)
+
+Semgrep is a fast, open-source, static analysis tool for finding bugs and enforcing code standards at editor, commit, and CI time.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.semgrep }
+```
+
+#### Defaults
+
+- Filetypes: `{ "typescript", "typescriptreact", "ruby", "python", "java", "go" }`
+- Method: `diagnostics`
+- Command: `semgrep`
+- Args: `{ "-q", "--json", "$FILENAME" }`
+
 ### [shellcheck](https://www.shellcheck.net/)
 
 A shell script static analysis tool.

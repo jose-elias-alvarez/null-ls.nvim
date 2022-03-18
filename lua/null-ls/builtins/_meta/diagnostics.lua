@@ -151,6 +151,9 @@ return {
   selene = {
     filetypes = { "lua" }
   },
+  semgrep = {
+    filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }
+  },
   shellcheck = {
     filetypes = { "sh" }
   },
