@@ -10,7 +10,9 @@ local add_rule_id_to_messages = function(messages)
   end
 
   for _, message in ipairs(messages) do
-    message.message = message.message .. " [" .. message.ruleId .. "]"
+    if message.ruleId then
+      message.message = message.message .. " [" .. message.ruleId .. "]"
+    end
   end
 end
 
