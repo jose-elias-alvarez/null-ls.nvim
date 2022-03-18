@@ -4,7 +4,18 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local add_rule_id_to_messages = function(messages)
+  if not messages then
+    return
+  end
+
+  for _, message in ipairs(messages) do
+    message.message = message.message .. " [" .. message.ruleId .. "]"
+  end
+end
+
 local handle_eslint_output = function(params)
+    print(vim.inspect(params))
     params.messages = params.output and params.output[1] and params.output[1].messages or {}
     if params.err then
         table.insert(params.messages, { message = params.err })
@@ -13,12 +24,15 @@ local handle_eslint_output = function(params)
     local parser = h.diagnostics.from_json({
         attributes = {
             severity = "severity",
+            message = "message"
         },
         severities = {
             h.diagnostics.severities["warning"],
             h.diagnostics.severities["error"],
         },
     })
+
+    add_rule_id_to_messages(params.messages)
 
     return parser({ output = params.messages })
 end
