@@ -151,6 +151,9 @@ return {
   selene = {
     filetypes = { "lua" }
   },
+  semgrep = {
+    filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }
+  },
   shellcheck = {
     filetypes = { "sh" }
   },
@@ -186,6 +189,9 @@ return {
   },
   tsc = {
     filetypes = { "typescript", "typescriptreact" }
+  },
+  twigcs = {
+    filetypes = { "twig" }
   },
   vale = {
     filetypes = { "markdown", "tex", "asciidoc" }
