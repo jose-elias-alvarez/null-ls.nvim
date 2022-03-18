@@ -1301,6 +1301,23 @@ local sources = { null_ls.builtins.diagnostics.tsc }
 - Command: `tsc`
 - Args: `{ "--pretty", "false", "--noEmit" }`
 
+### [twigcs](https://github.com/friendsoftwig/twigcs)
+
+Runs Twigcs against Twig files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.twigcs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "twig" }`
+- Method: `diagnostics`
+- Command: `twigcs`
+- Args: `{ "--reporter", "json", "$FILENAME" }`
+
 ### [vale](https://docs.errata.ai/vale/about)
 
 Syntax-aware linter for prose built with speed and extensibility in mind.

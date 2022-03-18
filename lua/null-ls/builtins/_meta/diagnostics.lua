@@ -187,6 +187,9 @@ return {
   tsc = {
     filetypes = { "typescript", "typescriptreact" }
   },
+  twigcs = {
+    filetypes = { "twig" }
+  },
   vale = {
     filetypes = { "markdown", "tex", "asciidoc" }
   },

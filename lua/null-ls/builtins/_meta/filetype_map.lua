@@ -293,6 +293,9 @@ return {
   toml = {
     formatting = { "taplo" }
   },
+  twig = {
+    diagnostics = { "twigcs" }
+  },
   typescript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "tsc", "xo" },
