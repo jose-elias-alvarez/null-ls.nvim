@@ -24,7 +24,6 @@ local handle_eslint_output = function(params)
     local parser = h.diagnostics.from_json({
         attributes = {
             severity = "severity",
-            message = "message"
         },
         severities = {
             h.diagnostics.severities["warning"],
