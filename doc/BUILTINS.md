@@ -733,6 +733,23 @@ local sources = { null_ls.builtins.diagnostics.misspell }
 - Method: `diagnostics`
 - Command: `misspell`
 
+### [mlint](https://www.mathworks.com/help/matlab/ref/mlint.html)
+
+Linter for MATLAB files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.mlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "matlab" }`
+- Method: `diagnostics_on_save`
+- Command: `mlint`
+- Args: `{ "$FILENAME" }`
+
 ### [mypy](https://github.com/python/mypy)
 
 Mypy is an optional static type checker for Python that aims to combine the

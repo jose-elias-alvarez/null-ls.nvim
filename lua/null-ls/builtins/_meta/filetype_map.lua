@@ -171,6 +171,9 @@ return {
     formatting = { "markdownlint", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
+  matlab = {
+    diagnostics = { "mlint" }
+  },
   nginx = {
     formatting = { "nginx_beautifier" }
   },
