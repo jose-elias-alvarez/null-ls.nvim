@@ -1133,6 +1133,23 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 - Command: `shellcheck`
 - Args: `{ "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }`
 
+### [solhint](https://protofire.github.io/solhint/)
+
+Solidity linter providing security and style guide validations.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.solhint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "solidity" }`
+- Method: `diagnostics`
+- Command: `solhint`
+- Args: `{ "$FILENAME", "--formatter", "unix" }`
+
 ### [standardjs](https://standardjs.com/)
 
 JavaScript style guide, linter, and formatter.
