@@ -88,6 +88,9 @@ return {
   misspell = {
     filetypes = {}
   },
+  mlint = {
+    filetypes = { "matlab" }
+  },
   mypy = {
     filetypes = { "python" }
   },
