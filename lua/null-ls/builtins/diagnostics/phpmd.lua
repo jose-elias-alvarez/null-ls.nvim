@@ -11,18 +11,11 @@ return h.make_builtin({
     filetypes = { "php" },
     generator_opts = {
         command = "phpmd",
-        args = {
-            "--ignore-violations-on-exit",
-            "--ignore-errors-on-exit",
-            "-", -- process stdin
-            "json",
-            -- 'phpmd.xml',
-        },
+        args = { "$FILENAME", "json" },
         format = "json",
-        to_stdin = true,
-        from_stderr = false,
+        to_temp_file = true,
         check_exit_code = function(code)
-            return code <= 1
+            return code <= 3
         end,
         on_output = function(params)
             local parser = h.diagnostics.from_json({
@@ -34,10 +27,11 @@ return h.make_builtin({
                     code = "rule",
                 },
                 severities = {
-                    h.diagnostics.severities["error"],
-                    h.diagnostics.severities["warning"],
-                    h.diagnostics.severities["information"],
-                    h.diagnostics.severities["hint"],
+                    [1] = h.diagnostics.severities["error"],
+                    [2] = h.diagnostics.severities["warning"],
+                    [3] = h.diagnostics.severities["information"],
+                    [4] = h.diagnostics.severities["hint"],
+                    [5] = h.diagnostics.severities["hint"],
                 },
             })
             params.violations = params.output
