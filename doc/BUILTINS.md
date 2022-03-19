@@ -817,7 +817,7 @@ local sources = { null_ls.builtins.diagnostics.phpmd }
 - Filetypes: `{ "php" }`
 - Method: `diagnostics`
 - Command: `phpmd`
-- Args: `{ "--ignore-violations-on-exit", "--ignore-errors-on-exit", "-", "json" }`
+- Args: `{ "$FILENAME", "json" }`
 
 ### [phpstan](https://github.com/phpstan/phpstan)
 
