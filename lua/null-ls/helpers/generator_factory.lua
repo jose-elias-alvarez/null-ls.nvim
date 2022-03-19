@@ -214,15 +214,18 @@ return function(opts)
             end
 
             local wrapper = function(error_output, output)
+                log:trace("error output: " .. (error_output or "nil"))
+                log:trace("output: " .. (output or "nil"))
+
                 if ignore_stderr then
+                    if error_output then
+                        log:trace("ignoring stderr due to generator options")
+                    end
                     error_output = nil
                 elseif from_stderr then
                     output = error_output
                     error_output = nil
                 end
-
-                log:trace("error output: " .. (error_output or "nil"))
-                log:trace("output: " .. (output or "nil"))
 
                 local handle_output = function()
                     if error_output and not (format == output_formats.raw or format == output_formats.json_raw) then
