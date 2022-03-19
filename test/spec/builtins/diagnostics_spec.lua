@@ -458,6 +458,43 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("solhint", function()
+        local linter = diagnostics.solhint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with an Error severity", function()
+            local file = {
+                [[ import 'interfaces/IToken.sol'; ]],
+            }
+            local output = "contracts/Token.sol:22:8: Use double quotes for string literals [Error/quotes]"
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                code = "quotes",
+                col = "8",
+                filename = "contracts/Token.sol",
+                message = "Use double quotes for string literals",
+                row = "22",
+                severity = 1,
+            }, diagnostic)
+        end)
+
+        it("should create a diagnostic with a Warning severity", function()
+            local file = {
+                [[ function somethingPrivate(uint8 id) returns (bool) {}; ]],
+            }
+            local output = "contracts/Token.sol:359:5: Explicitly mark visibility in function [Warning/func-visibility]"
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                code = "func-visibility",
+                col = "5",
+                filename = "contracts/Token.sol",
+                message = "Explicitly mark visibility in function",
+                row = "359",
+                severity = 2,
+            }, diagnostic)
+        end)
+    end)
+
     describe("eslint", function()
         local linter = diagnostics.eslint
         local parser = linter._opts.on_output
