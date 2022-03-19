@@ -27,11 +27,11 @@ return h.make_builtin({
                     code = "rule",
                 },
                 severities = {
-                    h.diagnostics.severities["error"],
-                    h.diagnostics.severities["warning"],
-                    h.diagnostics.severities["information"],
-                    h.diagnostics.severities["hint"],
-                    h.diagnostics.severities["hint"],
+                    [1] = h.diagnostics.severities["error"],
+                    [2] = h.diagnostics.severities["warning"],
+                    [3] = h.diagnostics.severities["information"],
+                    [4] = h.diagnostics.severities["hint"],
+                    [5] = h.diagnostics.severities["hint"],
                 },
             })
             params.violations = params.output
