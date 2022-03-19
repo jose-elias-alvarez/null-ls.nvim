@@ -18,8 +18,8 @@ return h.make_builtin({
         },
         command = "solhint",
         format = "line",
-        from_stderr = false,
-        on_output = h.diagnostics.from_pattern("([^:]+):([%d]+):([%d]+): (.*) %[([%a]+)/([^]]+)%]", {
+        from_stderr = true,
+        on_output = h.diagnostics.from_pattern("([^:]*):([%d]+):([%d]+): (.*) %[([%a]+)/([%a%p]+)%]", {
             "filename",
             "row",
             "col",
@@ -28,8 +28,10 @@ return h.make_builtin({
             "code",
         }, {
             severities = {
+                ["Error"] = h.diagnostics.severities.error,
                 ["Warning"] = h.diagnostics.severities.warning,
             },
         }),
+        to_stdin = true,
     },
 })
