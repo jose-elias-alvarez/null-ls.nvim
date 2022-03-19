@@ -15,7 +15,7 @@ return h.make_builtin({
         format = "json",
         to_temp_file = true,
         check_exit_code = function(code)
-            return code <= 2
+            return code <= 3
         end,
         on_output = function(params)
             local parser = h.diagnostics.from_json({
