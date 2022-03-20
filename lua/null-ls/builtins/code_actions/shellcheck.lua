@@ -5,6 +5,7 @@ local CODE_ACTION = methods.internal.CODE_ACTION
 
 local blank_or_comment_line_regex = vim.regex([[^\s*\(#.*\)\?$]])
 local shebang_regex = vim.regex([[^#!]])
+local multiline_command_regex = vim.regex([[^.*\\$]])
 local shellcheck_disable_regex = vim.regex([[^\s*#\s*shellcheck\s\+disable=\(\(SC\)\?\d\+\)\([,-]\(SC\)\?\d\+\)*\s*$]])
 local shellcheck_disable_pattern = "^%s*#%s*shellcheck%s+disable=([^%s]*)%s*$"
 
@@ -109,6 +110,9 @@ local generate_line_disable_action = function(bufnr, row, code, indentation)
     if get_first_non_comment_row(bufnr, row) == row then
         return
     end
+    local _, match_row = search_region(bufnr, multiline_command_regex, row - 1, 0, nil, true)
+    row = match_row + 1
+    indentation = vim.api.nvim_buf_get_lines(bufnr, row - 1, row, false)[1]:match("^%s+") or ""
     return {
         title = "Disable ShellCheck rule " .. code .. " for this line",
         action = function()
