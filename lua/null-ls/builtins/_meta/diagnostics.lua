@@ -160,6 +160,9 @@ return {
   shellcheck = {
     filetypes = { "sh" }
   },
+  solhint = {
+    filetypes = { "solidity" }
+  },
   standardjs = {
     filetypes = { "javascript", "javascriptreact" }
   },

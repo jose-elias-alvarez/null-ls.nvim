@@ -1152,7 +1152,7 @@ local sources = { null_ls.builtins.diagnostics.shellcheck }
 
 ### [solhint](https://protofire.github.io/solhint/)
 
-Solidity linter providing security and style guide validations.
+An open source project for linting Solidity code. It provides both security and style guide validations.
 
 #### Usage
 

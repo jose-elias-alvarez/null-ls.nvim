@@ -259,6 +259,9 @@ return {
     diagnostics = { "shellcheck" },
     formatting = { "shellharden", "shfmt" }
   },
+  solidity = {
+    diagnostics = { "solhint" }
+  },
   spec = {
     diagnostics = { "rpmspec" }
   },
