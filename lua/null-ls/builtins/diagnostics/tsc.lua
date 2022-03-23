@@ -44,7 +44,7 @@ return h.make_builtin({
                 end
             end
 
-            local filename = u.path.join(params.root, name)
+            local filename = u.path.join(params.cwd, name)
             local bufnr = vim.fn.bufadd(filename)
             -- if tsserver client exists and is attached to buffer, don't duplicate diagnostics
             if client_id and vim.lsp.buf_is_attached(bufnr, client_id) then
