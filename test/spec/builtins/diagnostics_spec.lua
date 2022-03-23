@@ -1,6 +1,25 @@
 local diagnostics = require("null-ls.builtins").diagnostics
 
 describe("diagnostics", function()
+    describe("buf", function()
+        local linter = diagnostics.buf
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with an Error severity", function()
+            local file = {
+                [[ syntax = "proto3"; package tutorial.v1;]],
+            }
+            local output =
+                [[demo.proto:2:1:Files with package "tutorial.v1" must be within a directory "tutorial/v1" relative to root but were in directory ".".]]
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                col = "1",
+                filename = "demo.proto",
+                message = [[Files with package "tutorial.v1" must be within a directory "tutorial/v1" relative to root but were in directory ".".]],
+                row = "2",
+            }, diagnostic)
+        end)
+    end)
     describe("chktex", function()
         local linter = diagnostics.chktex
         local parser = linter._opts.on_output

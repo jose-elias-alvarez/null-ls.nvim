@@ -288,6 +288,24 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 - Command: `ansible-lint`
 - Args: `{ "-f", "codeclimate", "-q", "--nocolor", "$FILENAME" }`
 
+### [buf](https://github.com/bufbuild/buf)
+
+buf is a new way of working with Protocol Buffers.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.buf }
+```
+
+#### Defaults
+
+- Filetypes: `{ "proto" }`
+- Method: `diagnostics`
+- Command: `buf`
+- Args: `{ "lint", "$FILENAME#include_package_files=true" }`
+
+
 ### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
 
 buildifier is a tool for formatting and linting bazel BUILD, WORKSPACE, and .bzl files.
