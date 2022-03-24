@@ -202,7 +202,7 @@ return {
     formatting = { "prismaFmt" }
   },
   proto = {
-    diagnostics = { "protoc_gen_lint", "protolint" },
+    diagnostics = { "buf", "protoc_gen_lint", "protolint" },
     formatting = { "protolint" }
   },
   pug = {

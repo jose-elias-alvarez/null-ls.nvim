@@ -290,7 +290,7 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 
 ### [buf](https://github.com/bufbuild/buf)
 
-buf is a new way of working with Protocol Buffers.
+A new way of working with Protocol Buffers.
 
 #### Usage
 
@@ -304,7 +304,6 @@ local sources = { null_ls.builtins.diagnostics.buf }
 - Method: `diagnostics`
 - Command: `buf`
 - Args: `{ "lint", "$FILENAME#include_package_files=true" }`
-
 
 ### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
 
