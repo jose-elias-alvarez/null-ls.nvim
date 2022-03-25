@@ -21,4 +21,3 @@ return h.make_builtin({
     },
     factory = h.formatter_factory,
 })
-
