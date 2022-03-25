@@ -1615,6 +1615,23 @@ local sources = { null_ls.builtins.formatting.brittany }
 - Method: `formatting`
 - Command: `brittany`
 
+### [buf](https://github.com/bufbuild/buf)
+
+A new way of working with Protocol Buffers.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.buf }
+```
+
+#### Defaults
+
+- Filetypes: `{ "proto" }`
+- Method: `formatting`
+- Command: `buf`
+- Args: `{ "format", "$FILENAME" }`
+
 ### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
 
 buildifier is a tool for formatting and linting bazel BUILD, WORKSPACE, and .bzl files.

@@ -203,7 +203,7 @@ return {
   },
   proto = {
     diagnostics = { "buf", "protoc_gen_lint", "protolint" },
-    formatting = { "protolint" }
+    formatting = { "buf", "protolint" }
   },
   pug = {
     diagnostics = { "puglint" }

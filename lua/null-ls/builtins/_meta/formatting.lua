@@ -19,6 +19,9 @@ return {
   brittany = {
     filetypes = { "haskell" }
   },
+  buf = {
+    filetypes = { "proto" }
+  },
   buildifier = {
     filetypes = { "bzl" }
   },
