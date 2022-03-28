@@ -630,7 +630,7 @@ local sources = { null_ls.builtins.diagnostics.hadolint }
 - Filetypes: `{ "dockerfile" }`
 - Method: `diagnostics`
 - Command: `hadolint`
-- Args: `{ "--no-fail", "--format=json", "$FILENAME" }`
+- Args: `{ "--no-fail", "--format=json", "-" }`
 
 ### [haml_lint](https://github.com/sds/haml-lint)
 
