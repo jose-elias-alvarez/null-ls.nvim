@@ -14,7 +14,8 @@ return h.make_builtin({
     generator_opts = {
         command = "hadolint",
         format = "json",
-        args = { "--no-fail", "--format=json", "$FILENAME" },
+        to_stdin = true,
+        args = { "--no-fail", "--format=json", "-" },
         on_output = h.diagnostics.from_json({
             attributes = { code = "code" },
             severities = {
