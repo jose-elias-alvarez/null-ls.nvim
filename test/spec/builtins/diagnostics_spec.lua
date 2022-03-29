@@ -954,4 +954,45 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("erblint", function()
+        local linter = diagnostics.erb_lint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            -- Example
+            local output = vim.json.decode([[
+                {
+                    "files": [
+                        {
+                            "path": "test.html.erb",
+                            "offenses": [
+                                {
+                                    "linter": "SpaceInHtmlTag",
+                                    "message": "Extra space detected where there should be no space.",
+                                    "location": {
+                                        "start_line": 1,
+                                        "start_column": 4,
+                                        "last_line": 1,
+                                        "last_column": 7,
+                                        "length": 3
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]])
+
+            local diagnostic = parser({ output = output })
+            assert.same({
+                row = 1,
+                end_row = 1,
+                col = 4,
+                end_col = 8,
+                code = "SpaceInHtmlTag",
+                message = 'Extra space detected where there should be no space.',
+            }, diagnostic)
+        end)
+    end)
 end)
