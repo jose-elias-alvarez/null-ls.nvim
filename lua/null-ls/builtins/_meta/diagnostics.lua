@@ -166,6 +166,9 @@ return {
   solhint = {
     filetypes = { "solidity" }
   },
+  sqlfluff = {
+    filetypes = { "sql" }
+  },
   standardjs = {
     filetypes = { "javascript", "javascriptreact" }
   },

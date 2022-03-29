@@ -1184,6 +1184,23 @@ local sources = { null_ls.builtins.diagnostics.solhint }
 - Command: `solhint`
 - Args: `{ "$FILENAME", "--formatter", "unix" }`
 
+### [sqlfluff](https://github.com/sqlfluff/sqlfluff)
+
+A SQL linter and auto-formatter for Humans
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.sqlfluff }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sql" }`
+- Method: `diagnostics`
+- Command: `sqlfluff`
+- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "-" }`
+
 ### [standardjs](https://standardjs.com/)
 
 JavaScript style guide, linter, and formatter.
@@ -2744,6 +2761,23 @@ local sources = { null_ls.builtins.formatting.shfmt }
 - Method: `formatting`
 - Command: `shfmt`
 - Args: `{ "-filename", "$FILENAME" }`
+
+### [sqlfluff](https://github.com/sqlfluff/sqlfluff)
+
+A SQL linter and auto-formatter for Humans
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.sqlfluff }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sql" }`
+- Method: `formatting`
+- Command: `sqlfluff`
+- Args: `{ "fix", "--disable_progress_bar", "-f", "-n", "-" }`
 
 ### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 

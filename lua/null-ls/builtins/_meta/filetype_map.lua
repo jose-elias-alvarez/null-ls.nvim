@@ -266,7 +266,8 @@ return {
     diagnostics = { "rpmspec" }
   },
   sql = {
-    formatting = { "pg_format", "sqlformat" }
+    diagnostics = { "sqlfluff" },
+    formatting = { "pg_format", "sqlfluff", "sqlformat" }
   },
   stylus = {
     diagnostics = { "stylint" }
