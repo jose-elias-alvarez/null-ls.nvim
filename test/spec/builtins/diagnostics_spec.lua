@@ -955,6 +955,44 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("hamllint", function()
+        local linter = diagnostics.haml_lint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            -- Example
+            local output = vim.json.decode([[
+                {
+                    "files": [
+                        {
+                            "path": "app/vies/test.html.haml",
+                            "offenses": [
+                                {
+                                    "severity": "warning",
+                                    "message": "Line is too long. [102/80]",
+                                    "location": {
+                                        "line": 7
+                                    },
+                                    "linter_name": "LineLength"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]])
+
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    row = 7,
+                    severity = 2,
+                    code = "LineLength",
+                    message = "Line is too long. [102/80]",
+                },
+            }, diagnostic)
+        end)
+    end)
+
     describe("erblint", function()
         local linter = diagnostics.erb_lint
         local parser = linter._opts.on_output
