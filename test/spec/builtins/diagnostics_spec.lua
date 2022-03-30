@@ -986,12 +986,14 @@ describe("diagnostics", function()
 
             local diagnostic = parser({ output = output })
             assert.same({
-                row = 1,
-                end_row = 1,
-                col = 4,
-                end_col = 8,
-                code = "SpaceInHtmlTag",
-                message = 'Extra space detected where there should be no space.',
+                {
+                    row = 1,
+                    end_row = 1,
+                    col = 4,
+                    end_col = 8,
+                    code = "SpaceInHtmlTag",
+                    message = "Extra space detected where there should be no space.",
+                },
             }, diagnostic)
         end)
     end)

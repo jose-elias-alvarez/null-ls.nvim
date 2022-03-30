@@ -11,14 +11,17 @@ return h.make_builtin({
     },
     method = FORMATTING,
     filetypes = { "eruby" },
+    factory = h.generator_factory,
     generator_opts = {
         command = "erblint",
-        args = {
-            "--autocorrect",
-            "--stdin",
-            "$FILENAME",
-        },
+        args = { "--autocorrect", "--stdin", "$FILENAME" },
+        ignore_stderr = true,
         to_stdin = true,
+        output = "raw",
+        on_output = function(params, done)
+            local output = params.output
+            local metadata_end = output:match(".*==()") + 1
+            return done({ { text = output:sub(metadata_end) } })
+        end,
     },
-    factory = h.formatter_factory,
 })
