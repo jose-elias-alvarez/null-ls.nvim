@@ -960,7 +960,6 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            -- Example
             local output = vim.json.decode([[
                 {
                     "files": [
@@ -998,7 +997,6 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
 
         it("should create a diagnostic with warning severity", function()
-            -- Example
             local output = vim.json.decode([[
                 {
                     "files": [
