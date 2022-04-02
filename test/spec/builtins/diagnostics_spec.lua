@@ -1010,4 +1010,83 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("hamllint", function()
+        local linter = diagnostics.haml_lint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            local output = vim.json.decode([[
+                {
+                    "files": [
+                        {
+                            "path": "app/vies/test.html.haml",
+                            "offenses": [
+                                {
+                                    "severity": "warning",
+                                    "message": "Line is too long. [102/80]",
+                                    "location": {
+                                        "line": 7
+                                    },
+                                    "linter_name": "LineLength"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]])
+
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    row = 7,
+                    severity = 2,
+                    code = "LineLength",
+                    message = "Line is too long. [102/80]",
+                },
+            }, diagnostic)
+        end)
+    end)
+
+    describe("erblint", function()
+        local linter = diagnostics.erb_lint
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            local output = vim.json.decode([[
+                {
+                    "files": [
+                        {
+                            "path": "test.html.erb",
+                            "offenses": [
+                                {
+                                    "linter": "SpaceInHtmlTag",
+                                    "message": "Extra space detected where there should be no space.",
+                                    "location": {
+                                        "start_line": 1,
+                                        "start_column": 4,
+                                        "last_line": 1,
+                                        "last_column": 7,
+                                        "length": 3
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]])
+
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    row = 1,
+                    end_row = 1,
+                    col = 4,
+                    end_col = 8,
+                    code = "SpaceInHtmlTag",
+                    message = "Extra space detected where there should be no space.",
+                },
+            }, diagnostic)
+        end)
+    end)
 end)
