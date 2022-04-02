@@ -149,7 +149,7 @@ M.spawn = function(cmd, args, opts)
         on_close
     )
 
-    if timeout then
+    if timeout and timeout > 0 then
         timer = M.timer(timeout, nil, true, function()
             log:debug(string.format("command [%s] timed out after %s ms", cmd, timeout))
             on_close(TIMEOUT_EXIT_CODE)
