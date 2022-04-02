@@ -58,6 +58,9 @@ return {
   eslint_d = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },
+  fish = {
+    filetypes = { "fish" }
+  },
   flake8 = {
     filetypes = { "python" }
   },

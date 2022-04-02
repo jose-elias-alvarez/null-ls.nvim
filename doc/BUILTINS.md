@@ -564,6 +564,23 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - Command: `eslint_d`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+### [fish](https://github.com/fish-shell/fish-shell)
+
+Basic linting is available for fish scripts using `fish --no-execute`.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.fish }
+```
+
+#### Defaults
+
+- Filetypes: `{ "fish" }`
+- Method: `diagnostics`
+- Command: `fish`
+- Args: `{ " --no-execute", "$FILENAME" }`
+
 ### [flake8](https://github.com/PyCQA/flake8)
 
 flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe, and third-party plugins to check the style and quality of Python code.
