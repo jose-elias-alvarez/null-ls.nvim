@@ -513,6 +513,23 @@ local sources = { null_ls.builtins.diagnostics.editorconfig_checker }
 - Command: `ec`
 - Args: `{ "-no-color", "$FILENAME" }`
 
+### [erb_lint](https://github.com/Shopify/erb-lint)
+
+Lint your ERB or HTML files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.erb_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "eruby" }`
+- Method: `diagnostics`
+- Command: `erblint`
+- Args: `{ "--format", "json", "--stdin", "$FILENAME" }`
+
 ### [eslint](https://github.com/eslint/eslint)
 
 A linter for the JavaScript ecosystem.
@@ -1883,6 +1900,23 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - Method: `formatting`
 - Command: `elm-format`
 - Args: `{ "--stdin" }`
+
+### [erb_lint](https://github.com/Shopify/erb-lint)
+
+Lint your ERB or HTML files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.erb_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "eruby" }`
+- Method: `formatting`
+- Command: `erblint`
+- Args: `{ "--autocorrect", "--stdin", "$FILENAME" }`
 
 ### [erlfmt](https://github.com/WhatsApp/erlfmt)
 

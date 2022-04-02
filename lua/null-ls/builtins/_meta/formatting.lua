@@ -64,6 +64,9 @@ return {
   elm_format = {
     filetypes = { "elm" }
   },
+  erb_lint = {
+    filetypes = { "eruby" }
+  },
   erlfmt = {
     filetypes = { "erlang" }
   },

@@ -81,6 +81,10 @@ return {
   erlang = {
     formatting = { "erlfmt" }
   },
+  eruby = {
+    diagnostics = { "erb_lint" },
+    formatting = { "erb_lint" }
+  },
   fennel = {
     formatting = { "fnlfmt" }
   },

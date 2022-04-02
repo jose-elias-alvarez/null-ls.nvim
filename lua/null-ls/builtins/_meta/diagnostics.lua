@@ -49,6 +49,9 @@ return {
   editorconfig_checker = {
     filetypes = {}
   },
+  erb_lint = {
+    filetypes = { "eruby" }
+  },
   eslint = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },
