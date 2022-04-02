@@ -265,6 +265,9 @@ return {
   uncrustify = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
+  verible_verilog_format = {
+    filetypes = { "verilog", "systemverilog" }
+  },
   xmllint = {
     filetypes = { "xml" }
   },

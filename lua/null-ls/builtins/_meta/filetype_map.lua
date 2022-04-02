@@ -285,6 +285,9 @@ return {
   swift = {
     formatting = { "swiftformat" }
   },
+  systemverilog = {
+    formatting = { "verible_verilog_format" }
+  },
   teal = {
     diagnostics = { "teal" }
   },
@@ -317,6 +320,9 @@ return {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
     formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+  },
+  verilog = {
+    formatting = { "verible_verilog_format" }
   },
   vim = {
     diagnostics = { "vint" }

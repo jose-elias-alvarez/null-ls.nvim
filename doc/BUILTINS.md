@@ -3067,6 +3067,23 @@ local sources = { null_ls.builtins.formatting.uncrustify }
 - Command: `uncrustify`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/uncrustify.lua))
 
+### [verible_verilog_format](https://github.com/chipsalliance/verible)
+
+The verible-verilog-format formatter manages whitespace in accordance with a particular style. The main goal is to relieve humans of having to manually manage whitespace, wrapping, and indentation, and to provide a tool that can be integrated into any editor to enable editor-independent consistency.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.verible_verilog_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "verilog", "systemverilog" }`
+- Method: `formatting`
+- Command: `verible-verilog-format`
+- Args: `{ "--stdin_name", "$FILENAME", "-" }`
+
 ### [xmllint](http://xmlsoft.org/xmllint.html)
 
 Despite the name, xmllint can be used to format XML files as well as lint them, and that's the mode this builtin is using.
