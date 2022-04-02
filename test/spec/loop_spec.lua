@@ -438,6 +438,14 @@ describe("loop", function()
 
                 assert.stub(timer.stop).was_called_with(true)
             end)
+
+            it("should not create a timer when timeout value is less than zero", function()
+                loop.timer:clear()
+
+                loop.spawn(mock_cmd, mock_args, vim.tbl_extend("force", mock_opts, { timeout = -1 }))
+
+                assert.stub(loop.timer).was_not_called()
+            end)
         end)
     end)
 

@@ -110,6 +110,9 @@ out. Note that built-in sources can define their own timeout period and that
 users can override the timeout period on a per-source basis, too (see
 [BUILTIN_CONFIG.md](BUILTIN_CONFIG.md)).
 
+Specifying a timeout with a value less than zero will prevent commands from
+timing out.
+
 ### diagnostics_format (string)
 
 Sets the default format used for diagnostics. The plugin will replace the

@@ -268,6 +268,9 @@ local sources = {
 }
 ```
 
+Specifying a timeout with a value less than zero will prevent the command from
+ever timing out.
+
 ## Using local executables
 
 To prefer using a local executable for a built-in, use the `prefer_local`
