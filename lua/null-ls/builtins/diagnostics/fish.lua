@@ -5,7 +5,7 @@ return h.make_builtin({
     name = "fish",
     meta = {
         url = "https://github.com/fish-shell/fish-shell",
-        description = "Code audit tool for Python.",
+        description = "Basic linting is available for fish scripts using `fish --no-execute`.",
     },
     method = methods.internal.DIAGNOSTICS,
     filetypes = { "fish" },
