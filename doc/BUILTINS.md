@@ -579,7 +579,7 @@ local sources = { null_ls.builtins.diagnostics.fish }
 - Filetypes: `{ "fish" }`
 - Method: `diagnostics`
 - Command: `fish`
-- Args: `{ " --no-execute", "$FILENAME" }`
+- Args: `{ "--no-execute", "$FILENAME" }`
 
 ### [flake8](https://github.com/PyCQA/flake8)
 
