@@ -23,13 +23,16 @@ return h.make_builtin({
             return code <= 1
         end,
         on_output = function(params)
-            local parser = h.diagnostics.from_json({})
-            params.messages = params.output
-                    and params.output.files
-                    and params.output.files[params.temp_path]
-                    and params.output.files[params.temp_path].messages
-                or {}
+            params.messages = {}
 
+            if params.output and params.output.files and type(params.output.files) == "table" then
+                for k in pairs(params.output.files) do
+                    params.messages = params.output.files[k].messages or {}
+                    break
+                end
+            end
+
+            local parser = h.diagnostics.from_json({})
             return parser({ output = params.messages })
         end,
     },
