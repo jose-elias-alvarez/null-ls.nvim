@@ -89,6 +89,7 @@ return {
     formatting = { "fnlfmt" }
   },
   fish = {
+    diagnostics = { "fish" },
     formatting = { "fish_indent" }
   },
   fnl = {
