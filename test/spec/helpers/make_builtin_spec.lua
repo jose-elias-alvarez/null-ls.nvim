@@ -177,7 +177,7 @@ describe("make_builtin", function()
         end)
 
         it("should use default factory function to assign opts to generator", function()
-           local default_opts = {
+            local default_opts = {
                 generator = {},
                 generator_opts = {
                     cwd = "mock-cwd",

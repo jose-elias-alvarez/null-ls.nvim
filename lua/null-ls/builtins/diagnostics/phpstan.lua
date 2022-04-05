@@ -10,6 +10,7 @@ return h.make_builtin({
         description = "PHP static analysis tool.",
         notes = {
             "Requires a valid `phpstan.neon` at root.",
+            "If in place validation is required set `method` to `diagnostics_on_save`  and `to_temp_file` to `false`",
         },
     },
     method = DIAGNOSTICS,
@@ -23,11 +24,12 @@ return h.make_builtin({
             return code <= 1
         end,
         on_output = function(params)
+            local path = params.temp_path or params.bufname
             local parser = h.diagnostics.from_json({})
             params.messages = params.output
                     and params.output.files
-                    and params.output.files[params.temp_path]
-                    and params.output.files[params.temp_path].messages
+                    and params.output.files[path]
+                    and params.output.files[path].messages
                 or {}
 
             return parser({ output = params.messages })
