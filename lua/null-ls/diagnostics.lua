@@ -131,6 +131,10 @@ M.handler = function(original_params)
     local method, uri = original_params.method, original_params.textDocument.uri
     local bufnr = vim.uri_to_bufnr(uri)
 
+    if not vim.api.nvim_buf_is_valid(bufnr) then
+        return
+    end
+
     if method == methods.lsp.DID_CLOSE then
         changedticks_by_uri[uri] = nil
         s.clear_cache(uri)

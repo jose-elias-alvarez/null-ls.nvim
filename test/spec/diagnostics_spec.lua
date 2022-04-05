@@ -18,6 +18,7 @@ describe("diagnostics", function()
         stub(u, "make_params")
         stub(generators, "run_registered")
         stub(vim, "uri_to_bufnr")
+        stub(vim.api, "nvim_buf_is_valid")
 
         local mock_uri = "file:///mock-file"
         local mock_handler = stub.new()
@@ -39,6 +40,7 @@ describe("diagnostics", function()
 
             u.make_params.returns(mock_params)
             vim.uri_to_bufnr.returns(mock_bufnr)
+            vim.api.nvim_buf_is_valid.returns(true)
         end)
 
         after_each(function()
@@ -49,6 +51,7 @@ describe("diagnostics", function()
             generators.run_registered:clear()
             u.make_params:clear()
             vim.uri_to_bufnr:clear()
+            vim.api.nvim_buf_is_valid:clear()
 
             s.reset()
             c.reset()
