@@ -177,7 +177,13 @@ describe("make_builtin", function()
         end)
 
         it("should use default factory function to assign opts to generator", function()
-            local default_opts = { generator = {}, generator_opts = { cwd = "mock-cwd" } }
+           local default_opts = {
+                generator = {},
+                generator_opts = {
+                    cwd = "mock-cwd",
+                    to_temp_file = false,
+                },
+            }
             builtin = helpers.make_builtin(default_opts)
 
             local generator = builtin.generator

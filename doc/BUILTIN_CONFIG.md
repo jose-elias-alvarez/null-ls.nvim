@@ -271,6 +271,22 @@ local sources = {
 Specifying a timeout with a value less than zero will prevent the command from
 ever timing out.
 
+### Running in place
+
+Some builtins write the buffer to a temp file before being executed. This can be
+turned off by setting `to_temp_file` to `false`:
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.phpstan.with({
+        to_temp_file = false
+    }),
+}
+```
+
+If overriding this it is recommended to switch diagnostics to
+[run on save](#diagnostics-on-save).
+
 ## Using local executables
 
 To prefer using a local executable for a built-in, use the `prefer_local`

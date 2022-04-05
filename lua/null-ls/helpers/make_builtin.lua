@@ -33,6 +33,7 @@ local function make_builtin(opts)
         dynamic_command = opts.dynamic_command,
         runtime_condition = opts.runtime_condition,
         timeout = opts.timeout,
+        to_temp_file = opts.to_temp_file,
         -- this isn't ideal, but since we don't have a way to modify on_output's behavior,
         -- it's better than nothing
         on_output = opts.on_output,
