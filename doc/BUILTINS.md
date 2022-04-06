@@ -851,7 +851,7 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - Filetypes: `{ "php" }`
 - Method: `diagnostics`
 - Command: `phpcs`
-- Args: `{ "--report=json", "-q", "-s", "--runtime-set", "ignore_warnings_on_exit", "1", "--runtime-set", "ignore_errors_on_exit", "1", "-" }`
+- Args: `{ "--report=json", "-q", "-s", "--runtime-set", "ignore_warnings_on_exit", "1", "--runtime-set", "ignore_errors_on_exit", "1", "--stdin-path=$FILENAME", "-" }`
 
 ### [phpmd](https://github.com/phpmd/phpmd/)
 
