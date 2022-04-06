@@ -27,6 +27,7 @@ return h.make_builtin({
             "ignore_errors_on_exit",
             "1",
             -- process stdin
+            "--stdin-path=$FILENAME",
             "-",
         },
         format = "json_raw",
@@ -48,8 +49,8 @@ return h.make_builtin({
             })
             params.messages = params.output
                     and params.output.files
-                    and params.output.files["STDIN"]
-                    and params.output.files["STDIN"].messages
+                    and params.output.files[params.bufname]
+                    and params.output.files[params.bufname].messages
                 or {}
 
             return parser({ output = params.messages })
