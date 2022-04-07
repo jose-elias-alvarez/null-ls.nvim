@@ -42,6 +42,10 @@ local sources = { null_ls.builtins.code_actions.eslint_d }
 - Command: `eslint_d`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+#### Notes
+
+- Once spawned, the server will continue to run in the background. This is normal and not related to null-ls. You can stop it by running `eslint_d stop` from the command line.
+
 ### gitrebase
 
 Injects actions to change `gitrebase` command (e.g. using `squash` instead of `pick`).
@@ -563,6 +567,10 @@ local sources = { null_ls.builtins.diagnostics.eslint_d }
 - Method: `diagnostics`
 - Command: `eslint_d`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
+
+#### Notes
+
+- Once spawned, the server will continue to run in the background. This is normal and not related to null-ls. You can stop it by running `eslint_d stop` from the command line.
 
 ### [fish](https://github.com/fish-shell/fish-shell)
 
@@ -1976,7 +1984,7 @@ local sources = { null_ls.builtins.formatting.eslint }
 
 ### [eslint_d](https://github.com/mantoni/eslint_d.js/)
 
-Makes eslint the fastest linter on the planet.
+Like ESLint, but faster.
 
 #### Usage
 
@@ -1990,6 +1998,10 @@ local sources = { null_ls.builtins.formatting.eslint_d }
 - Method: `formatting`
 - Command: `eslint_d`
 - Args: `{ "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" }`
+
+#### Notes
+
+- Once spawned, the server will continue to run in the background. This is normal and not related to null-ls. You can stop it by running `eslint_d stop` from the command line.
 
 ### [fish_indent](https://fishshell.com/docs/current/cmds/fish_indent.html)
 
