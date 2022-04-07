@@ -18,9 +18,10 @@ return h.make_builtin({
             "--template=gcc",
             "$FILENAME",
         },
-        to_stdin = true,
-        from_stderr = true,
         format = "line",
+        to_stdin = false,
+        from_stderr = true,
+        to_temp_file = true,
         on_output = h.diagnostics.from_pattern([[(%d+):(%d+): (%w+): (.*)]], { "row", "col", "severity", "message" }, {
             severities = {
                 note = h.diagnostics.severities["information"],
@@ -29,6 +30,9 @@ return h.make_builtin({
                 portability = h.diagnostics.severities["information"],
             },
         }),
+        check_exit_code = function(code)
+            return code >= 1
+        end,
     },
     factory = h.generator_factory,
 })
