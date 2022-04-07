@@ -8,7 +8,10 @@ return h.make_builtin({
     name = "eslint_d",
     meta = {
         url = "https://github.com/mantoni/eslint_d.js/",
-        description = "Makes eslint the fastest linter on the planet.",
+        description = "Like ESLint, but faster.",
+        notes = {
+            "Once spawned, the server will continue to run in the background. This is normal and not related to null-ls. You can stop it by running `eslint_d stop` from the command line.",
+        },
     },
     method = FORMATTING,
     filetypes = {
