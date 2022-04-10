@@ -2223,6 +2223,22 @@ local sources = { null_ls.builtins.formatting.joker }
 - Command: `joker`
 - Args: `{ "--format", "-" }`
 
+### [jq](https://github.com/stedolan/jq)
+
+Command-line JSON processor
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.jq }
+```
+
+#### Defaults
+
+- Filetypes: `{ "json" }`
+- Method: `formatting`
+- Command: `jq`
+
 ### [json_tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
 Provides a simple command line interface to validate and pretty-print JSON objects.

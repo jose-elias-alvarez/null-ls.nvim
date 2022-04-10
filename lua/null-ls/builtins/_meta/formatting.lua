@@ -115,6 +115,9 @@ return {
   joker = {
     filetypes = { "clj" }
   },
+  jq = {
+    filetypes = { "json" }
+  },
   json_tool = {
     filetypes = { "json" }
   },

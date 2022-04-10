@@ -149,7 +149,7 @@ return {
   },
   json = {
     diagnostics = { "jsonlint" },
-    formatting = { "fixjson", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   jsonc = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
