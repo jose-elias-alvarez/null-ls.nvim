@@ -162,6 +162,9 @@ M.handler = function(original_params)
         params = params,
         postprocess = postprocess,
         after_each = function(diagnostics, _, generator)
+            if not vim.api.nvim_buf_is_valid(bufnr) then
+              return
+            end
             local source_id, multiple_files = generator.source_id, generator.multiple_files
             log:trace("received diagnostics from source " .. source_id)
             log:trace(diagnostics)
