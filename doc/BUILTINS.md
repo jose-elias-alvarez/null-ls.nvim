@@ -1642,6 +1642,27 @@ local sources = { null_ls.builtins.formatting.bean_format }
 - It left-aligns all the currencies.
 - It only modifies whitespace.
 
+### [bibclean](https://www.ctan.org/pkg/bibclean)
+
+A portable program (written in C) that will pretty-print, syntax check, and generally sort out a BibTeX database file.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.bibclean }
+```
+
+#### Defaults
+
+- Filetypes: `{ "bib" }`
+- Method: `formatting`
+- Command: `bibclean`
+- Args: `{ "-align-equals", "-delete-empty-values" }`
+
+#### Notes
+
+- See [bibclean: prettyprint and syntax check BibTeX and Scribe bibliography data base files](https://ftp.math.utah.edu/pub/bibclean/) for latest version.
+
 ### [black](https://github.com/psf/black)
 
 The uncompromising Python code formatter

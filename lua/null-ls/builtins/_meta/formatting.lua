@@ -13,6 +13,9 @@ return {
   bean_format = {
     filetypes = { "beancount" }
   },
+  bibclean = {
+    filetypes = { "bib" }
+  },
   black = {
     filetypes = { "python" }
   },
