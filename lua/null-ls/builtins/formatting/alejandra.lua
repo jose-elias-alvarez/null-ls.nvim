@@ -13,6 +13,7 @@ return h.make_builtin({
     filetypes = { "nix" },
     generator_opts = {
         command = "alejandra",
+        args = { "--quiet" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
