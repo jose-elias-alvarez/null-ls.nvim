@@ -13,6 +13,9 @@ return {
   beancount = {
     formatting = { "bean_format" }
   },
+  bib = {
+    formatting = { "bibclean" }
+  },
   bzl = {
     diagnostics = { "buildifier" },
     formatting = { "buildifier" }
