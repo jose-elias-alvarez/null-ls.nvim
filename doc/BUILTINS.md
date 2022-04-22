@@ -2739,6 +2739,27 @@ local sources = { null_ls.builtins.formatting.rescript }
 - Command: `rescript`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/rescript.lua))
 
+### [rome](https://rome.tools)
+
+Formatter, linter, bundler, and more for JavaScript, TypeScript, JSON, HTML, Markdown, and CSS.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rome }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "typescript" }`
+- Method: `formatting`
+- Command: `rome`
+- Args: `{ "format", "--write", "$FILENAME" }`
+
+#### Notes
+
+- Currently support only JavaScript and TypeScript. See status [here](https://rome.tools/#language-support)
+
 ### [rubocop](https://github.com/rubocop/rubocop)
 
 Ruby static code analyzer and formatter, based on the community Ruby style guide.

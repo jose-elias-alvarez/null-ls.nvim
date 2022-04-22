@@ -202,6 +202,9 @@ return {
   rescript = {
     filetypes = { "rescript" }
   },
+  rome = {
+    filetypes = { "javascript", "typescript" }
+  },
   rubocop = {
     filetypes = { "ruby" }
   },

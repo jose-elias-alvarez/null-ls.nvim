@@ -139,7 +139,7 @@ return {
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
   },
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
@@ -318,7 +318,7 @@ return {
   typescript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rome", "rustywind" }
   },
   typescriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
