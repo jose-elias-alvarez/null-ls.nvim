@@ -344,7 +344,7 @@ describe("e2e", function()
 
             local tl_check_diagnostic = buf_diagnostics[1]
             assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
-            assert.equals(tl_check_diagnostic.source, "tl check")
+            assert.equals(tl_check_diagnostic.source, "teal")
             assert.equals(tl_check_diagnostic.lnum, 0)
             assert.equals(tl_check_diagnostic.end_lnum, 1)
             assert.equals(tl_check_diagnostic.col, 52)

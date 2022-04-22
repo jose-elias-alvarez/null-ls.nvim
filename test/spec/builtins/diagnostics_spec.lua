@@ -342,41 +342,48 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
         local file = {
             [[require("settings").load_options()]],
-            "vim.cmd [[",
-            [[local command = table.concat(vim.tbl_flatten { "autocmd", def }, " ")]],
+            "vim.cmd [[ ]]",
+            "local b = 3 + 34",
         }
+        local output = table.concat({
+            "1 warning:",
+            "tmp.tl:3:7: unused variable b: integer",
+            "2 errors:",
+            "tmp.tl:1:8: module not found: 'settings'",
+            "tmp.tl:2:1: unknown variable: vim",
+        }, "\n")
 
-        it("should create a diagnostic (quote field is between quotes)", function()
-            local output = [[init.lua:1:8: module not found: 'settings']]
-            local diagnostic = parser(output, { content = file })
+        local teal_diagnostics = nil
+        local function done(_diagnostics)
+            teal_diagnostics = _diagnostics
+        end
+        parser({ content = file, output = output, temp_path = "tmp.tl" }, done)
+
+        it("should create a diagnostic with a warning severity (no quote)", function()
+            assert.same({
+                row = "3",
+                col = "7",
+                message = "unused variable b: integer",
+                severity = 2,
+            }, teal_diagnostics[1])
+        end)
+        it("should create a diagnostic with an error severity (quote field is between quotes)", function()
             assert.same({
                 row = "1",
                 col = "8",
-                end_col = 17,
+                end_col = 18,
                 message = "module not found: 'settings'",
-                source = "tl check",
-            }, diagnostic)
+                severity = 1,
+            }, teal_diagnostics[2])
         end)
-        it("should create a diagnostic (quote field is not between quotes)", function()
-            local output = [[init.lua:2:1: unknown variable: vim]]
-            local diagnostic = parser(output, { content = file })
+        it("should create a diagnostic with an error severity (quote field is not between quotes)", function()
             assert.same({
                 row = "2",
                 col = "1",
-                end_col = 3,
+                end_col = 4,
                 message = "unknown variable: vim",
-                source = "tl check",
-            }, diagnostic)
-        end)
-        it("should create a diagnostic by using the second pattern", function()
-            local output = [[autocmds.lua:3:46: argument 1: got <unknown type>, expected {string}]]
-            local diagnostic = parser(output, { content = file })
-            assert.same({
-                row = "3",
-                col = "46",
-                message = "argument 1: got <unknown type>, expected {string}",
-                source = "tl check",
-            }, diagnostic)
+                severity = 1,
+            }, teal_diagnostics[3])
         end)
     end)
 
