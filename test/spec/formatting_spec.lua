@@ -16,7 +16,6 @@ describe("formatting", function()
     stub(generators, "run_registered_sequentially")
     stub(u, "make_params")
     stub(u.buf, "content")
-    stub(vim, "cmd")
     stub(vim.api, "nvim_create_buf")
 
     local handler = stub.new()
@@ -49,7 +48,6 @@ describe("formatting", function()
         lsp.util.apply_text_edits:clear()
         u.buf.content:clear()
         u.make_params:clear()
-        vim.cmd:clear()
 
         mock.revert(api)
 
