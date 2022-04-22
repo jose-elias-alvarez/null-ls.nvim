@@ -1234,7 +1234,11 @@ A SQL linter and auto-formatter for Humans
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.diagnostics.sqlfluff }
+local sources = {
+	null_ls.builtins.diagnostics.sqlfluff.with({
+		extra_args = {"--dialect", "postgres"} -- change to your dialect
+	})
+}
 ```
 
 #### Defaults
@@ -1243,6 +1247,10 @@ local sources = { null_ls.builtins.diagnostics.sqlfluff }
 - Method: `diagnostics`
 - Command: `sqlfluff`
 - Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "-" }`
+
+#### Notes
+
+- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours. `extra_args` can also be a function to build more sophisticated logic.
 
 ### [standardjs](https://standardjs.com/)
 
@@ -2908,7 +2916,11 @@ A SQL linter and auto-formatter for Humans
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.sqlfluff }
+local sources = {
+	null_ls.builtins.formatting.sqlfluff.with({
+		extra_args = {"--dialect", "postgres"} -- change to your dialect
+	})
+}
 ```
 
 #### Defaults
@@ -2917,6 +2929,10 @@ local sources = { null_ls.builtins.formatting.sqlfluff }
 - Method: `formatting`
 - Command: `sqlfluff`
 - Args: `{ "fix", "--disable_progress_bar", "-f", "-n", "-" }`
+
+#### Notes
+
+- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours. `extra_args` can also be a function to build more sophisticated logic.
 
 ### [sqlformat](https://manpages.ubuntu.com/manpages/xenial/man1/sqlformat.1.html)
 
