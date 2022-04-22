@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  alejandra = {
+    filetypes = { "nix" }
+  },
   asmfmt = {
     filetypes = { "asm" }
   },

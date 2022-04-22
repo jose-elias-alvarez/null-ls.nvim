@@ -1571,6 +1571,23 @@ local sources = { null_ls.builtins.diagnostics.zsh }
 
 ## Formatting
 
+### [alejandra](https://github.com/kamadorueda/alejandra)
+
+The Uncompromising Nix Code Formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.alejandra }
+```
+
+#### Defaults
+
+- Filetypes: `{ "nix" }`
+- Method: `formatting`
+- Command: `alejandra`
+- Args: `{ "--quiet" }`
+
 ### [asmfmt](https://github.com/klauspost/asmfmt)
 
 Format your assembler code in a similar way that `gofmt` formats your `go` code.

@@ -191,7 +191,7 @@ return {
   nix = {
     code_actions = { "statix" },
     diagnostics = { "deadnix", "statix" },
-    formatting = { "nixfmt", "nixpkgs_fmt" }
+    formatting = { "alejandra", "nixfmt", "nixpkgs_fmt" }
   },
   pascal = {
     formatting = { "ptop" }
