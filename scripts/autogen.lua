@@ -87,13 +87,13 @@ local generate_builtin_description = function(source)
     } or {}
 end
 
-local generate_builtin_usage = function(method, name)
+local generate_builtin_usage = function(source, method, name)
     return {
         "",
         "#### Usage",
         "",
         "```lua",
-        string.format("local sources = { null_ls.builtins.%s.%s }", method, name),
+        source.meta.usage or string.format("local sources = { null_ls.builtins.%s.%s }", method, name),
         "```",
     }
 end
@@ -171,7 +171,7 @@ local generate_builtin_content = function(source, method, name)
     local content = { "" }
     vim.list_extend(content, generate_builtin_header(source, name))
     vim.list_extend(content, generate_builtin_description(source))
-    vim.list_extend(content, generate_builtin_usage(method, name))
+    vim.list_extend(content, generate_builtin_usage(source, method, name))
     vim.list_extend(content, generate_builtin_defaults(source, method, name))
     vim.list_extend(content, generate_builtin_notes(source))
 
