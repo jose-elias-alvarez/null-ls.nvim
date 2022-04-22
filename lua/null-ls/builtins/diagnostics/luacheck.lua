@@ -29,9 +29,6 @@ return h.make_builtin({
             [[:(%d+):(%d+)-(%d+): %((%a)(%d+)%) (.*)]],
             { "row", "col", "end_col", "severity", "code", "message" },
             {
-                adapters = {
-                    h.diagnostics.adapters.end_col.from_quote,
-                },
                 severities = {
                     E = h.diagnostics.severities["error"],
                     W = h.diagnostics.severities["warning"],

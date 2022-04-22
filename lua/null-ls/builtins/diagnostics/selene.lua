@@ -22,7 +22,7 @@ return h.make_builtin({
         on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+): (%w+)%[([%w_]+)%]: ([`]*([%w_]+)[`]*.*)]],
             { "row", "col", "severity", "code", "message", "_quote" },
-            { adapters = { h.diagnostics.adapters.end_col.from_quote }, offsets = { end_col = 1 } }
+            { adapters = { h.diagnostics.adapters.end_col.from_quote } }
         ),
     },
     factory = h.generator_factory,
