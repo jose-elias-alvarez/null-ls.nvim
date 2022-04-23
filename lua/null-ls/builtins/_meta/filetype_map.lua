@@ -310,6 +310,7 @@ return {
     formatting = { "terraform_fmt" }
   },
   toml = {
+    code_actions = { "crates" },
     formatting = { "taplo" }
   },
   twig = {

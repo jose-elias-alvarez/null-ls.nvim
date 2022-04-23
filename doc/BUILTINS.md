@@ -8,6 +8,21 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 ## Code Actions
 
+### [crates](https://github.com/saecki/crates.nvim)
+
+Code actions for editing `Cargo.toml` files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.crates }
+```
+
+#### Defaults
+
+- Filetypes: `{ "toml" }`
+- Method: `code_action`
+
 ### [eslint](https://github.com/eslint/eslint)
 
 Injects actions to fix ESLint issues or ignore broken rules.
