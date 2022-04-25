@@ -18,7 +18,7 @@ return h.make_builtin({
         },
         command = "solhint",
         format = "line",
-        from_stderr = true,
+        from_stderr = false,
         on_output = h.diagnostics.from_pattern("([^:]*):([%d]+):([%d]+): (.*) %[([%a]+)/([%a%p]+)%]", {
             "filename",
             "row",
