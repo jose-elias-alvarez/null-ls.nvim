@@ -14,6 +14,9 @@ return h.make_builtin({
     filetypes = { "gd", "gdscript", "gdscript3" },
     generator_opts = {
         command = "gdformat",
+		args = {
+			"-",
+		},
         to_stdin = true,
     },
     factory = h.formatter_factory,
