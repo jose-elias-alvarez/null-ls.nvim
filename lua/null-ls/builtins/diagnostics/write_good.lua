@@ -21,7 +21,7 @@ return h.make_builtin({
             { "row", "col", "message", "_quote" },
             {
                 adapters = { h.diagnostics.adapters.end_col.from_quote },
-                offsets = { col = 1, end_col = 1 },
+                offsets = { col = 1 },
             }
         ),
     },

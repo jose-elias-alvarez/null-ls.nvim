@@ -29,7 +29,9 @@ local diagnostic_adapters = {
                 end
 
                 _, end_col = line:find(quote, 1, true)
-                return end_col and end_col > tonumber(entries["col"]) and end_col or nil
+                if end_col and end_col > tonumber(entries["col"]) then
+                    return end_col + 1
+                end
             end,
         },
         from_length = {

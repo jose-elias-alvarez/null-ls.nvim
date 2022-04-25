@@ -58,10 +58,7 @@ local function parse_diagnostics(params, done)
                 _quote = quote,
             }
             local content_line = params.content[tonumber(row)]
-            local end_col = end_col_from_quote(entries, content_line)
-            if end_col then
-                diagnostic.end_col = end_col + 1
-            end
+            diagnostic.end_col = end_col_from_quote(entries, content_line)
         end
 
         return diagnostic
