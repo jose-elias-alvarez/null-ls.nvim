@@ -11,7 +11,7 @@ return h.make_builtin({
         description = "A formatter for Godot's gdscript",
     },
     method = { FORMATTING },
-    filetypes = {"gd", "gdscript", "gdscript3"},
+    filetypes = { "gd", "gdscript", "gdscript3" },
     generator_opts = {
         command = "gdformat",
         to_stdin = true,
