@@ -35,6 +35,11 @@ M.handler = function(method, original_params, handler)
 
         local called_handler = false
         local handler_wrapper = function(...)
+            -- don't call handler if buffer was unloaded, e.g. on :wq
+            if not api.nvim_buf_is_loaded(bufnr) then
+                return
+            end
+
             -- calling handler twice breaks lsp.buf.formatting_sync()
             if called_handler then
                 return
