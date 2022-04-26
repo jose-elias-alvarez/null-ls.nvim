@@ -342,13 +342,13 @@ describe("e2e", function()
             local buf_diagnostics = vim.diagnostic.get(0)
             assert.equals(vim.tbl_count(buf_diagnostics), 1)
 
-            local tl_check_diagnostic = buf_diagnostics[1]
-            assert.equals(tl_check_diagnostic.message, "in return value: got string, expected number")
-            assert.equals(tl_check_diagnostic.source, "teal")
-            assert.equals(tl_check_diagnostic.lnum, 0)
-            assert.equals(tl_check_diagnostic.end_lnum, 1)
-            assert.equals(tl_check_diagnostic.col, 52)
-            assert.equals(tl_check_diagnostic.end_col, 0)
+            local teal_diagnostic = buf_diagnostics[1]
+            assert.equals(teal_diagnostic.message, "in return value: got string, expected number")
+            assert.equals(teal_diagnostic.source, "teal")
+            assert.equals(teal_diagnostic.lnum, 0)
+            assert.equals(teal_diagnostic.end_lnum, 1)
+            assert.equals(teal_diagnostic.col, 52)
+            assert.equals(teal_diagnostic.end_col, 0)
         end)
     end)
 
