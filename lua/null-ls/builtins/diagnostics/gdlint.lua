@@ -14,7 +14,7 @@ return h.make_builtin({
     generator_opts = {
         command = "gdlint",
         args = { "$FILENAME" },
-        from_stderr = false,
+        from_stderr = true,
         -- ignore_stderr = true,
         format = "line",
         --      check_exit_code = function(code)
