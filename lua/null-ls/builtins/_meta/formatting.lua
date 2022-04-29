@@ -100,6 +100,9 @@ return {
   fprettify = {
     filetypes = { "fortran" }
   },
+  gdformat = {
+    filetypes = { "gd", "gdscript", "gdscript3" }
+  },
   gofmt = {
     filetypes = { "go" }
   },

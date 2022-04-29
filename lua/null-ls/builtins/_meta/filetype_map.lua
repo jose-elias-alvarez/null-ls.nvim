@@ -101,6 +101,16 @@ return {
   fortran = {
     formatting = { "fprettify" }
   },
+  gd = {
+    formatting = { "gdformat" }
+  },
+  gdscript = {
+    diagnostics = { "gdlint" },
+    formatting = { "gdformat" }
+  },
+  gdscript3 = {
+    formatting = { "gdformat" }
+  },
   gitcommit = {
     diagnostics = { "gitlint" }
   },

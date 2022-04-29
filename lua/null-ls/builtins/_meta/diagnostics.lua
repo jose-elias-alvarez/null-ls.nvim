@@ -67,6 +67,9 @@ return {
   gccdiag = {
     filetypes = { "c", "cpp" }
   },
+  gdlint = {
+    filetypes = { "gdscript" }
+  },
   gitlint = {
     filetypes = { "gitcommit" }
   },

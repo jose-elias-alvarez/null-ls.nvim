@@ -623,6 +623,23 @@ local sources = { null_ls.builtins.diagnostics.gccdiag }
 - Command: `gccdiag`
 - Args: `{ "--default-args", "-S -x $FILEEXT", "-i", "-fdiagnostics-color", "--", "$FILENAME" }`
 
+### [gdlint](https://github.com/Scony/godot-gdscript-toolkit)
+
+A linter that performs a static analysis on gdscript code according to some predefined configuration.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gdlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gdscript" }`
+- Method: `diagnostics`
+- Command: `gdlint`
+- Args: `{ "$FILENAME" }`
+
 ### [gitlint](https://jorisroovers.com/gitlint/)
 
 Linter for Git commit messages.
@@ -2147,6 +2164,23 @@ local sources = { null_ls.builtins.formatting.fprettify }
 - Method: `formatting`
 - Command: `fprettify`
 - Args: `{ "--silent" }`
+
+### [gdformat](https://github.com/Scony/godot-gdscript-toolkit)
+
+A formatter for Godot's gdscript
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.gdformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gd", "gdscript", "gdscript3" }`
+- Method: `formatting`
+- Command: `gdformat`
+- Args: `{ "-" }`
 
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
