@@ -168,7 +168,16 @@ return h.make_builtin({
         end,
         dynamic_command = cmd_resolver.from_node_modules,
         cwd = function(params)
-            return u.root_pattern(".eslintrc", ".eslintrc.*")(params.bufname)
+            return u.root_pattern(
+              -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
+              ".eslintrc",
+              ".eslintrc.js",
+              ".eslintrc.cjs",
+              ".eslintrc.yaml",
+              ".eslintrc.yml",
+              ".eslintrc.json",
+              "package.json"
+            )(params.bufname)
         end,
     },
     factory = h.generator_factory,
