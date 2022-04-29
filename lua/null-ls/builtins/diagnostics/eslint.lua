@@ -1,6 +1,7 @@
 local h = require("null-ls.helpers")
 local cmd_resolver = require("null-ls.helpers.command_resolver")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -42,6 +43,9 @@ return h.make_builtin({
         use_cache = true,
         on_output = handle_eslint_output,
         dynamic_command = cmd_resolver.from_node_modules,
+        cwd = function(params)
+            return u.root_pattern(".eslintrc", ".eslintrc.*")(params.bufname)
+        end,
     },
     factory = h.generator_factory,
 })
