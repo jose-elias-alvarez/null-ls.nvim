@@ -26,7 +26,10 @@ end
 local M = {}
 
 local capabilities = {
-    codeActionProvider = true,
+    codeActionProvider = {
+        -- TODO: investigate if we can use this
+        resolveProvider = false,
+    },
     executeCommandProvider = true,
     documentFormattingProvider = true,
     documentRangeFormattingProvider = true,
