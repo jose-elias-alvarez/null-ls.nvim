@@ -241,7 +241,7 @@ describe("e2e", function()
         end)
 
         it("should format file", function()
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)
@@ -264,7 +264,7 @@ describe("e2e", function()
             end)
 
             it("should format file", function()
-                lsp.buf.formatting()
+                lsp.buf.format({ async = true })
                 wait_for_prettier()
 
                 assert.equals(u.buf.content(nil, true), formatted)
@@ -474,7 +474,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "sequential\n")
@@ -485,7 +485,7 @@ describe("e2e", function()
             sources.register(builtins._test.second_formatter)
             tu.edit_test_file("test-file.txt")
             tu.wait()
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source(2)
 
             vim.cmd("silent normal u")
@@ -499,7 +499,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source(2)
 
             assert.equals(u.buf.content(nil, true), "first\n")
@@ -516,7 +516,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source()
 
             assert.equals(#sources.get({}), 1)
@@ -532,11 +532,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
-            tu.wait_for_mock_source()
-
             assert.equals(#sources.get({}), 0)
-            assert.equals(u.buf.content(nil, true), "intentionally left blank\n")
         end)
 
         it("should skip source that fails runtime condition", function()
@@ -549,7 +545,7 @@ describe("e2e", function()
             tu.edit_test_file("test-file.txt")
             tu.wait()
 
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source(2)
 
             assert.equals(#sources.get({}), 2)
@@ -571,7 +567,7 @@ describe("e2e", function()
         end)
 
         it("should use client handler", function()
-            lsp.buf.formatting()
+            lsp.buf.format({ async = true })
             tu.wait_for_mock_source()
 
             assert.stub(mock_handler).was_called()

@@ -40,7 +40,7 @@ M.handler = function(method, original_params, handler)
                 return
             end
 
-            -- calling handler twice breaks lsp.buf.formatting_sync()
+            -- calling handler twice breaks sync formatting
             if called_handler then
                 return
             end
