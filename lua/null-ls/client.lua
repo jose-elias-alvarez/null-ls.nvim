@@ -32,8 +32,11 @@ end
 local on_init = function(new_client, initialize_result)
     -- null-ls broadcasts all capabilities on launch, so this lets us have finer control
     new_client.supports_method = function(method)
+        -- TODO: deprecate `resolved_capabilities` after v0.8 is out
+        local capabilities = new_client.server_capabilities or new_client.resolved_capabilities
+        
         -- capability was not declared or is specifically disabled
-        if new_client.resolved_capabilities[methods.request_name_to_capability[method]] == false then
+        if capabilities[methods.request_name_to_capability[method]] == false then
             return false
         end
 
