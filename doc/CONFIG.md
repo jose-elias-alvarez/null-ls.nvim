@@ -224,6 +224,10 @@ diagnostic sources will run upon exiting insert mode, which greatly improves
 performance but can create a slight delay before diagnostics show up. Set this
 to `true` if you don't experience performance issues with your sources.
 
+Note that by default, Neovim will not display updated diagnostics in insert
+mode. Together with the option above, you need to pass `update_in_insert = true`
+to `vim.diagnostic.config` for diagnostics to work as expected. See `:help vim.diagnostic.config` for more info.
+
 ## Disabling null-ls
 
 You can conditionally block null-ls from setting itself up on Neovim startup by
