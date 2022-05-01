@@ -211,35 +211,14 @@ formatting by visually selecting part of the buffer and calling
 On 0.8, you should use `vim.lsp.buf.format` (see the help file for usage
 instructions).
 
+### How do I format files on save?
+
+See [this wiki
+page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save).
+
 ### How do I stop Neovim from asking me which server I want to use for formatting?
 
 See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
-
-### How do I format files on save?
-
-See the following snippet:
-
-```lua
-require("null-ls").setup({
-    -- you can reuse a shared lspconfig on_attach callback here
-    on_attach = function(client)
-        if client.resolved_capabilities.document_formatting then
-            -- use vim.lsp.buf.format on 0.8
-            vim.cmd([[
-            augroup LspFormatting
-                autocmd! * <buffer>
-                autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-            augroup END
-            ]])
-        end
-    end,
-})
-```
-
-You can also set up async formatting, as described on [this wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Async-formatting).
-Please read the Caveats section there to understand the meaning of (and
-drawbacks of) async formatting.
 
 ### How do I view project-level diagnostics?
 
