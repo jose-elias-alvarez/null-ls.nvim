@@ -131,6 +131,27 @@ describe("range_formatting_args_factory", function()
         )
     end)
 
+    it("should use length instead of end of range position", function()
+        local opts = { use_length = true }
+        local args_fn = factory(base_args, start_arg, end_arg, opts)
+
+        local resolved_args = args_fn({
+            method = methods.internal.RANGE_FORMATTING,
+            range = mock_range,
+            bufnr = mock_bufnr,
+        })
+
+        assert.same(
+            resolved_args,
+            vim.list_extend(base_args, {
+                start_arg,
+                mock_offset + mock_range.col,
+                end_arg,
+                mock_range.end_col - mock_range.col,
+            })
+        )
+    end)
+
     it("should join range with delimiter", function()
         local opts = { delimiter = "-" }
         local args_fn = factory(base_args, start_arg, nil, opts)

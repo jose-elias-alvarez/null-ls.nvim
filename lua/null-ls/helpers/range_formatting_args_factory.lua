@@ -4,6 +4,7 @@ local api = vim.api
 ---@field row_offset? number offset applied to row numbers
 ---@field col_offset? number offset applied to column numbers
 ---@field use_rows? boolean use rows over char offsets
+---@field use_length? boolean use length of range in end_arg instead of end position
 ---@field delimiter? string used to join ranges
 
 --- creates a function that returns arguments depending on formatting method
@@ -42,6 +43,11 @@ local range_formatting_args_factory = function(base_args, start_arg, end_arg, op
         -- neovim already takes care of offsets when generating the range
         local range_start = opts.use_rows and row or api.nvim_buf_get_offset(params.bufnr, row) + col
         local range_end = opts.use_rows and end_row or api.nvim_buf_get_offset(params.bufnr, end_row) + end_col
+
+        if opts.use_length then
+            range_end = range_end - range_start
+        end
+
         table.insert(args, start_arg)
 
         if opts.delimiter then

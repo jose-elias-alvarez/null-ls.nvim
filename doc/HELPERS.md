@@ -326,6 +326,7 @@ null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag, opt
 - `opts` (table?): a table containing the following options:
   - `opts.use_rows` (boolean?): specifies whether to use rows over character
     offsets.
+  - `opts.use_length` (boolean?): used to specify the length of the range in `end_arg` instead of end the position.
   - `opts.row_offset` (number?): offset applied to row numbers.
   - `opts.col_offset` (number?): offset applied to column numbers.
   - `opts.delimiter` (string?): used to join range start and end into a single
