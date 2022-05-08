@@ -3,12 +3,10 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
-local on_output = h.diagnostics.from_patterns({
-    {
-        pattern = [[:(%d+):(%d+): (%w+): (.*)]],
-        groups = { "row", "col", "severity", "message" },
-    },
-})
+local on_output = h.diagnostics.from_pattern(
+    [[:(%d+):(%d+): (%w+): (.*)]],
+    { "row", "col", "severity", "message" }
+)
 
 return h.make_builtin({
     name = "clj-kondo",
