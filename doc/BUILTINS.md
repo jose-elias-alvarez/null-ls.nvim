@@ -1801,7 +1801,7 @@ local sources = { null_ls.builtins.formatting.clang_format }
 #### Defaults
 
 - Filetypes: `{ "c", "cpp", "cs", "java" }`
-- Method: `formatting`
+- Methods: `formatting, range_formatting`
 - Command: `clang-format`
 - Args: `{ "-assume-filename", "$FILENAME" }`
 
