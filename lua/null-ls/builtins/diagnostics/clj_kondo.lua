@@ -27,8 +27,8 @@ return h.make_builtin({
         -- 2 -> One or more warnings
         -- 3 -> One or more errors
         check_exit_code = { 0, 2, 3 },
-        on_output = function (line, params)
-            if not string.match(line, '^linting took ') then
+        on_output = function(line, params)
+            if not string.match(line, "^linting took ") then
                 return on_output(line, params)
             end
         end,
@@ -36,7 +36,7 @@ return h.make_builtin({
             error = h.diagnostics.severities["error"],
             Exception = h.diagnostics.severities["error"],
             warning = h.diagnostics.severities["warning"],
-        }
+        },
     },
     factory = h.generator_factory,
 })
