@@ -1820,7 +1820,7 @@ local sources = { null_ls.builtins.formatting.clang_format }
 - Filetypes: `{ "c", "cpp", "cs", "java" }`
 - Methods: `formatting, range_formatting`
 - Command: `clang-format`
-- Args: `{ "-assume-filename", "$FILENAME" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/clang_format.lua))
 
 ### [cljstyle](https://github.com/greglook/cljstyle)
 
