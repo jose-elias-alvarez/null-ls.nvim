@@ -22,6 +22,9 @@ return {
   chktex = {
     filetypes = { "tex" }
   },
+  clj_kondo = {
+    filetypes = { "clojure" }
+  },
   codespell = {
     filetypes = {}
   },

@@ -31,6 +31,7 @@ return {
     formatting = { "joker" }
   },
   clojure = {
+    diagnostics = { "clj_kondo" },
     formatting = { "cljstyle" }
   },
   cmake = {

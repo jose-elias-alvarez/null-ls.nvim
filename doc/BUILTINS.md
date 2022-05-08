@@ -360,6 +360,23 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - Command: `chktex`
 - Args: `{ "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
+### [clj_kondo](https://github.com/clj-kondo/clj-kondo)
+
+A linter for clojure code that sparks joy
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.clj_kondo }
+```
+
+#### Defaults
+
+- Filetypes: `{ "clojure" }`
+- Method: `diagnostics`
+- Command: `clj-kondo`
+- Args: `{ "--cache", "--lint", "-", "--filename", "$FILENAME" }`
+
 ### [codespell](https://github.com/codespell-project/codespell)
 
 Codespell finds common misspellings in text files.
