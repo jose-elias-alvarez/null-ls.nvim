@@ -57,6 +57,14 @@ M.run = function(generators, params, opts, callback)
             local ok, results = protected_call(to_run, copied_params)
             a.util.scheduler()
 
+            -- filter diagnostics results with the diagnostic_filter option
+            local filter = opts.filter
+            if filter and results then
+                results = vim.tbl_filter(function(result)
+                    return filter(result, generator)
+                end, results)
+            end
+
             if results then
                 -- allow generators to pass errors without throwing them (e.g. in luv callbacks)
                 if results._generator_err then
@@ -133,11 +141,11 @@ M.run_sequentially = function(generators, make_params, opts, callback)
 end
 
 M.run_registered = function(opts)
-    local filetype, method, params, postprocess, callback, after_each =
-        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback, opts.after_each
+    local filetype, method, params, postprocess, filter, callback, after_each =
+        opts.filetype, opts.method, opts.params, opts.postprocess, opts.filter, opts.callback, opts.after_each
     local generators = M.get_available(filetype, method)
 
-    M.run(generators, params, { postprocess = postprocess, after_each = after_each }, callback)
+    M.run(generators, params, { postprocess = postprocess, filter = filter, after_each = after_each }, callback)
 end
 
 M.run_registered_sequentially = function(opts)
