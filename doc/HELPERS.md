@@ -336,3 +336,21 @@ null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag, opt
 
 Helpers used to convert CLI output into diagnostics. See the source for details
 and the built-in diagnostics sources for examples.
+
+## cache
+
+Helpers used to cache output from callbacks and help improve performance.
+
+### by_bufnr(callback)
+
+Creates a function that caches the result of `callback`, indexed by `bufnr`. On
+the first run of the created function, null-ls will call `callback` with a
+`params` object containing information about the buffer's state and cache its
+output using `bufnr` as a key. On the next run, it will directly return the
+cached value without calling `callback` again.
+
+This is useful when the return value of `callback` is not expected to change
+over the lifetime of the buffer, which works well for `cwd` and
+`runtime_condition` callbacks. Users can use it as a simple shortcut to improve
+performance, and built-in authors can use it to add logic that would otherwise
+be too performance-intensive to include out-of-the-box.
