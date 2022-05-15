@@ -63,7 +63,12 @@ The source's generator.
 The source's ID. Assigned automatically. Each source receives the next available
 ID.
 
-## get_source(query)
+## High-level methods
+
+Users can use these methods to register new sources, get information about
+registered sources, and dynamically alter how they run.
+
+### get_source(query)
 
 Returns a list of all registered sources matching `query`. `query` can be a
 string, in which case it's treated as a name, or an object with the following
@@ -83,7 +88,11 @@ all sources.
 Note that special characters are automatically escaped when `query` is a string
 but not when it's an object, which allows using Lua string matchers.
 
-## register(to_register)
+### is_registered(query)
+
+Returns `true` if null-ls has registered a source matching `query`
+
+### register(to_register)
 
 The main method for registering sources. `to_register` can have the following
 structures:
@@ -113,13 +122,15 @@ require("null-ls").register({
 
 For information on sources, see [MAIN](MAIN.md).
 
-## disable(query)
+### disable(query)
 
 Disables all sources matching `query`, preventing them from running under any
 conditions. See `get_source(query)` above for information about the structure of
 `query`.
 
-## enable(query)
+`disable(query)` will also
+
+### enable(query)
 
 Enables all disabled sources matching `query`, allowing them to run again as
 normal.
@@ -127,25 +138,27 @@ normal.
 This will also prompt null-ls to attempt to re-attach to existing buffers and
 regenerate diagnostics.
 
-## toggle(query)
+### toggle(query)
 
 Enables or disables each source based on its current availability. See
 `enable(query)` / `disable(query)` above for the consequences of source
 avaiability.
 
-## deregister(query)
+## Low-level methods
 
-Clears all sources matching `query` from the internal list of sources.
+These methods provide finer control over sources for integrations and advanced
+use cases. Users should prefer to use the high-level methods described above.
 
-## reset_sources()
+### deregister(query)
 
-Clears all registered sources.
+Removes all sources matching `query` from the internal list of sources. Does not
+remove diagnostics.
 
-## is_registered(query)
+### reset_sources()
 
-Returns `true` if null-ls has registered a source matching `query`
+Removes all registered sources. Does not remove diagnostics.
 
-## register_name(name)
+### register_name(name)
 
 Allows integrations to register a name (independent of its sources), which they
-can check with `is_registered(name)` to avoid double registration.
+can check with `is_registered(name)` to avoid repeated registration.
