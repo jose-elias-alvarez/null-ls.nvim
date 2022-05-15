@@ -688,6 +688,26 @@ describe("generator_factory", function()
             assert.equals(on_output.calls[1].refs[1].output, "output")
         end)
 
+        it("should set opts._last_output to output", function()
+            local generator = helpers.generator_factory(generator_opts)
+            generator.fn({}, done)
+
+            local wrapper = loop.spawn.calls[1].refs[3].handler
+            wrapper(nil, "output")
+
+            assert.equals(generator_opts._last_output, "output")
+        end)
+
+        it("should set opts._last_output to empty string if output is nil", function()
+            local generator = helpers.generator_factory(generator_opts)
+            generator.fn({}, done)
+
+            local wrapper = loop.spawn.calls[1].refs[3].handler
+            wrapper(nil, nil)
+
+            assert.equals(generator_opts._last_output, "")
+        end)
+
         it("should call done when on_output is called", function()
             local generator = helpers.generator_factory(generator_opts)
             generator.fn({}, done)

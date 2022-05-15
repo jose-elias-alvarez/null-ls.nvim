@@ -233,6 +233,8 @@ return function(opts)
                     end
 
                     params.output = params.output or output
+                    opts._last_output = output or ""
+
                     if use_cache then
                         s.set_cache(params.bufnr, command, output)
                     end
