@@ -3,6 +3,14 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local overrides = {
+    severities = {
+        error = h.diagnostics.severities["error"],
+        warning = h.diagnostics.severities["warning"],
+        note = h.diagnostics.severities["information"],
+    },
+}
+
 return h.make_builtin({
     name = "mypy",
     meta = {
@@ -35,17 +43,18 @@ benefits of dynamic (or "duck") typing and static typing.]],
             return code <= 2
         end,
         multiple_files = true,
-        on_output = h.diagnostics.from_pattern(
-            "([^:]+):(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]", --
-            { "filename", "row", "col", "severity", "message", "code" },
+        on_output = h.diagnostics.from_patterns({
             {
-                severities = {
-                    error = h.diagnostics.severities["error"],
-                    warning = h.diagnostics.severities["warning"],
-                    note = h.diagnostics.severities["information"],
-                },
-            }
-        ),
+                pattern = "([^:]+):(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]",
+                groups = { "filename", "row", "col", "severity", "message", "code" },
+                overrides = overrides,
+            },
+            {
+                pattern = "([^:]+):(%d+): (%a+): (.*)",
+                groups = { "filename", "row", "severity", "message" },
+                overrides = overrides,
+            },
+        }),
     },
     factory = h.generator_factory,
 })
