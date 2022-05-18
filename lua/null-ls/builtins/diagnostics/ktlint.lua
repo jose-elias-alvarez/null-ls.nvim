@@ -18,7 +18,6 @@ return h.make_builtin({
             "--reporter=json",
         },
         to_stdin = true,
-        from_stderr = true,
         format = "json",
         multiple_files = true,
         check_exit_code = function(code)
