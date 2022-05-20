@@ -3119,6 +3119,7 @@ local sources = { null_ls.builtins.formatting.swiftformat }
 - Filetypes: `{ "swift" }`
 - Method: `formatting`
 - Command: `swiftformat`
+- Args: `{ "--stdinpath", "$FILENAME" }`
 
 ### [taplo](https://taplo.tamasfe.dev/)
 
