@@ -13,6 +13,7 @@ return h.make_builtin({
     filetypes = { "swift" },
     generator_opts = {
         command = "swiftformat",
+        args = { "--stdinpath", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
