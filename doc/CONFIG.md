@@ -228,24 +228,6 @@ Note that by default, Neovim will not display updated diagnostics in insert
 mode. Together with the option above, you need to pass `update_in_insert = true`
 to `vim.diagnostic.config` for diagnostics to work as expected. See `:help vim.diagnostic.config` for more info.
 
-## Disabling null-ls
-
-You can conditionally block null-ls from setting itself up on Neovim startup by
-setting `vim.g.null_ls_disable = true` before `null_ls.setup` runs.
-
-For example, you can use the following snippet to disable null-ls when using
-[firenvim](https://github.com/glacambre/firenvim), as long as the module
-containing the snippet loads before `null_ls.setup`:
-
-```lua
-if vim.g.started_by_firenvim then
-    vim.g.null_ls_disable = true
-end
-```
-
-You can also deregister sources using the source API, as described in
-[SOURCES](SOURCES.md).
-
 ## Explicitly defining the project root
 
 Create an empty file `.null-ls-root` in the directory you want to mark as the

@@ -25,16 +25,7 @@ describe("init", function()
             config.setup:revert()
 
             config.reset()
-            vim.g.null_ls_disable = nil
             vim.cmd("silent! delcommand NullLsInfo")
-        end)
-
-        it("should not set up null-ls if null_ls_disable is set", function()
-            vim.g.null_ls_disable = true
-
-            null_ls.setup()
-
-            assert.stub(config.setup).was_not_called()
         end)
 
         it("should not set up null-ls if already set up", function()

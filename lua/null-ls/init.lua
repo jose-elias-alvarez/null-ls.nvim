@@ -23,7 +23,7 @@ M.formatter = helpers.formatter_factory
 M.generator = helpers.generator_factory
 
 M.setup = function(user_config)
-    if vim.g.null_ls_disable or c.get()._setup then
+    if c.get()._setup then
         return
     end
 
