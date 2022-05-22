@@ -305,7 +305,7 @@ local sources = { null_ls.builtins.diagnostics.buf }
 #### Defaults
 
 - Filetypes: `{ "proto" }`
-- Method: `diagnostics`
+- Method: `diagnostics_on_save`
 - Command: `buf`
 - Args: `{ "lint", "$FILENAME#include_package_files=true" }`
 
@@ -1770,7 +1770,7 @@ local sources = { null_ls.builtins.formatting.buf }
 - Filetypes: `{ "proto" }`
 - Method: `formatting`
 - Command: `buf`
-- Args: `{ "format", "$FILENAME" }`
+- Args: `{ "format", "-w", "$FILENAME" }`
 
 ### [buildifier](https://github.com/bazelbuild/buildtools/tree/master/buildifier)
 
