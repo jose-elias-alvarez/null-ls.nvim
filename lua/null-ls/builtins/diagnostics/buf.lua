@@ -1,7 +1,7 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
+local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "buf_lint",
@@ -9,7 +9,7 @@ return h.make_builtin({
         url = "https://github.com/bufbuild/buf",
         description = "A new way of working with Protocol Buffers.",
     },
-    method = DIAGNOSTICS,
+    method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "proto" },
     generator_opts = {
         command = "buf",

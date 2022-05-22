@@ -10,14 +10,16 @@ return h.make_builtin({
         description = "A new way of working with Protocol Buffers.",
     },
     method = FORMATTING,
+    to_temp_file = true,
+    from_temp_file = true,
     filetypes = { "proto" },
     generator_opts = {
         command = "buf",
         args = {
             "format",
+            "-w",
             "$FILENAME",
         },
-        to_stdin = true,
     },
     factory = h.formatter_factory,
 })
