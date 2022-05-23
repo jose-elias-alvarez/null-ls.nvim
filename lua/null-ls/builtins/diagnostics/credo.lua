@@ -37,7 +37,7 @@ return h.make_builtin({
         args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" },
         format = "raw",
         to_stdin = true,
-        from_stderr = true,
+        from_stderr = false,
         on_output = function(params, done)
             local issues = {}
 
