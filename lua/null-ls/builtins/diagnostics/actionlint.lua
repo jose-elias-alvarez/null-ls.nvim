@@ -3,6 +3,12 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local buf_path_in_workflow_folder = function()
+    local api = vim.api
+    local path = api.nvim_buf_get_name(api.nvim_get_current_buf())
+    return path:match("github/workflows/") ~= nil
+end
+
 return h.make_builtin({
     name = "actionlint",
     meta = {
@@ -11,6 +17,7 @@ return h.make_builtin({
     },
     method = DIAGNOSTICS,
     filetypes = { "yaml" },
+    condition = buf_path_in_workflow_folder,
     generator_opts = {
         command = "actionlint",
         args = { "-no-color", "-format", "{{json .}}", "-" },
