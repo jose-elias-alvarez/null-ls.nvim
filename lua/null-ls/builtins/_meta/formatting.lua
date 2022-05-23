@@ -142,6 +142,9 @@ return {
   markdownlint = {
     filetypes = { "markdown" }
   },
+  mdformat = {
+    filetypes = { "markdown" }
+  },
   mix = {
     filetypes = { "elixir" }
   },
