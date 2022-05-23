@@ -2425,6 +2425,27 @@ local sources = { null_ls.builtins.formatting.markdownlint }
 
 - Can fix some (but not all!) markdownlint issues. If possible, use [Prettier](https://github.com/prettier/prettier), which can also fix Markdown files.
 
+### [mdformat](https://github.com/executablebooks/mdformat)
+
+An opinionated Markdown formatter that can be used to enforce a consistent style in Markdown files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.mdformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `formatting`
+- Command: `mdformat`
+- Args: `{ "$FILENAME" }`
+
+#### Notes
+
+- Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html) 
+
 ### [mix](https://hexdocs.pm/mix/1.12/Mix.html)
 
 Build tool that provides tasks for creating, compiling, and testing elixir projects, managing its dependencies, and more.
