@@ -37,36 +37,42 @@ return h.make_builtin({
         args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" },
         format = "raw",
         to_stdin = true,
-        from_stderr = true,
         on_output = function(params, done)
             local issues = {}
 
-            -- report any unexpected errors, such as partial file attempts
-            if params.err then
-                table.insert(issues, generic_issue(params.err))
+            -- credo is behaving in a bit of a tricky way:
+            -- 1. if there are no elixir warnings, it will give its output
+            --    on stderr, and stdout will be nil
+            -- 2. if there are elixir warnings, it will report the elixir
+            --    warnings on stderr, and its own output on stdout
+            --
+            -- also note.. "warnings".. this has been reproduced by doing a
+            -- "mix new" project, then changing in mix.exs "def project" to add:
+            -- compilers: Mix.compilers(),
+            -- Then creating a file config/config.exs containing "use Mix.Config"
+            local output = params.err -- assume there are no elixir warnings
+            if params.output then
+                -- output (stdout) is present! now we assume there are elixir
+                -- warnings, and that therefore the credo output is on stdout...
+                output = params.output
             end
 
-            -- if no output to parse, stop
-            if not params.output then
-                return done(issues)
-            end
-
-            local json_index, _ = params.output:find("{")
+            local json_index, _ = output:find("{")
 
             -- if no json included, something went wrong and nothing to parse
             if not json_index then
-                table.insert(issues, generic_issue(params.output))
+                table.insert(issues, generic_issue(output))
 
                 return done(issues)
             end
 
-            local maybe_json_string = params.output:sub(json_index)
+            local maybe_json_string = output:sub(json_index)
 
             local ok, decoded = pcall(vim.json.decode, maybe_json_string)
 
             -- decoding broke, so give up and return the original output
             if not ok then
-                table.insert(issues, generic_issue(params.output))
+                table.insert(issues, generic_issue(output))
 
                 return done(issues)
             end
