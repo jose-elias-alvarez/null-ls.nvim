@@ -3329,6 +3329,23 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 - Command: `zig`
 - Args: `{ "fmt", "--stdin" }`
 
+### [zprint](https://github.com/kkinnear/zprint)
+
+Executables, uberjar, and library to beautifully format Clojure and Clojurescript source code and s-expressions.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.zprint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "clojure" }`
+- Method: `formatting`
+- Command: `zprint`
+- Args: `{}`
+
 ## Hover
 
 ### [dictionary](https://dictionaryapi.dev/)
