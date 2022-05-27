@@ -294,5 +294,8 @@ return {
   },
   zigfmt = {
     filetypes = { "zig" }
+  },
+  zprint = {
+    filetypes = { "clojure" }
   }
 }

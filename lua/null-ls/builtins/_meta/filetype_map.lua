@@ -32,7 +32,7 @@ return {
   },
   clojure = {
     diagnostics = { "clj_kondo" },
-    formatting = { "cljstyle" }
+    formatting = { "cljstyle", "zprint" }
   },
   cmake = {
     formatting = { "cmake_format" }
