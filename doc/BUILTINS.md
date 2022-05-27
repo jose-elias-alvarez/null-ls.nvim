@@ -3331,7 +3331,7 @@ local sources = { null_ls.builtins.formatting.zigfmt }
 
 ### [zprint](https://github.com/kkinnear/zprint)
 
-Executables, uberjar, and library to beautifully format Clojure and Clojurescript source code and s-expressions.
+Beautifully format Clojure and Clojurescript source code and s-expressions.
 
 #### Usage
 
@@ -3344,7 +3344,10 @@ local sources = { null_ls.builtins.formatting.zprint }
 - Filetypes: `{ "clojure" }`
 - Method: `formatting`
 - Command: `zprint`
-- Args: `{}`
+
+#### Notes
+
+- Requires that `zprint` is executable and on $PATH.
 
 ## Hover
 
