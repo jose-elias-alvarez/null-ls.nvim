@@ -43,7 +43,7 @@ return h.make_builtin({
                 }
         end,
         dynamic_command = cmd_resolver.from_node_modules,
-        cwd = function(params)
+        cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
                 -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
                 ".eslintrc",
@@ -54,6 +54,6 @@ return h.make_builtin({
                 ".eslintrc.json",
                 "package.json"
             )(params.bufname)
-        end,
+        end),
     },
 })
