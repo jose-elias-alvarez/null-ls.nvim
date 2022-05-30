@@ -1142,10 +1142,6 @@ local sources = { null_ls.builtins.diagnostics.revive }
 - Command: `revive`
 - Args: `{ "-formatter", "json", "./..." }`
 
-#### Notes
-
-- `extra_args` does not work with this linter, since it does not support additional non-file arguments after the first file or `./...` is specified. Overwrite `args` instead.
-
 ### [rpmspec](https://rpm.org/)
 
 Command line tool to parse RPM spec files.
@@ -1340,10 +1336,6 @@ local sources = { null_ls.builtins.diagnostics.staticcheck }
 - Method: `diagnostics_on_save`
 - Command: `staticcheck`
 - Args: `{ "-f", "json", "./..." }`
-
-#### Notes
-
-- `extra_args` does not work with this linter, since it does not support additional non-file arguments after the first file or `./...` is specified. Overwrite `args` instead.
 
 ### [statix](https://github.com/nerdypepper/statix)
 
