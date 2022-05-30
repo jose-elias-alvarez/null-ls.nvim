@@ -30,7 +30,7 @@ return h.make_builtin({
 
             for i = 1, #filetypes do
                 local ft = filetypes[i]
-                local ft_table = require("luasnip").snippets[ft]
+                local ft_table = require("luasnip").get_snippets(ft)
                 if ft_table then
                     for j, snip in pairs(ft_table) do
                         local data = {
