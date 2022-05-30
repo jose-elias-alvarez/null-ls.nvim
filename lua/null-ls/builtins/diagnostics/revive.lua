@@ -12,6 +12,9 @@ return h.make_builtin({
     meta = {
         url = "https://revive.run/",
         description = "Fast, configurable, extensible, flexible, and beautiful linter for Go.",
+        notes = {
+            "`extra_args` does not work with this linter, since it does not support additional non-file arguments after the first file or `./...` is specified. Overwrite `args` instead.",
+        },
     },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "go" },
