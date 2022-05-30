@@ -50,7 +50,17 @@ M.from_node_modules = function(params)
     -- try the local one first by default but always fallback on the pre-defined command
     -- this needs to be done here to avoid constant lookups
     -- we're checking if the global is executable to avoid spawning an invalid command
-    return M.generic(params, u.path.join("node_modules", ".bin")) or u.is_executable(params.command) and params.command
+    local local_command = M.generic(params, u.path.join("node_modules", ".bin"))
+    if local_command then
+        return local_command
+    end
+
+    local is_executable = u.is_executable(params.command)
+    if not is_executable then
+        log:error(string.format("cannot find executable [%s] in node_modules or from your $PATH", params.command))
+    end
+
+    return params.command
 end
 
 M.from_yarn_pnp = function(params)
