@@ -58,11 +58,9 @@ M.run = function(generators, params, opts, callback)
             a.util.scheduler()
 
             -- filter diagnostics results with the diagnostic_filter option
-            local filter = opts.filter
+            local filter = generator.opts.filter
             if filter and results then
-                results = vim.tbl_filter(function(result)
-                    return filter(result, generator)
-                end, results)
+                results = vim.tbl_filter(filter, results)
             end
 
             if results then
