@@ -44,11 +44,19 @@ benefits of dynamic (or "duck") typing and static typing.]],
         end,
         multiple_files = true,
         on_output = h.diagnostics.from_patterns({
+            -- see spec for pattern examples
             {
                 pattern = "([^:]+):(%d+):(%d+): (%a+): (.*)  %[([%a-]+)%]",
                 groups = { "filename", "row", "col", "severity", "message", "code" },
                 overrides = overrides,
             },
+            -- no error code
+            {
+                pattern = "([^:]+):(%d+):(%d+): (%a+): (.*)",
+                groups = { "filename", "row", "col", "severity", "message" },
+                overrides = overrides,
+            },
+            -- no column or error code
             {
                 pattern = "([^:]+):(%d+): (%a+): (.*)",
                 groups = { "filename", "row", "severity", "message" },
