@@ -35,7 +35,7 @@ return {
     filetypes = { "cabal" }
   },
   clang_format = {
-    filetypes = { "c", "cpp", "cs", "java" }
+    filetypes = { "c", "cpp", "cs", "java", "cuda" }
   },
   cljstyle = {
     filetypes = { "clojure" }

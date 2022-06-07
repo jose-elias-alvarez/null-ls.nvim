@@ -51,6 +51,9 @@ return {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
   },
+  cuda = {
+    formatting = { "clang_format" }
+  },
   cue = {
     diagnostics = { "cue_fmt" },
     formatting = { "cue_fmt" }
