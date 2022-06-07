@@ -1096,4 +1096,45 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("mypy", function()
+        local linter = diagnostics.mypy
+        local parser = linter._opts.on_output
+        it("should handle full diagnostic", function()
+            local output =
+                'test.py:1:1: error: Library stubs not installed for "requests" (or incompatible with Python 3.9)  [import]'
+            local diagnostic = parser(output, {})
+            assert.same({
+                row = "1",
+                col = "1",
+                severity = 1,
+                message = 'Library stubs not installed for "requests" (or incompatible with Python 3.9)',
+                filename = "test.py",
+                code = "import",
+            }, diagnostic)
+        end)
+
+        it("should diagnostic without code", function()
+            local output = 'test.py:1:1: note: Hint: "python3 -m pip install types-requests"'
+            local diagnostic = parser(output, {})
+            assert.same({
+                row = "1",
+                col = "1",
+                severity = 3,
+                message = 'Hint: "python3 -m pip install types-requests"',
+                filename = "test.py",
+            }, diagnostic)
+        end)
+
+        it("should handle diagnostic with no column or error code", function()
+            local output = [[tests/slack_app/conftest.py:10: error: Unused "type: ignore" comment]]
+            local diagnostic = parser(output, {})
+            assert.same({
+                row = "10",
+                severity = 1,
+                message = 'Unused "type: ignore" comment',
+                filename = "tests/slack_app/conftest.py",
+            }, diagnostic)
+        end)
+    end)
 end)
