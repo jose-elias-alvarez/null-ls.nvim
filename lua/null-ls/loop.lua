@@ -203,13 +203,39 @@ M.timer = function(timeout, interval, should_start, callback)
     }
 end
 
-M.temp_file = function(content, extension)
-    local tmp_dir = u.path.is_windows and vim.fn.getenv("TEMP") or "/tmp"
+local tmp_dir
+local get_temp_dir = function()
+    if tmp_dir then
+        return tmp_dir
+    end
 
+    if u.path.is_windows then
+        tmp_dir = vim.env.TEMP
+        return tmp_dir
+    end
+
+    local xdg_runtime_dir = vim.env.XDG_RUNTIME_DIR
+    if xdg_runtime_dir then
+        tmp_dir = xdg_runtime_dir .. "/nvim"
+        if uv.fs_stat(tmp_dir) == nil then
+            uv.fs_mkdir(tmp_dir, tonumber("700", 8))
+        end
+        return tmp_dir
+    end
+
+    tmp_dir = "/tmp"
+    return tmp_dir
+end
+
+M._revert_tmp_dir = function()
+    tmp_dir = nil
+end
+
+M.temp_file = function(content, extension)
     local fd, tmp_path
     if uv.fs_mkstemp then
         -- prefer fs_mkstemp, since we can modify the directory
-        fd, tmp_path = uv.fs_mkstemp(u.path.join(tmp_dir, "null-ls_XXXXXX"))
+        fd, tmp_path = uv.fs_mkstemp(u.path.join(get_temp_dir(), "null-ls_XXXXXX"))
     else
         -- fall back to os.tmpname, which is Unix-only
         tmp_path = os.tmpname()

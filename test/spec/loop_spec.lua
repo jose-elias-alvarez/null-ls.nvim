@@ -582,12 +582,13 @@ describe("loop", function()
     describe("temp_file", function()
         local mock_content = "write me to a temp file"
         local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
-
+        local xdg_runtime_dir = "/run/user/1000"
         local fs_mkstemp = uv.fs_mkstemp
         local tmpname
         before_each(function()
             u.path.is_windows = false
 
+            vim.env.XDG_RUNTIME_DIR = xdg_runtime_dir
             tmpname = stub(os, "tmpname")
 
             tmpname.returns(mock_path)
@@ -596,6 +597,8 @@ describe("loop", function()
         end)
         after_each(function()
             tmpname:revert()
+            vim.env.XDG_RUNTIME_DIR = nil
+            loop._revert_tmp_dir()
             uv.fs_write:clear()
             uv.fs_close:clear()
             uv.fs_unlink:clear()
@@ -604,10 +607,16 @@ describe("loop", function()
             uv.fs_rename:clear()
         end)
 
-        it("should call uv.fs_mkstemp with path + pattern", function()
+        it("should call uv.fs_mkstemp with path + pattern using /tmp", function()
+            vim.env.XDG_RUNTIME_DIR = nil
             loop.temp_file(mock_content)
 
             assert.stub(uv.fs_mkstemp).was_called_with("/tmp/null-ls_XXXXXX")
+        end)
+
+        it("should call uv.fs_mkstemp with path + pattern using XDG_RUNTIME_DIR", function()
+            loop.temp_file(mock_content)
+            assert.stub(uv.fs_mkstemp).was_called_with(u.path.join(xdg_runtime_dir, "/nvim/null-ls_XXXXXX"))
         end)
 
         it("should not call uv.fs_open if fd from fs_mkstemp is already open", function()
