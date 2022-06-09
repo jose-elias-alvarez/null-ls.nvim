@@ -165,7 +165,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   json = {
-    diagnostics = { "jsonlint" },
+    diagnostics = { "cfn_lint", "jsonlint" },
     formatting = { "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   jsonc = {
@@ -355,7 +355,7 @@ return {
     formatting = { "tidy", "xmllint" }
   },
   yaml = {
-    diagnostics = { "actionlint", "yamllint" },
+    diagnostics = { "actionlint", "cfn_lint", "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   ["yaml.ansible"] = {

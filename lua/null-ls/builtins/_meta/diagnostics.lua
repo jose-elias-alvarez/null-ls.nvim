@@ -16,6 +16,9 @@ return {
   buildifier = {
     filetypes = { "bzl" }
   },
+  cfn_lint = {
+    filetypes = { "yaml", "json" }
+  },
   checkmake = {
     filetypes = { "make" }
   },

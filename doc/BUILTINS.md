@@ -326,6 +326,23 @@ local sources = { null_ls.builtins.diagnostics.buildifier }
 - Command: `buildifier`
 - Args: `{ "-mode=check", "-lint=warn", "-format=json", "-path=$FILENAME" }`
 
+### [cfn_lint](https://github.com/aws-cloudformation/cfn-lint)
+
+Validate AWS CloudFormation yaml/json templates against the AWS CloudFormation Resource Specification
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cfn_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml", "json" }`
+- Method: `diagnostics`
+- Command: `cfn-lint`
+- Args: `{ "--format", "parseable", "-" }`
+
 ### [checkmake](https://github.com/mrtazz/checkmake)
 
 `make` linter.
