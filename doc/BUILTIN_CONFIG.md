@@ -271,10 +271,18 @@ local sources = {
 Specifying a timeout with a value less than zero will prevent the command from
 ever timing out.
 
-### Running in place
+### Temp file sources
 
-Some builtins write the buffer to a temp file before being executed. This can be
-turned off by setting `to_temp_file` to `false`:
+Some builtins write the buffer's content to a temp file before command
+execution, as a workaround for commands that don't accept `stdin`. null-ls uses
+the following logic to determine where to put temp files:
+
+1. On Unix, use `XDG_RUNTIME_DIR` if set. Otherwise, use `/tmp`.
+2. On Windows, use `TEMP`
+
+In most cases, temp file sources will work as expected without user
+intervention. For special cases, you can turn this off by setting `to_temp_file`
+to `false`:
 
 ```lua
 local sources = {
@@ -284,8 +292,9 @@ local sources = {
 }
 ```
 
-If overriding this it is recommended to switch diagnostics to
-[run on save](#diagnostics-on-save).
+For diagnostics sources, you should also update the source to [run on
+save](#diagnostics-on-save), since otherwise diagnostics will go out of sync
+with buffer changes.
 
 ## Using local executables
 
