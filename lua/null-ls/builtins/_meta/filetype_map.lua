@@ -289,7 +289,7 @@ return {
   },
   sql = {
     diagnostics = { "sqlfluff" },
-    formatting = { "pg_format", "sqlfluff", "sqlformat" }
+    formatting = { "pg_format", "sql_formatter", "sqlfluff", "sqlformat" }
   },
   stylus = {
     diagnostics = { "stylint" }

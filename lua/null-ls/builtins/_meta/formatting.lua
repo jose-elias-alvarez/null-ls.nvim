@@ -235,6 +235,9 @@ return {
   shfmt = {
     filetypes = { "sh" }
   },
+  sql_formatter = {
+    filetypes = { "sql" }
+  },
   sqlfluff = {
     filetypes = { "sql" }
   },

@@ -3048,6 +3048,22 @@ local sources = { null_ls.builtins.formatting.sqlformat }
 - Command: `sqlformat`
 - Args: `{ "-" }`
 
+### [sql_formatter](https://github.com/sql-formatter-org/sql-formatter)
+
+A whitespace formatter for different query languages
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.sql_formatter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sql" }`
+- Method: `formatting`
+- Command: `sql-formatter`
+
 ### [standardjs](https://standardjs.com/)
 
 JavaScript Standard Style, a no-configuration automatic code formatter that just works.
