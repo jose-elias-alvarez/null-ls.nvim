@@ -82,6 +82,8 @@ return h.make_builtin({
                     S = h.diagnostics.severities["warning"],
                     I = h.diagnostics.severities["warning"],
                     C = h.diagnostics.severities["warning"],
+                    B = h.diagnostics.severities["warning"], -- flake8-bugbear
+                    N = h.diagnostics.severities["information"], -- pep8-naming
                 },
             }
         ),
