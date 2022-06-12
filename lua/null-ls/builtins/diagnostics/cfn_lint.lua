@@ -31,6 +31,16 @@ return h.make_builtin({
                 },
             }
         ),
+        runtime_condition = h.cache.by_bufnr(function(params)
+            -- check if file looks like a cloudformation template
+            local lines = vim.api.nvim_buf_get_lines(params.bufnr, 0, -1, false)
+            for _, line in ipairs(lines) do
+                if line:match("Resources") or line:match("AWSTemplateFormatVersion") then
+                    return true
+                end
+            end
+            return false
+        end),
     },
     factory = h.generator_factory,
 })
