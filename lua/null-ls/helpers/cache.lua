@@ -1,5 +1,3 @@
-local log = require("null-ls.logger")
-
 local next_key = 0
 
 local M = {}
