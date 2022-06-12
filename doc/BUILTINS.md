@@ -1764,6 +1764,23 @@ local sources = { null_ls.builtins.formatting.black }
 - Command: `black`
 - Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
 
+### [blue](https://github.com/grantjenks/blue)
+
+Blue -- Some folks like black but I prefer blue.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.blue }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+- Command: `blue`
+- Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
+
 ### [brittany](https://github.com/lspitzner/brittany)
 
 haskell source code formatter

@@ -22,6 +22,9 @@ return {
   black = {
     filetypes = { "python" }
   },
+  blue = {
+    filetypes = { "python" }
+  },
   brittany = {
     filetypes = { "haskell" }
   },
