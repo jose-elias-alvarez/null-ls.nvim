@@ -15,7 +15,8 @@ M.by_bufnr = function(cb)
 
     return function(params)
         local bufnr = params.bufnr
-        if not M.cache[key][bufnr] then
+        -- if we haven't cached a value yet, get it from cb
+        if M.cache[key][bufnr] == nil then
             M.cache[key][bufnr] = cb(params)
         end
 
