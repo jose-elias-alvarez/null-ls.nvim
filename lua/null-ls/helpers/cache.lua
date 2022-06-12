@@ -1,3 +1,5 @@
+local log = require("null-ls.logger")
+
 local next_key = 0
 
 local M = {}
@@ -17,7 +19,8 @@ M.by_bufnr = function(cb)
         local bufnr = params.bufnr
         -- if we haven't cached a value yet, get it from cb
         if M.cache[key][bufnr] == nil then
-            M.cache[key][bufnr] = cb(params)
+            -- make sure we always store a value so we know we've already called cb
+            M.cache[key][bufnr] = cb(params) or false
         end
 
         return M.cache[key][bufnr]

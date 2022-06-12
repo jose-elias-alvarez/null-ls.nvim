@@ -33,6 +33,15 @@ describe("cache", function()
             assert.equals(val, "mock_val")
         end)
 
+        it("should return false if cb returns nil", function()
+            mock_cb.returns(nil)
+            local fn = cache.by_bufnr(mock_cb)
+
+            local val = fn(mock_params)
+
+            assert.equals(val, false)
+        end)
+
         it("should return cached value", function()
             local fn = cache.by_bufnr(mock_cb)
             local val = fn(mock_params)
@@ -44,6 +53,16 @@ describe("cache", function()
         end)
 
         it("should only call cb once if bufnr is the same", function()
+            local fn = cache.by_bufnr(mock_cb)
+
+            fn(mock_params)
+            fn(mock_params)
+
+            assert.stub(mock_cb).was_called(1)
+        end)
+
+        it("should only call cb once if cb returns false", function()
+            mock_cb.returns(false)
             local fn = cache.by_bufnr(mock_cb)
 
             fn(mock_params)

@@ -354,3 +354,7 @@ over the lifetime of the buffer, which works well for `cwd` and
 `runtime_condition` callbacks. Users can use it as a simple shortcut to improve
 performance, and built-in authors can use it to add logic that would otherwise
 be too performance-intensive to include out-of-the-box.
+
+Note that if `callback` returns `nil`, the helper will override the return value
+and instead cache `false` (so that it can determine that it already ran
+`callback` once and should not run it again).
