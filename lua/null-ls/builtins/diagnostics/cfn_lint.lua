@@ -8,6 +8,13 @@ return h.make_builtin({
     meta = {
         url = "https://github.com/aws-cloudformation/cfn-lint",
         description = "Validate AWS CloudFormation yaml/json templates against the AWS CloudFormation Resource Specification",
+        notes = {
+            "Once a supported file type is opened null-ls will try and determine if the file looks like an AWS Cloudformation template.",
+            'A file will be considered an AWS Cloudformation template if it contains "Resources" or "AWSTemplateFormatVersion".',
+            "This check will run only once when entering the buffer.",
+            'This means if "Resources" or "AWSTemplateFormatVersion" is added to a file after this check is run, the cfn-lint diagnostics will not be generated.',
+            "To fix this you must restart Neovim.",
+        },
     },
     method = DIAGNOSTICS,
     filetypes = { "yaml", "json" },
@@ -41,13 +48,6 @@ return h.make_builtin({
             end
             return false
         end),
-        notes = {
-            "Once a supported file type is opened null-ls will try and determine if the file looks like an AWS Cloudformation template.",
-            'A file will be considered an AWS Cloudformation template if it contains "Resources" or "AWSTemplateFormatVersion".',
-            "This check will run only once when entering the buffer.",
-            'This means if "Resources" or "AWSTemplateFormatVersion" is added to a file after this check is run, the cfn-lint diagnostics will not be generated.',
-            "To fix this you must restart neovim.",
-        },
     },
     factory = h.generator_factory,
 })
