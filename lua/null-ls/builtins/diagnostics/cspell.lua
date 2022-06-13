@@ -32,9 +32,8 @@ return h.make_builtin({
     generator_opts = {
         command = "cspell",
         args = function(params)
-            return {
+            local cspell_args = {
                 "lint",
-                "--show-suggestions",
                 "--language-id",
                 params.ft,
                 "stdin",
