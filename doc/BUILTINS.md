@@ -886,6 +886,23 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 - Command: `mypy`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/mypy.lua))
 
+### [opacheck](https://www.openpolicyagent.org/docs/latest/cli/#opa-check)
+
+Check Rego source files for parse and compilation errors.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.opacheck }
+```
+
+#### Defaults
+
+- Filetypes: `{ "rego" }`
+- Method: `diagnostics_on_save`
+- Command: `opa`
+- Args: `{ "check", "-f", "json", "--strict", "$ROOT/src/", "$ROOT/test/" }`
+
 ### [php](https://www.php.net/)
 
 Uses the php command-line tool's built in `-l` flag to check for syntax errors.

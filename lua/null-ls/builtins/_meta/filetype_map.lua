@@ -249,6 +249,9 @@ return {
   racket = {
     formatting = { "raco_fmt" }
   },
+  rego = {
+    diagnostics = { "opacheck" }
+  },
   rescript = {
     formatting = { "rescript" }
   },

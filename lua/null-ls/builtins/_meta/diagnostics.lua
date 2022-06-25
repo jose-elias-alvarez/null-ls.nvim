@@ -112,6 +112,9 @@ return {
   mypy = {
     filetypes = { "python" }
   },
+  opacheck = {
+    filetypes = { "rego" }
+  },
   php = {
     filetypes = { "php" }
   },
