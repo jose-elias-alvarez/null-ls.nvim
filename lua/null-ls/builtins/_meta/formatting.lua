@@ -289,6 +289,9 @@ return {
   uncrustify = {
     filetypes = { "c", "cpp", "cs", "java" }
   },
+  usort = {
+    filetypes = { "python" }
+  },
   verible_verilog_format = {
     filetypes = { "verilog", "systemverilog" }
   },
