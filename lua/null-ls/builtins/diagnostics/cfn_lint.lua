@@ -50,10 +50,11 @@ return h.make_builtin({
             -- matches the word Resources optionally surrounded by quotes, zero to many spaces, followed by a colon
             local resources_pattern = '?"?Resources"?%s*:'
 
+            -- This pattern matches the naming convention of an AWS cloudformation resource type "Type": "AWS::ProductIdentifier::ResourceType"
             -- matches the word Type optionally surrounded by quotes, zero to many spaces, followed by a colon,
-            -- followed by 2-64 alphanumeric characters, separated by 2 colons, followed by 2-64 more alaphanumeric characters.
-            -- This pattern matches the naming convention of an AWS cloudformation resource type
-            local resource_type_pattern = '"?Type"?%s*:%s*"?\'?%w{2,64}::%w{2,64}'
+            -- followed by AWS, 2 colons, 2-64 alphanumeric characters for the product identifier, separated by 2 colons,
+            -- followed by 2-64 more alaphanumeric characters for the resource type.
+            local resource_type_pattern = '"?Type"?%s*:%s*"?\'?AWS::%w{2,64}::%w{2,64}"?\'?'
 
             local found_resources = false
             for _, line in ipairs(lines) do
