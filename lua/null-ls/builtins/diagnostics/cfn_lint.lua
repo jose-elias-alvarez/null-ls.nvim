@@ -45,16 +45,16 @@ return h.make_builtin({
             local lines = vim.api.nvim_buf_get_lines(params.bufnr, 0, -1, false)
 
             -- matches the word AWSTemplateFormatVersion optionally surrounded by quotes, zero to many spaces, followed by a colon
-            local template_format_version_pattern = '"?AWSTemplateFormatVersion"?%s*:'
+            local template_format_version_pattern = '%s*"?AWSTemplateFormatVersion"?%s*:'
 
             -- matches the word Resources optionally surrounded by quotes, zero to many spaces, followed by a colon
-            local resources_pattern = '?"?Resources"?%s*:'
+            local resources_pattern = '"?Resources"?%s*:'
 
             -- This pattern matches the naming convention of an AWS cloudformation resource type "Type": "AWS::ProductIdentifier::ResourceType"
             -- matches the word Type optionally surrounded by quotes, zero to many spaces, followed by a colon,
-            -- followed by AWS, 2 colons, 2-64 alphanumeric characters for the product identifier, separated by 2 colons,
-            -- followed by 2-64 more alaphanumeric characters for the resource type.
-            local resource_type_pattern = '"?Type"?%s*:%s*"?\'?AWS::%w{2,64}::%w{2,64}"?\'?'
+            -- followed by AWS, 2 colons, 1 or more alphanumeric characters for the product identifier, separated by 2 colons,
+            -- followed by one or more alaphanumeric characters for the resource type.
+            local resource_type_pattern = '"?Type"?%s*:%s*"?\'?AWS::%w+::%w+"?\'?'
 
             local found_resources = false
             for _, line in ipairs(lines) do
@@ -70,9 +70,9 @@ return h.make_builtin({
                 if found_resources and line:match(resource_type_pattern) then
                     return true
                 end
-
-                return false
             end
+
+            return false
         end),
     },
     factory = h.generator_factory,
