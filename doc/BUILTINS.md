@@ -346,7 +346,9 @@ local sources = { null_ls.builtins.diagnostics.cfn_lint }
 #### Notes
 
 - Once a supported file type is opened null-ls will try and determine if the file looks like an AWS Cloudformation template.
-- A file will be considered an AWS Cloudformation template if it contains "Resources" or "AWSTemplateFormatVersion".
+- A file will be considered an AWS Cloudformation template if it contains a "Resources" or "AWSTemplateFormatVersion" key.
+- To prevent cfn-lint running on all YAML and JSON files that contain a "Resources" key.
+- The file must contain at least one AWS Cloudformation Resource Type, e.g "Type": "AWS::S3::Bucket"
 - This check will run only once when entering the buffer.
 - This means if "Resources" or "AWSTemplateFormatVersion" is added to a file after this check is run, the cfn-lint diagnostics will not be generated.
 - To fix this you must restart Neovim.
