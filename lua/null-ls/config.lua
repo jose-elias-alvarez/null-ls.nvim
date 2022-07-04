@@ -9,17 +9,12 @@ local defaults = {
     default_timeout = 5000,
     diagnostics_format = "#{m}",
     fallback_severity = vim.diagnostic.severity.ERROR,
-    ---@usage setting this to true will enable debug logging
-    log = {
-        ---@usage disable logging completely
-        enable = true,
-        ---@usage set logging level
-        --- possible values: { "error", "warn", "info", "debug", "trace" }
-        level = "warn",
-        ---@usage whether to print the output to neovim's
-        --- possible values: 'sync','async', false
-        use_console = "async",
-    },
+
+    ---@usage set logging level
+    --- possible values: { "off", "error", "warn", "info", "debug", "trace" }
+    log_level = "warn",
+    -- format string for vim.notify messages
+    notify_format = "[null-ls] %s",
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     update_in_insert = false,
     -- prevent double setup
@@ -95,9 +90,6 @@ M.setup = function(user_config)
 
     local validated = validate_config(user_config)
     config = vim.tbl_extend("force", config, validated)
-
-    -- FIXME: validating log options should maintain any default options
-    config.log = vim.tbl_extend("keep", config.log, defaults.log)
 
     if config.sources then
         require("null-ls.sources").register(config.sources)

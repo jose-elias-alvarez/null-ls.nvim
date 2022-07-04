@@ -167,7 +167,7 @@ M.handler = function(original_params)
             end
             local source_id, multiple_files = generator.source_id, generator.multiple_files
             log:trace("received diagnostics from source " .. source_id)
-            log:trace(diagnostics)
+            log:trace(vim.inspect(diagnostics))
 
             if get_last_changedtick(uri, method) > changedtick then
                 log:debug("buffer changed; ignoring received diagnostics")
