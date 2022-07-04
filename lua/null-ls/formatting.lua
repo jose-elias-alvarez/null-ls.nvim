@@ -90,7 +90,7 @@ M.handler = function(method, original_params, handler)
 
                 if is_actual_edit then
                     log:debug("received edits from generators")
-                    log:trace(edits)
+                    log:trace(vim.inspect(edits))
                 end
 
                 handler_wrapper(is_actual_edit and { edits } or nil)

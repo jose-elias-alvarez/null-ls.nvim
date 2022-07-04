@@ -9,16 +9,14 @@ local defaults = {
     default_timeout = 5000,
     diagnostics_format = "#{m}",
     fallback_severity = vim.diagnostic.severity.ERROR,
-    ---@usage setting this to true will enable debug logging
+    ---@usage setting this to nil or false will disable logging completely
     log = {
-        ---@usage disable logging completely
-        enable = true,
-        ---@usage set logging level
+        ---@usage logging level
         --- possible values: { "error", "warn", "info", "debug", "trace" }
         level = "warn",
-        ---@usage whether to print the output to neovim's
-        --- possible values: 'sync','async', false
-        use_console = "async",
+        ---@usage notify level for vim.notify() during logging
+        --- possible values: { "error", "warn", "info", "debug", "trace" }
+        notify_level = "warn",
     },
     root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
     update_in_insert = false,
