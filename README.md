@@ -302,6 +302,8 @@ All tests expect the latest Neovim master.
 - [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
   that (surprise) focuses on formatting.
 
+- [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework for Neovim.
+
 ## Sponsors
 
 Thanks to everyone who sponsors my projects and makes continued development /
