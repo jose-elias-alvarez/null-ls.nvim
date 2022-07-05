@@ -1734,6 +1734,27 @@ local sources = { null_ls.builtins.formatting.bean_format }
 - It left-aligns all the currencies.
 - It only modifies whitespace.
 
+### [beautysh](https://github.com/lovesegfault/beautysh)
+
+A Bash beautifier for the masses.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.beautysh }
+```
+
+#### Defaults
+
+- Filetypes: `{ "bash", "csh", "ksh", "sh", "zsh" }`
+- Method: `formatting`
+- Command: `beautysh`
+- Args: `{ "$FILENAME" }`
+
+#### Notes
+
+- In addition to Bash, Beautysh can format csh, ksh, sh and zsh.
+
 ### [bibclean](https://www.ctan.org/pkg/bibclean)
 
 A portable program (written in C) that will pretty-print, syntax check, and generally sort out a BibTeX database file.
