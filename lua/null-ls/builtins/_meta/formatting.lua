@@ -16,6 +16,9 @@ return {
   bean_format = {
     filetypes = { "beancount" }
   },
+  beautysh = {
+    filetypes = { "bash", "csh", "ksh", "sh", "zsh" }
+  },
   bibclean = {
     filetypes = { "bib" }
   },

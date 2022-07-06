@@ -10,6 +10,9 @@ return {
   asm = {
     formatting = { "asmfmt" }
   },
+  bash = {
+    formatting = { "beautysh" }
+  },
   beancount = {
     formatting = { "bean_format" }
   },
@@ -46,6 +49,9 @@ return {
   },
   cs = {
     formatting = { "astyle", "clang_format", "uncrustify" }
+  },
+  csh = {
+    formatting = { "beautysh" }
   },
   css = {
     diagnostics = { "stylelint" },
@@ -175,6 +181,9 @@ return {
     diagnostics = { "ktlint" },
     formatting = { "ktlint" }
   },
+  ksh = {
+    formatting = { "beautysh" }
+  },
   less = {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
@@ -282,7 +291,7 @@ return {
   sh = {
     code_actions = { "shellcheck" },
     diagnostics = { "shellcheck" },
-    formatting = { "shellharden", "shfmt" }
+    formatting = { "beautysh", "shellharden", "shfmt" }
   },
   solidity = {
     diagnostics = { "solhint" }
@@ -368,6 +377,7 @@ return {
     formatting = { "zigfmt" }
   },
   zsh = {
-    diagnostics = { "zsh" }
+    diagnostics = { "zsh" },
+    formatting = { "beautysh" }
   }
 }
