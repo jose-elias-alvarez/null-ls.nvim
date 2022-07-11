@@ -9,7 +9,7 @@ return h.make_builtin({
         url = "https://github.com/executablebooks/mdformat",
         description = "An opinionated Markdown formatter that can be used to enforce a consistent style in Markdown files",
         notes = {
-            "Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html) ",
+            "Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html)",
         },
     },
     method = FORMATTING,

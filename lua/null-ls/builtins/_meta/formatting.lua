@@ -178,6 +178,9 @@ return {
   phpcsfixer = {
     filetypes = { "php" }
   },
+  pint = {
+    filetypes = { "php" }
+  },
   prettier = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }
   },

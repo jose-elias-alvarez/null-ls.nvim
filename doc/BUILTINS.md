@@ -976,7 +976,7 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 #### Notes
 
 - Requires a valid `phpstan.neon` at root.
-- If in place validation is required set `method` to `diagnostics_on_save`  and `to_temp_file` to `false`
+- If in place validation is required set `method` to `diagnostics_on_save` and `to_temp_file` to `false`
 
 ### [proselint](https://github.com/amperser/proselint)
 
@@ -2534,7 +2534,7 @@ local sources = { null_ls.builtins.formatting.mdformat }
 
 #### Notes
 
-- Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html) 
+- Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html)
 
 ### [mix](https://hexdocs.pm/mix/1.12/Mix.html)
 
@@ -2685,6 +2685,23 @@ local sources = { null_ls.builtins.formatting.phpcsfixer }
 - Method: `formatting`
 - Command: `php-cs-fixer`
 - Args: `{ "--no-interaction", "--quiet", "fix", "$FILENAME" }`
+
+### [pint](https://github.com/laravel/pint)
+
+An opinionated PHP code style fixer for minimalists.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.pint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "php" }`
+- Method: `formatting`
+- Command: `./vendor/bin/pint`
+- Args: `{ "--no-interaction", "--quiet", "$FILENAME" }`
 
 ### [prettier](https://github.com/prettier/prettier)
 

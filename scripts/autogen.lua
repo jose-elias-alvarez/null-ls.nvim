@@ -125,10 +125,8 @@ local generate_builtin_defaults = function(source, method, name)
             if type(command) == "string" then
                 command_content = string.format("`%s`", command)
             else
-                command_content = string.format(
-                    "dynamically resolved (see [source](%s))",
-                    generate_repo_url(method, name)
-                )
+                command_content =
+                    string.format("dynamically resolved (see [source](%s))", generate_repo_url(method, name))
             end
             vim.list_extend(defaults, {
                 "- Command: " .. command_content,
