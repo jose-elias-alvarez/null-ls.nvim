@@ -68,12 +68,8 @@ M.handler = function(method, original_params, handler)
         end
 
         local after_each = function(edits)
-            local ok, err = pcall(
-                lsp.util.apply_text_edits,
-                edits,
-                temp_bufnr,
-                require("null-ls.client").get_offset_encoding()
-            )
+            local ok, err =
+                pcall(lsp.util.apply_text_edits, edits, temp_bufnr, require("null-ls.client").get_offset_encoding())
             if not ok then
                 handle_err(err)
             end

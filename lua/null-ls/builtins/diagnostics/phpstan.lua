@@ -10,7 +10,7 @@ return h.make_builtin({
         description = "PHP static analysis tool.",
         notes = {
             "Requires a valid `phpstan.neon` at root.",
-            "If in place validation is required set `method` to `diagnostics_on_save`  and `to_temp_file` to `false`",
+            "If in place validation is required set `method` to `diagnostics_on_save` and `to_temp_file` to `false`",
         },
     },
     method = DIAGNOSTICS,

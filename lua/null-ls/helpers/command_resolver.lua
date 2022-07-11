@@ -68,9 +68,9 @@ M.from_yarn_pnp = function(params)
     local pnp_loader = search_ancestors_for_command(params.bufname, root, ".pnp.cjs")
         or search_ancestors_for_command(params.bufname, root, ".pnp.js")
     if pnp_loader then
-        local yarn_bin = vim.fn.system(
-            fmt("cd %s && yarn bin %s", vim.fn.shellescape(pnp_loader.cwd), vim.fn.shellescape(params.command))
-        ):gsub("%s+", "")
+        local yarn_bin = vim.fn
+            .system(fmt("cd %s && yarn bin %s", vim.fn.shellescape(pnp_loader.cwd), vim.fn.shellescape(params.command)))
+            :gsub("%s+", "")
         if vim.v.shell_error == 0 then
             log:trace(fmt("resolved dynamic command for [%s] to Yarn PnP with cwd=%s", params.command, pnp_loader.cwd))
             resolved = {
