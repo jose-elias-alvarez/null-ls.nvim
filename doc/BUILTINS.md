@@ -2703,11 +2703,6 @@ local sources = { null_ls.builtins.formatting.pint }
 - Command: `./vendor/bin/pint`
 - Args: `{ "--no-interaction", "--quiet", "$FILENAME" }`
 
-#### Notes
-
-- pint requires [PHP 8.0+](https://php.net/releases/).
-- [Install](https://github.com/laravel/pint#installation) with `composer require laravel/pint --dev`
-
 ### [prettier](https://github.com/prettier/prettier)
 
 Prettier is an opinionated code formatter. It enforces a consistent style by parsing your code and re-printing it with its own rules that take the maximum line length into account, wrapping code when necessary.
