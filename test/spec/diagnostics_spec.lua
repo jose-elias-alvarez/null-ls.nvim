@@ -160,11 +160,9 @@ describe("diagnostics", function()
 
                     assert.stub(diagnostic_api.set).was_called(#mock_diagnostics)
                     for id in pairs(mock_diagnostics) do
-                        assert.stub(diagnostic_api.set).was_called_with(
-                            diagnostics.get_namespace(id),
-                            mock_bufnr,
-                            mock_diagnostics[id]
-                        )
+                        assert
+                            .stub(diagnostic_api.set)
+                            .was_called_with(diagnostics.get_namespace(id), mock_bufnr, mock_diagnostics[id])
                     end
                 end)
             end)
@@ -188,11 +186,9 @@ describe("diagnostics", function()
 
                     assert.stub(diagnostic_api.set).was_called(#mock_diagnostics)
                     for id in pairs(mock_diagnostics) do
-                        assert.stub(diagnostic_api.set).was_called_with(
-                            diagnostics.get_namespace(id),
-                            mock_diagnostics[id][1].bufnr,
-                            mock_diagnostics[id]
-                        )
+                        assert
+                            .stub(diagnostic_api.set)
+                            .was_called_with(diagnostics.get_namespace(id), mock_diagnostics[id][1].bufnr, mock_diagnostics[id])
                     end
                 end)
 
@@ -210,11 +206,9 @@ describe("diagnostics", function()
                     -- twice per old diagnostic
                     assert.stub(diagnostic_api.set).was_called(#mock_diagnostics + 2)
                     for id in pairs(mock_diagnostics) do
-                        assert.stub(diagnostic_api.set).was_called_with(
-                            diagnostics.get_namespace(id),
-                            old_diagnostics[1].bufnr,
-                            {}
-                        )
+                        assert
+                            .stub(diagnostic_api.set)
+                            .was_called_with(diagnostics.get_namespace(id), old_diagnostics[1].bufnr, {})
                     end
                 end)
 

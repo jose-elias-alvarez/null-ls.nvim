@@ -361,10 +361,8 @@ M.path = (function()
     end
 
     local path_join = function(...)
-        local result = table.concat(vim.tbl_flatten({ ... }), path_separator):gsub(
-            path_separator .. "+",
-            path_separator
-        )
+        local result =
+            table.concat(vim.tbl_flatten({ ... }), path_separator):gsub(path_separator .. "+", path_separator)
         return result
     end
 
