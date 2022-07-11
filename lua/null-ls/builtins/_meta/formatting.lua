@@ -55,6 +55,9 @@ return {
   crystal_format = {
     filetypes = { "crystal" }
   },
+  csharpier = {
+    filetypes = { "cs" }
+  },
   cue_fmt = {
     filetypes = { "cue" }
   },

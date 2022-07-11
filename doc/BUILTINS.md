@@ -1980,6 +1980,23 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 - Command: `crystal`
 - Args: `{ "tool", "format" }`
 
+### [csharpier](https://csharpier.com/)
+
+CSharpier is an opinionated code formatter for c#
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.csharpier }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cs" }`
+- Method: `formatting`
+- Command: `dotnet-csharpier`
+- Args: `{ "--write-stdout" }`
+
 ### [cue_fmt](https://cuelang.org/)
 
 A CUE language formatter.

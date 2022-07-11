@@ -48,7 +48,7 @@ return {
     formatting = { "crystal_format" }
   },
   cs = {
-    formatting = { "astyle", "clang_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "csharpier", "uncrustify" }
   },
   csh = {
     formatting = { "beautysh" }
