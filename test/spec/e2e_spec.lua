@@ -11,7 +11,7 @@ local tu = require("null-ls.test-utils")
 local lsp = vim.lsp
 local api = vim.api
 
-main.setup({ log = { enable = false } })
+main.setup({ log_level = "off" })
 vim.cmd("autocmd BufEnter *.txt set filetype=text")
 
 local get_code_actions = function()

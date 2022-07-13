@@ -13,7 +13,7 @@ M.handler = function(method, original_params, handler)
             params = params,
             callback = function(results)
                 log:trace("received hover results from generators")
-                log:trace(results)
+                log:trace(vim.inspect(results))
                 handler({ contents = { results } })
             end,
         })

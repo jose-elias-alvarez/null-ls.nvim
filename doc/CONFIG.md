@@ -52,11 +52,8 @@ local defaults = {
     default_timeout = 5000,
     diagnostics_format = "#{m}",
     fallback_severity = vim.diagnostic.severity.ERROR,
-    log = {
-        enable = true,
-        level = "warn",
-        use_console = "async",
-    },
+    log_level = "warn",
+    notify_format = "[null-ls] %s",
     on_attach = nil,
     on_init = nil,
     on_exit = nil,
@@ -99,9 +96,7 @@ Displays all possible log messages and writes them to the null-ls log, which you
 can view with the command `:NullLsLog`. This option can slow down Neovim, so
 it's strongly recommended to disable it for normal use.
 
-`debug = true` is the same as setting `log.level` to `"trace"` and
-`log.use_console` to `false`. For finer-grained control, see the `log` options
-below.
+`debug = true` is the same as setting `log_level` to `"trace"`.
 
 ### default_timeout (number)
 
@@ -142,24 +137,20 @@ described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
 Defines the severity used when a diagnostic source does not explicitly define a
 severity. See `:help diagnostic-severity` for available values.
 
-### log (table)
+### log_level (string, one of "off", "error", "warn", "info", "debug", "trace")
 
-Sets options for null-ls logging.
+Enables or disables logging to file.
 
-#### log.enable (boolean)
+Plugin logs messages on several logging levels to following destinations:
 
-Enables or disables logging altogether. Setting this to `false` will suppress
-important operational warnings and is not recommended.
+* file, can be inspected by `:NullLsLog`.
+* neovim's notification area.
 
-#### log.level (one of "error", "warn", "info", "debug", "trace")
+### notify_format (string, optional)
 
-Sets the logging level.
-
-#### log.use_console (one of "sync", "async", false)
-
-Determines whether to show log output in Neovim's `:messages`. `sync` is slower
-but guarantees that messages will appear in order. Setting this to `false` will
-skip the console but still log to the file specified by `:NullLsLog`.
+Sets the default format for `vim.notify()` messages.
+Can be used to customize 3rd party notification plugins
+like [nvim-notify](https://github.com/rcarriga/nvim-notify). 
 
 ### on_attach (function, optional)
 

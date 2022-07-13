@@ -21,6 +21,8 @@ describe("generator_factory", function()
     local command = "cat"
     local args = { "-n" }
 
+    c.setup({ log_level = "off" })
+
     local generator_opts
     before_each(function()
         generator_opts = {
