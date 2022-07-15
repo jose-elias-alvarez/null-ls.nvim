@@ -2271,6 +2271,7 @@ local sources = { null_ls.builtins.formatting.fourmolu }
 - Filetypes: `{ "haskell" }`
 - Method: `formatting`
 - Command: `fourmolu`
+- Args: `{ "--stdin-input-file", "$FILEPATH" }`
 
 ### [fprettify](https://github.com/pseewald/fprettify)
 
