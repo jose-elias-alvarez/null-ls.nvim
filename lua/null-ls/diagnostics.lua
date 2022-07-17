@@ -76,15 +76,6 @@ local postprocess = function(diagnostic, _, generator)
     diagnostic.message = formatted
 end
 
-local filter = function(diagnostic, generator)
-    local user_filter = generator.opts.diagnostics_filter
-    if user_filter then
-        return user_filter(diagnostic)
-    else
-        return true
-    end
-end
-
 local handle_single_file_diagnostics = function(namespace, diagnostics, bufnr)
     vim.diagnostic.set(namespace, bufnr, diagnostics)
 end
@@ -170,7 +161,6 @@ M.handler = function(original_params)
         method = methods.map[method],
         params = params,
         postprocess = postprocess,
-        filter = filter,
         after_each = function(diagnostics, _, generator)
             if not vim.api.nvim_buf_is_valid(bufnr) then
                 return

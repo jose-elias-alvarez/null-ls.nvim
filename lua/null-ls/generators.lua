@@ -139,11 +139,11 @@ M.run_sequentially = function(generators, make_params, opts, callback)
 end
 
 M.run_registered = function(opts)
-    local filetype, method, params, postprocess, filter, callback, after_each =
-        opts.filetype, opts.method, opts.params, opts.postprocess, opts.filter, opts.callback, opts.after_each
+    local filetype, method, params, postprocess, callback, after_each =
+        opts.filetype, opts.method, opts.params, opts.postprocess, opts.callback, opts.after_each
     local generators = M.get_available(filetype, method)
 
-    M.run(generators, params, { postprocess = postprocess, filter = filter, after_each = after_each }, callback)
+    M.run(generators, params, { postprocess = postprocess, after_each = after_each }, callback)
 end
 
 M.run_registered_sequentially = function(opts)
