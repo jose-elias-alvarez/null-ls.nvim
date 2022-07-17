@@ -174,7 +174,7 @@ local sources = {
 ### Filtering
 
 You can filter generator results using the `filter` option. The option should
-be a function that returns `true` to keep the result, and `false` to remove it.
+be a function that returns `true` to keep the result, and `false` or `nil` to ignore it.
 
 ```lua
 local sources = {
