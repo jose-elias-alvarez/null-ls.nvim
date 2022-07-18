@@ -171,6 +171,22 @@ local sources = {
 }
 ```
 
+### Filtering
+
+You can filter generator results using the `filter` option. The option should
+be a function that returns `true` to keep the result, and `false` or `nil` to ignore it.
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.eslint_d.with({
+        -- ignore prettier warnings from eslint-plugin-prettier
+        filter = function(diagnostic)
+            return diagnostic.code != "prettier/prettier"
+        end
+    }),
+}
+```
+
 ### Diagnostics format
 
 For diagnostics sources, you can change the format of diagnostic messages by
