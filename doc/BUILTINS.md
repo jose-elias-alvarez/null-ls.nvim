@@ -1812,6 +1812,23 @@ local sources = { null_ls.builtins.formatting.black }
 - Command: `black`
 - Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
 
+### [blade_formatter](https://github.com/shufo/blade-formatter)
+
+An opinionated blade template formatter for Laravel that respects readability.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.blade_formatter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "blade" }`
+- Method: `formatting`
+- Command: `blade-formatter`
+- Args: `{ "--write", "$FILENAME" }`
+
 ### [blue](https://github.com/grantjenks/blue)
 
 Blue -- Some folks like black but I prefer blue.
