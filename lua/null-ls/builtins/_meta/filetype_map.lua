@@ -19,6 +19,9 @@ return {
   bib = {
     formatting = { "bibclean" }
   },
+  blade = {
+    formatting = { "blade_formatter" }
+  },
   bzl = {
     diagnostics = { "buildifier" },
     formatting = { "buildifier" }

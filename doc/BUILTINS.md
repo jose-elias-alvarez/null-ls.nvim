@@ -1841,7 +1841,7 @@ local sources = { null_ls.builtins.formatting.black }
 
 ### [blade_formatter](https://github.com/shufo/blade-formatter)
 
-An opinionated blade template formatter for Laravel that respects readability.
+An opinionated blade template formatter for Laravel that respects readability
 
 #### Usage
 

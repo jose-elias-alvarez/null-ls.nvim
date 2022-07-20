@@ -25,6 +25,9 @@ return {
   black = {
     filetypes = { "python" }
   },
+  blade_formatter = {
+    filetypes = { "blade" }
+  },
   blue = {
     filetypes = { "python" }
   },
