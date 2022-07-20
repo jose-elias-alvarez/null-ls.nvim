@@ -127,6 +127,9 @@ return {
   gitrebase = {
     code_actions = { "gitrebase" }
   },
+  glsl = {
+    diagnostics = { "glslc" }
+  },
   go = {
     code_actions = { "refactoring" },
     diagnostics = { "golangci_lint", "revive", "semgrep", "staticcheck" },

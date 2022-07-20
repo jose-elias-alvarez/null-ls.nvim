@@ -79,6 +79,9 @@ return {
   gitlint = {
     filetypes = { "gitcommit" }
   },
+  glslc = {
+    filetypes = { "glsl" }
+  },
   golangci_lint = {
     filetypes = { "go" }
   },

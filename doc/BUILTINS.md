@@ -701,6 +701,33 @@ local sources = { null_ls.builtins.diagnostics.gitlint }
 - Command: `gitlint`
 - Args: `{ "--msg-filename", "$FILENAME" }`
 
+### [glslc](https://github.com/google/shaderc)
+
+Shader to SPIR-V compiler.
+
+#### Usage
+
+```lua
+        local sources = {
+            null_ls.builtins.diagnostics.glslc.with({
+                extra_args = { "--target-env=opengl" } -- use opengl instead of vulkan1.0
+            })
+        }
+        
+```
+
+#### Defaults
+
+- Filetypes: `{ "glsl" }`
+- Method: `diagnostics`
+- Command: `glslc`
+- Args: `{ "-o", "-", "$FILENAME" }`
+
+#### Notes
+
+- The shader stage can be extracted from the file extension (`.vert`, `.geom`, `.frag`, etc.), but note that these file extensions are at the time of writing not natively recognized to be glsl files (only `.glsl` is). The shader stage can also be extracted from the file contents by adding a `#pragma shader_stage(<stage>)`. For more information see `man glslc`.
+- the `--target-env` can be specified in `extra_args`. Defaults to vulkan1.0. Check `man glslc` for more possible targets environments.
+
 ### [golangci_lint](https://golangci-lint.run/)
 
 A Go linter aggregator.
