@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -62,6 +63,7 @@ return h.make_builtin({
         to_stdin = true,
         from_stderr = true,
         args = { "--format", "default", "--stdin-display-name", "$FILENAME", "-" },
+        cwd = root_resolver.from_python_markers,
         format = "line",
         check_exit_code = function(code)
             return code == 0 or code == 255

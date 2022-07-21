@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -14,6 +15,7 @@ return h.make_builtin({
     generator_opts = {
         command = "vulture",
         args = { "$FILENAME" },
+        cwd = root_resolver.from_python_markers,
         to_temp_file = true,
         from_stderr = true,
         format = "line",

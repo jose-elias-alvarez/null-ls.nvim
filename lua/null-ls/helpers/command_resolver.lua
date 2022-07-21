@@ -1,6 +1,7 @@
 local log = require("null-ls.logger")
 local s = require("null-ls.state")
 local u = require("null-ls.utils")
+local root_resolver = require("null-ls.helpers.root_resolver")
 local fmt = string.format
 
 local M = {}
@@ -50,7 +51,15 @@ M.from_node_modules = function(params)
     -- try the local one first by default but always fallback on the pre-defined command
     -- this needs to be done here to avoid constant lookups
     -- we're checking if the global is executable to avoid spawning an invalid command
-    return M.generic(params, u.path.join("node_modules", ".bin")) or u.is_executable(params.command) and params.command
+    local relative_cmd = M.generic(params, u.path.join("node_modules", ".bin"))
+    local command = relative_cmd or u.is_executable(params.command) and params.command
+    local resolved = s.get_resolved_command(params.bufnr, params.command)
+    if not resolved.cwd then
+        -- attempt to set the cwd from other node markers
+        resolved.cwd = root_resolver.from_node_markers
+        s.set_resolved_command(params.bufnr, params.command, resolved)
+    end
+    return command
 end
 
 M.from_yarn_pnp = function(params)
@@ -81,6 +90,10 @@ M.from_yarn_pnp = function(params)
     end
 
     resolved = resolved or { command = false }
+    if not resolved.cwd then
+        -- attempt to set the cwd from other node markers
+        resolved.cwd = root_resolver.from_node_markers
+    end
 
     s.set_resolved_command(params.bufnr, cache_key, resolved)
     return resolved.command

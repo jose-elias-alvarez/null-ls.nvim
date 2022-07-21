@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local root_resolver = require("null-ls.helpers.root_resolver")
 
 return h.make_builtin({
     name = "pylama",
@@ -16,6 +17,7 @@ return h.make_builtin({
         from_stderr = false,
         ignore_stderr = true,
         args = { "--from-stdin", "$FILENAME", "-f", "json" },
+        cwd = root_resolver.from_python_markers,
         format = "json_raw",
         check_exit_code = function(code)
             return code <= 1
