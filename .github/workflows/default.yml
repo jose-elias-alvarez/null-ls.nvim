@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --color always --check .
-          version: 14
+          version: 14.2
 
   selene:
     name: Lint
