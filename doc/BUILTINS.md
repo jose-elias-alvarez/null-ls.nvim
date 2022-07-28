@@ -1939,6 +1939,23 @@ local sources = { null_ls.builtins.formatting.cabal_fmt }
 - Method: `formatting`
 - Command: `cabal-fmt`
 
+### [cbfmt](https://github.com/lukas-reineke/cbfmt)
+
+A tool to format codeblocks inside markdown and org documents.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cbfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown", "org" }`
+- Method: `formatting`
+- Command: `cbfmt`
+- Args: `{ "--stdin-filepath", "$FILENAME", "--best-effort" }`
+
 ### [clang_format](https://www.kernel.org/doc/html/latest/process/clang-format.html)
 
 Tool to format C/C++/… code according to a set of rules and heuristics.

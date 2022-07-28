@@ -205,7 +205,7 @@ return {
   markdown = {
     code_actions = { "proselint" },
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "markdownlint", "mdformat", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
+    formatting = { "markdownlint", "mdformat", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt", "cbfmt" },
     hover = { "dictionary" }
   },
   matlab = {
@@ -221,6 +221,9 @@ return {
     code_actions = { "statix" },
     diagnostics = { "deadnix", "statix" },
     formatting = { "alejandra", "nixfmt", "nixpkgs_fmt" }
+  },
+  org = {
+    formatting = { "cbfmt" }
   },
   pascal = {
     formatting = { "ptop" }
