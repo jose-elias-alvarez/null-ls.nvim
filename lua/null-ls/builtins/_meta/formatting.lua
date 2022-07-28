@@ -43,6 +43,9 @@ return {
   cabal_fmt = {
     filetypes = { "cabal" }
   },
+  cbfmt = {
+    filetypes = { "markdown", "org" }
+  },
   clang_format = {
     filetypes = { "c", "cpp", "cs", "java", "cuda" }
   },
