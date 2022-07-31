@@ -127,6 +127,9 @@ return {
   goimports = {
     filetypes = { "go" }
   },
+  goimports_reviser = {
+    filetypes = { "go" }
+  },
   golines = {
     filetypes = { "go" }
   },
