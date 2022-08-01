@@ -281,10 +281,12 @@ All return values are **required** unless specified as optional.
 #### Code Actions
 
 ```lua
-return { {
-    title, -- string
-    action, -- function (callback with no arguments)
-} }
+return {
+    {
+        title, -- string
+        action, -- function (callback with no arguments)
+    },
+}
 ```
 
 Once generated, null-ls stores code action results in its internal state and
@@ -298,18 +300,20 @@ safe to call any API function.
 
 ```lua
 -- null-ls assumes ranges are 1-indexed, so sources should offset if not
-return { {
-    row, -- number, optional (defaults to first line)
-    col, -- number, optional (defaults to beginning of line)
-    end_row, -- number, optional (defaults to row)
-    end_col, -- number, optional (defaults to end of line),
-    source, -- string, optional (defaults to "null-ls")
-    code, -- number, optional
-    message, -- string
-    severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
-    filename, -- string, optional (requires generator.multiple_files)
-    bufnr, -- number, optional (requires generator.multiple_files)
-} }
+return {
+    {
+        row, -- number, optional (defaults to first line)
+        col, -- number, optional (defaults to beginning of line)
+        end_row, -- number, optional (defaults to row)
+        end_col, -- number, optional (defaults to end of line),
+        source, -- string, optional (defaults to "null-ls")
+        code, -- number, optional
+        message, -- string
+        severity, -- 1 (error), 2 (warning), 3 (information), 4 (hint)
+        filename, -- string, optional (requires generator.multiple_files)
+        bufnr, -- number, optional (requires generator.multiple_files)
+    },
+}
 ```
 
 null-ls generates diagnostics in response to LSP notifications and publishes
@@ -329,13 +333,15 @@ described in [CONFIG](./CONFIG.md).
 #### Formatting
 
 ```lua
-return { {
-    row, -- number, optional (see diagnostics for defaults)
-    col, -- number, optional
-    end_row, -- number, optional
-    end_col, -- number, optional
-    text, -- string
-} }
+return {
+    {
+        row, -- number, optional (see diagnostics for defaults)
+        col, -- number, optional
+        end_row, -- number, optional
+        end_col, -- number, optional
+        text, -- string
+    },
+}
 ```
 
 null-ls applies formatting results to the matching buffer and, depending on the

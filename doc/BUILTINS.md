@@ -708,12 +708,11 @@ Shader to SPIR-V compiler.
 #### Usage
 
 ```lua
-        local sources = {
-            null_ls.builtins.diagnostics.glslc.with({
-                extra_args = { "--target-env=opengl" } -- use opengl instead of vulkan1.0
-            })
-        }
-        
+local sources = {
+    null_ls.builtins.diagnostics.glslc.with({
+        extra_args = { "--target-env=opengl" }, -- use opengl instead of vulkan1.0
+    }),
+}
 ```
 
 #### Defaults
@@ -1344,9 +1343,9 @@ A SQL linter and auto-formatter for Humans
 
 ```lua
 local sources = {
-	null_ls.builtins.diagnostics.sqlfluff.with({
-		extra_args = {"--dialect", "postgres"} -- change to your dialect
-	})
+    null_ls.builtins.diagnostics.sqlfluff.with({
+        extra_args = { "--dialect", "postgres" }, -- change to your dialect
+    }),
 }
 ```
 
@@ -3175,9 +3174,9 @@ A SQL linter and auto-formatter for Humans
 
 ```lua
 local sources = {
-	null_ls.builtins.formatting.sqlfluff.with({
-		extra_args = {"--dialect", "postgres"} -- change to your dialect
-	})
+    null_ls.builtins.formatting.sqlfluff.with({
+        extra_args = { "--dialect", "postgres" }, -- change to your dialect
+    }),
 }
 ```
 

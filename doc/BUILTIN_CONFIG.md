@@ -19,20 +19,22 @@ null-ls exposes built-ins on `null_ls.builtins`, which contains the following
 groups of sources:
 
 ```lua
+local null_ls = require("null-ls")
+
 -- code action sources
-null_ls.builtins.code_actions
+local code_actions = null_ls.builtins.code_actions
 
 -- diagnostic sources
-null_ls.builtins.diagnostics
+local diagnostics = null_ls.builtins.diagnostics
 
 -- formatting sources
-null_ls.builtins.formatting
+local formatting = null_ls.builtins.formatting
 
 -- hover sources
-null_ls.builtins.hover
+local hover = null_ls.builtins.hover
 
 -- completion sources
-null_ls.builtins.completion
+local completion = null_ls.builtins.completion
 ```
 
 You can then register sources by passing a `sources` list into your `setup`
@@ -115,9 +117,9 @@ To add more arguments to a source's defaults, use `extra_args`:
 ```lua
 local sources = {
     null_ls.builtins.formatting.shfmt.with({
-        extra_args = { "-i", "2", "-ci" }
-      })
-  }
+        extra_args = { "-i", "2", "-ci" },
+    }),
+}
 ```
 
 You can also override a source's arguments entirely using `with({ args = your_args })`.
@@ -151,9 +153,9 @@ operating system variables.
 ```lua
 local sources = {
     null_ls.builtins.formatting.prettierd.with({
-          env = {
-            PRETTIERD_DEFAULT_CONFIG = vim.fn.expand "~/.config/nvim/utils/linter-config/.prettierrc.json",
-          }
+        env = {
+            PRETTIERD_DEFAULT_CONFIG = vim.fn.expand("~/.config/nvim/utils/linter-config/.prettierrc.json"),
+        },
     }),
 }
 ```
@@ -181,8 +183,8 @@ local sources = {
     null_ls.builtins.diagnostics.eslint_d.with({
         -- ignore prettier warnings from eslint-plugin-prettier
         filter = function(diagnostic)
-            return diagnostic.code != "prettier/prettier"
-        end
+            return diagnostic.code ~= "prettier/prettier"
+        end,
     }),
 }
 ```
@@ -196,7 +198,7 @@ setting `diagnostics_format`:
 local sources = {
     -- will show code and source name
     null_ls.builtins.diagnostics.shellcheck.with({
-        diagnostics_format = "[#{c}] #{m} (#{s})"
+        diagnostics_format = "[#{c}] #{m} (#{s})",
     }),
 }
 ```
@@ -222,8 +224,7 @@ diagnostic.
 local sources = {
     null_ls.builtins.diagnostics.write_good.with({
         diagnostics_postprocess = function(diagnostic)
-            diagnostic.severity = diagnostic.message:find("really")
-                and vim.diagnostic.severity["ERROR"]
+            diagnostic.severity = diagnostic.message:find("really") and vim.diagnostic.severity["ERROR"]
                 or vim.diagnostic.severity["WARN"]
         end,
     }),
@@ -264,7 +265,7 @@ local sources = {
         cwd = function(params)
             -- falls back to root if return value is nil
             return params.root:match("my-special-project") and "my-special-cwd"
-        end
+        end,
     }),
 }
 ```
@@ -279,7 +280,7 @@ set a different `timeout`:
 local sources = {
     null_ls.builtins.formatting.prettier.with({
         -- milliseconds
-        timeout = 10000
+        timeout = 10000,
     }),
 }
 ```
@@ -303,7 +304,7 @@ to `false`:
 ```lua
 local sources = {
     null_ls.builtins.formatting.phpstan.with({
-        to_temp_file = false
+        to_temp_file = false,
     }),
 }
 ```
@@ -344,7 +345,7 @@ if the command is not available on your `$PATH`:
 ```lua
 local sources = {
     null_ls.builtins.formatting.prettier.with({
-        command = "/path/to/prettier"
+        command = "/path/to/prettier",
     }),
 }
 ```

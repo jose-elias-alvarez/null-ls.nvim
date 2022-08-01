@@ -31,6 +31,10 @@
   [busted](https://github.com/Olivine-Labs/busted). If you're unsure how to
   write tests for your PR, please let us know and we can help.
 
+- To format Lua code blocks in our Markdown documentation, we recommend
+  [cbfmt](https://github.com/lukas-reineke/cbfmt), which is available as a
+  null-ls built-in.
+
 ## Contributing built-ins
 
 - Check if there is an open issue requesting the built-in you are adding and
