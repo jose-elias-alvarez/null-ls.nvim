@@ -2421,6 +2421,23 @@ local sources = { null_ls.builtins.formatting.goimports }
 - Command: `goimports`
 - Args: `{ "-srcdir", "$DIRNAME" }`
 
+### [goimports_reviser](https://pkg.go.dev/github.com/incu6us/goimports-reviser)
+
+Tool for Golang to sort goimports by 3 groups: std, general and project dependencies.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.goimports_reviser }
+```
+
+#### Defaults
+
+- Filetypes: `{ "go" }`
+- Method: `formatting`
+- Command: `goimports-reviser`
+- Args: `{ "-file-path", "$FILENAME", "-output", "stdout" }`
+
 ### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
 Applies a base formatter (eg. goimports or gofmt), then shortens long lines of code.

@@ -136,7 +136,7 @@ return {
   go = {
     code_actions = { "refactoring" },
     diagnostics = { "golangci_lint", "revive", "semgrep", "staticcheck" },
-    formatting = { "gofmt", "gofumpt", "goimports", "golines" }
+    formatting = { "gofmt", "gofumpt", "goimports", "goimports_reviser", "golines" }
   },
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
