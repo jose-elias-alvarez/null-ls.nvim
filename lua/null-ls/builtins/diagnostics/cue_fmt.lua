@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "cue" },
     generator_opts = {
         command = "cue",
-        args = { "fmt", "$FILENAME" },
+        args = { "vet", "$FILENAME" },
         format = "raw",
         from_stderr = true,
         to_temp_file = true,
@@ -22,7 +22,7 @@ return h.make_builtin({
         end,
         on_output = function(params, done)
             local diagnostics = {}
-            local lines = vim.split(params.output, "\n")
+            local lines = vim.split(params.output or "", "\n")
 
             for i, err in ipairs(lines) do
                 if i % 2 == 0 then
