@@ -13,9 +13,9 @@ return h.make_builtin({
         },
         usage = [[
 local sources = {
-	null_ls.builtins.formatting.sqlfluff.with({
-		extra_args = {"--dialect", "postgres"} -- change to your dialect
-	})
+    null_ls.builtins.formatting.sqlfluff.with({
+        extra_args = { "--dialect", "postgres" }, -- change to your dialect
+    }),
 }]],
     },
     method = FORMATTING,

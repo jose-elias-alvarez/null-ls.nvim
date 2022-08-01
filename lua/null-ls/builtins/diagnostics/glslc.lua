@@ -13,12 +13,11 @@ return h.make_builtin({
             [[the `--target-env` can be specified in `extra_args`. Defaults to vulkan1.0. Check `man glslc` for more possible targets environments.]],
         },
         usage = [[
-        local sources = {
-            null_ls.builtins.diagnostics.glslc.with({
-                extra_args = { "--target-env=opengl" } -- use opengl instead of vulkan1.0
-            })
-        }
-        ]],
+local sources = {
+    null_ls.builtins.diagnostics.glslc.with({
+        extra_args = { "--target-env=opengl" }, -- use opengl instead of vulkan1.0
+    }),
+}]],
     },
     method = DIAGNOSTICS,
     filetypes = { "glsl" },

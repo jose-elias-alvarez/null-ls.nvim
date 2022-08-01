@@ -30,7 +30,7 @@ local example_source = {
             return "I am a source!"
         end,
     },
-    id = 1
+    id = 1,
 }
 ```
 

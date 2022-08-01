@@ -154,9 +154,9 @@ local markdownlint = {
             local success = code <= 1
 
             if not success then
-              -- can be noisy for things that run often (e.g. diagnostics), but can
-              -- be useful for things that run on demand (e.g. formatting)
-              print(stderr)
+                -- can be noisy for things that run often (e.g. diagnostics), but can
+                -- be useful for things that run on demand (e.g. formatting)
+                print(stderr)
             end
 
             return success
@@ -231,7 +231,7 @@ use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 
    ```lua
    require("null-ls").setup({
-       debug = true
+       debug = true,
    })
    ```
 
