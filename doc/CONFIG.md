@@ -143,14 +143,14 @@ Enables or disables logging to file.
 
 Plugin logs messages on several logging levels to following destinations:
 
-* file, can be inspected by `:NullLsLog`.
-* neovim's notification area.
+- file, can be inspected by `:NullLsLog`.
+- neovim's notification area.
 
 ### notify_format (string, optional)
 
 Sets the default format for `vim.notify()` messages.
 Can be used to customize 3rd party notification plugins
-like [nvim-notify](https://github.com/rcarriga/nvim-notify). 
+like [nvim-notify](https://github.com/rcarriga/nvim-notify).
 
 ### on_attach (function, optional)
 
