@@ -178,6 +178,9 @@ return {
   nixpkgs_fmt = {
     filetypes = { "nix" }
   },
+  perlimports = {
+    filetypes = { "perl" }
+  },
   perltidy = {
     filetypes = { "perl" }
   },

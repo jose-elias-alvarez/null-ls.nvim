@@ -229,7 +229,7 @@ return {
     formatting = { "ptop" }
   },
   perl = {
-    formatting = { "perltidy" }
+    formatting = { "perlimports", "perltidy" }
   },
   pgsql = {
     formatting = { "pg_format" }

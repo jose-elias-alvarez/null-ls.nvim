@@ -2714,6 +2714,23 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Method: `formatting`
 - Command: `nixpkgs-fmt`
 
+### [perlimports](https://metacpan.org/dist/App-perlimports/view/script/perlimports)
+
+A command line utility for cleaning up imports in your Perl code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.perlimports }
+```
+
+#### Defaults
+
+- Filetypes: `{ "perl" }`
+- Method: `formatting`
+- Command: `perlimports`
+- Args: `{ "--read-stdin", "--filename", "$FILENAME" }`
+
 ### [perltidy](http://perltidy.sourceforge.net/)
 
 perl script which indents and reformats perl scripts to make them easier to read. If you write perl scripts, or spend much time reading them, you will probably find it useful.
