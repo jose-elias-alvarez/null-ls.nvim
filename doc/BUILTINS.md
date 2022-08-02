@@ -491,7 +491,7 @@ local sources = { null_ls.builtins.diagnostics.cue_fmt }
 - Filetypes: `{ "cue" }`
 - Method: `diagnostics`
 - Command: `cue`
-- Args: `{ "fmt", "$FILENAME" }`
+- Args: `{ "vet", "$FILENAME" }`
 
 ### [curlylint](https://www.curlylint.org/)
 
