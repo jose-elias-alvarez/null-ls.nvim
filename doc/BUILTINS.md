@@ -2714,6 +2714,23 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Method: `formatting`
 - Command: `nixpkgs-fmt`
 
+### [packer](https://www.packer.io/docs/commands/fmt)
+
+The packer fmt Packer command is used to format HCL2 configuration files to a canonical format and style.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.packer }
+```
+
+#### Defaults
+
+- Filetypes: `{ "hcl" }`
+- Method: `formatting`
+- Command: `packer`
+- Args: `{ "fmt", "-" }`
+
 ### [perlimports](https://metacpan.org/dist/App-perlimports/view/script/perlimports)
 
 A command line utility for cleaning up imports in your Perl code

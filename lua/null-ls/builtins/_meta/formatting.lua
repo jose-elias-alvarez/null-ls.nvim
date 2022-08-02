@@ -178,6 +178,9 @@ return {
   nixpkgs_fmt = {
     filetypes = { "nix" }
   },
+  packer = {
+    filetypes = { "hcl" }
+  },
   perlimports = {
     filetypes = { "perl" }
   },

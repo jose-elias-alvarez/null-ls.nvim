@@ -150,6 +150,9 @@ return {
   haskell = {
     formatting = { "brittany", "fourmolu" }
   },
+  hcl = {
+    formatting = { "packer" }
+  },
   html = {
     diagnostics = { "tidy" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind", "tidy" }
