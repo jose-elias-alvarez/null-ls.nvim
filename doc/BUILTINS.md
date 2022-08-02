@@ -2714,6 +2714,23 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Method: `formatting`
 - Command: `nixpkgs-fmt`
 
+### [ocdc](https://github.com/mdwint/ocdc)
+
+A changelog formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ocdc }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `formatting`
+- Command: `ocdc`
+- Args: `{ "--path", "-" }`
+
 ### [packer](https://www.packer.io/docs/commands/fmt)
 
 The packer fmt Packer command is used to format HCL2 configuration files to a canonical format and style.

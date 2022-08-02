@@ -178,6 +178,9 @@ return {
   nixpkgs_fmt = {
     filetypes = { "nix" }
   },
+  ocdc = {
+    filetypes = { "markdown" }
+  },
   packer = {
     filetypes = { "hcl" }
   },
