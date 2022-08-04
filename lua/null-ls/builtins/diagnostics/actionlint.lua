@@ -26,7 +26,7 @@ return h.make_builtin({
             },
         }),
         runtime_condition = h.cache.by_bufnr(function(params)
-            return params.bufname:find(vim.pesc(".github/workflows")) ~= nil
+            return params.bufname:find("%.github[\\/]workflows") ~= nil
         end),
     },
     factory = h.generator_factory,
