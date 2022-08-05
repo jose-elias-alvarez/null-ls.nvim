@@ -1038,7 +1038,7 @@ local sources = { null_ls.builtins.diagnostics.protoc_gen_lint }
 - Command: `protoc`
 - Args: `{ "--lint_out", "$FILENAME", "-I", "/tmp", "$FILENAME" }`
 
-### [protolint](https://https//github.com/yoheimuta/protolint)
+### [protolint](https://github.com/yoheimuta/protolint)
 
 A pluggable linter and fixer to enforce Protocol Buffer style and conventions.
 
