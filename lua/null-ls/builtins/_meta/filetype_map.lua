@@ -141,6 +141,9 @@ return {
   graphql = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  groovy = {
+    formatting = { "npm_groovy_lint" }
+  },
   haml = {
     diagnostics = { "haml_lint" }
   },
@@ -163,7 +166,7 @@ return {
   },
   java = {
     diagnostics = { "semgrep" },
-    formatting = { "astyle", "clang_format", "google_java_format", "uncrustify" }
+    formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
