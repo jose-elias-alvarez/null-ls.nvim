@@ -31,6 +31,7 @@ return {
                     message = "issue_text",
                     severity = "issue_severity",
                 },
+                offsets = { col = 1 },
                 severities = {
                     HIGH = helpers.diagnostics.severities["error"],
                     MEDIUM = helpers.diagnostics.severities["warning"],
