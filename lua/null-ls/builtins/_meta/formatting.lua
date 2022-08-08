@@ -178,6 +178,9 @@ return {
   nixpkgs_fmt = {
     filetypes = { "nix" }
   },
+  npm_groovy_lint = {
+    filetypes = { "groovy", "java" }
+  },
   ocdc = {
     filetypes = { "markdown" }
   },

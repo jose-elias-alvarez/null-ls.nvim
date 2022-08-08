@@ -2714,6 +2714,23 @@ local sources = { null_ls.builtins.formatting.nixpkgs_fmt }
 - Method: `formatting`
 - Command: `nixpkgs-fmt`
 
+### [npm_groovy_lint](https://github.com/nvuillam/npm-groovy-lint)
+
+Lint, format and auto-fix Groovy, Jenkinsfile, and Gradle files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.npm_groovy_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "groovy", "java" }`
+- Method: `formatting`
+- Command: `npm-groovy-lint`
+- Args: `{ "--format", "--files", "$FILENAME" }`
+
 ### [ocdc](https://github.com/mdwint/ocdc)
 
 A changelog formatter
