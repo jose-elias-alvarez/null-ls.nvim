@@ -8,6 +8,9 @@ return h.make_builtin({
     meta = {
         url = "https://dprint.dev/",
         description = "A pluggable and configurable code formatting platform written in Rust.",
+        notes = {
+            [[you need to install dprint to use this builtin and then run `dprint init` to initialize it in your project directory.]],
+        },
     },
     method = FORMATTING,
     filetypes = {
