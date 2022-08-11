@@ -151,6 +151,9 @@ return {
   json_tool = {
     filetypes = { "json" }
   },
+  just = {
+    filetypes = { "just" }
+  },
   ktlint = {
     filetypes = { "kotlin" }
   },

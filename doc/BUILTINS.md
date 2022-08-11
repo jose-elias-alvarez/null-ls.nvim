@@ -2559,6 +2559,23 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - Command: `python`
 - Args: `{ "-m", "json.tool" }`
 
+### [just](https://just.systems/)
+
+Format your Justfile
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.just }
+```
+
+#### Defaults
+
+- Filetypes: `{ "just" }`
+- Method: `formatting`
+- Command: `just`
+- Args: `{ "--fmt", "--unstable", "-f", "$FILENAME" }`
+
 ### [ktlint](https://ktlint.github.io/)
 
 An anti-bikeshedding Kotlin linter with built-in formatter.

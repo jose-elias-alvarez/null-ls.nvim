@@ -189,6 +189,9 @@ return {
   jsonc = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
+  just = {
+    formatting = { "just" }
+  },
   kotlin = {
     diagnostics = { "ktlint" },
     formatting = { "ktlint" }
