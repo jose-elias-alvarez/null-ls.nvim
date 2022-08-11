@@ -2157,6 +2157,27 @@ local sources = { null_ls.builtins.formatting.djlint }
 - Command: `djlint`
 - Args: `{ "--reformat", "-" }`
 
+### [dprint](https://dprint.dev/)
+
+A pluggable and configurable code formatting platform written in Rust.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.dprint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "markdown", "toml", "rust", "roslyn" }`
+- Method: `formatting`
+- Command: `dprint`
+- Args: `{ "fmt", "--stdin" }`
+
+#### Notes
+
+- you need to install dprint to use this builtin and then run `dprint init` to initialize it in your project directory.
+
 ### [elm_format](https://github.com/avh4/elm-format)
 
 elm-format formats Elm source code according to a standard set of rules based on the official [Elm Style Guide](https://elm-lang.org/docs/style-guide).

@@ -82,6 +82,9 @@ return {
   djlint = {
     filetypes = { "django", "jinja.html", "htmldjango" }
   },
+  dprint = {
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "markdown", "toml", "rust", "roslyn" }
+  },
   elm_format = {
     filetypes = { "elm" }
   },

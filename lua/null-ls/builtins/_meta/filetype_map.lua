@@ -171,12 +171,12 @@ return {
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
   },
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
@@ -184,7 +184,7 @@ return {
   },
   json = {
     diagnostics = { "cfn_lint", "jsonlint" },
-    formatting = { "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   jsonc = {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
@@ -211,7 +211,7 @@ return {
   markdown = {
     code_actions = { "proselint" },
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "cbfmt", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
+    formatting = { "cbfmt", "dprint", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
   matlab = {
@@ -282,6 +282,9 @@ return {
   rmd = {
     formatting = { "format_r", "styler" }
   },
+  roslyn = {
+    formatting = { "dprint" }
+  },
   rst = {
     diagnostics = { "rstcheck" }
   },
@@ -290,7 +293,7 @@ return {
     formatting = { "rubocop", "rufo", "standardrb" }
   },
   rust = {
-    formatting = { "rustfmt" }
+    formatting = { "dprint", "rustfmt" }
   },
   sass = {
     diagnostics = { "stylelint" },
@@ -351,7 +354,7 @@ return {
     formatting = { "terraform_fmt" }
   },
   toml = {
-    formatting = { "taplo" }
+    formatting = { "dprint", "taplo" }
   },
   twig = {
     diagnostics = { "twigcs" }
@@ -359,12 +362,12 @@ return {
   typescript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rome", "rustywind" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rome", "rustywind" }
   },
   typescriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
   },
   verilog = {
     formatting = { "verible_verilog_format" }
