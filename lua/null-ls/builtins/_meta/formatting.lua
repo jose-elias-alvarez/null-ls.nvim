@@ -292,6 +292,9 @@ return {
   styler = {
     filetypes = { "r", "rmd" }
   },
+  stylish_haskell = {
+    filetypes = { "haskell" }
+  },
   stylua = {
     filetypes = { "lua" }
   },

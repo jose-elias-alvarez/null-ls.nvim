@@ -3398,6 +3398,23 @@ local sources = { null_ls.builtins.formatting.styler }
 - Command: `R`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/styler.lua))
 
+### [stylish_haskell](https://github.com/haskell/stylish-haskell)
+
+Format Haskell code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.stylish_haskell }
+```
+
+#### Defaults
+
+- Filetypes: `{ "haskell" }`
+- Method: `formatting`
+- Command: `stylish-haskell`
+- Args: `{}`
+
 ### [stylua](https://github.com/JohnnyMorganz/StyLua)
 
 An opinionated code formatter for Lua.

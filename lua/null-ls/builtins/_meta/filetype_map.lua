@@ -151,7 +151,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   haskell = {
-    formatting = { "brittany", "fourmolu" }
+    formatting = { "brittany", "fourmolu", "stylish_haskell" }
   },
   hcl = {
     formatting = { "packer" }
