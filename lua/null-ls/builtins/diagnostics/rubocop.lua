@@ -60,7 +60,7 @@ return h.make_builtin({
     filetypes = { "ruby" },
     generator_opts = {
         command = "rubocop",
-        args = { "-f", "json", "--stdin", "$FILENAME" },
+        args = { "-f", "json", "--force-exclusion", "--stdin", "$FILENAME" },
         to_stdin = true,
         format = "json",
         check_exit_code = function(code)
