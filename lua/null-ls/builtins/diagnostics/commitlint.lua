@@ -52,7 +52,7 @@ return h.make_builtin({
         description = "commitlint checks if your commit messages meet the conventional commit format.",
     },
     method = DIAGNOSTICS,
-    filetypes = { "gitcommit", "text" },
+    filetypes = { "gitcommit" },
     generator_opts = {
         command = "commitlint",
         args = { "--format", "commitlint-format-json" },
