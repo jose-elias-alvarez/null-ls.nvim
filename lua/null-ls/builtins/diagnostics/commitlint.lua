@@ -57,7 +57,7 @@ return h.make_builtin({
         command = "commitlint",
         args = { "--format", "commitlint-format-json" },
         to_stdin = true,
-        format = "json",
+        format = "json_raw",
         check_exit_code = function(code)
             return code <= 1
         end,
