@@ -3558,6 +3558,23 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 - Command: `terraform`
 - Args: `{ "fmt", "-" }`
 
+### [textlint](https://github.com/textlint/textlint)
+
+The pluggable linting tool for text and Markdown.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.textlint }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `formatting`
+- Command: `textlint`
+- Args: `{ "--fix", "$FILENAME" }`
+
 ### [tidy](https://www.html-tidy.org/)
 
 Tidy corrects and cleans up HTML and XML documents by fixing markup errors and upgrading legacy code to modern standards.
