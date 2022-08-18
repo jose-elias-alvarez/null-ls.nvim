@@ -185,7 +185,7 @@ return {
     filetypes = { "nix" }
   },
   npm_groovy_lint = {
-    filetypes = { "groovy", "java" }
+    filetypes = { "groovy", "java", "Jenkinsfile" }
   },
   ocdc = {
     filetypes = { "markdown" }

@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  Jenkinsfile = {
+    formatting = { "npm_groovy_lint" }
+  },
   arduino = {
     formatting = { "astyle" }
   },

@@ -2797,10 +2797,10 @@ local sources = { null_ls.builtins.formatting.npm_groovy_lint }
 
 #### Defaults
 
-- Filetypes: `{ "groovy", "java" }`
+- Filetypes: `{ "groovy", "java", "Jenkinsfile" }`
 - Method: `formatting`
 - Command: `npm-groovy-lint`
-- Args: `{ "--format", "--files", "$FILENAME" }`
+- Args: `{ "--format", "-" }`
 
 ### [ocdc](https://github.com/mdwint/ocdc)
 
