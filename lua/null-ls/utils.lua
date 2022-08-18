@@ -85,7 +85,7 @@ end
 ---@param cmd string? command to check
 ---@return boolean, string is_executable, string|nil error_message
 M.is_executable = function(cmd)
-    if cmd and vim.fn.executable(cmd) == 1 then
+    if cmd and vim.fn.executable(vim.fn.resolve(vim.fn.exepath(cmd))) == 1 then
         return true
     end
 

@@ -104,8 +104,12 @@ describe("utils", function()
 
     describe("is_executable", function()
         local executable
+        local resolve
+        local exepath
         before_each(function()
             executable = stub(vim.fn, "executable")
+            resolve = stub(vim.fn, "resolve")
+            exepath = stub(vim.fn, "exepath")
         end)
         after_each(function()
             executable:revert()
@@ -113,9 +117,13 @@ describe("utils", function()
 
         it("should call executable with command", function()
             executable.returns(0)
+            resolve.returns("mock-command")
+            exepath.returns("mock-command")
 
             u.is_executable("mock-command")
 
+            assert.stub(exepath).was_called_with("mock-command")
+            assert.stub(resolve).was_called_with("mock-command")
             assert.stub(executable).was_called_with("mock-command")
         end)
 
