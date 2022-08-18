@@ -2117,20 +2117,29 @@ local sources = { null_ls.builtins.formatting.dart_format }
 
 ### [deno_fmt](https://deno.land/manual/tools/formatter)
 
-Use [Deno](https://deno.land/) to format TypeScript and JavaScript code.
+Use [Deno](https://deno.land/) to format TypeScript, JavaScript/JSON and markdown.
 
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.deno_fmt }
+local sources = {
+    null_ls.builtins.formatting.deno_fmt, -- will use the source for all supported file types
+    null_ls.builtins.formatting.deno_fmt.with({
+		filetypes = { "markdown" }, -- only runs `deno fmt` for markdown
+    }),
+}
 ```
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Filetypes: `{ "javascript", "javascriptreact", "json", "jsonc", "markdown", "typescript", "typescriptreact" }`
 - Method: `formatting`
 - Command: `deno`
-- Args: `{ "fmt", "-" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/deno_fmt.lua))
+
+#### Notes
+
+- `deno fmt` supports formatting JS/X, TS/X, JSON and markdown. If you only want deno to format a subset of these filetypes you can overwrite these with `.with({filetypes={}}`)
 
 ### [dfmt](https://github.com/dlang-community/dfmt)
 

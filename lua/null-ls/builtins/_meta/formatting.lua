@@ -71,7 +71,7 @@ return {
     filetypes = { "dart" }
   },
   deno_fmt = {
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
+    filetypes = { "javascript", "javascriptreact", "json", "jsonc", "markdown", "typescript", "typescriptreact" }
   },
   dfmt = {
     filetypes = { "d" }
