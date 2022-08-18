@@ -2681,6 +2681,27 @@ local sources = { null_ls.builtins.formatting.markdownlint }
 
 - Can fix some (but not all!) markdownlint issues. If possible, use [Prettier](https://github.com/prettier/prettier), which can also fix Markdown files.
 
+### [markdown_toc](https://github.com/jonschlinkert/markdown-toc)
+
+API and CLI for generating a markdown TOC (table of contents) for a README or any markdown files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.markdown_toc }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `formatting`
+- Command: `markdown-toc`
+- Args: `{ "-i", "$FILENAME" }`
+
+#### Notes
+
+- To generate a TOC, add `<!-- toc -->` before headers in your markdown file.
+
 ### [mdformat](https://github.com/executablebooks/mdformat)
 
 An opinionated Markdown formatter that can be used to enforce a consistent style in Markdown files

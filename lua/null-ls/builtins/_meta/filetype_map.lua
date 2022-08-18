@@ -217,7 +217,7 @@ return {
   markdown = {
     code_actions = { "proselint" },
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "cbfmt", "deno_fmt", "dprint", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
+    formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
   matlab = {

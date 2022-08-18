@@ -163,6 +163,9 @@ return {
   lua_format = {
     filetypes = { "lua" }
   },
+  markdown_toc = {
+    filetypes = { "markdown" }
+  },
   markdownlint = {
     filetypes = { "markdown" }
   },
