@@ -1289,7 +1289,7 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - Filetypes: `{ "ruby" }`
 - Method: `diagnostics`
 - Command: `rubocop`
-- Args: `{ "-f", "json", "--stdin", "$FILENAME" }`
+- Args: `{ "-f", "json", "--force-exclusion", "--stdin", "$FILENAME" }`
 
 ### [selene](https://kampfkarren.github.io/selene/)
 

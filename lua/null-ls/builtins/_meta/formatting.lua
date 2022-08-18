@@ -316,6 +316,9 @@ return {
   terraform_fmt = {
     filetypes = { "terraform", "tf" }
   },
+  textlint = {
+    filetypes = {}
+  },
   tidy = {
     filetypes = { "html", "xml" }
   },
