@@ -71,7 +71,7 @@ return {
     filetypes = { "dart" }
   },
   deno_fmt = {
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
+    filetypes = { "javascript", "javascriptreact", "json", "jsonc", "markdown", "typescript", "typescriptreact" }
   },
   dfmt = {
     filetypes = { "d" }
@@ -163,6 +163,9 @@ return {
   lua_format = {
     filetypes = { "lua" }
   },
+  markdown_toc = {
+    filetypes = { "markdown" }
+  },
   markdownlint = {
     filetypes = { "markdown" }
   },
@@ -185,7 +188,7 @@ return {
     filetypes = { "nix" }
   },
   npm_groovy_lint = {
-    filetypes = { "groovy", "java" }
+    filetypes = { "groovy", "java", "Jenkinsfile" }
   },
   ocdc = {
     filetypes = { "markdown" }
@@ -315,6 +318,9 @@ return {
   },
   terraform_fmt = {
     filetypes = { "terraform", "tf" }
+  },
+  textlint = {
+    filetypes = {}
   },
   tidy = {
     filetypes = { "html", "xml" }

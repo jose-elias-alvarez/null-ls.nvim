@@ -1146,7 +1146,31 @@ local sources = { null_ls.builtins.diagnostics.pylama }
 
 ### [pylint](https://github.com/PyCQA/pylint)
 
-Pylint is a Python static code analysis tool which looks for programming errors, helps enforcing a coding standard, sniffs for code smells and offers simple refactoring suggestions.
+\
+Pylint is a Python static code analysis tool which looks for programming
+errors, helps enforcing a coding standard, sniffs for code smells and offers
+simple refactoring suggestions.
+
+If you prefer to use the older "message-id" names for these errors (i.e.
+"W0612" instead of "unused-variable"), you can customize pylint's resulting
+diagnostics like so:
+
+```lua
+null_ls = require("null-ls")
+null_ls.setup({
+  sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+      diagnostics_postprocess = function(diagnostic)
+        diagnostic.code = diagnostic.message_id
+      end,
+    }),
+    null_ls.builtins.formatting.isort,
+    null_ls.builtins.formatting.black,
+    ...,
+  },
+})
+```
+
 
 #### Usage
 
@@ -1265,7 +1289,7 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - Filetypes: `{ "ruby" }`
 - Method: `diagnostics`
 - Command: `rubocop`
-- Args: `{ "-f", "json", "--stdin", "$FILENAME" }`
+- Args: `{ "-f", "json", "--force-exclusion", "--stdin", "$FILENAME" }`
 
 ### [selene](https://kampfkarren.github.io/selene/)
 
@@ -2093,20 +2117,29 @@ local sources = { null_ls.builtins.formatting.dart_format }
 
 ### [deno_fmt](https://deno.land/manual/tools/formatter)
 
-Use [Deno](https://deno.land/) to format TypeScript and JavaScript code.
+Use [Deno](https://deno.land/) to format TypeScript, JavaScript/JSON and markdown.
 
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.deno_fmt }
+local sources = {
+    null_ls.builtins.formatting.deno_fmt, -- will use the source for all supported file types
+    null_ls.builtins.formatting.deno_fmt.with({
+		filetypes = { "markdown" }, -- only runs `deno fmt` for markdown
+    }),
+}
 ```
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Filetypes: `{ "javascript", "javascriptreact", "json", "jsonc", "markdown", "typescript", "typescriptreact" }`
 - Method: `formatting`
 - Command: `deno`
-- Args: `{ "fmt", "-" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/deno_fmt.lua))
+
+#### Notes
+
+- `deno fmt` supports formatting JS/X, TS/X, JSON and markdown. If you only want deno to format a subset of these filetypes you can overwrite these with `.with({filetypes={}}`)
 
 ### [dfmt](https://github.com/dlang-community/dfmt)
 
@@ -2648,6 +2681,27 @@ local sources = { null_ls.builtins.formatting.markdownlint }
 
 - Can fix some (but not all!) markdownlint issues. If possible, use [Prettier](https://github.com/prettier/prettier), which can also fix Markdown files.
 
+### [markdown_toc](https://github.com/jonschlinkert/markdown-toc)
+
+API and CLI for generating a markdown TOC (table of contents) for a README or any markdown files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.markdown_toc }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `formatting`
+- Command: `markdown-toc`
+- Args: `{ "-i", "$FILENAME" }`
+
+#### Notes
+
+- To generate a TOC, add `<!-- toc -->` before headers in your markdown file.
+
 ### [mdformat](https://github.com/executablebooks/mdformat)
 
 An opinionated Markdown formatter that can be used to enforce a consistent style in Markdown files
@@ -2764,10 +2818,10 @@ local sources = { null_ls.builtins.formatting.npm_groovy_lint }
 
 #### Defaults
 
-- Filetypes: `{ "groovy", "java" }`
+- Filetypes: `{ "groovy", "java", "Jenkinsfile" }`
 - Method: `formatting`
 - Command: `npm-groovy-lint`
-- Args: `{ "--format", "--files", "$FILENAME" }`
+- Args: `{ "--format", "-" }`
 
 ### [ocdc](https://github.com/mdwint/ocdc)
 
@@ -3533,6 +3587,23 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 - Method: `formatting`
 - Command: `terraform`
 - Args: `{ "fmt", "-" }`
+
+### [textlint](https://github.com/textlint/textlint)
+
+The pluggable linting tool for text and Markdown.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.textlint }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `formatting`
+- Command: `textlint`
+- Args: `{ "--fix", "$FILENAME" }`
 
 ### [tidy](https://www.html-tidy.org/)
 

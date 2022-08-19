@@ -10,11 +10,11 @@ return h.make_builtin({
         description = "Lint, format and auto-fix Groovy, Jenkinsfile, and Gradle files.",
     },
     method = FORMATTING,
-    filetypes = { "groovy", "java" },
+    filetypes = { "groovy", "java", "Jenkinsfile" },
     generator_opts = {
         command = "npm-groovy-lint",
-        args = { "--format", "--files", "$FILENAME" },
-        to_temp_file = true,
+        args = { "--format", "-" },
+        to_stdin = true,
     },
     factory = h.formatter_factory,
 })

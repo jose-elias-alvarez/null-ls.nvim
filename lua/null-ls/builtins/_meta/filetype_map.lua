@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  Jenkinsfile = {
+    formatting = { "npm_groovy_lint" }
+  },
   arduino = {
     formatting = { "astyle" }
   },
@@ -184,10 +187,10 @@ return {
   },
   json = {
     diagnostics = { "cfn_lint", "jsonlint" },
-    formatting = { "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "deno_fmt", "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   jsonc = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettierd" }
   },
   just = {
     formatting = { "just" }
@@ -214,7 +217,7 @@ return {
   markdown = {
     code_actions = { "proselint" },
     diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "cbfmt", "dprint", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
+    formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
   matlab = {
