@@ -16,6 +16,7 @@ return h.make_builtin({
         command = "buf",
         args = {
             "format",
+            "--stdin",
             "$FILENAME",
         },
     },
