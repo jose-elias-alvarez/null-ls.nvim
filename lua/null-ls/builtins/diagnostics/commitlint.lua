@@ -4,18 +4,16 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local violation_to_diagnostic = function(violation)
-    local diagnostic = nil
-
-    diagnostic = {
+    local diagnostic = {
         ruleId = violation.name,
         message = violation.message,
         level = violation.level,
     }
 
     if violation.name == "body-leading-blank" then
-        diagnostic = vim.tbl_extend("force", diagnostic, { line = 2 })
+        diagnostic.line = 2
     elseif vim.startswith(violation.name, "body") then
-        diagnostic = vim.tbl_extend("force", diagnostic, { line = 3 })
+        diagnostic.line = 3
     end
 
     return diagnostic
