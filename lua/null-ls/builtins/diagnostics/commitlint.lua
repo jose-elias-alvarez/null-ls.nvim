@@ -48,6 +48,10 @@ return h.make_builtin({
     meta = {
         url = "https://commitlint.js.org",
         description = "commitlint checks if your commit messages meet the conventional commit format.",
+        notes = {
+            "Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`.",
+            "It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613).",
+        },
     },
     method = DIAGNOSTICS,
     filetypes = { "gitcommit" },
