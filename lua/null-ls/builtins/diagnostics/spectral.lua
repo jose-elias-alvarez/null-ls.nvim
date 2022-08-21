@@ -13,14 +13,14 @@ return h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "yaml", "json" },
     generator_opts = {
-        command = 'spectral',
+        command = "spectral",
         args = {
             "lint",
             "--stdin-filepath",
             "-f",
             "json",
         },
-        format = 'json',
+        format = "json",
         to_stdin = true,
         ignore_stderr = true,
         use_cache = true,
@@ -44,5 +44,5 @@ return h.make_builtin({
             end
             return diags
         end,
-    }
+    },
 })

@@ -1,6 +1,5 @@
 local diagnostics = require("null-ls.builtins").diagnostics
 
-
 describe("diagnostics", function()
     describe("spectral", function()
         local linter = diagnostics.spectral
@@ -44,10 +43,9 @@ describe("diagnostics", function()
                     path = { "security", "0", "bearer" },
                     row = 660,
                     severity = 2,
-                    source = "Spectral"
-
-                }, }, diagnostic)
-
+                    source = "Spectral",
+                },
+            }, diagnostic)
         end)
     end)
     describe("buf", function()
@@ -59,7 +57,7 @@ describe("diagnostics", function()
                 [[ syntax = "proto3"; package tutorial.v1;]],
             }
             local output =
-            [[demo.proto:2:1:Files with package "tutorial.v1" must be within a directory "tutorial/v1" relative to root but were in directory ".".]]
+                [[demo.proto:2:1:Files with package "tutorial.v1" must be within a directory "tutorial/v1" relative to root but were in directory ".".]]
             local diagnostic = parser(output, { content = file })
             assert.same({
                 col = "1",
@@ -220,7 +218,7 @@ describe("diagnostics", function()
         end)
         it("returns errors as diagnostics", function()
             local error =
-            [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
+                [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
             parser({ err = error }, done)
             assert.same({
                 {
@@ -346,7 +344,7 @@ describe("diagnostics", function()
         end)
         it("should create a diagnostic without a column", function()
             local output =
-            "rules.md:2 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]"
+                "rules.md:2 MD012/no-multiple-blanks Multiple consecutive blank lines [Expected: 1; Actual: 2]"
             local diagnostic = parser(output, { content = file })
             assert.same({
                 row = "2",
@@ -521,7 +519,7 @@ describe("diagnostics", function()
         end)
         it("should create a diagnostic (quote is not between backquotes)", function()
             local output =
-            [[lua/default-config.lua:2:1: warning[unused_variable]: CACHE_PATH is defined, but never used]]
+                [[lua/default-config.lua:2:1: warning[unused_variable]: CACHE_PATH is defined, but never used]]
             local diagnostic = parser(output, { content = file })
             assert.same({
                 row = "2",
@@ -912,7 +910,7 @@ describe("diagnostics", function()
 
         it("should create a diagnostic", function()
             local output =
-            [[  1:9-1:16  warning  Reconsider using `banging`, it may be profane  banging  retext-profanities]]
+                [[  1:9-1:16  warning  Reconsider using `banging`, it may be profane  banging  retext-profanities]]
             local diagnostic = parser(output, { content = file })
             assert.same({
                 row = "1",
@@ -1007,7 +1005,7 @@ describe("diagnostics", function()
             ]]
 
             local output =
-            [[[libprotobuf WARNING google/protobuf/compiler/parser.cc:562] No syntax specified for the proto file: null-ls_1UTH9g.proto. Please use 'syntax = "proto2";' or 'syntax = "proto3";' to specify a syntax version. (Defaulted to proto2 syntax.)]]
+                [[[libprotobuf WARNING google/protobuf/compiler/parser.cc:562] No syntax specified for the proto file: null-ls_1UTH9g.proto. Please use 'syntax = "proto2";' or 'syntax = "proto3";' to specify a syntax version. (Defaulted to proto2 syntax.)]]
             local diagnostic = parser(output, { content = file })
 
             assert.same({
@@ -1152,7 +1150,7 @@ describe("diagnostics", function()
         local parser = linter._opts.on_output
         it("should handle full diagnostic", function()
             local output =
-            'test.py:1:1: error: Library stubs not installed for "requests" (or incompatible with Python 3.9)  [import]'
+                'test.py:1:1: error: Library stubs not installed for "requests" (or incompatible with Python 3.9)  [import]'
             local diagnostic = parser(output, {})
             assert.same({
                 row = "1",
@@ -1242,7 +1240,7 @@ describe("diagnostics", function()
         -- some of the example output gotten from: https://github.com/google/shaderc/blob/main/glslc/test/messages_tests.py
         it("glslc error", function()
             local output =
-            [[glslc: error: 'path/to/tempfile.glsl': .glsl file encountered but no -fshader-stage specified ahead]]
+                [[glslc: error: 'path/to/tempfile.glsl': .glsl file encountered but no -fshader-stage specified ahead]]
             local diagnostic = parser(output, {})
             assert.same({
                 severity = 1,
@@ -1251,7 +1249,7 @@ describe("diagnostics", function()
         end)
         it("line error with quotes", function()
             local output =
-            [[filename.glsl:14: error: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan]]
+                [[filename.glsl:14: error: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan]]
             local diagnostic = parser(output, {})
             assert.same({
                 filename = "filename.glsl",
@@ -1272,7 +1270,7 @@ describe("diagnostics", function()
         end)
         it("line warning without quotes", function()
             local output =
-            [[filename3.glsl:2: warning: attribute deprecated in version 130; may be removed in future release]]
+                [[filename3.glsl:2: warning: attribute deprecated in version 130; may be removed in future release]]
             local diagnostic = parser(output, {})
             assert.same({
                 filename = "filename3.glsl",
@@ -1283,7 +1281,7 @@ describe("diagnostics", function()
         end)
         it("file warning", function()
             local output =
-            [[filename4.glsl: warning: (version, profile) forced to be (400, none), while in source code it is (550, none)]]
+                [[filename4.glsl: warning: (version, profile) forced to be (400, none), while in source code it is (550, none)]]
             local diagnostic = parser(output, {})
             assert.same({
                 filename = "filename4.glsl",
