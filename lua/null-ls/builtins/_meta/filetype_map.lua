@@ -128,7 +128,7 @@ return {
     formatting = { "gdformat" }
   },
   gitcommit = {
-    diagnostics = { "gitlint" }
+    diagnostics = { "commitlint", "gitlint" }
   },
   gitrebase = {
     code_actions = { "gitrebase" }

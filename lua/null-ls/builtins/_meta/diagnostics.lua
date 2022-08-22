@@ -31,6 +31,9 @@ return {
   codespell = {
     filetypes = {}
   },
+  commitlint = {
+    filetypes = { "gitcommit" }
+  },
   cppcheck = {
     filetypes = { "cpp", "c" }
   },

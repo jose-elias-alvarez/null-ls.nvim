@@ -421,6 +421,28 @@ local sources = { null_ls.builtins.diagnostics.codespell }
 - Command: `codespell`
 - Args: `{ "-" }`
 
+### [commitlint](https://commitlint.js.org)
+
+commitlint checks if your commit messages meet the conventional commit format.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.commitlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gitcommit" }`
+- Method: `diagnostics`
+- Command: `commitlint`
+- Args: `{ "--format", "commitlint-format-json" }`
+
+#### Notes
+
+- Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`.
+- It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613).
+
 ### [cppcheck](https://github.com/danmar/cppcheck)
 
 A tool for fast static analysis of C/C++ code.
