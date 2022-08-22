@@ -3746,6 +3746,23 @@ local sources = { null_ls.builtins.formatting.xmllint }
 - Command: `xmllint`
 - Args: `{ "--format", "-" }`
 
+### [yamlfmt](https://github.com/google/yamlfmt)
+
+yamlfmt is an extensible command line tool or library to format yaml files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.yamlfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml" }`
+- Method: `formatting`
+- Command: `yamlfmt`
+- Args: `{ "$FILENAME" }`
+
 ### [yapf](https://github.com/google/yapf)
 
 Formatter for Python.

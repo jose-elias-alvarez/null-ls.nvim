@@ -343,6 +343,9 @@ return {
   xmllint = {
     filetypes = { "xml" }
   },
+  yamlfmt = {
+    filetypes = { "yaml" }
+  },
   yapf = {
     filetypes = { "python" }
   },
