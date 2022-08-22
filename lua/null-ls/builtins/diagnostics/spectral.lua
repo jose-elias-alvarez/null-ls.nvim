@@ -17,13 +17,13 @@ return h.make_builtin({
         args = {
             "lint",
             "--stdin-filepath",
+            "$FILENAME",
             "-f",
             "json",
         },
         format = "json",
         to_stdin = true,
         ignore_stderr = true,
-        use_cache = true,
         check_exit_code = function(code)
             return code <= 1
         end,
