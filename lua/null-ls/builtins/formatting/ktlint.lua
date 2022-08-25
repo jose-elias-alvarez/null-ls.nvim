@@ -16,6 +16,8 @@ return h.make_builtin({
         args = {
             "--format",
             "--stdin",
+            "**/*.kt",
+            "**/*.kts",
         },
         to_stdin = true,
     },
