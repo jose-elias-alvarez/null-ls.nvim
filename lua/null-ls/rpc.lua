@@ -159,6 +159,12 @@ M.start = function(dispatchers)
                 stopped = true
             end,
         },
+        is_closing = function()
+            return stopped
+        end,
+        terminate = function()
+            stopped = true
+        end,
     }
 end
 
