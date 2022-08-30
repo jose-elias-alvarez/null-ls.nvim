@@ -31,9 +31,6 @@ local sources = {
         from_stderr = true,
         to_stdin = true,
         format = "json",
-        check_exit_code = function(c)
-            return c <= 1
-        end,
         on_output = helpers.diagnostics.from_json({
             attributes = {
                 row = "line",
