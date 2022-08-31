@@ -61,6 +61,19 @@ end
 local markdown_content = {}
 
 -- helpers
+local generate_method_index = function()
+    local index = {}
+    for _, method in ipairs(methods) do
+        local iname = method
+        local link = method:gsub("_", "-")
+        for _, component in ipairs(vim.split(method, "_")) do
+            iname = component:sub(1, 1):upper() .. component:sub(2)
+        end
+        table.insert(index, string.format("- [%s](#%s)", iname, link))
+    end
+    vim.list_extend(markdown_content, { "", table.concat(index, "\n") })
+end
+
 local generate_method_header = function(method)
     local header = { "##" }
     for _, component in ipairs(vim.split(method, "_")) do
@@ -208,6 +221,8 @@ do
         end
     end
     table.sort(methods)
+
+    generate_method_index()
 
     -- load and handle builtins in each method dir
     for _, method in ipairs(methods) do
