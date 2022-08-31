@@ -28,7 +28,7 @@ local sources = {
             "--disable_progress_bar",
             "-",
         },
-        from_stderr = true,
+        from_stderr = false,
         to_stdin = true,
         format = "json",
         check_exit_code = function(c)
