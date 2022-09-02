@@ -44,7 +44,7 @@ return {
     formatting = { "cljstyle", "zprint" }
   },
   cmake = {
-    formatting = { "cmake_format" }
+    formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
     diagnostics = { "cppcheck", "gccdiag" },

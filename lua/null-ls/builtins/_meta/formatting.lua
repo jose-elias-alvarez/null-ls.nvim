@@ -121,6 +121,9 @@ return {
   gdformat = {
     filetypes = { "gd", "gdscript", "gdscript3" }
   },
+  gersemi = {
+    filetypes = { "cmake" }
+  },
   gofmt = {
     filetypes = { "go" }
   },

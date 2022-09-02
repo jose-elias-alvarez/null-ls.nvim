@@ -2475,6 +2475,23 @@ local sources = { null_ls.builtins.formatting.gdformat }
 - Command: `gdformat`
 - Args: `{ "-" }`
 
+### [gersemi](https://github.com/BlankSpruce/gersemi)
+
+A formatter to make your CMake code the real treasure
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.gersemi }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cmake" }`
+- Method: `formatting`
+- Command: `gersemi`
+- Args: `{ "-" }`
+
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
 Formats go programs.
