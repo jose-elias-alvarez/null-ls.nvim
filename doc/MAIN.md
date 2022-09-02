@@ -380,7 +380,7 @@ the second popup will wipe out the first).
 ```lua
 return {
     {
-        items = { label = "Item #1", insertText = "Item #1", documentation = "A test completion item" },
+        items = {{ label = "Item #1", insertText = "Item #1", documentation = "A test completion item" }},
         isIncomplete = true,
     },
 }
