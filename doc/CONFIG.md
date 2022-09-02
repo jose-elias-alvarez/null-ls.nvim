@@ -57,7 +57,7 @@ local defaults = {
     on_attach = nil,
     on_init = nil,
     on_exit = nil,
-    root_dir = u.root_pattern(".null-ls-root", "Makefile", ".git"),
+    root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
     update_in_insert = false,
 }
