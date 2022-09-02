@@ -283,20 +283,13 @@ return function(opts)
             local resolved_command
             if dynamic_command then
                 resolved_command = dynamic_command(params)
-                log:debug(
-                    string.format(
-                        "Using dynamic command for [%s], got: %s",
-                        params.command,
-                        vim.inspect(resolved_command)
-                    )
-                )
             else
                 resolved_command = command
             end
 
             -- if dynamic_command returns nil, don't fall back to command
             if not resolved_command then
-                log:debug(string.format("unable to resolve command [%s]", command))
+                log:debug(string.format("unable to resolve command %s; aborting", command))
                 return done()
             end
 

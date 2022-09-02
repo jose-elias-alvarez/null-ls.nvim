@@ -16,7 +16,7 @@ return h.make_builtin({
         command = "standard",
         args = { "--stdin", "--fix" },
         to_stdin = true,
-        dynamic_command = cmd_resolver.from_node_modules,
+        dynamic_command = cmd_resolver.from_node_modules(),
     },
     factory = h.formatter_factory,
 })

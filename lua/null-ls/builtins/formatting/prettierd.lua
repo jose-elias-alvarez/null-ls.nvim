@@ -32,7 +32,7 @@ return h.make_builtin({
     generator_opts = {
         command = "prettierd",
         args = { "$FILENAME" },
-        dynamic_command = cmd_resolver.from_node_modules,
+        dynamic_command = cmd_resolver.from_node_modules(),
         to_stdin = true,
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
