@@ -832,7 +832,7 @@ local sources = { null_ls.builtins.diagnostics.ktlint }
 - Filetypes: `{ "kotlin" }`
 - Method: `diagnostics_on_save`
 - Command: `ktlint`
-- Args: `{ "--relative", "--reporter=json" }`
+- Args: `{ "--relative", "--reporter=json", "**/*.kt", "**/*.kts" }`
 
 ### [luacheck](https://github.com/lunarmodules/luacheck)
 
@@ -2695,7 +2695,7 @@ local sources = { null_ls.builtins.formatting.ktlint }
 - Filetypes: `{ "kotlin" }`
 - Method: `formatting`
 - Command: `ktlint`
-- Args: `{ "--format", "--stdin" }`
+- Args: `{ "--format", "--stdin", "**/*.kt", "**/*.kts" }`
 
 ### [latexindent](https://github.com/cmhughes/latexindent.pl)
 
