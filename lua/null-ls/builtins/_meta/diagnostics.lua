@@ -223,6 +223,9 @@ return {
   tidy = {
     filetypes = { "html", "xml" }
   },
+  todo_comments = {
+    filetypes = {}
+  },
   trail_space = {
     filetypes = {}
   },

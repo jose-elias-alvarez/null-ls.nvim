@@ -1580,6 +1580,21 @@ local sources = { null_ls.builtins.diagnostics.tidy }
 - Command: `tidy`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/tidy.lua))
 
+### todo_comments
+
+Uses inbuilt Lua code and treesitter to detect lines with TODO comments and show a diagnostic warning on each line where it's present.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.todo_comments }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `diagnostics`
+
 ### trail_space
 
 Uses inbuilt Lua code to detect lines with trailing whitespace and show a diagnostic warning on each line where it's present.
