@@ -151,6 +151,9 @@ return {
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },
+  pycodestyle = {
+    filetypes = { "python" }
+  },
   pydocstyle = {
     filetypes = { "python" }
   },

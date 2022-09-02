@@ -1128,6 +1128,23 @@ local sources = { null_ls.builtins.diagnostics.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--json", "$FILENAME" }`
 
+### [pycodestyle](https://github.com/PyCQA/pycodestyle)
+
+pycodestyle is a tool to check your Python code against some of the style conventions in PEP 8.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pycodestyle }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `diagnostics`
+- Command: `pycodestyle`
+- Args: `{ "$FILENAME" }`
+
 ### [pydocstyle](https://www.pydocstyle.org/)
 
 pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
