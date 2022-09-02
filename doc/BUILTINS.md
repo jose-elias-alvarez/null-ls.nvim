@@ -1381,6 +1381,23 @@ local sources = { null_ls.builtins.diagnostics.solhint }
 - Command: `solhint`
 - Args: `{ "$FILENAME", "--formatter", "unix" }`
 
+### [spectral](https://github.com/stoplightio/spectral)
+
+A flexible JSON/YAML linter for creating automated style guides, with baked in support for OpenAPI v3.1, v3.0, and v2.0.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.spectral }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml", "json" }`
+- Method: `diagnostics`
+- Command: `spectral`
+- Args: `{ "lint", "--stdin-filepath", "$FILENAME", "-f", "json" }`
+
 ### [sqlfluff](https://github.com/sqlfluff/sqlfluff)
 
 A SQL linter and auto-formatter for Humans

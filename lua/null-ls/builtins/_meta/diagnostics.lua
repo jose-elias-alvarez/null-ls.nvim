@@ -190,6 +190,9 @@ return {
   solhint = {
     filetypes = { "solidity" }
   },
+  spectral = {
+    filetypes = { "yaml", "json" }
+  },
   sqlfluff = {
     filetypes = { "sql" }
   },
