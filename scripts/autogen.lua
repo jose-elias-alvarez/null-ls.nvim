@@ -64,12 +64,11 @@ local markdown_content = {}
 local generate_method_index = function()
     local index = {}
     for _, method in ipairs(methods) do
-        local iname = method
-        local link = method:gsub("_", "-")
+        local capital_method = {}
         for _, component in ipairs(vim.split(method, "_")) do
-            iname = component:sub(1, 1):upper() .. component:sub(2)
+            table.insert(capital_method, component:sub(1, 1):upper() .. component:sub(2))
         end
-        table.insert(index, string.format("- [%s](#%s)", iname, link))
+        table.insert(index, string.format("- [%s](#%s)", table.concat(capital_method, " "), method:gsub("_", "-")))
     end
     vim.list_extend(markdown_content, { "", table.concat(index, "\n") })
 end
