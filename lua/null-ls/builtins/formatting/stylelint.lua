@@ -17,7 +17,7 @@ return h.make_builtin({
         args = { "--fix", "--stdin", "--stdin-filename", "$FILENAME" },
         to_stdin = true,
         from_stderr = true,
-        dynamic_command = cmd_resolver.from_node_modules(),
+        dynamic_command = cmd_resolver.from_node_modules,
     },
     factory = h.formatter_factory,
 })

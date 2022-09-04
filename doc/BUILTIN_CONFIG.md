@@ -359,15 +359,13 @@ tries to find a local Yarn Plug'n'Play install, then falls back to a global
 `prettier` executable:
 
 ```lua
-local resolvers = require("null-ls.helpers.command_resolver")
-local node_modules_resolver = command_resolver.from_node_modules()
-local yarn_pnp_resolver = command_resolver.from_yarn_pnp()
+local command_resolver = require("null-ls.helpers.command_resolver")
 
 local sources = {
     null_ls.builtins.formatting.prettier.with({
         dynamic_command = function(params)
-            return node_modules_resolver(params)
-                or yarn_pnp_resolver(params)
+            return command_resolver.from_node_modules(params)
+                or command_resolver.from_yarn_pnp(params)
                 or vim.fn.executable(params.command) == 1 and params.command
         end,
     }),

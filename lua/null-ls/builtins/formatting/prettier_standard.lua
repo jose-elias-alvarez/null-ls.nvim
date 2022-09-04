@@ -17,7 +17,7 @@ return h.make_builtin({
         command = "prettier-standard",
         args = { "--stdin" },
         to_stdin = true,
-        dynamic_command = cmd_resolver.from_node_modules(),
+        dynamic_command = cmd_resolver.from_node_modules,
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
                 -- https://prettier.io/docs/en/configuration.html
