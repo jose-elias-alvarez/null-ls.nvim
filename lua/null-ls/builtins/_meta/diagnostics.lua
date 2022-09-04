@@ -28,6 +28,9 @@ return {
   clj_kondo = {
     filetypes = { "clojure" }
   },
+  cmake_lint = {
+    filetypes = { "cmake" }
+  },
   codespell = {
     filetypes = {}
   },
