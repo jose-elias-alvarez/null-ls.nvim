@@ -23,6 +23,8 @@ return h.make_builtin({
             local common_args = {
                 "-quiet",
                 "-errors",
+                "-lang",
+                "en",
             }
 
             if params.ft == "xml" then
