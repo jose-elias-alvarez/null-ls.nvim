@@ -6,6 +6,12 @@ This is an automatically generated list of all null-ls built-in sources.
 
 See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure these sources.
 
+- [Code Actions](#code-actions)
+- [Completion](#completion)
+- [Diagnostics](#diagnostics)
+- [Formatting](#formatting)
+- [Hover](#hover)
+
 ## Code Actions
 
 ### [eslint](https://github.com/eslint/eslint)
