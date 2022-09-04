@@ -47,32 +47,36 @@ M.from_node_modules = function(params)
     return node_modules_resolver(params) or params.command
 end
 
---- resolver that searches for a local yarn pnp executable
+--- resolver that searches for a local yarn pnp executable and falls back to a global executable
 ---@param params NullLsParams
----@return string[]|nil
+---@return string|string[]|nil
 M.from_yarn_pnp = cache.by_bufnr(function(params)
-    local root = params.root
-    if not root then
-        return
-    end
+    local ok, yarn_command = pcall(function()
+        local root = params.root
+        if not root then
+            error("unable to resolve root directory")
+        end
 
-    -- older yarn versions use `.pnp.js`, so look for both new and old names
-    local pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.cjs")
-    if not (pnp_executable and pnp_dir) then
-        pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.js")
-    end
-    if not (pnp_executable and pnp_dir) then
-        return
-    end
+        -- older yarn versions use `.pnp.js`, so look for both new and old names
+        local pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.cjs")
+        if not (pnp_executable and pnp_dir) then
+            pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.js")
+        end
+        if not (pnp_executable and pnp_dir) then
+            error("failed to find yarn executable")
+        end
 
-    local yarn_bin_cmd =
-        string.format("cd %s && yarn bin %s", vim.fn.shellescape(pnp_dir), vim.fn.shellescape(params.command))
-    local yarn_bin = vim.fn.system(yarn_bin_cmd):gsub("%s+", "")
-    if vim.v.shell_error ~= 0 then
-        return
-    end
+        local yarn_bin_cmd =
+            string.format("cd %s && yarn bin %s", vim.fn.shellescape(pnp_dir), vim.fn.shellescape(params.command))
+        local yarn_bin = vim.fn.system(yarn_bin_cmd):gsub("%s+", "")
+        if vim.v.shell_error ~= 0 then
+            error("failed to get yarn bin")
+        end
 
-    return { "node", "--require", pnp_executable, yarn_bin }
+        return { "node", "--require", pnp_executable, yarn_bin }
+    end)
+
+    return ok and yarn_command or params.command
 end)
 
 return M
