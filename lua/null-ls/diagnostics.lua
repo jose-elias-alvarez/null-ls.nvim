@@ -138,7 +138,6 @@ M.handler = function(original_params)
     if method == methods.lsp.DID_CLOSE then
         changedticks_by_uri[uri] = nil
         s.clear_cache(uri)
-        s.clear_commands(bufnr)
         return
     end
 

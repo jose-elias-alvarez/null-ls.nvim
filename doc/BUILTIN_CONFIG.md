@@ -335,10 +335,6 @@ local sources = {
 To _only_ use a local executable without falling back, use `only_local`, which
 accepts the same options.
 
-By default, these options will also set the `cwd` of the spawned process to the
-parent directory of the local executable (if found). You can override this by
-manually setting `cwd`, as described above.
-
 You can also choose to override a source's command and specify an absolute path
 if the command is not available on your `$PATH`:
 
@@ -352,27 +348,6 @@ local sources = {
 
 Another solution is to use the `dynamic_command` option, as described in
 [HELPERS](./HELPERS.md). Note that this option can affect performance.
-
-null-ls includes several command resolvers to handle common cases and cache
-results to prevent repeated lookups.
-
-For example, the following looks for `prettier` in `node_modules/.bin`, then
-tries to find a local Yarn Plug'n'Play install, then tries to find a global
-`prettier` executable:
-
-```lua
-local command_resolver = require("null-ls.helpers.command_resolver")
-
-local sources = {
-    null_ls.builtins.formatting.prettier.with({
-        dynamic_command = function(params)
-            return command_resolver.from_node_modules(params)
-                or command_resolver.from_yarn_pnp(params)
-                or vim.fn.executable(params.command) == 1 and params.command
-        end,
-    }),
-}
-```
 
 ## Conditional sources
 

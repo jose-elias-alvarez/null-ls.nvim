@@ -72,20 +72,6 @@ M.clear_cache = function(uri)
     state.cache[uri] = nil
 end
 
--- commands
-M.set_resolved_command = function(bufnr, base, resolved)
-    state.commands[bufnr] = state.commands[bufnr] or {}
-    state.commands[bufnr][base] = resolved
-end
-
-M.get_resolved_command = function(bufnr, base)
-    return state.commands[bufnr] and state.commands[bufnr][base]
-end
-
-M.clear_commands = function(bufnr)
-    state.commands[bufnr] = nil
-end
-
 -- conditional sources
 M.has_conditional_sources = function()
     return #state.conditional_sources > 0

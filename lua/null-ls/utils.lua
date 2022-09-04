@@ -142,6 +142,8 @@ M.range = {
 ---@field ft string
 ---@field range NullLsRange|nil converted LSP range
 ---@field word_to_complete string|nil
+---@field command string|nil set by generator_factory
+---@field root string|nil set by generator_factory
 
 ---@param original_params table original LSP params
 ---@param method string internal null-ls method
@@ -217,7 +219,7 @@ end
 
 M.buf = {
     --- returns buffer content as string or table
-    ---@param bufnr number
+    ---@param bufnr number|nil
     ---@param to_string boolean
     ---@return string|table content
     content = function(bufnr, to_string)
@@ -318,7 +320,7 @@ end
 ---@field is_windows fun(): boolean
 ---@field exists fun(filename: string): boolean
 ---@field dirname fun(path: string): string|nil
----@field join fun(paths: ...): string
+---@field join function(paths: ...): string
 ---@field traverse_parents fun(path: string, cb: fun(dir: string, path: string): boolean): string|nil dir, string|nil path
 ---@field iterate_parents fun(path: string): fun(_, v: string): string|nil v, string|nil path
 
