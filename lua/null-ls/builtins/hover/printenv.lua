@@ -12,16 +12,14 @@ return h.make_builtin({
             -- Get word under cursor
             local cword = vim.fn.expand("<cword>")
 
-            -- Gets table of environment variables
-            local env_vars = vim.fn.environ()
-
-            -- Checks if cword is in table of environment variables
-            -- If not in table of environment variables, show in hover window "Error! `cword` is not an environment variable!"
-            -- Else show in hover window value of environment variable
-            if env_vars[cword] == nil then
-                done({ "Error! " .. cword .. " is not an environment variable!" })
+            -- Checks if cword is an environment variable
+            -- If cword is environment variable and value not nil, show in hover window value of environment variable
+            -- Else show in hover window "Error! `cword` is not an environment variable!"
+            local ok, value = pcall(vim.loop.os_getenv, cword)
+            if ok and (value ~= nil) then
+                done({ cword .. ": " .. value })
             else
-                done({ cword .. ": " .. env_vars[cword] })
+                done({ "Error! " .. cword .. " is not an environment variable!" })
             end
         end,
         async = true,
@@ -29,7 +27,7 @@ return h.make_builtin({
     meta = {
         description = "Shows the value for the current environment variable under the cursor.",
         notes = {
-            "This source is similar in function to `printenv` where it shows value of environment variable, however this source uses `vim.fn.environ()` instead of `printenv` thus making it cross-platform.",
+            "This source is similar in function to `printenv` where it shows value of environment variable, however this source uses `vim.loop.os_getenv` instead of `printenv` thus making it cross-platform.",
         },
     },
 })
