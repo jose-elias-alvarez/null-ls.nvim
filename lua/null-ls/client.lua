@@ -78,14 +78,18 @@ end
 local M = {}
 
 M.start_client = function(fname)
-    require("null-ls.rpc").setup()
+    local should_patch_rpc = not u.has_version("0.8")
+    if should_patch_rpc then
+        require("null-ls.rpc").setup()
+    end
 
     local config = {
         name = "null-ls",
         root_dir = c.get().root_dir(fname) or vim.loop.cwd(),
         on_init = on_init,
         on_exit = on_exit,
-        cmd = c.get().cmd,
+        cmd = should_patch_rpc and c.get().cmd -- pass command so that we can handle it in our patched rpc.start
+            or require("null-ls.rpc").start, -- pass callback to create rpc client
         filetypes = require("null-ls.sources").get_filetypes(),
         flags = { debounce_text_changes = c.get().debounce },
         on_attach = vim.schedule_wrap(function(_, bufnr)
