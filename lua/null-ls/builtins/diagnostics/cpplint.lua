@@ -20,15 +20,19 @@ return h.make_builtin({
         to_stdin = false,
         from_stderr = true,
         to_temp_file = true,
-        on_output = h.diagnostics.from_pattern("[^:]+:(%d+):  (.+)  %[(.+)%/.+%] %[%d+%]", { "row", "message", "severity" }, {
-            severities = {
-                build = h.diagnostics.severities["warning"],
-                whitespace = h.diagnostics.severities["hint"],
-                runtime = h.diagnostics.severities["warning"],
-                legal = h.diagnostics.severities["information"],
-                readability = h.diagnostics.severities["information"]
-            },
-        }),
+        on_output = h.diagnostics.from_pattern(
+            "[^:]+:(%d+):  (.+)  %[(.+)%/.+%] %[%d+%]",
+            { "row", "message", "severity" },
+            {
+                severities = {
+                    build = h.diagnostics.severities["warning"],
+                    whitespace = h.diagnostics.severities["hint"],
+                    runtime = h.diagnostics.severities["warning"],
+                    legal = h.diagnostics.severities["information"],
+                    readability = h.diagnostics.severities["information"],
+                },
+            }
+        ),
         check_exit_code = function(code)
             return code >= 1
         end,

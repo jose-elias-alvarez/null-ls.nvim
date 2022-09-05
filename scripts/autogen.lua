@@ -95,7 +95,7 @@ end
 local generate_builtin_description = function(source)
     return source.meta.description and {
         "",
-        source.meta.description,
+        vim.trim(source.meta.description),
     } or {}
 end
 
