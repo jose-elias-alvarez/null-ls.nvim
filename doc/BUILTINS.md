@@ -466,6 +466,23 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 - Command: `cppcheck`
 - Args: `{ "--enable=warning,style,performance,portability", "--template=gcc", "$FILENAME" }`
 
+### [cpplint](https://github.com/cpplint/cpplint)
+
+Cpplint is a command-line tool to check C/C++ files for style issues following Google's C++ style guide
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cpplint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cpp", "c" }`
+- Method: `diagnostics`
+- Command: `cpplint`
+- Args: `{ "$FILENAME" }`
+
 ### [credo](https://hexdocs.pm/credo)
 
 Static analysis of `elixir` files for enforcing code consistency.

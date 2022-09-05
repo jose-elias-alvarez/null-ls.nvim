@@ -30,7 +30,7 @@ return {
     formatting = { "buildifier" }
   },
   c = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   cabal = {
@@ -47,7 +47,7 @@ return {
     formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {
