@@ -19,7 +19,7 @@ return h.make_builtin({
         args = function(params)
             return { "format", "-stdin", "." .. vim.fn.fnamemodify(params.bufname, ":e") }
         end,
-        dynamic_command = cmd_resolver.from_node_modules,
+        dynamic_command = cmd_resolver.from_node_modules(),
         to_stdin = true,
     },
     factory = h.formatter_factory,
