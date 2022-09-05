@@ -86,6 +86,9 @@ return {
   dockerfile = {
     diagnostics = { "hadolint" }
   },
+  dosbatch = {
+    hover = { "printenv" }
+  },
   elixir = {
     diagnostics = { "credo" },
     formatting = { "mix", "surface" }
@@ -257,6 +260,9 @@ return {
     diagnostics = { "buf", "protoc_gen_lint", "protolint" },
     formatting = { "buf", "protolint" }
   },
+  ps1 = {
+    hover = { "printenv" }
+  },
   pug = {
     diagnostics = { "puglint" }
   },
@@ -315,7 +321,8 @@ return {
   sh = {
     code_actions = { "shellcheck" },
     diagnostics = { "shellcheck" },
-    formatting = { "beautysh", "shellharden", "shfmt" }
+    formatting = { "beautysh", "shellharden", "shfmt" },
+    hover = { "printenv" }
   },
   solidity = {
     diagnostics = { "solhint" }

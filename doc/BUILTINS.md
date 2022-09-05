@@ -3909,3 +3909,22 @@ local sources = { null_ls.builtins.hover.dictionary }
 #### Notes
 
 - Depends on Plenary's `curl` module, which itself depends on having `curl` installed and available on your `$PATH`.
+
+### printenv
+
+Shows the value for the current environment variable under the cursor.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.hover.printenv }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sh", "dosbatch", "ps1" }`
+- Method: `hover`
+
+#### Notes
+
+- This source is similar in function to `printenv` where it shows value of environment variable, however this source uses `vim.loop.os_getenv` instead of `printenv` thus making it cross-platform.
