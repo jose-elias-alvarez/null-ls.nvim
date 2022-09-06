@@ -1,3 +1,10 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false,
+  "no-inline-html": false
+}
+-->
+
 # null-ls.nvim
 
 Use Neovim as a language server to inject LSP diagnostics, code actions, and
@@ -190,8 +197,8 @@ plugin before sending anything upstream.
 
 1. Make sure your configuration is in line with the latest version of this
    document.
-2. Enable debug mode (see below) and check the output of your source(s). If
-   the CLI program is not properly configured or is otherwise not running as
+2. Enable debug mode (see below) and check the output of your source(s). If the
+   CLI program is not properly configured or is otherwise not running as
    expected, that's an issue with the program, not null-ls.
 3. Check the documentation for available configuration options that might solve
    your issue.
@@ -213,17 +220,18 @@ instructions).
 
 ### How do I format files on save?
 
-See [this wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save).
+See
+[this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save).
 
 ### How do I stop Neovim from asking me which server I want to use for formatting?
 
-See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
+See
+[this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
 
 ### How do I view project-level diagnostics?
 
-For a built-in solution, use `:lua vim.diagnostic.setqflist()`. You can also
-use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
+For a built-in solution, use `:lua vim.diagnostic.setqflist()`. You can also use
+a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 
 ### How do I enable debug mode and get debug output?
 
@@ -248,8 +256,7 @@ possible, so it should work seamlessly with most LSP-related plugins. If you run
 into problems, please try to determine which plugin is causing them and open an
 issue.
 
-[This wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
+[This wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
 mentions plugins that require specific configuration options / tweaks to work
 with null-ls.
 
@@ -302,7 +309,8 @@ All tests expect the latest Neovim master.
 - [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
   that (surprise) focuses on formatting.
 
-- [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework for Neovim.
+- [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework
+  for Neovim.
 
 ## Sponsors
 

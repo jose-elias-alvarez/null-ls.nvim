@@ -82,8 +82,8 @@ local query = {
 }
 ```
 
-All keys in the query are optional, and passing an empty query will get
-all sources.
+All keys in the query are optional, and passing an empty query will get all
+sources.
 
 Note that special characters are automatically escaped when `query` is a string
 but not when it's an object, which allows using Lua string matchers.

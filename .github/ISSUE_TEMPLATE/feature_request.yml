@@ -7,7 +7,9 @@ body:
     attributes:
       label: Issues
       options:
-        - label: I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues) and there are no existing ones with the same request.
+        - label:
+            I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues) and there are no
+            existing ones with the same request.
           required: true
 
   - type: textarea
@@ -31,6 +33,8 @@ body:
   - type: textarea
     attributes:
       label: "Implementation help"
-      description: "If you selected yes in the last question please specify in detail what you would need help with in order to implement this."
+      description:
+        "If you selected yes in the last question please specify in detail what you would need help with in order to
+        implement this."
     validations:
       required: false
