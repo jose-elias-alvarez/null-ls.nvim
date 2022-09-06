@@ -179,11 +179,22 @@ M.show_window = function()
         vim.fn.matchadd(hi[1], hi[2])
     end
 
-    api.nvim_buf_set_keymap(win_bufnr, "n", "<Esc>", "<cmd>bd<CR>", { noremap = true })
+    local close = function()
+        if api.nvim_buf_is_valid(win_bufnr) then
+            api.nvim_buf_delete(win_bufnr, { force = true })
+        end
+        if api.nvim_win_is_valid(win_id) then
+            api.nvim_win_close(win_id, true)
+        end
+    end
 
-    vim.cmd(
-        string.format("autocmd BufHidden,BufLeave <buffer> ++once lua pcall(vim.api.nvim_win_close, %d, true)", win_id)
-    )
+    vim.keymap.set("n", "<ESC>", close, { buffer = win_bufnr, nowait = true })
+    vim.keymap.set("n", "q", close, { buffer = win_bufnr, nowait = true })
+    api.nvim_create_autocmd({ "BufHidden", "BufLeave", "BufDelete" }, {
+        buffer = win_bufnr,
+        once = true,
+        callback = close,
+    })
 end
 
 return M
