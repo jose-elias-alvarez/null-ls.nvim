@@ -7,7 +7,9 @@ body:
     attributes:
       label: FAQ
       options:
-        - label: I have checked the [FAQ](https://github.com/jose-elias-alvarez/null-ls.nvim#faq) and it didn't resolve my problem.
+        - label:
+            I have checked the [FAQ](https://github.com/jose-elias-alvarez/null-ls.nvim#faq) and it didn't resolve my
+            problem.
           required: true
 
   - type: checkboxes
@@ -15,7 +17,9 @@ body:
     attributes:
       label: Issues
       options:
-        - label: I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues?q=is%3Aissue) and there are no issues with the same problem.
+        - label:
+            I have checked [existing issues](https://github.com/jose-elias-alvarez/null-ls.nvim/issues?q=is%3Aissue) and
+            there are no issues with the same problem.
           required: true
 
   - type: input
@@ -35,14 +39,19 @@ body:
   - type: textarea
     attributes:
       label: "Minimal config"
-      description: "Download the minimal config using `curl -fLO https://raw.githubusercontent.com/jose-elias-alvarez/null-ls.nvim/main/scripts/minimal_init.lua`. Edit it to include the configuration necessary to reproduce your bug and paste it here. Do not use your personal null-ls config!"
+      description: "Download the minimal config using `curl -fLO
+        https://raw.githubusercontent.com/jose-elias-alvarez/null-ls.nvim/main/scripts/minimal_init.lua`. Edit it to
+        include the configuration necessary to reproduce your bug and paste it here. Do not use your personal null-ls
+        config!"
     validations:
       required: true
 
   - type: textarea
     attributes:
       label: "Steps to reproduce"
-      description: "Full reproduction steps, starting with `nvim --clean -u minimal_init.lua`. Include a sample file if your issue relates to a specific filetype."
+      description:
+        "Full reproduction steps, starting with `nvim --clean -u minimal_init.lua`. Include a sample file if your issue
+        relates to a specific filetype."
     validations:
       required: true
 
@@ -63,7 +72,9 @@ body:
   - type: textarea
     attributes:
       label: "Debug log"
-      description: "Debug log output from `:NullLsLog`, limited to the output from following your reproduction steps. Include this even if you think it's irrelevant."
+      description:
+        "Debug log output from `:NullLsLog`, limited to the output from following your reproduction steps. Include this
+        even if you think it's irrelevant."
     validations:
       required: true
 
@@ -82,7 +93,9 @@ body:
   - type: textarea
     attributes:
       label: "Implementation help"
-      description: "If you selected yes in the last question please specify in detail what you would need help with in order to implement this."
+      description:
+        "If you selected yes in the last question please specify in detail what you would need help with in order to
+        implement this."
     validations:
       required: false
 
@@ -91,5 +104,7 @@ body:
     attributes:
       label: Requirements
       options:
-        - label: I have read and followed the instructions above and understand that my issue will be closed if I did not provide the required information.
+        - label:
+            I have read and followed the instructions above and understand that my issue will be closed if I did not
+            provide the required information.
           required: true

@@ -11,8 +11,7 @@ Splits into the following documents:
 - [MAIN](MAIN.md) (this document), which describes general concepts and
   implementation details
 
-- [CONFIG](CONFIG.md), which describes the available configuration
-  options
+- [CONFIG](CONFIG.md), which describes the available configuration options
 
 - [BUILTINS](BUILTINS.md), an automatically generated list of available built-in
   sources
@@ -22,8 +21,8 @@ Splits into the following documents:
 
 - [SOURCES](SOURCES.md), which describes the source API
 
-- [HELPERS](HELPERS.md), which describes available helpers and how to use
-  them to make new sources
+- [HELPERS](HELPERS.md), which describes available helpers and how to use them
+  to make new sources
 
 - [TESTING](TESTING.md), which describes best practices for testing null-ls
   integrations
@@ -80,8 +79,8 @@ my_source.method = null_ls.methods.COMPLETION
 ### Filetypes
 
 A source has a list of filetypes, which define when the source is active. The
-list can contain a single filetype, more than one filetype, or nothing,
-which indicates that the source should activate for all filetypes.
+list can contain a single filetype, more than one filetype, or nothing, which
+indicates that the source should activate for all filetypes.
 
 ```lua
 local my_source = {}
@@ -150,8 +149,8 @@ null_ls.register({ name = "my-sources", ... })
 null_ls.register({ name = "my-sources", ... })
 ```
 
-null-ls also exposes a method, `is_registered()`, that returns a
-boolean value indicating whether it has already registered a source.
+null-ls also exposes a method, `is_registered()`, that returns a boolean value
+indicating whether it has already registered a source.
 
 ```lua
 local null_ls = require("null-ls")
@@ -358,8 +357,7 @@ Same as formatting.
 Note that getting range-formatted output requires converting the visually
 selected range into the required format and modifying the spawn arguments
 accordingly. See `range_formatting_args_factory` in [HELPERS](HELPERS.md) for an
-example of how null-ls handles this for built-in
-sources.
+example of how null-ls handles this for built-in sources.
 
 #### Hover
 

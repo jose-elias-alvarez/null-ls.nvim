@@ -1,9 +1,10 @@
 # Testing
 
-- The test suite includes unit and integration tests and depends on `plenary.nvim`
+- The test suite includes unit and integration tests and depends on
+  `plenary.nvim`
 - The default `test/minimal.vim` (passed to the instantiation of _Neovim_ with
-  `-u`) assumes that you've installed `plenary.nvim` one directory above where this
-  project lives, since the test suite modifies `rtp` as follows:
+  `-u`) assumes that you've installed `plenary.nvim` one directory above where
+  this project lives, since the test suite modifies `rtp` as follows:
 
 ```vim
 ...
