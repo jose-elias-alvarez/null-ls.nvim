@@ -122,7 +122,8 @@ local sources = {
 }
 ```
 
-You can also override a source's arguments entirely using `with({ args = your_args })`.
+You can also override a source's arguments entirely using
+`with({ args = your_args })`.
 
 Both `args` and `extra_args` can also be functions that accept a single
 argument, `params`, which is an object containing information about editor
@@ -175,8 +176,9 @@ local sources = {
 
 ### Filtering
 
-You can filter generator results using the `filter` option. The option should
-be a function that returns `true` to keep the result, and `false` or `nil` to ignore it.
+You can filter generator results using the `filter` option. The option should be
+a function that returns `true` to keep the result, and `false` or `nil` to
+ignore it.
 
 ```lua
 local sources = {
@@ -309,9 +311,9 @@ local sources = {
 }
 ```
 
-For diagnostics sources, you should also update the source to [run on
-save](#diagnostics-on-save), since otherwise diagnostics will go out of sync
-with buffer changes.
+For diagnostics sources, you should also update the source to
+[run on save](#diagnostics-on-save), since otherwise diagnostics will go out of
+sync with buffer changes.
 
 ## Using local executables
 
