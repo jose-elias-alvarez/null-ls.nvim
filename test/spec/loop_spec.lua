@@ -83,6 +83,8 @@ describe("loop", function()
             function mock_stderr:close()
                 mock_stderr_close()
             end
+
+            uv.spawn.returns(mock_handle)
         end)
 
         after_each(function()
@@ -110,6 +112,30 @@ describe("loop", function()
             assert.stub(uv.spawn).was_called()
             assert.equals(uv.spawn.calls[1].refs[1], vim.fn.exepath(mock_cmd))
             assert.same(uv.spawn.calls[1].refs[2].args, mock_args)
+        end)
+
+        it("should throw if handle is nil", function()
+            uv.spawn.returns(nil)
+
+            assert.has_error(function()
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+            end)
+        end)
+
+        it("should throw non-executable error if error message contains ENOENT", function()
+            uv.spawn.returns(nil, "ENOENT: no such file or directory")
+
+            local ok, message = pcall(loop.spawn, mock_cmd, mock_args, mock_opts)
+            assert.falsy(ok)
+            assert.truthy(message and message:find("is not executable"))
+        end)
+
+        it("should throw spawn failure error on other error", function()
+            uv.spawn.returns(nil, "something went wrong")
+
+            local ok, message = pcall(loop.spawn, mock_cmd, mock_args, mock_opts)
+            assert.falsy(ok)
+            assert.truthy(message and message:find("failed to spawn"))
         end)
 
         it("should parse user env vars", function()
@@ -285,7 +311,6 @@ describe("loop", function()
             local done = stub.new()
             before_each(function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 vim.schedule_wrap.returns(done)
             end)
             after_each(function()
@@ -349,7 +374,6 @@ describe("loop", function()
 
             it("should call close_handle on spawn handle", function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local on_close = uv.spawn.calls[1].refs[3]
@@ -361,7 +385,6 @@ describe("loop", function()
 
             it("should not call close_handle if is_closing returns true", function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 mock_handle_is_closing.returns(true)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
