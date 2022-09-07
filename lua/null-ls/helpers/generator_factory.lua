@@ -174,14 +174,6 @@ return function(opts)
             opts.command = command
         end
 
-        if not dynamic_command then
-            local is_executable, err_msg = u.is_executable(command)
-            if not is_executable then
-                log:error(err_msg)
-                return false
-            end
-        end
-
         return true
     end
 

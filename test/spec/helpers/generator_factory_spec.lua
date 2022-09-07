@@ -320,27 +320,6 @@ describe("generator_factory", function()
     end)
 
     describe("command", function()
-        it("should trigger deregistration if command is not executable", function()
-            generator_opts.command = "nonexistent"
-
-            local generator = helpers.generator_factory(generator_opts)
-            generator.fn({}, done)
-
-            assert.stub(done).was_called_with({ _should_deregister = true })
-        end)
-
-        it("should not validate command if dynamic_command is set", function()
-            generator_opts.command = "nonexistent"
-            generator_opts.dynamic_command = function()
-                return "cat"
-            end
-
-            local generator = helpers.generator_factory(generator_opts)
-            generator.fn({}, done)
-
-            assert.stub(done).was_not_called()
-        end)
-
         it("should call command function with params ", function()
             local params
             generator_opts.command = function(_params)

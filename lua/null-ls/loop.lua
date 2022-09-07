@@ -48,7 +48,8 @@ M.spawn = function(cmd, args, opts)
     local handler, input, check_exit_code, timeout, on_stdout_end, env =
         opts.handler, opts.input, opts.check_exit_code, opts.timeout, opts.on_stdout_end, opts.env
 
-    local output, error_output = "", ""
+    local output, error_output
+    output, error_output = "", ""
     local handle_stdout = function(err, chunk)
         if err then
             on_error("stdout", err)
@@ -96,7 +97,7 @@ M.spawn = function(cmd, args, opts)
     local stderr = uv.new_pipe(false)
     local stdio = { stdin, stdout, stderr }
 
-    local handle
+    local handle, pid
     local on_close = function(code)
         if not handle then
             return
@@ -143,15 +144,23 @@ M.spawn = function(cmd, args, opts)
         cmd, args = cmd[1], concat_args
     end
 
-    handle = uv.spawn(
+    handle, pid = uv.spawn(
         vim.fn.exepath(cmd),
         { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
         on_close
     )
 
+    if not handle then
+        local message = pid:match("ENOENT")
+                and string.format("command %s is not executable (make sure it's installed and on your $PATH)", cmd)
+            or string.format("failed to spawn command %s: %s", cmd, pid)
+        error(message)
+    end
+
     if timeout and timeout > 0 then
         timer = M.timer(timeout, nil, true, function()
-            log:debug(string.format("command [%s] timed out after %s ms", cmd, timeout))
+            log:debug(string.format("command %s timed out after %s ms", cmd, timeout))
+
             on_close(TIMEOUT_EXIT_CODE)
             timer.stop(true)
         end)
