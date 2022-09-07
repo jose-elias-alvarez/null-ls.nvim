@@ -37,6 +37,9 @@ return {
   cppcheck = {
     filetypes = { "cpp", "c" }
   },
+  cpplint = {
+    filetypes = { "cpp", "c" }
+  },
   credo = {
     filetypes = { "elixir" }
   },

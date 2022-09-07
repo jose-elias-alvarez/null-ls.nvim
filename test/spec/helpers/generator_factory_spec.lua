@@ -298,7 +298,7 @@ describe("generator_factory", function()
         end)
 
         it("should trigger deregistration if validation fails", function()
-            vim.validate = function()
+            vim.validate = function(_)
                 error("validation failed")
             end
 

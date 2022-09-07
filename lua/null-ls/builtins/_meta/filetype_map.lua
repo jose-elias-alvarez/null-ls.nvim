@@ -30,7 +30,7 @@ return {
     formatting = { "buildifier" }
   },
   c = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   cabal = {
@@ -47,7 +47,7 @@ return {
     formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {
@@ -85,6 +85,9 @@ return {
   },
   dockerfile = {
     diagnostics = { "hadolint" }
+  },
+  dosbatch = {
+    hover = { "printenv" }
   },
   elixir = {
     diagnostics = { "credo" },
@@ -257,6 +260,9 @@ return {
     diagnostics = { "buf", "protoc_gen_lint", "protolint" },
     formatting = { "buf", "protolint" }
   },
+  ps1 = {
+    hover = { "printenv" }
+  },
   pug = {
     diagnostics = { "puglint" }
   },
@@ -315,7 +321,8 @@ return {
   sh = {
     code_actions = { "shellcheck" },
     diagnostics = { "shellcheck" },
-    formatting = { "beautysh", "shellharden", "shfmt" }
+    formatting = { "beautysh", "shellharden", "shfmt" },
+    hover = { "printenv" }
   },
   solidity = {
     diagnostics = { "solhint" }

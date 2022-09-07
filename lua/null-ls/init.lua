@@ -17,7 +17,6 @@ M.toggle = sources.toggle
 
 M.builtins = require("null-ls.builtins")
 M.methods = require("null-ls.methods").internal
-M.null_ls_info = require("null-ls.info").show_window
 
 M.formatter = helpers.formatter_factory
 M.generator = helpers.generator_factory
@@ -30,16 +29,26 @@ M.setup = function(user_config)
     user_config = user_config or {}
     c.setup(user_config)
 
-    vim.cmd("command! NullLsInfo lua require('null-ls').null_ls_info()")
-    vim.cmd("command! NullLsLog lua vim.fn.execute('edit ' .. require('null-ls.logger').get_path())")
+    vim.api.nvim_create_user_command("NullLsInfo", function()
+        require("null-ls.info").show_window()
+    end, {})
+    vim.api.nvim_create_user_command("NullLsLog", function()
+        vim.cmd(string.format("edit %s", require("null-ls.logger"):get_path()))
+    end, {})
 
-    vim.cmd([[
-      augroup NullLs
-        autocmd!
-        autocmd FileType * unsilent lua require("null-ls.client").try_add()
-        autocmd InsertLeave * unsilent lua require("null-ls.rpc").flush()
-      augroup end
-    ]])
+    local augroup = vim.api.nvim_create_augroup("NullLs", {})
+    vim.api.nvim_create_autocmd("FileType", {
+        group = augroup,
+        callback = function()
+            require("null-ls.client").try_add()
+        end,
+    })
+    vim.api.nvim_create_autocmd("InsertLeave", {
+        group = augroup,
+        callback = function()
+            require("null-ls.rpc").flush()
+        end,
+    })
 end
 
 return M

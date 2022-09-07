@@ -466,6 +466,23 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 - Command: `cppcheck`
 - Args: `{ "--enable=warning,style,performance,portability", "--template=gcc", "$FILENAME" }`
 
+### [cpplint](https://github.com/cpplint/cpplint)
+
+Cpplint is a command-line tool to check C/C++ files for style issues following Google's C++ style guide
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cpplint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cpp", "c" }`
+- Method: `diagnostics`
+- Command: `cpplint`
+- Args: `{ "$FILENAME" }`
+
 ### [credo](https://hexdocs.pm/credo)
 
 Static analysis of `elixir` files for enforcing code consistency.
@@ -1191,7 +1208,6 @@ local sources = { null_ls.builtins.diagnostics.pylama }
 
 ### [pylint](https://github.com/PyCQA/pylint)
 
-\
 Pylint is a Python static code analysis tool which looks for programming
 errors, helps enforcing a coding standard, sniffs for code smells and offers
 simple refactoring suggestions.
@@ -1215,7 +1231,6 @@ null_ls.setup({
   },
 })
 ```
-
 
 #### Usage
 
@@ -3909,3 +3924,22 @@ local sources = { null_ls.builtins.hover.dictionary }
 #### Notes
 
 - Depends on Plenary's `curl` module, which itself depends on having `curl` installed and available on your `$PATH`.
+
+### printenv
+
+Shows the value for the current environment variable under the cursor.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.hover.printenv }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sh", "dosbatch", "ps1" }`
+- Method: `hover`
+
+#### Notes
+
+- This source is similar in function to `printenv` where it shows value of environment variable, however this source uses `vim.loop.os_getenv` instead of `printenv` thus making it cross-platform.

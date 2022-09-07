@@ -18,7 +18,7 @@ return h.make_builtin({
         to_stdin = true,
         format = "json_raw",
         from_stderr = true,
-        dynamic_command = cmd_resolver.from_node_modules,
+        dynamic_command = cmd_resolver.from_node_modules(),
         on_output = function(params)
             local output = params.output and params.output[1] and params.output[1].warnings or {}
 

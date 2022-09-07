@@ -148,9 +148,9 @@ Plugin logs messages on several logging levels to following destinations:
 
 ### notify_format (string, optional)
 
-Sets the default format for `vim.notify()` messages.
-Can be used to customize 3rd party notification plugins
-like [nvim-notify](https://github.com/rcarriga/nvim-notify).
+Sets the default format for `vim.notify()` messages. Can be used to customize
+3rd party notification plugins like
+[nvim-notify](https://github.com/rcarriga/nvim-notify).
 
 ### on_attach (function, optional)
 
@@ -217,7 +217,8 @@ to `true` if you don't experience performance issues with your sources.
 
 Note that by default, Neovim will not display updated diagnostics in insert
 mode. Together with the option above, you need to pass `update_in_insert = true`
-to `vim.diagnostic.config` for diagnostics to work as expected. See `:help vim.diagnostic.config` for more info.
+to `vim.diagnostic.config` for diagnostics to work as expected. See
+`:help vim.diagnostic.config` for more info.
 
 ## Explicitly defining the project root
 

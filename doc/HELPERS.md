@@ -50,7 +50,8 @@ the first time.
 
 ### args
 
-A table containing the arguments passed when spawning the command. Defaults to `{}`.
+A table containing the arguments passed when spawning the command. Defaults to
+`{}`.
 
 null-ls will transform the following special arguments before spawning:
 
@@ -70,11 +71,11 @@ null-ls will transform the following special arguments before spawning:
 Can either be a table of valid exit codes (numbers) or a callback that receives
 two arguments:
 
-`code`: contains the exit code from the spawned command as a number
-`stderr`: error output from the job as a string
+`code`: contains the exit code from the spawned command as a number `stderr`:
+error output from the job as a string
 
-The callback should return a boolean value indicating whether the code
-indicates _success_.
+The callback should return a boolean value indicating whether the code indicates
+_success_.
 
 If not specified, null-ls will assume that a non-zero exit code indicates
 failure.
@@ -117,16 +118,16 @@ Supports the following options:
 - `"raw"`: passes command output directly as `params.output` (string) and error
   output as `params.err` (string).
 
-  This format will call `on_output(params, done)`, where `done()` is a callback that
-  `on_output` must call with its results (see _Generators_ in
+  This format will call `on_output(params, done)`, where `done()` is a callback
+  that `on_output` must call with its results (see _Generators_ in
   [MAIN](MAIN.md) for details).
 
 - `nil`: same as `raw`, but does not receive error output. Instead, any output
   to `stderr` will cause the generator to throw an error, unless `ignore_stderr`
   is also enabled (see below).
 
-- `"line"`: splits generator output into lines and calls `on_output(line, params)`
-  once for each line, where `line` is a string.
+- `"line"`: splits generator output into lines and calls
+  `on_output(line, params)` once for each line, where `line` is a string.
 
 - `"json"`: decodes generator output into JSON, sets `params.output` to the
   resulting JSON object, and calls `on_output(params)`. The wrapper will
@@ -140,11 +141,11 @@ To sum up:
 
 - If you want to handle each line of a source's output, use `format = "line"`.
 
-- If you are handling JSON output, use `format = "json"` if you don't intend on handling
-  errors and `format = "json_raw"` if you do.
+- If you are handling JSON output, use `format = "json"` if you don't intend on
+  handling errors and `format = "json_raw"` if you do.
 
-- If you are processing a source's entire output, use `format = nil` if you don't
-  intend on handling errors and `format = "raw"` if you do.
+- If you are processing a source's entire output, use `format = nil` if you
+  don't intend on handling errors and `format = "raw"` if you do.
 
 ### from_stderr
 
@@ -180,8 +181,8 @@ one file if this option is `true` and each diagnostic specifies a `bufnr` or
 ### on_output
 
 A callback function that receives a `params` object, which contains information
-about the current buffer and editor state (see _Generators_ in
-[MAIN](MAIN.md) for details).
+about the current buffer and editor state (see _Generators_ in [MAIN](MAIN.md)
+for details).
 
 Generators created by `generator_factory` have access to an extra parameter,
 `params.output`, which contains the output from the spawned command. The
@@ -326,7 +327,8 @@ null_ls.helpers.range_formatting_args_factory(base_args, start_arg, end_rag, opt
 - `opts` (table?): a table containing the following options:
   - `opts.use_rows` (boolean?): specifies whether to use rows over character
     offsets.
-  - `opts.use_length` (boolean?): used to specify the length of the range in `end_arg` instead of end the position.
+  - `opts.use_length` (boolean?): used to specify the length of the range in
+    `end_arg` instead of end the position.
   - `opts.row_offset` (number?): offset applied to row numbers.
   - `opts.col_offset` (number?): offset applied to column numbers.
   - `opts.delimiter` (string?): used to join range start and end into a single

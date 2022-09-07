@@ -1,0 +1,13 @@
+{
+  "printWidth": 80,
+  "proseWrap": "always",
+  "overrides": [
+    {
+      "files": "*.yml",
+      "options": {
+        "printWidth": 120,
+        "proseWrap": "preserve"
+      }
+    }
+  ]
+}
