@@ -31,7 +31,7 @@ return h.make_builtin({
         "jsonc",
         "yaml",
         "markdown",
-        "markdown.mdx"
+        "markdown.mdx",
         "graphql",
         "handlebars",
     },
