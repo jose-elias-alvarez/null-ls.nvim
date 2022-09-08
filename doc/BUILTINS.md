@@ -1455,7 +1455,7 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `diagnostics`
 - Command: `sqlfluff`
-- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar" }`
+- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "$FILENAME" }`
 
 #### Notes
 
