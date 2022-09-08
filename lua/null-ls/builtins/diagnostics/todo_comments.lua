@@ -87,7 +87,7 @@ return h.make_builtin({
                 local content = vim.treesitter.get_node_text(node, params.bufnr):match("^%s*(.*)")
 
                 for kw, _ in pairs(keyword_by_name) do
-                    if content:match("%f[%a]" .. kw .. "%f[%A]") then
+                    if content:match("%f[%a]" .. kw .. "%f[%A]") and node:start() then
                         local row, _, _ = node:start()
 
                         table.insert(result, {
