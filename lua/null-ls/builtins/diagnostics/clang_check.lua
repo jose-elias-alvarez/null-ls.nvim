@@ -30,12 +30,7 @@ return h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = h.diagnostics.from_patterns({
-            {
-                pattern = ":(%d+):(%d+): (%w+): (.*)$",
-                groups = { "row", "col", "severity", "message" },
-            },
-        }),
+        on_output = h.diagnostics.from_pattern(":(%d+):(%d+): (%w+): (.*)$", { "row", "col", "severity", "message" }),
     },
     factory = h.generator_factory,
 })
