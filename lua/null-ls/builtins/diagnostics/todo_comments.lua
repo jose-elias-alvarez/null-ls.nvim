@@ -18,18 +18,14 @@ local function get_document_root(bufnr)
     return tree:root()
 end
 
-local function parse_comments(root)
-    local output = {}
-
+local function parse_comments(root, output)
     for node in root:iter_children() do
-        if node:type() == "comment" then
-            table.insert(output, parse_comments(node))
-        elseif node:type() == "comment_content" then
-            return node
+        if node:type() == "comment_content" then
+            table.insert(output, node)
+        else
+            parse_comments(node, output)
         end
     end
-
-    return output
 end
 
 local function get_comments(bufnr)
@@ -38,7 +34,9 @@ local function get_comments(bufnr)
         return {}
     end
 
-    return parse_comments(document_root)
+    local output = {}
+    parse_comments(document_root, output)
+    return output
 end
 
 local keywords = {
