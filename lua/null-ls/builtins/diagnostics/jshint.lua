@@ -18,8 +18,11 @@ return h.make_builtin({
             "unix",
             "--extract",
             "auto",
+            "--filename",
             "$FILENAME",
+            "-",
         },
+        to_stdin = true,
         from_stderr = true,
         format = "line",
         check_exit_code = function(code)
