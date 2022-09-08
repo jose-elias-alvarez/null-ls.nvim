@@ -1,7 +1,7 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
+local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "clang_check",
@@ -12,7 +12,7 @@ return h.make_builtin({
             "`clang-check` will be run only when files are saved to disk, so that `compile_commands.json` files can be used. It is recommended to use this linter in combination with `compile_commands.json` files.",
         },
     },
-    method = DIAGNOSTICS,
+    method = DIAGNOSTICS_ON_SAVE,
     filetypes = { "c", "cpp" },
     generator_opts = {
         command = "clang-check",
