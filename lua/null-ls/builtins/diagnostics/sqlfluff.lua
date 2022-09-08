@@ -7,7 +7,7 @@ return helpers.make_builtin({
         url = "https://github.com/sqlfluff/sqlfluff",
         description = "A SQL linter and auto-formatter for Humans",
         notes = {
-            "SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours. `extra_args` can also be a function to build more sophisticated logic.",
+            "SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours, or create a .sqlfluff file in the same directory as the SQL file to specify the dialect (see the sqlfluff docs for details). `extra_args` can also be a function to build more sophisticated logic.",
         },
         usage = [[
 local sources = {
@@ -26,10 +26,11 @@ local sources = {
             "github-annotation",
             "-n",
             "--disable_progress_bar",
-            "-",
+            "$FILENAME"
         },
         from_stderr = false,
-        to_stdin = true,
+        to_stdin = false,
+        to_temp_file = true,
         format = "json",
         check_exit_code = function(c)
             return c <= 1
