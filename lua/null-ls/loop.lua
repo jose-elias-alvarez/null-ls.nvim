@@ -212,64 +212,45 @@ M.timer = function(timeout, interval, should_start, callback)
     }
 end
 
-local tmp_dir
-local get_temp_dir = function()
-    if tmp_dir then
-        return tmp_dir
-    end
+--- creates a temp file at a given file's location
+---@param content string
+---@param bufname string
+---@return string temp_path, fun() cleanup
+M.temp_file = function(content, bufname)
+    local dirname = vim.fn.fnamemodify(bufname, ":h")
+    local base_name = vim.fn.fnamemodify(bufname, ":t")
 
-    if u.path.is_windows then
-        tmp_dir = vim.env.TEMP
-        return tmp_dir
-    end
+    local filename = string.format("_null-ls_%d_%s", math.random(100000, 999999), base_name)
+    local temp_path = u.path.join(dirname, filename)
 
-    local xdg_runtime_dir = vim.env.XDG_RUNTIME_DIR
-    if xdg_runtime_dir then
-        tmp_dir = xdg_runtime_dir .. "/nvim"
-        if uv.fs_stat(tmp_dir) == nil then
-            uv.fs_mkdir(tmp_dir, tonumber("700", 8))
-        end
-        return tmp_dir
-    end
-
-    tmp_dir = "/tmp"
-    return tmp_dir
-end
-
-M._revert_tmp_dir = function()
-    tmp_dir = nil
-end
-
-M.temp_file = function(content, extension)
-    local fd, tmp_path
-    if uv.fs_mkstemp then
-        -- prefer fs_mkstemp, since we can modify the directory
-        fd, tmp_path = uv.fs_mkstemp(u.path.join(get_temp_dir(), "null-ls_XXXXXX"))
-    else
-        -- fall back to os.tmpname, which is Unix-only
-        tmp_path = os.tmpname()
-    end
-
-    -- close handle if open and rename temp file to add extension
-    if extension then
-        if fd then
-            uv.fs_close(fd)
-            fd = nil
-        end
-
-        local path_with_ext = tmp_path .. "." .. extension
-        uv.fs_rename(tmp_path, path_with_ext)
-        tmp_path = path_with_ext
-    end
-
-    -- if not open, open with (0700) permissions
-    fd = fd or uv.fs_open(tmp_path, "w", 384)
+    local fd = uv.fs_open(temp_path, "w", 384)
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 
-    return tmp_path, function()
-        uv.fs_unlink(tmp_path)
+    local cleanup = function()
+        uv.fs_unlink(temp_path)
     end
+
+    return temp_path, cleanup
+end
+
+--- read from file at path
+---@param path string
+---@return string content
+M.read_file = function(path)
+    local content
+    local ok, err = pcall(function()
+        local fd = uv.fs_open(path, "r", 438)
+        local stat = uv.fs_fstat(fd)
+        content = uv.fs_read(fd, stat.size, 0)
+        uv.fs_close(fd)
+    end)
+
+    if not ok then
+        log:error(string.format("failed to read from file at %s: %s ", path, err))
+    end
+
+    return content or ""
 end
 
 ---@param path string

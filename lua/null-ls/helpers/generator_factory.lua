@@ -18,7 +18,7 @@ local get_content = function(params)
     end
 
     -- otherwise, get content directly
-    return u.buf.content(params.bufnr, true)
+    return u.buf.content(params.bufnr, true) --[[@as string]]
 end
 
 local parse_args = function(args, params)
@@ -298,23 +298,13 @@ return function(opts)
             }
 
             if to_temp_file then
-                local filename = vim.fn.fnamemodify(params.bufname, ":e")
-                local temp_path, cleanup = loop.temp_file(get_content(params), filename)
+                local content = get_content(params)
+                local temp_path, cleanup = loop.temp_file(content, params.bufname)
 
                 spawn_opts.on_stdout_end = function()
                     if from_temp_file then
-                        -- wrap to make sure temp file is always cleaned up
-                        local ok, err = pcall(function()
-                            local fd = vim.loop.fs_open(temp_path, "r", 438)
-                            local stat = vim.loop.fs_fstat(fd)
-                            params.output = vim.loop.fs_read(fd, stat.size, 0)
-                            vim.loop.fs_close(fd)
-                        end)
-                        if not ok then
-                            log:warn("failed to read from temp file: " .. err)
-                        end
+                        params.output = loop.read_file(temp_path)
                     end
-
                     cleanup()
                 end
                 params.temp_path = temp_path
