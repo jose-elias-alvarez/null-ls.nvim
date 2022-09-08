@@ -26,9 +26,11 @@ local sources = {
             "github-annotation",
             "-n",
             "--disable_progress_bar",
+            "$FILENAME"
         },
         from_stderr = false,
         to_stdin = false,
+        to_temp_file = true,
         format = "json",
         check_exit_code = function(c)
             return c <= 1
