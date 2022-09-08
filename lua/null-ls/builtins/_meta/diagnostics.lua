@@ -97,6 +97,9 @@ return {
   haml_lint = {
     filetypes = { "haml" }
   },
+  jshint = {
+    filetypes = { "javascript" }
+  },
   jsonlint = {
     filetypes = { "json" }
   },
