@@ -26,7 +26,7 @@ local sources = {
             "github-annotation",
             "-n",
             "--disable_progress_bar",
-            "$FILENAME"
+            "$FILENAME",
         },
         from_stderr = false,
         to_stdin = false,
