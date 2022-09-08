@@ -25,6 +25,9 @@ return {
   chktex = {
     filetypes = { "tex" }
   },
+  clang_check = {
+    filetypes = { "c", "cpp" }
+  },
   clj_kondo = {
     filetypes = { "clojure" }
   },

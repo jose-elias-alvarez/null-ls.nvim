@@ -393,6 +393,27 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - Command: `chktex`
 - Args: `{ "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
+### [clang_check](https://releases.llvm.org/14.0.0/tools/clang/docs/ClangTools.html)
+
+ClangCheck combines the LibTooling framework for running a Clang tool with the basic Clang diagnostics by syntax checking specific files in a fast, command line interface.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.clang_check }
+```
+
+#### Defaults
+
+- Filetypes: `{ "c", "cpp" }`
+- Method: `diagnostics_on_save`
+- Command: `clang-check`
+- Args: `{ "--analyze", "--extra-arg=-Xclang", "--extra-arg=-analyzer-output=text", "--extra-arg=-fno-color-diagnostics", "-p", "build", "$FILENAME" }`
+
+#### Notes
+
+- `clang-check` will be run only when files are saved to disk, so that `compile_commands.json` files can be used. It is recommended to use this linter in combination with `compile_commands.json` files.
+
 ### [clj_kondo](https://github.com/clj-kondo/clj-kondo)
 
 A linter for clojure code that sparks joy
