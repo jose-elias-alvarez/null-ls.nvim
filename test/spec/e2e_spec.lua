@@ -168,6 +168,7 @@ describe("e2e", function()
 
         describe("multiple-file diagnostics", function()
             it("should set diagnostics for multiple files", function()
+                vim.diagnostic.reset()
                 sources.reset()
                 sources.register(builtins._test.mock_multiple_file_diagnostics)
                 vim.cmd("e")
@@ -193,6 +194,7 @@ describe("e2e", function()
         end)
 
         it("should format diagnostics with source-specific diagnostics_format", function()
+            vim.diagnostic.reset()
             sources.reset()
             sources.register(builtins.diagnostics.write_good.with({ diagnostics_format = "#{m} (#{s})" }))
             vim.cmd("e")
@@ -307,31 +309,19 @@ describe("e2e", function()
             return
         end
 
+        local autocmd
         before_each(function()
-            api.nvim_exec(
-                [[
-            augroup NullLsTesting
-                autocmd!
-                autocmd BufEnter *.tl set filetype=teal
-            augroup END
-            ]],
-                false
-            )
+            autocmd = vim.api.nvim_create_autocmd("BufEnter", {
+                pattern = "*.tl",
+                command = "set filetype=teal",
+            })
             sources.register(builtins.diagnostics.teal)
 
             tu.edit_test_file("test-file.tl")
             tu.wait_for_real_source()
         end)
         after_each(function()
-            api.nvim_exec(
-                [[
-            augroup NullLsTesting
-                autocmd!
-            augroup END
-            ]],
-                false
-            )
-            vim.cmd("augroup! NullLsTesting")
+            vim.api.nvim_del_autocmd(autocmd)
         end)
 
         it("should handle source that uses temp file", function()
@@ -409,7 +399,6 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
-                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
             end)
 
             it("should fall back to global executable when local is unavailable", function()
@@ -445,7 +434,6 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 1)
                 assert.equals(copy._opts._last_command, tu.test_dir .. "/files/cat")
-                assert.equals(copy._opts._last_cwd, tu.test_dir .. "/files")
             end)
 
             it("should not run when local executable is unavailable", function()
@@ -462,7 +450,6 @@ describe("e2e", function()
 
                 assert.equals(vim.tbl_count(actions[1].result), 0)
                 assert.equals(copy._opts.last_command, nil)
-                assert.equals(copy._opts._last_cwd, nil)
             end)
         end)
     end)

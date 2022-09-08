@@ -21,11 +21,10 @@ return h.make_builtin({
         command = "tidy",
         args = function(params)
             local common_args = {
-                "--gnu-emacs",
-                "yes",
                 "-quiet",
                 "-errors",
-                "$FILENAME",
+                "-lang",
+                "en",
             }
 
             if params.ft == "xml" then
@@ -41,8 +40,8 @@ return h.make_builtin({
             return code <= 2
         end,
         on_output = h.diagnostics.from_pattern(
-            [[([^:]+):(%d+):(%d+): (%a+): (.+)]],
-            { "file", "row", "col", "severity", "message" },
+            [[line (%d+) column (%d+) %- (%a+): (.+)]],
+            { "row", "col", "severity", "message" },
             { severities = severities }
         ),
     },

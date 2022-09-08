@@ -3,5 +3,8 @@
 return {
   dictionary = {
     filetypes = { "text", "markdown" }
+  },
+  printenv = {
+    filetypes = { "sh", "dosbatch", "ps1" }
   }
 }

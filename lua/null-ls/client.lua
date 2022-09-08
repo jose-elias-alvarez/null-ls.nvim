@@ -92,13 +92,13 @@ M.start_client = function(fname)
             if bufnr == api.nvim_get_current_buf() then
                 M.setup_buffer(bufnr)
             elseif api.nvim_buf_is_valid(bufnr) then
-                vim.cmd(
-                    string.format(
-                        [[autocmd BufEnter <buffer=%d> ++once unsilent lua require("null-ls.client").setup_buffer(%d)]],
-                        bufnr,
-                        bufnr
-                    )
-                )
+                api.nvim_create_autocmd("BufEnter", {
+                    buffer = bufnr,
+                    once = true,
+                    callback = function()
+                        M.setup_buffer(bufnr)
+                    end,
+                })
             end
         end),
     }
@@ -191,19 +191,24 @@ M.on_source_change = vim.schedule_wrap(function()
                 s.register_conditional_sources()
             end
         else
-            vim.cmd(
-                string.format(
-                    [[autocmd BufEnter <buffer=%d> ++once unsilent lua require("null-ls.client").retry_add(%d)]],
-                    bufnr,
-                    bufnr
-                )
-            )
+            api.nvim_create_autocmd("BufEnter", {
+                buffer = bufnr,
+                once = true,
+                callback = function()
+                    M.retry_add(bufnr)
+                end,
+            })
         end
     end)
 
     -- if conditional sources remain, check on next (named) buffer read event
     if s.has_conditional_sources() then
-        vim.cmd([[autocmd BufRead * ++once unsilent lua require("null-ls.state").register_conditional_sources()]])
+        api.nvim_create_autocmd("BufRead", {
+            once = true,
+            callback = function()
+                s.register_conditional_sources()
+            end,
+        })
     end
 end)
 

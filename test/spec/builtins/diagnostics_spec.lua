@@ -1,6 +1,53 @@
 local diagnostics = require("null-ls.builtins").diagnostics
 
 describe("diagnostics", function()
+    describe("spectral", function()
+        local linter = diagnostics.spectral
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with an Warning severity", function()
+            local output = vim.json.decode([[
+                [
+                    {
+                        "code": "oas3-operation-security-defined",
+                        "path": [
+                                "security",
+                                "0",
+                                "bearer"
+                        ],
+                        "message": "API \"security\" values must match a scheme defined in the \"components.securitySchemes\" object.",
+                        "severity": 1,
+                        "range": {
+                                "start": {
+                                        "line": 659,
+                                        "character": 11
+                                },
+                                "end": {
+                                        "line": 659,
+                                        "character": 14
+                                }
+                        },
+                        "source": "/home/luizcorreia/repos/smiles/OpenApi/openapi.yaml"
+                    }
+                ]
+            ]])
+
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    code = "oas3-operation-security-defined",
+                    col = 11,
+                    end_col = 14,
+                    end_row = 660,
+                    message = 'API "security" values must match a scheme defined in the "components.securitySchemes" object.',
+                    path = { "security", "0", "bearer" },
+                    row = 660,
+                    severity = 2,
+                    source = "Spectral",
+                },
+            }, diagnostic)
+        end)
+    end)
     describe("buf", function()
         local linter = diagnostics.buf
         local parser = linter._opts.on_output
@@ -357,6 +404,7 @@ describe("diagnostics", function()
         local function done(_diagnostics)
             teal_diagnostics = _diagnostics
         end
+
         parser({ content = file, output = output, temp_path = "tmp.tl" }, done)
 
         it("should create a diagnostic with a warning severity (no quote)", function()

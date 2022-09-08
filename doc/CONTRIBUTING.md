@@ -104,11 +104,11 @@ local diagnostic = {
 - Do not include the source's name or code in the message.
 
 - If at all possible, please add one or more tests to check whether your source
-  produces the correct output given an actual raw diagnostic. See [the
-  existing tests](../test/spec/builtins/diagnostics_spec.lua) for examples.
+  produces the correct output given an actual raw diagnostic. See
+  [the existing tests](../test/spec/builtins/diagnostics_spec.lua) for examples.
 
-- If your source can produce project-level diagnostics (i.e. diagnostics for more
-  than one file at a time), use the `multiple_files` option described in
+- If your source can produce project-level diagnostics (i.e. diagnostics for
+  more than one file at a time), use the `multiple_files` option described in
   [HELPERS](./HELPERS.md).
 
   - Specify that your source supports project diagnostics in its documentation.

@@ -29,6 +29,7 @@ return h.make_builtin({
         args = {
             "fmt",
             "--stdin",
+            "$FILENAME",
         },
         to_stdin = true,
     },

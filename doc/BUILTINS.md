@@ -6,6 +6,12 @@ This is an automatically generated list of all null-ls built-in sources.
 
 See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure these sources.
 
+- [Code Actions](#code-actions)
+- [Completion](#completion)
+- [Diagnostics](#diagnostics)
+- [Formatting](#formatting)
+- [Hover](#hover)
+
 ## Code Actions
 
 ### [eslint](https://github.com/eslint/eslint)
@@ -421,6 +427,28 @@ local sources = { null_ls.builtins.diagnostics.codespell }
 - Command: `codespell`
 - Args: `{ "-" }`
 
+### [commitlint](https://commitlint.js.org)
+
+commitlint checks if your commit messages meet the conventional commit format.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.commitlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gitcommit" }`
+- Method: `diagnostics`
+- Command: `commitlint`
+- Args: `{ "--format", "commitlint-format-json" }`
+
+#### Notes
+
+- Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`.
+- It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613).
+
 ### [cppcheck](https://github.com/danmar/cppcheck)
 
 A tool for fast static analysis of C/C++ code.
@@ -437,6 +465,23 @@ local sources = { null_ls.builtins.diagnostics.cppcheck }
 - Method: `diagnostics`
 - Command: `cppcheck`
 - Args: `{ "--enable=warning,style,performance,portability", "--template=gcc", "$FILENAME" }`
+
+### [cpplint](https://github.com/cpplint/cpplint)
+
+Cpplint is a command-line tool to check C/C++ files for style issues following Google's C++ style guide
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cpplint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cpp", "c" }`
+- Method: `diagnostics`
+- Command: `cpplint`
+- Args: `{ "$FILENAME" }`
 
 ### [credo](https://hexdocs.pm/credo)
 
@@ -778,6 +823,23 @@ local sources = { null_ls.builtins.diagnostics.haml_lint }
 - Command: `haml-lint`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
 
+### [jshint](https://github.com/jshint/jshint)
+
+JSHint is a tool that helps to detect errors and potential problems in your JavaScript code.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.jshint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript" }`
+- Method: `diagnostics`
+- Command: `jshint`
+- Args: `{ "--reporter", "unix", "--extract", "auto", "--filename", "$FILENAME", "-" }`
+
 ### [jsonlint](https://github.com/zaach/jsonlint)
 
 A pure JavaScript version of the service provided at jsonlint.com.
@@ -810,7 +872,7 @@ local sources = { null_ls.builtins.diagnostics.ktlint }
 - Filetypes: `{ "kotlin" }`
 - Method: `diagnostics_on_save`
 - Command: `ktlint`
-- Args: `{ "--relative", "--reporter=json" }`
+- Args: `{ "--relative", "--reporter=json", "**/*.kt", "**/*.kts" }`
 
 ### [luacheck](https://github.com/lunarmodules/luacheck)
 
@@ -963,7 +1025,7 @@ local sources = { null_ls.builtins.diagnostics.phpcs }
 - Filetypes: `{ "php" }`
 - Method: `diagnostics`
 - Command: `phpcs`
-- Args: `{ "--report=json", "-q", "-s", "--runtime-set", "ignore_warnings_on_exit", "1", "--runtime-set", "ignore_errors_on_exit", "1", "--stdin-path=$FILENAME", "-" }`
+- Args: `{ "--report=json", "-q", "-s", "--runtime-set", "ignore_warnings_on_exit", "1", "--runtime-set", "ignore_errors_on_exit", "1", "--stdin-path=$FILENAME", "--basepath=" }`
 
 ### [phpmd](https://github.com/phpmd/phpmd/)
 
@@ -1106,6 +1168,23 @@ local sources = { null_ls.builtins.diagnostics.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--json", "$FILENAME" }`
 
+### [pycodestyle](https://github.com/PyCQA/pycodestyle)
+
+pycodestyle is a tool to check your Python code against some of the style conventions in PEP 8.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.pycodestyle }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `diagnostics`
+- Command: `pycodestyle`
+- Args: `{ "$FILENAME" }`
+
 ### [pydocstyle](https://www.pydocstyle.org/)
 
 pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
@@ -1146,7 +1225,6 @@ local sources = { null_ls.builtins.diagnostics.pylama }
 
 ### [pylint](https://github.com/PyCQA/pylint)
 
-\
 Pylint is a Python static code analysis tool which looks for programming
 errors, helps enforcing a coding standard, sniffs for code smells and offers
 simple refactoring suggestions.
@@ -1170,7 +1248,6 @@ null_ls.setup({
   },
 })
 ```
-
 
 #### Usage
 
@@ -1359,6 +1436,23 @@ local sources = { null_ls.builtins.diagnostics.solhint }
 - Command: `solhint`
 - Args: `{ "$FILENAME", "--formatter", "unix" }`
 
+### [spectral](https://github.com/stoplightio/spectral)
+
+A flexible JSON/YAML linter for creating automated style guides, with baked in support for OpenAPI v3.1, v3.0, and v2.0.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.spectral }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml", "json" }`
+- Method: `diagnostics`
+- Command: `spectral`
+- Args: `{ "lint", "--stdin-filepath", "$FILENAME", "-f", "json" }`
+
 ### [sqlfluff](https://github.com/sqlfluff/sqlfluff)
 
 A SQL linter and auto-formatter for Humans
@@ -1378,11 +1472,11 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `diagnostics`
 - Command: `sqlfluff`
-- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "-" }`
+- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "$FILENAME" }`
 
 #### Notes
 
-- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours. `extra_args` can also be a function to build more sophisticated logic.
+- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours, or create a .sqlfluff file in the same directory as the SQL file to specify the dialect (see the sqlfluff docs for details). `extra_args` can also be a function to build more sophisticated logic.
 
 ### [standardjs](https://standardjs.com/)
 
@@ -1540,6 +1634,21 @@ local sources = { null_ls.builtins.diagnostics.tidy }
 - Method: `diagnostics`
 - Command: `tidy`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/tidy.lua))
+
+### todo_comments
+
+Uses inbuilt Lua code and treesitter to detect lines with TODO comments and show a diagnostic warning on each line where it's present.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.todo_comments }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `diagnostics`
 
 ### trail_space
 
@@ -2205,7 +2314,7 @@ local sources = { null_ls.builtins.formatting.dprint }
 - Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "markdown", "toml", "rust", "roslyn" }`
 - Method: `formatting`
 - Command: `dprint`
-- Args: `{ "fmt", "--stdin" }`
+- Args: `{ "fmt", "--stdin", "$FILENAME" }`
 
 #### Notes
 
@@ -2421,6 +2530,23 @@ local sources = { null_ls.builtins.formatting.gdformat }
 - Command: `gdformat`
 - Args: `{ "-" }`
 
+### [gersemi](https://github.com/BlankSpruce/gersemi)
+
+A formatter to make your CMake code the real treasure
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.gersemi }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cmake" }`
+- Method: `formatting`
+- Command: `gersemi`
+- Args: `{ "-" }`
+
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
 Formats go programs.
@@ -2624,7 +2750,7 @@ local sources = { null_ls.builtins.formatting.ktlint }
 - Filetypes: `{ "kotlin" }`
 - Method: `formatting`
 - Command: `ktlint`
-- Args: `{ "--format", "--stdin" }`
+- Args: `{ "--format", "--stdin", "**/*.kt", "**/*.kts" }`
 
 ### [latexindent](https://github.com/cmhughes/latexindent.pl)
 
@@ -3724,6 +3850,23 @@ local sources = { null_ls.builtins.formatting.xmllint }
 - Command: `xmllint`
 - Args: `{ "--format", "-" }`
 
+### [yamlfmt](https://github.com/google/yamlfmt)
+
+yamlfmt is an extensible command line tool or library to format yaml files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.yamlfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml" }`
+- Method: `formatting`
+- Command: `yamlfmt`
+- Args: `{ "$FILENAME" }`
+
 ### [yapf](https://github.com/google/yapf)
 
 Formatter for Python.
@@ -3798,3 +3941,22 @@ local sources = { null_ls.builtins.hover.dictionary }
 #### Notes
 
 - Depends on Plenary's `curl` module, which itself depends on having `curl` installed and available on your `$PATH`.
+
+### printenv
+
+Shows the value for the current environment variable under the cursor.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.hover.printenv }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sh", "dosbatch", "ps1" }`
+- Method: `hover`
+
+#### Notes
+
+- This source is similar in function to `printenv` where it shows value of environment variable, however this source uses `vim.loop.os_getenv` instead of `printenv` thus making it cross-platform.
