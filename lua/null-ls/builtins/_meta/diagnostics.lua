@@ -31,7 +31,13 @@ return {
   codespell = {
     filetypes = {}
   },
+  commitlint = {
+    filetypes = { "gitcommit" }
+  },
   cppcheck = {
+    filetypes = { "cpp", "c" }
+  },
+  cpplint = {
     filetypes = { "cpp", "c" }
   },
   credo = {
@@ -148,6 +154,9 @@ return {
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },
+  pycodestyle = {
+    filetypes = { "python" }
+  },
   pydocstyle = {
     filetypes = { "python" }
   },
@@ -187,6 +196,9 @@ return {
   solhint = {
     filetypes = { "solidity" }
   },
+  spectral = {
+    filetypes = { "yaml", "json" }
+  },
   sqlfluff = {
     filetypes = { "sql" }
   },
@@ -216,6 +228,9 @@ return {
   },
   tidy = {
     filetypes = { "html", "xml" }
+  },
+  todo_comments = {
+    filetypes = {}
   },
   trail_space = {
     filetypes = {}

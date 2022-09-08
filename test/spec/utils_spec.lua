@@ -104,12 +104,8 @@ describe("utils", function()
 
     describe("is_executable", function()
         local executable
-        local resolve
-        local exepath
         before_each(function()
             executable = stub(vim.fn, "executable")
-            resolve = stub(vim.fn, "resolve")
-            exepath = stub(vim.fn, "exepath")
         end)
         after_each(function()
             executable:revert()
@@ -117,32 +113,26 @@ describe("utils", function()
 
         it("should call executable with command", function()
             executable.returns(0)
-            resolve.returns("mock-command")
-            exepath.returns("mock-command")
 
             u.is_executable("mock-command")
 
-            assert.stub(exepath).was_called_with("mock-command")
-            assert.stub(resolve).was_called_with("mock-command")
             assert.stub(executable).was_called_with("mock-command")
         end)
 
-        it("should return true and nil if result is > 0", function()
+        it("should return true if result is > 0", function()
             executable.returns(1)
 
-            local is_executable, err_msg = u.is_executable("mock-command")
+            local is_executable = u.is_executable("mock-command")
 
             assert.truthy(is_executable)
-            assert.falsy(err_msg)
         end)
 
-        it("should return false and error message if result is 0", function()
+        it("should return false if result is 0", function()
             executable.returns(0)
 
-            local is_executable, err_msg = u.is_executable("mock-command")
+            local is_executable = u.is_executable("mock-command")
 
             assert.falsy(is_executable)
-            assert.truthy(err_msg:find("is not executable"))
         end)
     end)
 

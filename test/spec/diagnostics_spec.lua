@@ -14,7 +14,6 @@ describe("diagnostics", function()
 
     describe("handler", function()
         stub(s, "clear_cache")
-        stub(s, "clear_commands")
         stub(u, "make_params")
         stub(generators, "run_registered")
         stub(vim, "uri_to_bufnr")
@@ -47,7 +46,6 @@ describe("diagnostics", function()
             mock_handler:clear()
 
             s.clear_cache:clear()
-            s.clear_commands:clear()
             generators.run_registered:clear()
             u.make_params:clear()
             vim.uri_to_bufnr:clear()
@@ -57,13 +55,12 @@ describe("diagnostics", function()
             c.reset()
         end)
 
-        it("should call clear_cache with uri and clear_commands with bufnr when method is DID_CLOSE", function()
+        it("should call clear_cache with uri when method is DID_CLOSE", function()
             mock_params.method = methods.lsp.DID_CLOSE
 
             diagnostics.handler(mock_params)
 
             assert.stub(s.clear_cache).was_called_with(mock_params.textDocument.uri)
-            assert.stub(s.clear_commands).was_called_with(vim.uri_to_bufnr(mock_params.textDocument.uri))
         end)
 
         it("should call clear_cache with uri when method is DID_CHANGE", function()

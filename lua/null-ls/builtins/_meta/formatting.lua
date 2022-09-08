@@ -121,6 +121,9 @@ return {
   gdformat = {
     filetypes = { "gd", "gdscript", "gdscript3" }
   },
+  gersemi = {
+    filetypes = { "cmake" }
+  },
   gofmt = {
     filetypes = { "go" }
   },
@@ -342,6 +345,9 @@ return {
   },
   xmllint = {
     filetypes = { "xml" }
+  },
+  yamlfmt = {
+    filetypes = { "yaml" }
   },
   yapf = {
     filetypes = { "python" }

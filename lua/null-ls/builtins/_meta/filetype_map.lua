@@ -30,7 +30,7 @@ return {
     formatting = { "buildifier" }
   },
   c = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   cabal = {
@@ -44,10 +44,10 @@ return {
     formatting = { "cljstyle", "zprint" }
   },
   cmake = {
-    formatting = { "cmake_format" }
+    formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
-    diagnostics = { "cppcheck", "gccdiag" },
+    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {
@@ -85,6 +85,9 @@ return {
   },
   dockerfile = {
     diagnostics = { "hadolint" }
+  },
+  dosbatch = {
+    hover = { "printenv" }
   },
   elixir = {
     diagnostics = { "credo" },
@@ -128,7 +131,7 @@ return {
     formatting = { "gdformat" }
   },
   gitcommit = {
-    diagnostics = { "gitlint" }
+    diagnostics = { "commitlint", "gitlint" }
   },
   gitrebase = {
     code_actions = { "gitrebase" }
@@ -186,7 +189,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   json = {
-    diagnostics = { "cfn_lint", "jsonlint" },
+    diagnostics = { "cfn_lint", "jsonlint", "spectral" },
     formatting = { "deno_fmt", "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
   },
   jsonc = {
@@ -257,6 +260,9 @@ return {
     diagnostics = { "buf", "protoc_gen_lint", "protolint" },
     formatting = { "buf", "protolint" }
   },
+  ps1 = {
+    hover = { "printenv" }
+  },
   pug = {
     diagnostics = { "puglint" }
   },
@@ -266,7 +272,7 @@ return {
   },
   python = {
     code_actions = { "refactoring" },
-    diagnostics = { "flake8", "mypy", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },
+    diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },
     formatting = { "autopep8", "black", "blue", "isort", "reorder_python_imports", "usort", "yapf" }
   },
   qml = {
@@ -315,7 +321,8 @@ return {
   sh = {
     code_actions = { "shellcheck" },
     diagnostics = { "shellcheck" },
-    formatting = { "beautysh", "shellharden", "shfmt" }
+    formatting = { "beautysh", "shellharden", "shfmt" },
+    hover = { "printenv" }
   },
   solidity = {
     diagnostics = { "solhint" }
@@ -391,8 +398,8 @@ return {
     formatting = { "tidy", "xmllint" }
   },
   yaml = {
-    diagnostics = { "actionlint", "cfn_lint", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    diagnostics = { "actionlint", "cfn_lint", "spectral", "yamllint" },
+    formatting = { "prettier", "prettier_d_slim", "prettierd", "yamlfmt" }
   },
   ["yaml.ansible"] = {
     diagnostics = { "ansiblelint" }

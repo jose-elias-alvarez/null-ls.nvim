@@ -1,3 +1,10 @@
+<!-- markdownlint-configure-file
+{
+  "line-length": false,
+  "no-inline-html": false
+}
+-->
+
 # null-ls.nvim
 
 Use Neovim as a language server to inject LSP diagnostics, code actions, and
@@ -190,8 +197,8 @@ plugin before sending anything upstream.
 
 1. Make sure your configuration is in line with the latest version of this
    document.
-2. Enable debug mode (see below) and check the output of your source(s). If
-   the CLI program is not properly configured or is otherwise not running as
+2. Enable debug mode (see below) and check the output of your source(s). If the
+   CLI program is not properly configured or is otherwise not running as
    expected, that's an issue with the program, not null-ls.
 3. Check the documentation for available configuration options that might solve
    your issue.
@@ -200,6 +207,15 @@ plugin before sending anything upstream.
 5. If you believe the issue is with null-ls itself or you want to request a new
    feature, open an issue and provide the information requested in the issue
    template.
+
+### My `:checkhealth` output is wrong! What do I do?
+
+Checking whether a given command is executable is tricky, and null-ls' health
+check doesn't handle all cases. null-ls' internal command resolution is
+independent of its health check output, which is for informational purposes.
+
+If you're not sure whether a given command is running as expected, enable debug
+mode and check your log (see below).
 
 ### How do I format files?
 
@@ -213,17 +229,18 @@ instructions).
 
 ### How do I format files on save?
 
-See [this wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save).
+See
+[this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Formatting-on-save).
 
 ### How do I stop Neovim from asking me which server I want to use for formatting?
 
-See [this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
+See
+[this wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
 
 ### How do I view project-level diagnostics?
 
-For a built-in solution, use `:lua vim.diagnostic.setqflist()`. You can also
-use a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
+For a built-in solution, use `:lua vim.diagnostic.setqflist()`. You can also use
+a plugin like [trouble.nvim](https://github.com/folke/trouble.nvim).
 
 ### How do I enable debug mode and get debug output?
 
@@ -248,8 +265,7 @@ possible, so it should work seamlessly with most LSP-related plugins. If you run
 into problems, please try to determine which plugin is causing them and open an
 issue.
 
-[This wiki
-page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
+[This wiki page](https://github.com/jose-elias-alvarez/null-ls.nvim/wiki/Compatibility-with-other-plugins)
 mentions plugins that require specific configuration options / tweaks to work
 with null-ls.
 
@@ -302,11 +318,12 @@ All tests expect the latest Neovim master.
 - [formatter.nvim](https://github.com/mhartington/formatter.nvim): a Lua plugin
   that (surprise) focuses on formatting.
 
-- [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework for Neovim.
+- [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework
+  for Neovim.
 
 ## Sponsors
 
 Thanks to everyone who sponsors my projects and makes continued development /
 maintenance possible!
 
-<!-- sponsors --><a href="https://github.com/hituzi-no-sippo"><img src="https://github.com/hituzi-no-sippo.png" width="60px" alt="" /></a><a href="https://github.com/sbc64"><img src="https://github.com/sbc64.png" width="60px" alt="" /></a><a href="https://github.com/chase"><img src="https://github.com/chase.png" width="60px" alt="" /></a><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/hituzi-no-sippo"><img src="https://github.com/hituzi-no-sippo.png" width="60px" alt="" /></a><a href="https://github.com/sbc64"><img src="https://github.com/sbc64.png" width="60px" alt="" /></a><a href="https://github.com/chase"><img src="https://github.com/chase.png" width="60px" alt="" /></a><a href="https://github.com/williamboman"><img src="https://github.com/williamboman.png" width="60px" alt="" /></a><!-- sponsors -->

@@ -16,6 +16,8 @@ return h.make_builtin({
         args = {
             "--relative",
             "--reporter=json",
+            "**/*.kt",
+            "**/*.kts",
         },
         to_stdin = true,
         format = "json",

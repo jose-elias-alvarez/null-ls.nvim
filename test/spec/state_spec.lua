@@ -177,43 +177,6 @@ describe("state", function()
         end)
     end)
 
-    describe("commands", function()
-        local mock_bufnr = 1
-        local mock_base = "cat"
-        local mock_command = "/my/mock/cwd/cat"
-        local mock_cwd = "/my/mock/cwd"
-
-        describe("set_resolved_command", function()
-            it("should set resolved command and cwd", function()
-                s.set_resolved_command(mock_bufnr, mock_base, { command = mock_command, cwd = mock_cwd })
-
-                assert.truthy(s.get().commands[mock_bufnr])
-                assert.same(s.get().commands[mock_bufnr], { [mock_base] = { command = mock_command, cwd = mock_cwd } })
-            end)
-        end)
-
-        describe("get_resolved_command", function()
-            it("should get resolved command and cwd", function()
-                s.set_resolved_command(mock_bufnr, mock_base, { command = mock_command, cwd = mock_cwd })
-
-                local resolved = s.get_resolved_command(mock_bufnr, mock_base)
-
-                assert.truthy(resolved)
-                assert.same(resolved, { command = mock_command, cwd = mock_cwd })
-            end)
-        end)
-
-        describe("clear_commands", function()
-            it("should clear commands", function()
-                s.set_resolved_command(mock_bufnr, mock_base, { command = mock_command, cwd = mock_cwd })
-
-                s.clear_commands(mock_bufnr)
-
-                assert.falsy(s.get().commands[mock_bufnr])
-            end)
-        end)
-    end)
-
     describe("conditional sources", function()
         local mock_source = {
             try_register = stub.new(),

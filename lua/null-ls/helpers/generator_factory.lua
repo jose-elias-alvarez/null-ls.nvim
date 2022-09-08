@@ -18,7 +18,7 @@ local get_content = function(params)
     end
 
     -- otherwise, get content directly
-    return u.buf.content(params.bufnr, true)
+    return u.buf.content(params.bufnr, true) --[[@as string]]
 end
 
 local parse_args = function(args, params)
@@ -174,14 +174,6 @@ return function(opts)
             opts.command = command
         end
 
-        if not dynamic_command then
-            local is_executable, err_msg = u.is_executable(command)
-            if not is_executable then
-                log:error(err_msg)
-                return false
-            end
-        end
-
         return true
     end
 
@@ -283,20 +275,13 @@ return function(opts)
             local resolved_command
             if dynamic_command then
                 resolved_command = dynamic_command(params)
-                log:debug(
-                    string.format(
-                        "Using dynamic command for [%s], got: %s",
-                        params.command,
-                        vim.inspect(resolved_command)
-                    )
-                )
             else
                 resolved_command = command
             end
 
             -- if dynamic_command returns nil, don't fall back to command
             if not resolved_command then
-                log:debug(string.format("unable to resolve command [%s]", command))
+                log:debug(string.format("unable to resolve command %s; aborting", command))
                 return done()
             end
 
@@ -313,23 +298,13 @@ return function(opts)
             }
 
             if to_temp_file then
-                local filename = vim.fn.fnamemodify(params.bufname, ":e")
-                local temp_path, cleanup = loop.temp_file(get_content(params), filename)
+                local content = get_content(params)
+                local temp_path, cleanup = loop.temp_file(content, params.bufname)
 
                 spawn_opts.on_stdout_end = function()
                     if from_temp_file then
-                        -- wrap to make sure temp file is always cleaned up
-                        local ok, err = pcall(function()
-                            local fd = vim.loop.fs_open(temp_path, "r", 438)
-                            local stat = vim.loop.fs_fstat(fd)
-                            params.output = vim.loop.fs_read(fd, stat.size, 0)
-                            vim.loop.fs_close(fd)
-                        end)
-                        if not ok then
-                            log:warn("failed to read from temp file: " .. err)
-                        end
+                        params.output = loop.read_file(temp_path)
                     end
-
                     cleanup()
                 end
                 params.temp_path = temp_path

@@ -28,7 +28,8 @@ return h.make_builtin({
             "1",
             -- process stdin
             "--stdin-path=$FILENAME",
-            "-",
+            -- get absolute paths under params.output.files
+            "--basepath=",
         },
         format = "json_raw",
         to_stdin = true,

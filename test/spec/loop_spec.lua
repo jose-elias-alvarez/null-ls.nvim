@@ -1,12 +1,15 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
 
-local u = require("null-ls.utils")
-
 local uv = mock(vim.loop, true)
 
 describe("loop", function()
     stub(vim, "schedule_wrap")
+
+    local random = stub(math, "random")
+    local mock_random = 123456
+    random.returns(mock_random)
+
     after_each(function()
         vim.schedule_wrap:clear()
         uv.os_environ.returns({})
@@ -83,6 +86,8 @@ describe("loop", function()
             function mock_stderr:close()
                 mock_stderr_close()
             end
+
+            uv.spawn.returns(mock_handle)
         end)
 
         after_each(function()
@@ -110,6 +115,30 @@ describe("loop", function()
             assert.stub(uv.spawn).was_called()
             assert.equals(uv.spawn.calls[1].refs[1], vim.fn.exepath(mock_cmd))
             assert.same(uv.spawn.calls[1].refs[2].args, mock_args)
+        end)
+
+        it("should throw if handle is nil", function()
+            uv.spawn.returns(nil)
+
+            assert.has_error(function()
+                loop.spawn(mock_cmd, mock_args, mock_opts)
+            end)
+        end)
+
+        it("should throw non-executable error if error message contains ENOENT", function()
+            uv.spawn.returns(nil, "ENOENT: no such file or directory")
+
+            local ok, message = pcall(loop.spawn, mock_cmd, mock_args, mock_opts)
+            assert.falsy(ok)
+            assert.truthy(message and message:find("is not executable"))
+        end)
+
+        it("should throw spawn failure error on other error", function()
+            uv.spawn.returns(nil, "something went wrong")
+
+            local ok, message = pcall(loop.spawn, mock_cmd, mock_args, mock_opts)
+            assert.falsy(ok)
+            assert.truthy(message and message:find("failed to spawn"))
         end)
 
         it("should parse user env vars", function()
@@ -285,7 +314,6 @@ describe("loop", function()
             local done = stub.new()
             before_each(function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 vim.schedule_wrap.returns(done)
             end)
             after_each(function()
@@ -349,7 +377,6 @@ describe("loop", function()
 
             it("should call close_handle on spawn handle", function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
                 local on_close = uv.spawn.calls[1].refs[3]
@@ -361,7 +388,6 @@ describe("loop", function()
 
             it("should not call close_handle if is_closing returns true", function()
                 uv.new_pipe.returns(mock_stdout)
-                uv.spawn.returns(mock_handle)
                 mock_handle_is_closing.returns(true)
                 loop.spawn(mock_cmd, mock_args, mock_opts)
 
@@ -581,127 +607,42 @@ describe("loop", function()
 
     describe("temp_file", function()
         local mock_content = "write me to a temp file"
-        local mock_fd, mock_path = 57, "/tmp/null-ls-123456"
-        local fs_mkstemp = uv.fs_mkstemp
-        local tmpname
+        local mock_fd, mock_bufname = 57, "/Users/jose/my-file.lua"
         before_each(function()
-            u.path.is_windows = false
-            vim.env.XDG_RUNTIME_DIR = nil
-            vim.env.TEMP = nil
-
-            tmpname = stub(os, "tmpname")
-
-            tmpname.returns(mock_path)
-            uv.fs_mkstemp.returns(mock_fd, mock_path)
             uv.fs_open.returns(mock_fd)
         end)
         after_each(function()
-            tmpname:revert()
-            loop._revert_tmp_dir()
+            uv.fs_open:clear()
             uv.fs_write:clear()
             uv.fs_close:clear()
             uv.fs_unlink:clear()
-            uv.fs_mkstemp = fs_mkstemp
-            uv.fs_mkstemp:clear()
-            uv.fs_rename:clear()
         end)
 
-        it("should call uv.fs_mkstemp with path + pattern using /tmp", function()
-            loop.temp_file(mock_content)
+        it("should call uv.fs_open with temp path", function()
+            local temp_path = loop.temp_file(mock_content, mock_bufname)
 
-            assert.stub(uv.fs_mkstemp).was_called_with(u.path.join("/tmp", "null-ls_XXXXXX"))
+            assert.equals(temp_path, string.format("/Users/jose/_null-ls_%d_my-file.lua", mock_random))
+            assert.stub(uv.fs_open).was_called_with(temp_path, "w", 384)
         end)
 
-        it("should call uv.fs_mkstemp with path + pattern using XDG_RUNTIME_DIR", function()
-            vim.env.XDG_RUNTIME_DIR = "/run/user/1000"
-
-            loop.temp_file(mock_content)
-
-            assert.stub(uv.fs_mkstemp).was_called_with(u.path.join(vim.env.XDG_RUNTIME_DIR, "/nvim/null-ls_XXXXXX"))
-        end)
-
-        it("should call uv.fs_mkstemp with path + pattern on windows", function()
-            u.path.is_windows = true
-            vim.env.TEMP = "C:\\temp"
-
-            loop.temp_file(mock_content)
-
-            assert.stub(uv.fs_mkstemp).was_called_with(u.path.join(vim.env.TEMP, "null-ls_XXXXXX"))
-        end)
-
-        it("should not call uv.fs_open if fd from fs_mkstemp is already open", function()
-            loop.temp_file(mock_content)
-
-            assert.stub(uv.fs_open).was_not_called()
-        end)
-
-        it("should call os.tmpname if no uv.fs_mkstemp", function()
-            uv.fs_mkstemp = nil
-
-            loop.temp_file(mock_content)
-
-            assert.stub(tmpname).was_called()
-        end)
-
-        it("should call uv.fs_open with path and permissions", function()
-            loop.temp_file(mock_content)
-
-            assert.stub(uv.fs_open).was_called_with(mock_path, "w", 384)
-        end)
-
-        describe("extension", function()
-            local mock_extension = "lua"
-
-            it("should call uv.fs_close on original handle", function()
-                local original_handle = 19
-                uv.fs_mkstemp.returns(original_handle, mock_path)
-
-                loop.temp_file(mock_content, mock_extension)
-
-                assert.stub(uv.fs_close).was_called_with(original_handle)
-            end)
-
-            it("should set original handle to nil and get new handle from fs_open", function()
-                local original_handle = 19
-                uv.fs_mkstemp.returns(original_handle, mock_path)
-
-                loop.temp_file(mock_content, mock_extension)
-
-                assert.stub(uv.fs_open).was_called()
-            end)
-
-            it("should call fs_rename with original path and path with extension", function()
-                loop.temp_file(mock_content, mock_extension)
-
-                assert.stub(uv.fs_rename).was_called_with(mock_path, mock_path .. ".lua")
-            end)
-
-            it("should set tmp_path to path with extension", function()
-                loop.temp_file(mock_content, mock_extension)
-
-                assert.stub(uv.fs_open).was_called_with(mock_path .. ".lua", "w", 384)
-            end)
-        end)
-
-        it("should call fs_write and fs_close with fd and content", function()
-            loop.temp_file(mock_content)
+        it("should call uv.fs_write with content", function()
+            loop.temp_file(mock_content, mock_bufname)
 
             assert.stub(uv.fs_write).was_called_with(mock_fd, mock_content, -1)
+        end)
+
+        it("should call uv.fs_close with fd", function()
+            loop.temp_file(mock_content, mock_bufname)
+
             assert.stub(uv.fs_close).was_called_with(mock_fd)
         end)
 
-        it("should return tmp_path", function()
-            local path = loop.temp_file(mock_content)
+        it("should call fs_unlink with path on cleanup", function()
+            local temp_path, cleanup = loop.temp_file(mock_content, mock_bufname)
 
-            assert.equals(path, mock_path)
-        end)
+            cleanup()
 
-        it("should call fs_unlink with path on callback", function()
-            local _, callback = loop.temp_file(mock_content)
-
-            callback()
-
-            assert.stub(uv.fs_unlink).was_called_with(mock_path)
+            assert.stub(uv.fs_unlink).was_called_with(temp_path)
         end)
     end)
 end)
