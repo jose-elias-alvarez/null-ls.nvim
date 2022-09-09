@@ -77,7 +77,6 @@ for kw, opts in pairs(keywords) do
         keyword_by_name[alt] = kw
     end
 end
-
 return h.make_builtin({
     name = "todo_comments",
     meta = {
@@ -93,12 +92,16 @@ return h.make_builtin({
 
                 for kw, _ in pairs(keyword_by_name) do
                     if content:match("%f[%a]" .. kw .. "%f[%A]") and node:start() then
-                        local row, _, _ = node:start()
+                        local row, col, _ = node:start()
+                        local message = content:match("%f[%a]" .. kw .. "%f[%A].*$")
+
+                        col = col + #content - #message
 
                         table.insert(result, {
-                            message = content,
+                            message = message,
                             severity = keywords[keyword_by_name[kw]].severity,
                             row = row + 1,
+                            col = col + 1,
                             source = "todo_comments",
                         })
                     end
