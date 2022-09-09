@@ -4,6 +4,11 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 local SEVERITIES = h.diagnostics.severities
 
+local comment_types = {
+    comment = true,
+    comment_content = true,
+}
+
 local function get_document_root(bufnr)
     local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr)
     if not has_parser then
@@ -20,7 +25,7 @@ end
 
 local function parse_comments(root, output)
     for node in root:iter_children() do
-        if node:type() == "comment_content" then
+        if comment_types[node:type()] then
             table.insert(output, node)
         else
             parse_comments(node, output)
