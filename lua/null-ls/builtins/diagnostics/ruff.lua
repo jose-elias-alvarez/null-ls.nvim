@@ -66,6 +66,7 @@ return h.make_builtin({
         end,
         to_stdin = false,
         from_stderr = true,
+        to_temp_file = true,
         on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+): ((%u)%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
