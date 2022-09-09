@@ -25,6 +25,9 @@ return {
   chktex = {
     filetypes = { "tex" }
   },
+  clang_check = {
+    filetypes = { "c", "cpp" }
+  },
   clj_kondo = {
     filetypes = { "clojure" }
   },
@@ -96,6 +99,9 @@ return {
   },
   haml_lint = {
     filetypes = { "haml" }
+  },
+  jshint = {
+    filetypes = { "javascript" }
   },
   jsonlint = {
     filetypes = { "json" }

@@ -208,6 +208,15 @@ plugin before sending anything upstream.
    feature, open an issue and provide the information requested in the issue
    template.
 
+### My `:checkhealth` output is wrong! What do I do?
+
+Checking whether a given command is executable is tricky, and null-ls' health
+check doesn't handle all cases. null-ls' internal command resolution is
+independent of its health check output, which is for informational purposes.
+
+If you're not sure whether a given command is running as expected, enable debug
+mode and check your log (see below).
+
 ### How do I format files?
 
 null-ls formatters run when you call `vim.lsp.buf.formatting()` or

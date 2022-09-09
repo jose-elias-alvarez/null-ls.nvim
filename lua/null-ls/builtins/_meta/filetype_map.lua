@@ -30,7 +30,7 @@ return {
     formatting = { "buildifier" }
   },
   c = {
-    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
+    diagnostics = { "clang_check", "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   cabal = {
@@ -47,7 +47,7 @@ return {
     formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
-    diagnostics = { "cppcheck", "cpplint", "gccdiag" },
+    diagnostics = { "clang_check", "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {
@@ -176,7 +176,7 @@ return {
   },
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
-    diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
+    diagnostics = { "eslint", "eslint_d", "jshint", "standardjs", "xo" },
     formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
   },
   javascriptreact = {

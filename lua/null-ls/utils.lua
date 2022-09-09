@@ -83,13 +83,9 @@ end
 
 --- checks if a given command is executable
 ---@param cmd string? command to check
----@return boolean, string is_executable, string|nil error_message
+---@return boolean
 M.is_executable = function(cmd)
-    if cmd and vim.fn.executable(cmd) == 1 then
-        return true
-    end
-
-    return false, string.format("command %s is not executable (make sure it's installed and on your $PATH)", cmd)
+    return cmd and vim.fn.executable(cmd) == 1 or false
 end
 
 ---@alias NullLsRange table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
