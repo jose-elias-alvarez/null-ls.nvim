@@ -7,10 +7,11 @@ local SEVERITIES = h.diagnostics.severities
 local comment_types = {
     comment = true,
     comment_content = true,
+    line_comment = true,
 }
 
-local function get_document_root(bufnr)
-    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr)
+local function get_document_root(bufnr, filetype)
+    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, filetype)
     if not has_parser then
         return
     end
@@ -33,8 +34,8 @@ local function parse_comments(root, output)
     end
 end
 
-local function get_comments(bufnr)
-    local document_root = get_document_root(bufnr)
+local function get_comments(bufnr, filetype)
+    local document_root = get_document_root(bufnr, filetype)
     if not document_root then
         return {}
     end
@@ -86,8 +87,14 @@ return h.make_builtin({
     filetypes = {},
     generator = {
         fn = function(params)
+            local ft = params.ft
+
+            if ft == "tex" then
+                ft = "latex"
+            end
+
             local result = {}
-            for _, node in ipairs(get_comments(params.bufnr)) do
+            for _, node in ipairs(get_comments(params.bufnr, ft)) do
                 local content = vim.treesitter.get_node_text(node, params.bufnr):match("^%s*(.*)")
 
                 for kw, _ in pairs(keyword_by_name) do
