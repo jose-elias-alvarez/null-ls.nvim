@@ -28,6 +28,7 @@ local function make_builtin(opts)
         env = opts.env,
         cwd = opts.cwd,
         diagnostics_format = opts.diagnostics_format,
+        diagnostic_config = opts.diagnostic_config,
         filter = opts.filter,
         diagnostics_postprocess = opts.diagnostics_postprocess,
         dynamic_command = opts.dynamic_command,

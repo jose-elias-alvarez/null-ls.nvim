@@ -8,8 +8,21 @@ local api = vim.api
 
 local namespaces = {}
 local get_namespace = function(id)
-    namespaces[id] = namespaces[id] or api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
-    return namespaces[id]
+    if namespaces[id] then
+        return namespaces[id]
+    end
+
+    local namespace = api.nvim_create_namespace("NULL_LS_SOURCE_" .. id)
+
+    local source = require("null-ls.sources").get({ id = id })[1]
+    local diagnostic_config = source and source.generator.opts and source.generator.opts.diagnostic_config
+        or c.get().diagnostic_config
+    if diagnostic_config then
+        vim.diagnostic.config(diagnostic_config, namespace)
+    end
+
+    namespaces[id] = namespace
+    return namespace
 end
 
 local M = {}

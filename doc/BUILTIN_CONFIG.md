@@ -191,6 +191,29 @@ local sources = {
 }
 ```
 
+### Diagnostic config
+
+You can configure how Neovim displays source diagnostics by setting
+`diagnostic_config`:
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.shellcheck.with({
+        diagnostic_config = {
+            -- see :help vim.diagnostic.config()
+            underline = true,
+            virtual_text = false,
+            signs = true,
+            update_in_insert = false,
+            severity_sort = true,
+        },
+    }),
+}
+```
+
+- Specifying `diagnostic_config` for a built-in will override your global
+  `diagnostic_config` for that source.
+
 ### Diagnostics format
 
 For diagnostics sources, you can change the format of diagnostic messages by
