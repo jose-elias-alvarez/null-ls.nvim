@@ -23,9 +23,33 @@ local get_code_actions = function()
     )
 end
 
+-- borrowed from Neovim's implementation until we can use vim.region()
+local range_formatting = function()
+    local start = vim.fn.getpos("v")
+    local end_ = vim.fn.getpos(".")
+    local start_row = start[2]
+    local start_col = start[3]
+    local end_row = end_[2]
+    local end_col = end_[3]
+
+    if start_row == end_row and end_col < start_col then
+        end_col, start_col = start_col, end_col
+    elseif end_row < start_row then
+        start_row, end_row = end_row, start_row
+        start_col, end_col = end_col, start_col
+    end
+    local range = {
+        ["start"] = { start_row, start_col - 1 },
+        ["end"] = { end_row, end_col - 1 },
+    }
+
+    lsp.buf.format({ range = range })
+end
+
 describe("e2e", function()
     after_each(function()
         vim.cmd("bufdo! bdelete!")
+        vim.diagnostic.reset()
 
         c.reset()
         s.reset()
@@ -59,7 +83,7 @@ describe("e2e", function()
         it("should apply code action", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
-            assert.equals(u.buf.content(nil, true), '--print("I am a test file!")\n')
+            assert.equals(u.buf.content(nil, true), '-- print("I am a test file!")\n')
         end)
 
         it("should adapt code action based on params", function()
@@ -294,9 +318,9 @@ describe("e2e", function()
         end)
 
         it("should format specified range", function()
-            vim.cmd("normal ggV")
+            vim.cmd("silent normal ggV")
 
-            lsp.buf.range_formatting()
+            range_formatting()
             wait_for_prettier()
 
             assert.equals(u.buf.content(nil, true), formatted)

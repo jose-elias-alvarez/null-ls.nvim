@@ -31,7 +31,7 @@ for external processes.
 null-ls is in **beta status**. Please see below for steps to follow if something
 doesn't work the way you expect (or doesn't work at all).
 
-At the moment, null-is is compatible with Neovim 0.7 (stable) and 0.8 (head),
+At the moment, null-ls is compatible with Neovim 0.7 (stable) and 0.8 (head),
 but some features and performance improvements are exclusive to the latest
 version.
 
@@ -197,9 +197,10 @@ plugin before sending anything upstream.
 
 1. Make sure your configuration is in line with the latest version of this
    document.
-2. Enable debug mode (see below) and check the output of your source(s). If the
-   CLI program is not properly configured or is otherwise not running as
-   expected, that's an issue with the program, not null-ls.
+2. [Enable debug mode](#how-do-i-enable-debug-mode-and-get-debug-output) and
+   check the output of your source(s). If the CLI program is not properly
+   configured or is otherwise not running as expected, that's an issue with the
+   program, not null-ls.
 3. Check the documentation for available configuration options that might solve
    your issue.
 4. If you're having trouble configuring null-ls or want to know how to achieve a
@@ -214,8 +215,9 @@ Checking whether a given command is executable is tricky, and null-ls' health
 check doesn't handle all cases. null-ls' internal command resolution is
 independent of its health check output, which is for informational purposes.
 
-If you're not sure whether a given command is running as expected, enable debug
-mode and check your log (see below).
+If you're not sure whether a given command is running as expected,
+[enable debug mode](#how-do-i-enable-debug-mode-and-get-debug-output) and check
+your log.
 
 ### How do I format files?
 

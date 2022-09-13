@@ -223,6 +223,9 @@ return {
     formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
+  ["markdown.mdx"] = {
+    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+  },
   matlab = {
     diagnostics = { "mlint" }
   },

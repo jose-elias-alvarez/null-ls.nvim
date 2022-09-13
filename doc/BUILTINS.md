@@ -3117,7 +3117,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Methods: `formatting, range_formatting`
 - Command: `prettier`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettier.lua))
@@ -3139,7 +3139,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Method: `formatting`
 - Command: `prettierd`
 - Args: `{ "$FILENAME" }`
@@ -3156,7 +3156,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Methods: `formatting, range_formatting`
 - Command: `prettier_d_slim`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettier_d_slim.lua))
