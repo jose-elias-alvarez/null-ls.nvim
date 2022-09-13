@@ -26,6 +26,7 @@ end
 describe("e2e", function()
     after_each(function()
         vim.cmd("bufdo! bdelete!")
+        vim.diagnostic.reset()
 
         c.reset()
         s.reset()
