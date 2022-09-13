@@ -393,6 +393,27 @@ local sources = { null_ls.builtins.diagnostics.chktex }
 - Command: `chktex`
 - Args: `{ "-q", "-f%l:%c:%d:%k:%n:%m\n" }`
 
+### [clang_check](https://releases.llvm.org/14.0.0/tools/clang/docs/ClangTools.html)
+
+ClangCheck combines the LibTooling framework for running a Clang tool with the basic Clang diagnostics by syntax checking specific files in a fast, command line interface.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.clang_check }
+```
+
+#### Defaults
+
+- Filetypes: `{ "c", "cpp" }`
+- Method: `diagnostics_on_save`
+- Command: `clang-check`
+- Args: `{ "--analyze", "--extra-arg=-Xclang", "--extra-arg=-analyzer-output=text", "--extra-arg=-fno-color-diagnostics", "-p", "build", "$FILENAME" }`
+
+#### Notes
+
+- `clang-check` will be run only when files are saved to disk, so that `compile_commands.json` files can be used. It is recommended to use this linter in combination with `compile_commands.json` files.
+
 ### [clj_kondo](https://github.com/clj-kondo/clj-kondo)
 
 A linter for clojure code that sparks joy
@@ -822,6 +843,23 @@ local sources = { null_ls.builtins.diagnostics.haml_lint }
 - Method: `diagnostics`
 - Command: `haml-lint`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
+
+### [jshint](https://github.com/jshint/jshint)
+
+JSHint is a tool that helps to detect errors and potential problems in your JavaScript code.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.jshint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript" }`
+- Method: `diagnostics`
+- Command: `jshint`
+- Args: `{ "--reporter", "unix", "--extract", "auto", "--filename", "$FILENAME", "-" }`
 
 ### [jsonlint](https://github.com/zaach/jsonlint)
 
@@ -1455,11 +1493,11 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `diagnostics`
 - Command: `sqlfluff`
-- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "-" }`
+- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "$FILENAME" }`
 
 #### Notes
 
-- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours. `extra_args` can also be a function to build more sophisticated logic.
+- SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours, or create a .sqlfluff file in the same directory as the SQL file to specify the dialect (see the sqlfluff docs for details). `extra_args` can also be a function to build more sophisticated logic.
 
 ### [standardjs](https://standardjs.com/)
 

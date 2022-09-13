@@ -4,8 +4,14 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 local SEVERITIES = h.diagnostics.severities
 
-local function get_document_root(bufnr)
-    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr)
+local comment_types = {
+    comment = true,
+    comment_content = true,
+    line_comment = true,
+}
+
+local function get_document_root(bufnr, filetype)
+    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, filetype)
     if not has_parser then
         return
     end
@@ -18,27 +24,25 @@ local function get_document_root(bufnr)
     return tree:root()
 end
 
-local function parse_comments(root)
-    local output = {}
-
+local function parse_comments(root, output)
     for node in root:iter_children() do
-        if node:type() == "comment" then
-            table.insert(output, parse_comments(node))
-        elseif node:type() == "comment_content" then
-            return node
+        if comment_types[node:type()] then
+            table.insert(output, node)
+        else
+            parse_comments(node, output)
         end
     end
-
-    return output
 end
 
-local function get_comments(bufnr)
-    local document_root = get_document_root(bufnr)
+local function get_comments(bufnr, filetype)
+    local document_root = get_document_root(bufnr, filetype)
     if not document_root then
         return {}
     end
 
-    return parse_comments(document_root)
+    local output = {}
+    parse_comments(document_root, output)
+    return output
 end
 
 local keywords = {
@@ -74,7 +78,6 @@ for kw, opts in pairs(keywords) do
         keyword_by_name[alt] = kw
     end
 end
-
 return h.make_builtin({
     name = "todo_comments",
     meta = {
@@ -84,18 +87,28 @@ return h.make_builtin({
     filetypes = {},
     generator = {
         fn = function(params)
+            local ft = params.ft
+
+            if ft == "tex" then
+                ft = "latex"
+            end
+
             local result = {}
-            for _, node in ipairs(get_comments(params.bufnr)) do
+            for _, node in ipairs(get_comments(params.bufnr, ft)) do
                 local content = vim.treesitter.get_node_text(node, params.bufnr):match("^%s*(.*)")
 
                 for kw, _ in pairs(keyword_by_name) do
-                    if content:match("%f[%a]" .. kw .. "%f[%A]") then
-                        local row, _, _ = node:start()
+                    if content:match("%f[%a]" .. kw .. "%f[%A]") and node:start() then
+                        local row, col, _ = node:start()
+                        local message = content:match("%f[%a]" .. kw .. "%f[%A].*$")
+
+                        col = col + #content - #message
 
                         table.insert(result, {
-                            message = content,
+                            message = message,
                             severity = keywords[keyword_by_name[kw]].severity,
                             row = row + 1,
+                            col = col + 1,
                             source = "todo_comments",
                         })
                     end

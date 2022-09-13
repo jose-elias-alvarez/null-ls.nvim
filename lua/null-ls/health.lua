@@ -11,8 +11,8 @@ local messages = {
 
 local function report(source)
     local name = source.name
-    local only_local = source.generator.opts and source.generator.opts.only_local
-    local command = source.generator.opts and source.generator.opts.command
+    local opts = source.generator.opts or {}
+    local command, only_local, prefer_local = opts.command, opts.only_local, opts.prefer_local
 
     if type(command) ~= "string" then
         health.report_info(string.format(messages["unable"], name, command))
@@ -24,7 +24,7 @@ local function report(source)
         return
     end
 
-    if only_local then
+    if only_local or prefer_local then
         health.report_warn(string.format(messages["executable-local"], name, command))
         return
     end

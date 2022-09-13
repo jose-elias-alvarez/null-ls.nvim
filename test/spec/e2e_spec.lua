@@ -309,31 +309,19 @@ describe("e2e", function()
             return
         end
 
+        local autocmd
         before_each(function()
-            api.nvim_exec(
-                [[
-            augroup NullLsTesting
-                autocmd!
-                autocmd BufEnter *.tl set filetype=teal
-            augroup END
-            ]],
-                false
-            )
+            autocmd = vim.api.nvim_create_autocmd("BufEnter", {
+                pattern = "*.tl",
+                command = "set filetype=teal",
+            })
             sources.register(builtins.diagnostics.teal)
 
             tu.edit_test_file("test-file.tl")
             tu.wait_for_real_source()
         end)
         after_each(function()
-            api.nvim_exec(
-                [[
-            augroup NullLsTesting
-                autocmd!
-            augroup END
-            ]],
-                false
-            )
-            vim.cmd("augroup! NullLsTesting")
+            vim.api.nvim_del_autocmd(autocmd)
         end)
 
         it("should handle source that uses temp file", function()

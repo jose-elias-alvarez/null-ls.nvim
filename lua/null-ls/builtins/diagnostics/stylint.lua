@@ -28,7 +28,7 @@ return h.make_builtin({
                 groups = { "row", "col", "severity", "message" },
             },
         }),
-        dynamic_command = cmd_resolver.from_node_modules,
+        dynamic_command = cmd_resolver.from_node_modules(),
     },
     factory = h.generator_factory,
 })

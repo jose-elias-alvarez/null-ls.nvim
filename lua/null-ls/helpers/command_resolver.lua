@@ -27,7 +27,7 @@ end
 
 --- creates a resolver that searches for a local executable and caches results by bufnr
 ---@param prefix string|nil
-M.make_generic_resolver = function(prefix)
+M.generic = function(prefix)
     ---@param params NullLsParams
     ---@return string|nil
     return cache.by_bufnr(function(params)
@@ -41,42 +41,44 @@ M.make_generic_resolver = function(prefix)
     end)
 end
 
-local node_modules_resolver = M.make_generic_resolver(u.path.join("node_modules", ".bin"))
---- resolver that searches for a local node_modules executable and falls back to a global executable
-M.from_node_modules = function(params)
-    return node_modules_resolver(params) or params.command
+--- creates a resolver that searches for a local node_modules executable and falls back to a global executable
+M.from_node_modules = function()
+    local node_modules_resolver = M.generic(u.path.join("node_modules", ".bin"))
+    return function(params)
+        return node_modules_resolver(params) or params.command
+    end
 end
 
---- resolver that searches for a local yarn pnp executable and falls back to a global executable
----@param params NullLsParams
----@return string|string[]|nil
-M.from_yarn_pnp = cache.by_bufnr(function(params)
-    local ok, yarn_command = pcall(function()
-        local root = params.root
-        if not root then
-            error("unable to resolve root directory")
-        end
+--- creates a resolver that searches for a local yarn pnp executable and falls back to a global executable
+M.from_yarn_pnp = function()
+    return cache.by_bufnr(function(params)
+        local ok, yarn_command = pcall(function()
+            local root = params.root
+            if not root then
+                error("unable to resolve root directory")
+            end
 
-        -- older yarn versions use `.pnp.js`, so look for both new and old names
-        local pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.cjs")
-        if not (pnp_executable and pnp_dir) then
-            pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.js")
-        end
-        if not (pnp_executable and pnp_dir) then
-            error("failed to find yarn executable")
-        end
+            -- older yarn versions use `.pnp.js`, so look for both new and old names
+            local pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.cjs")
+            if not (pnp_executable and pnp_dir) then
+                pnp_executable, pnp_dir = search_ancestors_for_executable(params.bufname, root, ".pnp.js")
+            end
+            if not (pnp_executable and pnp_dir) then
+                error("failed to find yarn executable")
+            end
 
-        local yarn_bin_cmd =
-            string.format("cd %s && yarn bin %s", vim.fn.shellescape(pnp_dir), vim.fn.shellescape(params.command))
-        local yarn_bin = vim.fn.system(yarn_bin_cmd):gsub("%s+", "")
-        if vim.v.shell_error ~= 0 then
-            error("failed to get yarn bin")
-        end
+            local yarn_bin_cmd =
+                string.format("cd %s && yarn bin %s", vim.fn.shellescape(pnp_dir), vim.fn.shellescape(params.command))
+            local yarn_bin = vim.fn.system(yarn_bin_cmd):gsub("%s+", "")
+            if vim.v.shell_error ~= 0 then
+                error("failed to get yarn bin")
+            end
 
-        return { "node", "--require", pnp_executable, yarn_bin }
+            return { "node", "--require", pnp_executable, yarn_bin }
+        end)
+
+        return ok and yarn_command or params.command
     end)
-
-    return ok and yarn_command or params.command
-end)
+end
 
 return M

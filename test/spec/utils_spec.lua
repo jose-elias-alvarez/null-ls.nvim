@@ -119,22 +119,20 @@ describe("utils", function()
             assert.stub(executable).was_called_with("mock-command")
         end)
 
-        it("should return true and nil if result is > 0", function()
+        it("should return true if result is > 0", function()
             executable.returns(1)
 
-            local is_executable, err_msg = u.is_executable("mock-command")
+            local is_executable = u.is_executable("mock-command")
 
             assert.truthy(is_executable)
-            assert.falsy(err_msg)
         end)
 
-        it("should return false and error message if result is 0", function()
+        it("should return false if result is 0", function()
             executable.returns(0)
 
-            local is_executable, err_msg = u.is_executable("mock-command")
+            local is_executable = u.is_executable("mock-command")
 
             assert.falsy(is_executable)
-            assert.truthy(err_msg:find("is not executable"))
         end)
     end)
 
