@@ -11,6 +11,7 @@ local sources = mock(require("null-ls.sources"), true)
 
 describe("client", function()
     local client = require("null-ls.client")
+    local has = stub(u, "has_version")
 
     local mock_client_id = 1
     local mock_bufnr = 2
@@ -77,6 +78,24 @@ describe("client", function()
             assert.stub(on_init).was_called_with(mock_client, mock_initialize_result)
         end)
 
+        it("should pass configured cmd on 0.7", function()
+            has.returns(false)
+
+            client.start_client()
+
+            local opts = lsp.start_client.calls[1].refs[1]
+            assert.equals(opts.cmd, c.get().cmd)
+        end)
+
+        it("should pass rpc client callback on 0.8", function()
+            has.returns(true)
+
+            client.start_client()
+
+            local opts = lsp.start_client.calls[1].refs[1]
+            assert.equals(opts.cmd, require("null-ls.rpc").start)
+        end)
+
         describe("on_exit", function()
             local on_exit
             before_each(function()
@@ -119,7 +138,6 @@ describe("client", function()
 
             describe("supports_method", function()
                 local can_run = stub(require("null-ls.generators"), "can_run")
-                local has = stub(u, "has_version")
 
                 local supports_method
                 before_each(function()
@@ -143,7 +161,7 @@ describe("client", function()
                     local is_supported = supports_method(methods.lsp.SHUTDOWN)
 
                     assert.stub(can_run).was_not_called()
-                    assert.equals(is_supported, true)
+                    assert.equals(is_supported, false)
                 end)
 
                 describe("0.8", function()
