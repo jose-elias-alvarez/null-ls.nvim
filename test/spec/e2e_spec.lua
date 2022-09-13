@@ -59,7 +59,7 @@ describe("e2e", function()
         it("should apply code action", function()
             vim.lsp.buf.execute_command(null_ls_action)
 
-            assert.equals(u.buf.content(nil, true), '--print("I am a test file!")\n')
+            assert.equals(u.buf.content(nil, true), '-- print("I am a test file!")\n')
         end)
 
         it("should adapt code action based on params", function()
