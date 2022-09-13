@@ -243,6 +243,31 @@ describe("e2e", function()
 
             assert.equals(write_good_diagnostic.message, "I have been postprocessed!")
         end)
+
+        it("should configure source diagnostics display", function()
+            local diagnostic_config = {
+                underline = true,
+                virtual_text = true,
+                signs = true,
+                update_in_insert = true,
+                severity_sort = true,
+            }
+            sources.reset()
+            sources.register(builtins.diagnostics.write_good.with({
+                diagnostic_config = diagnostic_config,
+            }))
+
+            -- need to generate diagnostics to configure namespace on first display
+            vim.cmd("e")
+            tu.wait_for_real_source()
+
+            local source = sources.get_all()[1]
+            assert.truthy(source)
+            assert.equals(source.name, "write_good")
+            local namespace = require("null-ls.diagnostics").get_namespace(source.id)
+            assert.truthy(namespace)
+            assert.same(vim.diagnostic.config(nil, namespace), diagnostic_config)
+        end)
     end)
 
     describe("formatting", function()
