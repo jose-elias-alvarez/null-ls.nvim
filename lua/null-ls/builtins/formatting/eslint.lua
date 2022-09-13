@@ -46,6 +46,8 @@ return h.make_builtin({
         check_exit_code = { 0, 1 },
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
+                -- https://eslint.org/docs/latest/user-guide/configuring/configuration-files-new
+                "eslint.config.js",
                 -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
                 ".eslintrc",
                 ".eslintrc.js",
