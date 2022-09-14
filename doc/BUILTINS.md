@@ -463,12 +463,15 @@ local sources = { null_ls.builtins.diagnostics.commitlint }
 - Filetypes: `{ "gitcommit" }`
 - Method: `diagnostics`
 - Command: `commitlint`
-- Args: `{ "--format", "commitlint-format-json" }`
+- Args: `{ "-g", "~/.commitlintrc.json", "--edit", "$FILENAME" }`
 
 #### Notes
 
-- Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`.
-- It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613).
+- Current `gitcommit` buffer contents are saved to temp file, therefore `$FILENAME` is dynamically generated. 
+- Needs a `~/.commitlintrc.json` configuration file ([schema](https://json.schemastore.org/commitlintrc.json)), or overriding the path to befit your extension preferences.
+- An example of `commitlintrc.json` can be found [here](https://gist.github.com/kaiuri/f28c0aeb6c44d4604714ad451aa5b644).
+<!-- - Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`. -->
+<!-- - It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613). -->
 
 ### [cppcheck](https://github.com/danmar/cppcheck)
 
