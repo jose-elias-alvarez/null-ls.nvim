@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "elixir" },
     generator_opts = {
         command = "mix",
-        args = { "format", "-" },
+        args = { "format", "--stdin-filename", "$FILENAME", "-" },
         format = "raw",
         to_stdin = true,
     },
