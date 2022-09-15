@@ -94,7 +94,7 @@ return h.make_builtin({
         notes = {
             -- "Needs npm packages commitlint and a json formatter: `@commitlint/{config-conventional,cli}` and `commitlint-format-json`.",
             -- "It works with the packages installed globally but watch out for [some common issues](https://github.com/conventional-changelog/commitlint/issues/613).",
-            [=[Needs a `commitlintrc.json` configuration file, [schema](https://json.schemastore.org/commitlintrc.json).]=],
+            -- [=[Needs a `commitlintrc.json` configuration file, [schema](https://json.schemastore.org/commitlintrc.json).]=],
         },
     },
     method = DIAGNOSTICS,
@@ -103,7 +103,7 @@ return h.make_builtin({
         command = "commitlint",
         -- args = { "--format", "commitlint-format-json" },
         -- NOTE: Maybe add a function for resolving the configuration path?
-        args = { "-g", vim.fs.normalize("~/.commitlintrc.json"), "--edit", "$FILENAME" },
+        args = { "--edit", "$FILENAME" },
         -- to_stdin = true,
         to_temp_file = true,
         format = "line",
