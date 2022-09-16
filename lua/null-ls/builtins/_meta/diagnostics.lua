@@ -130,6 +130,9 @@ return {
   opacheck = {
     filetypes = { "rego" }
   },
+  perlimports = {
+    filetypes = { "perl" }
+  },
   php = {
     filetypes = { "php" }
   },

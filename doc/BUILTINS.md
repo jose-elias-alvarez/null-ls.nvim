@@ -1014,6 +1014,23 @@ local sources = { null_ls.builtins.diagnostics.opacheck }
 - Command: `opa`
 - Args: `{ "check", "-f", "json", "--strict", "$ROOT/src/", "$ROOT/test/" }`
 
+### [perlimports](https://metacpan.org/dist/App-perlimports/view/script/perlimports)
+
+A command line utility for cleaning up imports in your Perl code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.perlimports }
+```
+
+#### Defaults
+
+- Filetypes: `{ "perl" }`
+- Method: `diagnostics`
+- Command: `perlimports`
+- Args: `{ "--lint", "--read-stdin", "--filename", "$FILENAME" }`
+
 ### [php](https://www.php.net/)
 
 Uses the php command-line tool's built in `-l` flag to check for syntax errors.

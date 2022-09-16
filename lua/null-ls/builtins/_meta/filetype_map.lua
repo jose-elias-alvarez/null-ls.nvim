@@ -247,6 +247,7 @@ return {
     formatting = { "ptop" }
   },
   perl = {
+    diagnostics = { "perlimports" },
     formatting = { "perlimports", "perltidy" }
   },
   pgsql = {
