@@ -621,7 +621,7 @@ describe("loop", function()
         it("should call uv.fs_open with temp path", function()
             local temp_path = loop.temp_file(mock_content, mock_bufname)
 
-            assert.equals(temp_path, string.format("/Users/jose/_null-ls_%d_my-file.lua", mock_random))
+            assert.equals(temp_path, string.format("/Users/jose/.null-ls_%d_my-file.lua", mock_random))
             assert.stub(uv.fs_open).was_called_with(temp_path, "w", 384)
         end)
 
