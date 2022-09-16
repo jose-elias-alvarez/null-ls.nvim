@@ -2885,7 +2885,7 @@ local sources = { null_ls.builtins.formatting.mix }
 - Filetypes: `{ "elixir" }`
 - Method: `formatting`
 - Command: `mix`
-- Args: `{ "format", "-" }`
+- Args: `{ "format", "--stdin-filename", "$FILENAME", "-" }`
 
 ### [nginx_beautifier](https://github.com/vasilevich/nginxbeautifier)
 
