@@ -220,7 +220,7 @@ M.temp_file = function(content, bufname)
     local dirname = vim.fn.fnamemodify(bufname, ":h")
     local base_name = vim.fn.fnamemodify(bufname, ":t")
 
-    local filename = string.format("_null-ls_%d_%s", math.random(100000, 999999), base_name)
+    local filename = string.format(".null-ls_%d_%s", math.random(100000, 999999), base_name)
     local temp_path = u.path.join(dirname, filename)
 
     local fd = uv.fs_open(temp_path, "w", 384)
