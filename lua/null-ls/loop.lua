@@ -235,9 +235,26 @@ M.temp_file = function(content, bufname)
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 
+    local autocmd_id
     local cleanup = function()
+        if not temp_path then
+            return
+        end
+
         uv.fs_unlink(temp_path)
+        temp_path = nil
+
+        if autocmd_id then
+            vim.schedule(function()
+                vim.api.nvim_del_autocmd(autocmd_id)
+            end)
+        end
     end
+
+    -- make sure to run cleanup on exit
+    autocmd_id = vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = cleanup,
+    })
 
     return temp_path, cleanup
 end
