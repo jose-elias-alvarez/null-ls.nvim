@@ -2,7 +2,7 @@ local log = require("null-ls.logger")
 local u = require("null-ls.utils")
 
 local uv = vim.loop
-local wrap = vim.schedule_wrap
+local wrap = vim.schedule_wrap --[[@as fun(cb: any): function]]
 
 local close_handle = function(handle)
     if handle and not handle:is_closing() then
@@ -144,9 +144,17 @@ M.spawn = function(cmd, args, opts)
         cmd, args = cmd[1], concat_args
     end
 
+    local exepath = vim.fn.exepath(cmd)
+    local spawn_params = {
+        args = args,
+        env = parsed_env,
+        stdio = stdio,
+        cwd = opts.cwd or vim.loop.cwd(),
+    }
+
     handle, pid = uv.spawn(
-        vim.fn.exepath(cmd),
-        { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        exepath ~= "" and exepath or cmd, -- if we can't resolve exepath, try spawning the command as-is
+        spawn_params,
         on_close
     )
 
