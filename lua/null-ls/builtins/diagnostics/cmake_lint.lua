@@ -1,15 +1,13 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
-
 return h.make_builtin({
     name = "cmake_lint",
     meta = {
         url = "https://github.com/cheshirekow/cmake_format",
         description = "Check cmake listfiles for style violations, common mistakes, and anti-patterns.",
     },
-    method = DIAGNOSTICS,
+    method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "cmake" },
     generator_opts = {
         command = "cmake-lint",
