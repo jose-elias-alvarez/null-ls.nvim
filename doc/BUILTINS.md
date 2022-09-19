@@ -431,6 +431,23 @@ local sources = { null_ls.builtins.diagnostics.clj_kondo }
 - Command: `clj-kondo`
 - Args: `{ "--cache", "--lint", "-", "--filename", "$FILENAME" }`
 
+### [cmake_lint](https://github.com/cheshirekow/cmake_format)
+
+Check cmake listfiles for style violations, common mistakes, and anti-patterns.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cmake_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cmake" }`
+- Method: `diagnostics_on_save`
+- Command: `cmake-lint`
+- Args: `{ "$FILENAME" }`
+
 ### [codespell](https://github.com/codespell-project/codespell)
 
 Codespell finds common misspellings in text files.
