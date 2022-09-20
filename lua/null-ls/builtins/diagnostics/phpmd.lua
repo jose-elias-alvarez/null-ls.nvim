@@ -12,12 +12,15 @@ return h.make_builtin({
     generator_opts = {
         command = "phpmd",
         args = { "$FILENAME", "json" },
-        format = "json",
+        format = "raw",
         to_temp_file = true,
         check_exit_code = function(code)
             return code <= 3
         end,
-        on_output = function(params)
+        on_output = function(params, done)
+            local output, err = params.output, params.err
+            local ok, parsed = pcall(vim.json.decode, output)
+
             local parser = h.diagnostics.from_json({
                 attributes = {
                     message = "description",
@@ -34,13 +37,10 @@ return h.make_builtin({
                     [5] = h.diagnostics.severities["hint"],
                 },
             })
-            params.violations = params.output
-                    and params.output.files
-                    and params.output.files[1]
-                    and params.output.files[1].violations
-                or {}
 
-            return parser({ output = params.violations })
+            params.violations = parsed and parsed.files and parsed.files[1] and parsed.files[1].violations or {}
+
+            done(parser({ output = params.violations }))
         end,
     },
     factory = h.generator_factory,
