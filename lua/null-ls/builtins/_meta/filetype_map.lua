@@ -291,7 +291,8 @@ return {
     formatting = { "raco_fmt" }
   },
   rego = {
-    diagnostics = { "opacheck" }
+    diagnostics = { "opacheck" },
+    formatting = { "rego" }
   },
   rescript = {
     formatting = { "rescript" }

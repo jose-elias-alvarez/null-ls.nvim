@@ -3324,6 +3324,23 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - Requires Racket 8.0 or later
 - Install with `raco pkg install fmt`
 
+### [rego](https://www.openpolicyagent.org/docs/latest/policy-language)
+
+Rego (opa fmt) Formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rego }
+```
+
+#### Defaults
+
+- Filetypes: `{ "rego" }`
+- Method: `formatting`
+- Command: `opa`
+- Args: `{ "fmt" }`
+
 ### [remark](https://github.com/remarkjs/remark)
 
 remark is an extensive and complex Markdown formatter/prettifier.

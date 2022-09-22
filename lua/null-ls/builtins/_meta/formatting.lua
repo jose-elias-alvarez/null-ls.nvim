@@ -247,6 +247,9 @@ return {
   raco_fmt = {
     filetypes = { "racket" }
   },
+  rego = {
+    filetypes = { "rego" }
+  },
   remark = {
     filetypes = { "markdown" }
   },
