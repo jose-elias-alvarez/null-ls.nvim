@@ -39,6 +39,7 @@ body:
   - type: textarea
     attributes:
       label: "Minimal config"
+      render: Lua
       description: "Download the minimal config using `curl -fLO
         https://raw.githubusercontent.com/jose-elias-alvarez/null-ls.nvim/main/scripts/minimal_init.lua`. Edit it to
         include the configuration necessary to reproduce your bug and paste it here. Do not use your personal null-ls
