@@ -22,18 +22,18 @@ local sources = {
         command = "sqlfluff",
         args = {
             "lint",
-            "-f",
-            "github-annotation",
-            "-n",
+            "--format=github-annotation",
+            "--nocolor",
             "--disable_progress_bar",
             "$FILENAME",
         },
-        from_stderr = false,
+        from_stderr = true,
         to_stdin = false,
-        to_temp_file = true,
+        to_temp_file = false,
         format = "json",
+        -- Return codes https://github.com/sqlfluff/sqlfluff/blob/main/src/sqlfluff/cli/__init__.py
         check_exit_code = function(c)
-            return c <= 1
+            return c < 1
         end,
         on_output = helpers.diagnostics.from_json({
             attributes = {
