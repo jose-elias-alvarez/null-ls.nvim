@@ -82,7 +82,6 @@ local function on_output(params, done)
     local messages = lex(params.output)
     for i = 1, #messages do
         local message = messages[i]
-        local sev = severity(message)
         local diagnostic = {
             row = 1,
             col = 1,
