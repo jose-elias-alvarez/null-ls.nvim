@@ -51,8 +51,26 @@ local parse_args = function(args, params)
     return parsed
 end
 
+local function find_json(output)
+    local bracket = string.find(output, "%[")
+    local parenthesis = string.find(output, "{")
+    local char = ""
+    if (bracket or parenthesis) and bracket < parenthesis then
+        char = "%["
+    else
+        char = "{"
+    end
+    if output then
+        if output[0] ~= char then
+            output = string.sub(output, string.find(output, char), string.len(output))
+        end
+    end
+    return output
+end
+
 local json_output_wrapper = function(params, done, on_output, format)
     if params.output then
+        params.output = find_json(params.output)
         local ok, decoded = pcall(vim.json.decode, params.output)
         if decoded == vim.NIL or decoded == "" then
             decoded = nil
