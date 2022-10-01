@@ -11,6 +11,7 @@ return h.make_builtin({
     },
     method = DIAGNOSTICS,
     filetypes = { "markdown" },
+    disabled_filetypes = { "markdown.mdx" },
     generator_opts = {
         command = "markdownlint",
         args = { "--stdin" },

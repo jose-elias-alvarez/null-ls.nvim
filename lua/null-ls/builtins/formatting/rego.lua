@@ -4,17 +4,17 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "yamlfmt",
+    name = "rego",
     meta = {
-        url = "https://github.com/google/yamlfmt",
-        description = "yamlfmt is an extensible command line tool or library to format yaml files.",
+        url = "https://www.openpolicyagent.org/docs/latest/policy-language",
+        description = " Rego (opa fmt) Formatter",
     },
     method = FORMATTING,
-    filetypes = { "yaml" },
+    filetypes = { "rego" },
     generator_opts = {
-        command = "yamlfmt",
+        command = "opa",
+        args = { "fmt" },
         to_stdin = true,
-        args = { "-" },
     },
     factory = h.formatter_factory,
 })
