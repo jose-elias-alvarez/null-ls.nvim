@@ -3937,7 +3937,7 @@ local sources = { null_ls.builtins.formatting.yamlfmt }
 - Filetypes: `{ "yaml" }`
 - Method: `formatting`
 - Command: `yamlfmt`
-- Args: `{ "$FILENAME" }`
+- Args: `{ "-" }`
 
 ### [yapf](https://github.com/google/yapf)
 
