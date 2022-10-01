@@ -11,7 +11,10 @@ return h.make_builtin({
     },
     method = FORMATTING,
     filetypes = { "yaml" },
-    to_temp_file = true,
-    generator_opts = { command = "yamlfmt", args = { "$FILENAME" } },
+    generator_opts = {
+        command = "yamlfmt",
+        to_stdin = true,
+        args = { "-" },
+    },
     factory = h.formatter_factory,
 })
