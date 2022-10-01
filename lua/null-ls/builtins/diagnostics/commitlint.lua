@@ -86,7 +86,7 @@ local function on_output(params, done)
             row = 1,
             col = 1,
             source = "commitlint",
-            message = message:match("%s%s%s(.*)"),
+            message = message:match("%s%s%s(.*)") or "",
             filename = "COMMIT_MESSAGE",
             severity = severity(message),
         }
