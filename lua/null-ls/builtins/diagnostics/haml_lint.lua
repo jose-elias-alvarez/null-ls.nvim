@@ -36,7 +36,8 @@ return h.make_builtin({
         command = "haml-lint",
         args = { "--reporter", "json", "$FILENAME" },
         to_stdin = true,
-        from_stderr = true,
+        ignore_stderr = true,
+        to_temp_file = true,
         format = "json",
         check_exit_code = function(code)
             return code <= 1
