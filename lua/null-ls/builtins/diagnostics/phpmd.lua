@@ -21,14 +21,13 @@ return h.make_builtin({
             local output, err = params.output, params.err
 
             if err then
-              return done({ { message = "phpmd error: cannot analyze this file" } })
-              -- @todo Append err to log
+                return done({ { message = "phpmd error: cannot analyze this file" } })
             end
 
             local ok, parsed = pcall(vim.json.decode, output)
 
             if not ok then
-              return done({ { message = "phpmd error: cannot parse output as JSON." } })
+                return done({ { message = "phpmd error: cannot parse output as JSON." } })
             end
 
             local parser = h.diagnostics.from_json({
