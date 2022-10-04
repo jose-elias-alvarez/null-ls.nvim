@@ -39,6 +39,7 @@ return h.make_builtin({
                 "stdin",
             }
 
+            -- only enable suggestions when using the code actions built-in, since they slow down the command
             local should_add_suggestions = not vim.tbl_isempty(require("null-ls").get_source({
                 name = "cspell",
                 method = methods.internal.CODE_ACTION,
