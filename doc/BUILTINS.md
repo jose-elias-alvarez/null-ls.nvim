@@ -10,15 +10,22 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 ### [cspell](https://github.com/streetsidesoftware/cspell)
 
-Injects actions to fix typos found by `null_ls.builtins.diagnostics.cspell`.
-The cspell diagnostics builtin source needs to be enabled for the suggestions
-to work.
+Injects actions to fix typos found by `cspell`.
 
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.code_actions.cspell }
+local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_actions.cspell }
 ```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `code_action`
+
+#### Notes
+
+- This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.
 
 ### [eslint](https://github.com/eslint/eslint)
 
@@ -2498,7 +2505,7 @@ local sources = { null_ls.builtins.formatting.mdformat }
 
 #### Notes
 
-- Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html)
+- Mdformat offers an extensible plugin system for both code fence content formatting and Markdown parser extensions (like GFM tables). A comprehensive list of plugins is documented [here](https://mdformat.readthedocs.io/en/stable/users/plugins.html) 
 
 ### [mix](https://hexdocs.pm/mix/1.12/Mix.html)
 

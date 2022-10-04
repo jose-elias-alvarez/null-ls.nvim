@@ -22,6 +22,7 @@ return h.make_builtin({
         notes = {
             "This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.",
         },
+        usage = "local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_actions.cspell }"
     },
     method = CODE_ACTION,
     filetypes = {},
