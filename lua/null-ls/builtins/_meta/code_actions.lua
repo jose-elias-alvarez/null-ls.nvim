@@ -1,6 +1,9 @@
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
+  cspell = {
+    filetypes = {}
+  },
   eslint = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },

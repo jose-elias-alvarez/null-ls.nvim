@@ -14,6 +14,25 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 ## Code Actions
 
+### [cspell](https://github.com/streetsidesoftware/cspell)
+
+Injects actions to fix typos found by `cspell`.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_actions.cspell }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `code_action`
+
+#### Notes
+
+- This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.
+
 ### [eslint](https://github.com/eslint/eslint)
 
 Injects actions to fix ESLint issues or ignore broken rules.
