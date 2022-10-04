@@ -231,7 +231,11 @@ M.temp_file = function(content, bufname)
     local filename = string.format(".null-ls_%d_%s", math.random(100000, 999999), base_name)
     local temp_path = u.path.join(dirname, filename)
 
-    local fd = uv.fs_open(temp_path, "w", 384)
+    local fd, err = uv.fs_open(temp_path, "w", 384)
+    if not fd then
+        error("failed to create temp file: " .. err)
+    end
+
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 

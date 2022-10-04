@@ -625,6 +625,13 @@ describe("loop", function()
             assert.stub(uv.fs_open).was_called_with(temp_path, "w", 384)
         end)
 
+        it("should throw if uv.fs_open returns nil", function()
+            uv.fs_open.returns(nil)
+            assert.has_error(function()
+                loop.temp_file(mock_content, mock_bufname)
+            end)
+        end)
+
         it("should call uv.fs_write with content", function()
             loop.temp_file(mock_content, mock_bufname)
 
