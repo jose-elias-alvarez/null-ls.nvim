@@ -49,6 +49,43 @@ return h.make_builtin({
                         end,
                     })
                 end
+
+                -- add word to "words" in cspell.json
+                table.insert(actions, {
+                    title = "Add to cspell.json",
+                    action = function()
+                        local word = vim.api.nvim_buf_get_text(
+                            diagnostic.bufnr,
+                            diagnostic.lnum,
+                            diagnostic.col,
+                            diagnostic.end_lnum,
+                            diagnostic.end_col,
+                            {}
+                        )[1]
+                        local cspell_json = vim.fn.findfile("cspell.json", vim.fn.getcwd() .. ";")
+                        if cspell_json == "" then
+                            vim.notify("\ncspell.json not found", vim.log.levels.WARN)
+                            return
+                        end
+                        local cspell = vim.fn.json_decode(vim.fn.readfile(cspell_json))
+                        if not cspell.words then
+                            cspell.words = {}
+                        end
+                        table.insert(cspell.words, word)
+                        local json = vim.fn.json_encode(cspell)
+                        vim.fn.writefile({ json }, cspell_json)
+
+                        -- replace word in buffer to trigger cspell to update diagnostics
+                        vim.api.nvim_buf_set_text(
+                            diagnostic.bufnr,
+                            diagnostic.lnum,
+                            diagnostic.col,
+                            diagnostic.end_lnum,
+                            diagnostic.end_col,
+                            { word }
+                        )
+                    end,
+                })
             end
             return actions
         end,
