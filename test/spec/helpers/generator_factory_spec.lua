@@ -8,7 +8,7 @@ local s = require("null-ls.state")
 
 mock(require("null-ls.logger"), true)
 
-local test_utils = require("null-ls.test-utils")
+local test_utils = require("null-ls.utils.test")
 local root = vim.fn.getcwd()
 
 describe("generator_factory", function()

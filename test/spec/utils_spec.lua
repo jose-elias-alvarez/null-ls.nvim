@@ -3,7 +3,7 @@ local stub = require("luassert.stub")
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
 
-local test_utils = require("null-ls.test-utils")
+local test_utils = require("null-ls.utils.test")
 
 describe("utils", function()
     local u = require("null-ls.utils")
