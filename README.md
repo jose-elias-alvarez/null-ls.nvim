@@ -31,9 +31,10 @@ for external processes.
 null-ls is in **beta status**. Please see below for steps to follow if something
 doesn't work the way you expect (or doesn't work at all).
 
-At the moment, null-ls is compatible with Neovim 0.7 (stable) and 0.8 (head),
-but some features and performance improvements are exclusive to the latest
-version.
+null-ls is developed on and tested against the latest stable version of Neovim.
+Support for versions built from `HEAD` is provided on a best-effort basis, and
+users are encouraged to contribute fixes to any issues exclusive to these
+versions.
 
 ## Features
 
