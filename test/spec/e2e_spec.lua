@@ -375,7 +375,7 @@ describe("e2e", function()
 
         it("should handle source that uses temp file", function()
             -- replace - with .., which will mess up the return type
-            api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 52, 0, 53, { ".." })
+            api.nvim_buf_set_text(api.nvim_get_current_buf(), 0, 58, 0, 59, { ".." })
             tu.wait_for_real_source()
 
             local buf_diagnostics = vim.diagnostic.get(0)
@@ -386,7 +386,7 @@ describe("e2e", function()
             assert.equals(teal_diagnostic.source, "teal")
             assert.equals(teal_diagnostic.lnum, 0)
             assert.equals(teal_diagnostic.end_lnum, 1)
-            assert.equals(teal_diagnostic.col, 52)
+            assert.equals(teal_diagnostic.col, 58)
             assert.equals(teal_diagnostic.end_col, 0)
         end)
     end)
