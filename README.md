@@ -102,7 +102,6 @@ warnings.
 
 ```lua
 local null_ls = require("null-ls")
-local api = vim.api
 
 local no_really = {
     method = null_ls.methods.DIAGNOSTICS,
@@ -120,10 +119,10 @@ local no_really = {
                     table.insert(diagnostics, {
                         row = i,
                         col = col,
-                        end_col = end_col,
+                        end_col = end_col + 1,
                         source = "no-really",
                         message = "Don't use 'really!'",
-                        severity = 2,
+                        severity = vim.diagnostic.severity.WARN,
                     })
                 end
             end
