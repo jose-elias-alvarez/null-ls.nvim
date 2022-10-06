@@ -37,6 +37,7 @@ return h.make_builtin({
         args = { "--reporter", "json", "$FILENAME" },
         to_stdin = true,
         from_stderr = true,
+        to_temp_file = true,
         format = "json",
         check_exit_code = function(code)
             return code <= 1
