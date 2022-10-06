@@ -118,6 +118,9 @@ return {
   markdownlint = {
     filetypes = { "markdown" }
   },
+  markdownlint_cli2 = {
+    filetypes = { "markdown" }
+  },
   mdl = {
     filetypes = { "markdown" }
   },

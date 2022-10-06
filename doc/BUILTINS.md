@@ -965,6 +965,27 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - Command: `markdownlint`
 - Args: `{ "--stdin" }`
 
+### [markdownlint_cli2](https://github.com/DavidAnson/markdownlint-cli2)
+
+A fast, flexible, configuration-based command-line interface for linting Markdown/CommonMark files with the markdownlint library
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.markdownlint_cli2 }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `diagnostics_on_save`
+- Command: `markdownlint-cli2`
+
+#### Notes
+
+- Must be configured using a [configuration file](https://github.com/DavidAnson/markdownlint-cli2#configuration).
+- See [the documentation](https://github.com/DavidAnson/markdownlint-cli2#overview) to understand the differences between markdownlint-cli2 and markdownlint-cli.
+
 ### [mdl](https://github.com/markdownlint/markdownlint)
 
 A tool to check Markdown files and flag style issues.
