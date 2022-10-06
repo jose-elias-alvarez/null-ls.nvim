@@ -219,8 +219,8 @@ return {
     diagnostics = { "checkmake" }
   },
   markdown = {
-    code_actions = { "proselint" },
-    diagnostics = { "alex", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "vale", "write_good" },
+    code_actions = { "ltrs", "proselint" },
+    diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "vale", "write_good" },
     formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
@@ -367,6 +367,8 @@ return {
     formatting = { "latexindent" }
   },
   text = {
+    code_actions = { "ltrs" },
+    diagnostics = { "ltrs" },
     hover = { "dictionary" }
   },
   tf = {

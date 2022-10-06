@@ -101,6 +101,23 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 - Filetypes: `{}`
 - Method: `code_action`
 
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown" }`
+- Method: `code_action`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
+
 ### [proselint](https://github.com/amperser/proselint)
 
 An English prose linter. Can fix some issues via code actions.
@@ -930,6 +947,23 @@ local sources = { null_ls.builtins.diagnostics.ktlint }
 - Method: `diagnostics_on_save`
 - Command: `ktlint`
 - Args: `{ "--relative", "--reporter=json", "**/*.kt", "**/*.kts" }`
+
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown", "markdown" }`
+- Method: `diagnostics`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
 
 ### [luacheck](https://github.com/lunarmodules/luacheck)
 

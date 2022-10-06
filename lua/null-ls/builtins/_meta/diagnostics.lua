@@ -112,6 +112,9 @@ return {
   ktlint = {
     filetypes = { "kotlin" }
   },
+  ltrs = {
+    filetypes = { "text", "markdown", "markdown" }
+  },
   luacheck = {
     filetypes = { "lua" }
   },
