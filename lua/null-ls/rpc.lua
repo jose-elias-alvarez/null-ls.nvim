@@ -2,7 +2,6 @@ local c = require("null-ls.config")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 
-local pid = 5000
 local notification_cache = {}
 
 local should_cache = function(method)
@@ -52,27 +51,7 @@ local capabilities = {
 
 M.capabilities = capabilities
 
--- 0.7 needs to monkey-patch rpc.start to create an in-memory RPC client
--- on 0.8, we can create an RPC client by passing a callback cmd to vim.lsp.start_client
-M.setup = function()
-    local rpc = require("vim.lsp.rpc")
-    if rpc._null_ls_setup then
-        return
-    end
-
-    local rpc_start = rpc.start
-    rpc.start = function(cmd, cmd_args, dispatchers, ...)
-        if cmd == c.get().cmd[1] then
-            return M.start(dispatchers)
-        end
-        return rpc_start(cmd, cmd_args, dispatchers, ...)
-    end
-
-    rpc._null_ls_setup = true
-end
-
 M.start = function(dispatchers)
-    pid = pid + 1
     local message_id = 1
     local stopped = false
 
@@ -158,16 +137,6 @@ M.start = function(dispatchers)
         terminate = function()
             stopped = true
         end,
-        -- TODO: remove unnecessary properties on 0.8 release
-        pid = pid,
-        handle = {
-            is_closing = function()
-                return stopped
-            end,
-            kill = function()
-                stopped = true
-            end,
-        },
     }
 end
 

@@ -30,18 +30,11 @@ local should_attach = function(bufnr)
 end
 
 local on_init = function(new_client, initialize_result)
-    local capability_is_disabled
-    if u.has_version("0.8") then
-        capability_is_disabled = function(method)
-            -- TODO: extract map to prevent future issues
-            local required_capability = lsp._request_name_to_capability[method]
-            return not required_capability
-                or vim.tbl_get(new_client.server_capabilities, unpack(required_capability)) == false
-        end
-    else
-        capability_is_disabled = function(method)
-            return new_client.resolved_capabilities[methods.request_name_to_capability[method]] == false
-        end
+    local capability_is_disabled = function(method)
+        -- TODO: extract map to prevent future issues
+        local required_capability = lsp._request_name_to_capability[method]
+        return not required_capability
+            or vim.tbl_get(new_client.server_capabilities, unpack(required_capability)) == false
     end
 
     -- null-ls broadcasts all capabilities on launch, so this lets us have finer control
@@ -78,18 +71,12 @@ end
 local M = {}
 
 M.start_client = function(fname)
-    local should_patch_rpc = not u.has_version("0.8")
-    if should_patch_rpc then
-        require("null-ls.rpc").setup()
-    end
-
     local config = {
         name = "null-ls",
         root_dir = c.get().root_dir(fname) or vim.loop.cwd(),
         on_init = on_init,
         on_exit = on_exit,
-        cmd = should_patch_rpc and c.get().cmd -- pass command so that we can handle it in our patched rpc.start
-            or require("null-ls.rpc").start, -- pass callback to create rpc client
+        cmd = require("null-ls.rpc").start, -- pass callback to create rpc client
         filetypes = require("null-ls.sources").get_filetypes(),
         flags = { debounce_text_changes = c.get().debounce },
         on_attach = vim.schedule_wrap(function(_, bufnr)
