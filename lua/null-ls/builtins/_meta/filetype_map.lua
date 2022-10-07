@@ -241,6 +241,9 @@ return {
     diagnostics = { "deadnix", "statix" },
     formatting = { "alejandra", "nixfmt", "nixpkgs_fmt" }
   },
+  ocaml = {
+    formatting = { "ocamlformat" }
+  },
   org = {
     formatting = { "cbfmt" }
   },

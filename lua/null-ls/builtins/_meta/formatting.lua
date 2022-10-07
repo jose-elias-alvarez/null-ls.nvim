@@ -193,6 +193,9 @@ return {
   npm_groovy_lint = {
     filetypes = { "groovy", "java", "Jenkinsfile" }
   },
+  ocamlformat = {
+    filetypes = { "ocaml" }
+  },
   ocdc = {
     filetypes = { "markdown" }
   },

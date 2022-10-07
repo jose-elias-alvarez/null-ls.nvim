@@ -3078,6 +3078,23 @@ local sources = { null_ls.builtins.formatting.npm_groovy_lint }
 - Command: `npm-groovy-lint`
 - Args: `{ "--format", "-" }`
 
+### [ocamlformat](https://github.com/ocaml-ppx/ocamlformat)
+
+Auto-formatter for OCaml code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ocamlformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ocaml" }`
+- Method: `formatting`
+- Command: `ocamlformat`
+- Args: `{ "--enable-outside-detected-project", "-" }`
+
 ### [ocdc](https://github.com/mdwint/ocdc)
 
 A changelog formatter
