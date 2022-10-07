@@ -25,12 +25,12 @@ All options are **required** unless specified otherwise.
 local helpers = require("null-ls.helpers")
 
 helpers.generator_factory({
-    args, -- table (optional)
+    args, -- function or table (optional)
     check_exit_code, -- function or table of numbers (optional)
     command, -- string or function
-    env, -- table (optional)
     cwd, -- function (optional)
     dynamic_command, -- function (optional)
+    env, -- function or table (optional)
     format, -- "raw", "line", "json", or "json_raw" (optional)
     from_stderr, -- boolean (optional)
     from_temp_file, -- boolean (optional)
@@ -50,8 +50,9 @@ the first time.
 
 ### args
 
-A table containing the arguments passed when spawning the command. Defaults to
-`{}`.
+A table containing the arguments passed when spawning the command or a function
+that takes one argument, `params` (an object containing information about the
+current editor status) and returns an `args` table. Defaults to `{}`.
 
 null-ls will transform the following special arguments before spawning:
 
@@ -109,6 +110,13 @@ should run.
 performance, so it's best to cache its output when possible.
 
 Note that setting `dynamic_command` will disable `command` validation.
+
+### env
+
+A key-value pair table containing the environment variables that should be passed
+when spawning the command or a function that takes one argument, `params` (an
+object containing information about the current editor status) and returns an
+`env` table. Defaults to `nil`.
 
 ### format
 
