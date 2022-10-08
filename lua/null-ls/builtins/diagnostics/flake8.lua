@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -87,6 +88,14 @@ return h.make_builtin({
                 },
             }
         ),
+        cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                -- https://flake8.pycqa.org/en/latest/user/configuration.html
+                ".flake8",
+                "setup.cfg",
+                "tox.ini"
+            )(params.bufname)
+        end),
     },
     factory = h.generator_factory,
 })
