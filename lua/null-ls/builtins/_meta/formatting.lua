@@ -280,6 +280,9 @@ return {
   scalafmt = {
     filetypes = { "scala" }
   },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
+  },
   shellharden = {
     filetypes = { "sh" }
   },

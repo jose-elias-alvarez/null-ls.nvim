@@ -1531,6 +1531,23 @@ local sources = { null_ls.builtins.diagnostics.semgrep }
 - Command: `semgrep`
 - Args: `{ "-q", "--json", "$FILENAME" }`
 
+### [semistandardjs](https://github.com/standard/semistandard)
+
+JavaScript style guide, linter, and formatter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `diagnostics`
+- Command: `semistandard`
+- Args: `{ "--stdin" }`
+
 ### [shellcheck](https://www.shellcheck.net/)
 
 A shell script static analysis tool.
@@ -3597,6 +3614,23 @@ local sources = { null_ls.builtins.formatting.scalafmt }
 - Method: `formatting`
 - Command: `scalafmt`
 - Args: `{ "--stdin" }`
+
+### [semistandardjs](https://standardjs.com/)
+
+JavaScript Standard Style, a no-configuration automatic code formatter that just works.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `formatting`
+- Command: `semistandard`
+- Args: `{ "--stdin", "--fix" }`
 
 ### [shellharden](https://github.com/anordal/shellharden)
 

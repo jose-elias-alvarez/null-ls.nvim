@@ -208,6 +208,9 @@ return {
   semgrep = {
     filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }
   },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
+  },
   shellcheck = {
     filetypes = { "sh" }
   },
