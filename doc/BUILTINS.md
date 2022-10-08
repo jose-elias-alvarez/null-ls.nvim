@@ -882,7 +882,7 @@ local sources = { null_ls.builtins.diagnostics.haml_lint }
 
 ### Notes
 
-- This source interacts with other code analyzers like `rubocop`. If you are using `solargraph` intellisense for your ruby project, it also requires rubocop. If that's the case, make sure rubocop and all dependencies required by rubocop are also installed globally, eg: `gem install rubocop rubocop-rails`.
+- `haml-lint` interacts with other code analyzers like `Rubocop`. Warnings from Rubocop may break diagnostics for this plugin if they are not received in valid JSON format. Common culprits are additional Rubocop dependencies that need to be installed or `parser` version warnings.
 
 ### [jshint](https://github.com/jshint/jshint)
 
