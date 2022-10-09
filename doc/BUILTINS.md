@@ -897,10 +897,6 @@ local sources = { null_ls.builtins.diagnostics.haml_lint }
 - Command: `haml-lint`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
 
-### Notes
-
-- `haml-lint` interacts with other code analyzers like `Rubocop`. Warnings from Rubocop may break diagnostics for this plugin if they are not received in valid JSON format. Common culprits are additional Rubocop dependencies that need to be installed or `parser` version warnings.
-
 ### [jshint](https://github.com/jshint/jshint)
 
 JSHint is a tool that helps to detect errors and potential problems in your JavaScript code.
