@@ -23,6 +23,8 @@ return h.make_builtin({
         to_stdin = true,
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
+                -- isort will detect files in the CWD as first-party
+                "setup.py",
                 -- https://pycqa.github.io/isort/docs/configuration/config_files.html
                 "setup.cfg",
                 ".isort.cfg",
