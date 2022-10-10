@@ -244,6 +244,9 @@ return {
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },
+  ["purs-tidy"] = {
+    filetypes = { "purescript" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },

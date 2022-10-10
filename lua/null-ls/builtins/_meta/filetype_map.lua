@@ -279,6 +279,9 @@ return {
     diagnostics = { "puppet_lint" },
     formatting = { "puppet_lint" }
   },
+  purescript = {
+    formatting = { "purs-tidy" }
+  },
   python = {
     code_actions = { "refactoring" },
     diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },

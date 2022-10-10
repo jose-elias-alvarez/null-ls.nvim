@@ -3393,6 +3393,27 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--fix", "$FILENAME" }`
 
+### [purs-tidy](https://github.com/natefaubion/purescript-tidy)
+
+A syntax tidy-upper (formatter) for PureScript.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.purs-tidy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "purescript" }`
+- Method: `formatting`
+- Command: `purs-tidy`
+- Args: `{ "format" }`
+
+#### Notes
+
+- For installation, use npm: npm install -g purs-tidy
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
