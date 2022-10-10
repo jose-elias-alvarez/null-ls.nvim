@@ -24,11 +24,11 @@ return h.make_builtin({
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
                 -- isort will detect files in the CWD as first-party
-                "setup.py",
                 -- https://pycqa.github.io/isort/docs/configuration/config_files.html
-                "setup.cfg",
                 ".isort.cfg",
                 "pyproject.toml",
+                "setup.py",
+                "setup.cfg",
                 "tox.ini",
                 ".editorconfig"
             )(params.bufname)
