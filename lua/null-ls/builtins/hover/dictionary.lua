@@ -6,7 +6,7 @@ local HOVER = methods.internal.HOVER
 return h.make_builtin({
     name = "dictionary",
     method = HOVER,
-    filetypes = { "text", "markdown" },
+    filetypes = { "org", "text", "markdown" },
     generator = {
         fn = function(_, done)
             local cword = vim.fn.expand("<cword>")
