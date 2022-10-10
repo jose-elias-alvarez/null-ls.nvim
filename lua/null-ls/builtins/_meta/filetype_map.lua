@@ -245,7 +245,8 @@ return {
     formatting = { "ocamlformat" }
   },
   org = {
-    formatting = { "cbfmt" }
+    formatting = { "cbfmt" },
+    hover = { "dictionary" }
   },
   pascal = {
     formatting = { "ptop" }

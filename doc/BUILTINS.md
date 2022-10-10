@@ -4132,7 +4132,7 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 #### Defaults
 
-- Filetypes: `{ "text", "markdown" }`
+- Filetypes: `{ "org", "text", "markdown" }`
 - Method: `hover`
 
 #### Notes
