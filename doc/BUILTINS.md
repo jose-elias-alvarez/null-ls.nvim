@@ -3393,14 +3393,14 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--fix", "$FILENAME" }`
 
-### [purs-tidy](https://github.com/natefaubion/purescript-tidy)
+### [purs_tidy](https://github.com/natefaubion/purescript-tidy)
 
 A syntax tidy-upper (formatter) for PureScript.
 
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.purs-tidy }
+local sources = { null_ls.builtins.formatting.purs_tidy }
 ```
 
 #### Defaults

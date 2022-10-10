@@ -280,7 +280,7 @@ return {
     formatting = { "puppet_lint" }
   },
   purescript = {
-    formatting = { "purs-tidy" }
+    formatting = { "purs_tidy" }
   },
   python = {
     code_actions = { "refactoring" },
