@@ -4,7 +4,7 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "purs-tidy",
+    name = "purs_tidy",
     meta = {
         url = "https://github.com/natefaubion/purescript-tidy",
         description = "A syntax tidy-upper (formatter) for PureScript.",
