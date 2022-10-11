@@ -83,7 +83,7 @@ end
 ---@field range NullLsRange|nil converted LSP range
 ---@field word_to_complete string|nil
 ---@field _pos number[]
----@field source_id string set by generators.run
+---@field source_id number set by generators.run
 ---@field command string|nil set by generator_factory
 ---@field root string|nil set by generator_factory
 local Params = {}
