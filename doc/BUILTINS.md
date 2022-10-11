@@ -101,6 +101,23 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 - Filetypes: `{}`
 - Method: `code_action`
 
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown" }`
+- Method: `code_action`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
+
 ### [proselint](https://github.com/amperser/proselint)
 
 An English prose linter. Can fix some issues via code actions.
@@ -931,6 +948,23 @@ local sources = { null_ls.builtins.diagnostics.ktlint }
 - Command: `ktlint`
 - Args: `{ "--relative", "--reporter=json", "**/*.kt", "**/*.kts" }`
 
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown", "markdown" }`
+- Method: `diagnostics`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
+
 ### [luacheck](https://github.com/lunarmodules/luacheck)
 
 A tool for linting and static analysis of Lua code.
@@ -964,6 +998,27 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - Method: `diagnostics`
 - Command: `markdownlint`
 - Args: `{ "--stdin" }`
+
+### [markdownlint_cli2](https://github.com/DavidAnson/markdownlint-cli2)
+
+A fast, flexible, configuration-based command-line interface for linting Markdown/CommonMark files with the markdownlint library
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.markdownlint_cli2 }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `diagnostics_on_save`
+- Command: `markdownlint-cli2`
+
+#### Notes
+
+- Must be configured using a [configuration file](https://github.com/DavidAnson/markdownlint-cli2#configuration).
+- See [the documentation](https://github.com/DavidAnson/markdownlint-cli2#overview) to understand the differences between markdownlint-cli2 and markdownlint-cli.
 
 ### [mdl](https://github.com/markdownlint/markdownlint)
 
@@ -1475,6 +1530,23 @@ local sources = { null_ls.builtins.diagnostics.semgrep }
 - Method: `diagnostics`
 - Command: `semgrep`
 - Args: `{ "-q", "--json", "$FILENAME" }`
+
+### [semistandardjs](https://github.com/standard/semistandard)
+
+JavaScript style guide, linter, and formatter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `diagnostics`
+- Command: `semistandard`
+- Args: `{ "--stdin" }`
 
 ### [shellcheck](https://www.shellcheck.net/)
 
@@ -3023,6 +3095,23 @@ local sources = { null_ls.builtins.formatting.npm_groovy_lint }
 - Command: `npm-groovy-lint`
 - Args: `{ "--format", "-" }`
 
+### [ocamlformat](https://github.com/ocaml-ppx/ocamlformat)
+
+Auto-formatter for OCaml code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ocamlformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ocaml" }`
+- Method: `formatting`
+- Command: `ocamlformat`
+- Args: `{ "--enable-outside-detected-project", "-" }`
+
 ### [ocdc](https://github.com/mdwint/ocdc)
 
 A changelog formatter
@@ -3304,6 +3393,27 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--fix", "$FILENAME" }`
 
+### [purs_tidy](https://github.com/natefaubion/purescript-tidy)
+
+A syntax tidy-upper (formatter) for PureScript.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.purs_tidy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "purescript" }`
+- Method: `formatting`
+- Command: `purs-tidy`
+- Args: `{ "format" }`
+
+#### Notes
+
+- For installation, use npm: npm install -g purs-tidy
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
@@ -3525,6 +3635,23 @@ local sources = { null_ls.builtins.formatting.scalafmt }
 - Method: `formatting`
 - Command: `scalafmt`
 - Args: `{ "--stdin" }`
+
+### [semistandardjs](https://standardjs.com/)
+
+JavaScript Standard Style, a no-configuration automatic code formatter that just works.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `formatting`
+- Command: `semistandard`
+- Args: `{ "--stdin", "--fix" }`
 
 ### [shellharden](https://github.com/anordal/shellharden)
 
@@ -4026,7 +4153,7 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 #### Defaults
 
-- Filetypes: `{ "text", "markdown" }`
+- Filetypes: `{ "org", "text", "markdown" }`
 - Method: `hover`
 
 #### Notes

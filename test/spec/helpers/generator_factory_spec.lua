@@ -133,7 +133,9 @@ describe("generator_factory", function()
             local parsed = loop.spawn.calls[1].refs[2]
             assert.same(parsed, generator_opts.args)
         end)
+    end)
 
+    describe("parse_env", function()
         it("should pass in the environment variables to the command", function()
             generator_opts.env = { TEST = "TESTING" }
 
@@ -142,6 +144,22 @@ describe("generator_factory", function()
 
             local parsed = loop.spawn.calls[1].refs[3]
             assert.same(parsed.env, generator_opts.env)
+        end)
+
+        it("should resolve function as a table of environment variables", function()
+            local environment_variables = { TEST = "TESTING" }
+
+            generator_opts.env = function()
+                return environment_variables
+            end
+
+            local generator = helpers.generator_factory(generator_opts)
+            local params = {}
+            generator.fn(params, done)
+
+            local parsed = loop.spawn.calls[1].refs[3]
+            assert.same(parsed.env, environment_variables)
+            assert.same(params.command, command)
         end)
     end)
 

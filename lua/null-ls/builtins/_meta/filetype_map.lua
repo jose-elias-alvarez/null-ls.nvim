@@ -177,13 +177,13 @@ return {
   },
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
-    diagnostics = { "eslint", "eslint_d", "jshint", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
+    diagnostics = { "eslint", "eslint_d", "jshint", "semistandardjs", "standardjs", "xo" },
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
-    diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
+    diagnostics = { "eslint", "eslint_d", "semistandardjs", "standardjs", "xo" },
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "semistandardjs", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
@@ -219,8 +219,8 @@ return {
     diagnostics = { "checkmake" }
   },
   markdown = {
-    code_actions = { "proselint" },
-    diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
+    code_actions = { "ltrs", "proselint" },
+    diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "vale", "write_good" },
     formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
@@ -241,8 +241,12 @@ return {
     diagnostics = { "deadnix", "statix" },
     formatting = { "alejandra", "nixfmt", "nixpkgs_fmt" }
   },
+  ocaml = {
+    formatting = { "ocamlformat" }
+  },
   org = {
-    formatting = { "cbfmt" }
+    formatting = { "cbfmt" },
+    hover = { "dictionary" }
   },
   pascal = {
     formatting = { "ptop" }
@@ -274,6 +278,9 @@ return {
   puppet = {
     diagnostics = { "puppet_lint" },
     formatting = { "puppet_lint" }
+  },
+  purescript = {
+    formatting = { "purs_tidy" }
   },
   python = {
     code_actions = { "refactoring" },
@@ -367,6 +374,8 @@ return {
     formatting = { "latexindent" }
   },
   text = {
+    code_actions = { "ltrs" },
+    diagnostics = { "ltrs" },
     hover = { "dictionary" }
   },
   tf = {

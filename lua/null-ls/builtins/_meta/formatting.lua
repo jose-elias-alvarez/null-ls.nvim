@@ -193,6 +193,9 @@ return {
   npm_groovy_lint = {
     filetypes = { "groovy", "java", "Jenkinsfile" }
   },
+  ocamlformat = {
+    filetypes = { "ocaml" }
+  },
   ocdc = {
     filetypes = { "markdown" }
   },
@@ -241,6 +244,9 @@ return {
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },
+  purs_tidy = {
+    filetypes = { "purescript" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },
@@ -276,6 +282,9 @@ return {
   },
   scalafmt = {
     filetypes = { "scala" }
+  },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   shellharden = {
     filetypes = { "sh" }

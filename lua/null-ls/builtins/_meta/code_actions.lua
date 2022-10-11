@@ -16,6 +16,9 @@ return {
   gitsigns = {
     filetypes = {}
   },
+  ltrs = {
+    filetypes = { "text", "markdown" }
+  },
   proselint = {
     filetypes = { "markdown", "tex" }
   },

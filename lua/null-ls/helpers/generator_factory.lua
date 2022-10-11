@@ -127,21 +127,15 @@ return function(opts)
         end
     end
 
+    local is_nil_table_or_func = function(v)
+        return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
+    end
+
     local _validated
     local validate_opts = function(params)
         local validated, validation_err = pcall(vim.validate, {
-            args = {
-                args,
-                function(v)
-                    return v == nil or vim.tbl_contains({ "function", "table" }, type(v))
-                end,
-                "function or table",
-            },
-            env = {
-                env,
-                "table",
-                true,
-            },
+            args = { args, is_nil_table_or_func, "function or table" },
+            env = { env, is_nil_table_or_func, "function or table" },
             on_output = { on_output, "function" },
             format = {
                 format,
@@ -287,6 +281,10 @@ return function(opts)
 
             local resolved_cwd = cwd and cwd(params) or root
             params.cwd = resolved_cwd
+
+            if type(env) == "function" then
+                env = env(params)
+            end
 
             local spawn_opts = {
                 cwd = resolved_cwd,

@@ -112,10 +112,16 @@ return {
   ktlint = {
     filetypes = { "kotlin" }
   },
+  ltrs = {
+    filetypes = { "text", "markdown", "markdown" }
+  },
   luacheck = {
     filetypes = { "lua" }
   },
   markdownlint = {
+    filetypes = { "markdown" }
+  },
+  markdownlint_cli2 = {
     filetypes = { "markdown" }
   },
   mdl = {
@@ -201,6 +207,9 @@ return {
   },
   semgrep = {
     filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }
+  },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   shellcheck = {
     filetypes = { "sh" }
