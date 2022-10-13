@@ -1509,7 +1509,7 @@ local sources = { null_ls.builtins.diagnostics.selene }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Method: `diagnostics`
 - Command: `selene`
 - Args: `{ "--display-style", "quiet", "-" }`
@@ -3842,7 +3842,7 @@ local sources = { null_ls.builtins.formatting.stylua }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Methods: `formatting, range_formatting`
 - Command: `stylua`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/stylua.lua))

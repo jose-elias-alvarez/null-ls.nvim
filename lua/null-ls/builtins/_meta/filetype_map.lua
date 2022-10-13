@@ -215,6 +215,10 @@ return {
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
   },
+  luau = {
+    diagnostics = { "selene" },
+    formatting = { "stylua" }
+  },
   make = {
     diagnostics = { "checkmake" }
   },

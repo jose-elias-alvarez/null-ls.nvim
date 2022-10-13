@@ -203,7 +203,7 @@ return {
     filetypes = { "ruby" }
   },
   selene = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   semgrep = {
     filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }

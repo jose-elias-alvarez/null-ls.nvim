@@ -317,7 +317,7 @@ return {
     filetypes = { "haskell" }
   },
   stylua = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   surface = {
     filetypes = { "elixir", "surface" }
