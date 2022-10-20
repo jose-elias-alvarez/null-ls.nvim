@@ -1065,7 +1065,7 @@ local sources = { null_ls.builtins.diagnostics.mlint }
 
 #### Defaults
 
-- Filetypes: `{ "matlab" }`
+- Filetypes: `{ "matlab", "octave" }`
 - Method: `diagnostics_on_save`
 - Command: `mlint`
 - Args: `{ "$FILENAME" }`
