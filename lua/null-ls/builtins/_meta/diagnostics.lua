@@ -131,7 +131,7 @@ return {
     filetypes = {}
   },
   mlint = {
-    filetypes = { "matlab" }
+    filetypes = { "matlab", "octave" }
   },
   mypy = {
     filetypes = { "python" }

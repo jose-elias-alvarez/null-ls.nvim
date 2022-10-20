@@ -248,6 +248,9 @@ return {
   ocaml = {
     formatting = { "ocamlformat" }
   },
+  octave = {
+    diagnostics = { "mlint" }
+  },
   org = {
     formatting = { "cbfmt" },
     hover = { "dictionary" }
