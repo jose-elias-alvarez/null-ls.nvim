@@ -40,10 +40,10 @@ M.setup = function(user_config)
     vim.api.nvim_create_user_command("NullLsToggle", function(opts)
         M.toggle(opts.args)
     end, {
-        nargs = 1,
+        nargs = "?",
         complete = function()
             local list = {}
-            for _, source in ipairs(M.get_sources()) do
+            for _, source in ipairs(sources.get(vim.bo.filetype)) do
                 list[#list + 1] = source.name
             end
             return list
