@@ -102,6 +102,21 @@ M.show_window = function()
         return info_lines
     end
 
+    local create_inactive_sources_info = function(ft)
+        local info_lines = {
+            "Inactive source(s)",
+        }
+
+        for _, source in ipairs(sources.get(ft)) do
+            if source._disabled then
+                info_lines = vim.list_extend(info_lines, create_source_info(source))
+                table.insert(highlights, { "Title", "name:.*\\zs" .. source.name .. "\\ze" })
+            end
+        end
+        table.insert(highlights, { "Type", info_lines[1] })
+        return info_lines
+    end
+
     local create_supported_methods_info = function(ft)
         local supported_methods = sources.get_supported(ft)
 
@@ -140,8 +155,10 @@ M.show_window = function()
     local methods_info = create_supported_methods_info(filetype)
     local sources_info = nil
     local logger_info = nil
+    local inactive_sources_info = nil
     if is_attached then
         sources_info = create_active_sources_info(filetype)
+        inactive_sources_info = create_inactive_sources_info(filetype)
         logger_info = create_logging_info()
     end
 
@@ -150,6 +167,7 @@ M.show_window = function()
         header,
         logger_info,
         sources_info,
+        inactive_sources_info,
         methods_info,
     }) do
         if section then
