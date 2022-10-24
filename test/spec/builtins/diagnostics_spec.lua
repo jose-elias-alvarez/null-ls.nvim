@@ -1290,4 +1290,240 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("checkstyle", function()
+        local linter = diagnostics.checkstyle
+        local parser = linter._opts.on_output
+
+        it("should parse the usual output", function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        },
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/ReportController.java"
+                                },
+                                "region": {
+                                  "startColumn": 4,
+                                  "startLine": 74
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment (Test)."
+                          },
+                          "ruleId": "javadoc.missing.test"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local parsed = parser({ output = output })
+            assert.same({
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+                {
+                    row = 74,
+                    col = 4,
+                    end_col = 5,
+                    code = "javadoc.missing.test",
+                    message = "Missing a Javadoc comment (Test).",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+            }, parsed)
+        end)
+
+        it('should ignore the "ends with n errors" message', function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local err = [[Checkstyle ends with 42 errors.\n]]
+            local parsed = parser({ output = output, err = err })
+            assert.same({
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+            }, parsed)
+        end)
+
+        it("should rephrase the missing config message", function()
+            local parsed = parser({ bufnr = 42, output = nil, err = [[Must specify a config XML file.\n]] })
+            assert.same({
+                {
+                    message = "You need to specify a configuration for checkstyle. See"
+                        .. " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#checkstyle",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should add other errors", function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local err = [[Some other error.\n]]
+            local parsed = parser({ bufnr = 42, output = output, err = err })
+            assert.same({
+                {
+                    message = vim.trim(err),
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+            }, parsed)
+        end)
+    end)
 end)
