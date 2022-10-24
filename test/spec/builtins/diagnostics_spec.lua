@@ -1526,4 +1526,165 @@ describe("diagnostics", function()
             }, parsed)
         end)
     end)
+
+    describe("pmd", function()
+        local linter = diagnostics.pmd
+        local parser = linter._opts.on_output
+
+        it("should parse the usual output", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [
+                    {
+                      "filename": "/home/someuser/Code/someproject/FooController.java",
+                      "violations": [
+                        {
+                          "beginline": 1,
+                          "begincolumn": 8,
+                          "endline": 2,
+                          "endcolumn": 1,
+                          "description": "Class comments are required",
+                          "rule": "CommentRequired",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        }
+                      ]
+                    },
+                    {
+                      "filename": "/home/someuser/Code/someproject/ReportController.java",
+                      "violations": [
+                        {
+                          "beginline": 76,
+                          "begincolumn": 8,
+                          "endline": 712,
+                          "endcolumn": 1,
+                          "description": "Class comments are required 2",
+                          "rule": "CommentRequired2",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        },
+                        {
+                          "beginline": 77,
+                          "begincolumn": 23,
+                          "endline": 77,
+                          "endcolumn": 57,
+                          "description": "Field comments are required 3",
+                          "rule": "CommentRequired3",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        }
+                      ]
+                    }
+                  ],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local parsed = parser({ output = output })
+            assert.same({
+                {
+                    row = 1,
+                    col = 8,
+                    end_row = 2,
+                    end_col = 2,
+                    code = "Documentation/CommentRequired",
+                    message = "Class comments are required",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+                {
+                    row = 76,
+                    col = 8,
+                    end_row = 712,
+                    end_col = 2,
+                    code = "Documentation/CommentRequired2",
+                    message = "Class comments are required 2",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+                {
+                    row = 77,
+                    col = 23,
+                    end_row = 77,
+                    end_col = 58,
+                    code = "Documentation/CommentRequired3",
+                    message = "Field comments are required 3",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+            }, parsed)
+        end)
+
+        it("should show the caching encouragement as warning", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD encourageToUseIncrementalAnalysis
+WARNING: This analysis could be faster, please consider using Incremental Analysis: https://pmd.github.io/pmd-6.50.0/pmd_userdocs_incremental_analysis.html]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "encourageToUseIncrementalAnalysis",
+                    message = "WARNING: This analysis could be faster, please consider using Incremental Analysis: https://pmd.github.io/pmd-6.50.0/pmd_userdocs_incremental_analysis.html",
+                    severity = vim.diagnostic.severity.WARN,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should rephrase the missing ruleset message", function()
+            local parsed = parser({
+                bufnr = 42,
+                output = nil,
+                err = [[The following option is required: --rulesets, -rulesets, -R
+Run with --help for command line help.]],
+            })
+            assert.same({
+                {
+                    message = "You need to specify a ruleset for PMD. See"
+                        .. " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#pmd",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should show other error messages", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Some other message.]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    message = err,
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+    end)
 end)
