@@ -22,6 +22,9 @@ return {
   checkmake = {
     filetypes = { "make" }
   },
+  checkstyle = {
+    filetypes = { "java" }
+  },
   chktex = {
     filetypes = { "tex" }
   },

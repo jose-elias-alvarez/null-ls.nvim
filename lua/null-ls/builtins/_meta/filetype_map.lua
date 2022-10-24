@@ -172,7 +172,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "semgrep" },
+    diagnostics = { "checkstyle", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
