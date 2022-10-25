@@ -34,10 +34,12 @@ local function handle_checkstyle_output(params)
 
     for _, result in ipairs(results) do
         for _, location in ipairs(result.locations) do
+            local col = location.physicalLocation.region.startColumn
+
             table.insert(output, {
                 row = location.physicalLocation.region.startLine,
-                col = location.physicalLocation.region.startColumn,
-                end_col = location.physicalLocation.region.startColumn + 1,
+                col = col,
+                end_col = col and col + 1,
                 code = result.ruleId,
                 message = result.message.text,
                 severity = h.diagnostics.severities[result.level],
