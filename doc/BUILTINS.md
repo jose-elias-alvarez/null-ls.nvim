@@ -1229,6 +1229,42 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 - Requires a valid `phpstan.neon` at root.
 - If in place validation is required set `method` to `diagnostics_on_save` and `to_temp_file` to `false`
 
+### [pmd](https://pmd.github.io)
+
+An extensible cross-language static code analyzer.
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pmd.with({
+        extra_args = {
+            "--rulesets",
+            "category/java/bestpractices.xml,category/jsp/bestpractices.xml" -- or path to self-written ruleset
+        },
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{ "java", "jsp" }`
+- Method: `diagnostics_on_save`
+- Command: `pmd`
+- Args: `{ "--format", "json", "--dir", "$ROOT" }`
+
+#### Notes
+
+- PMD only offers parameterized wrapper scripts as download. It is recommended to put an executable wrapper
+script in your path.
+Example wrapper script:
+```bash
+#!/usr/bin/env bash
+path/to/pmd/bin/run.sh pmd "$@"
+```
+- PMD needs a mandatory `--rulesets`/`-rulesets`/`-R` argument. Use `extra_args` to add yours. `extra_args`
+can also be a function to build more sophisticated logic.
+
 ### [proselint](https://github.com/amperser/proselint)
 
 An English prose linter.

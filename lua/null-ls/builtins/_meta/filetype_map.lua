@@ -172,7 +172,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "checkstyle", "semgrep" },
+    diagnostics = { "checkstyle", "pmd", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
@@ -195,6 +195,9 @@ return {
   },
   jsonc = {
     formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettierd" }
+  },
+  jsp = {
+    diagnostics = { "pmd" }
   },
   just = {
     formatting = { "just" }

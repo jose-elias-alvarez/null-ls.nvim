@@ -157,6 +157,9 @@ return {
   phpstan = {
     filetypes = { "php" }
   },
+  pmd = {
+    filetypes = { "java", "jsp" }
+  },
   proselint = {
     filetypes = { "markdown", "tex" }
   },
