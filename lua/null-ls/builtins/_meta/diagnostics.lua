@@ -127,11 +127,14 @@ return {
   mdl = {
     filetypes = { "markdown" }
   },
+  mh_lint = {
+    filetypes = { "matlab", "octave" }
+  },
   misspell = {
     filetypes = {}
   },
   mlint = {
-    filetypes = { "matlab" }
+    filetypes = { "matlab", "octave" }
   },
   mypy = {
     filetypes = { "python" }

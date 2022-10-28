@@ -232,7 +232,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   matlab = {
-    diagnostics = { "mlint" }
+    diagnostics = { "mlint", "mh_lint" }
   },
   nginx = {
     formatting = { "nginx_beautifier" }
@@ -247,6 +247,9 @@ return {
   },
   ocaml = {
     formatting = { "ocamlformat" }
+  },
+  octave = {
+    diagnostics = { "mlint", "mh_lint" }
   },
   org = {
     formatting = { "cbfmt" },

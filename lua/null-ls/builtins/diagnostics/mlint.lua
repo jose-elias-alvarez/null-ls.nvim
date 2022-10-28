@@ -14,7 +14,7 @@ return h.make_builtin({
         description = "Linter for MATLAB files",
     },
     method = DIAGNOSTICS_ON_SAVE,
-    filetypes = { "matlab" },
+    filetypes = { "matlab", "octave" },
     generator_opts = {
         command = "mlint",
         args = { "$FILENAME" },
