@@ -23,8 +23,6 @@ local custom_end_col = {
             pattern = [[%`(.*)%` imported but unused]]
         elseif code == "F841" then
             pattern = [[Local variable %`(.*)%` is assigned to but never used]]
-        elseif code == "R001" then
-            pattern = [[Class %`(.*)%` inherits from object]]
         end
         if not pattern then
             return default_position
@@ -58,15 +56,17 @@ return h.make_builtin({
         command = "ruff",
         args = {
             "-n",
+            "-e",
+            "--stdin-filename",
             "$FILENAME",
+            "-",
         },
         format = "line",
         check_exit_code = function(code)
             return code == 0
         end,
-        to_stdin = false,
-        from_stderr = true,
-        to_temp_file = true,
+        to_stdin = true,
+        ignore_stderr = true,
         on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+): ((%u)%w+) (.*)]],
             { "row", "col", "code", "severity", "message" },
@@ -75,9 +75,16 @@ return h.make_builtin({
                     custom_end_col,
                 },
                 severities = {
-                    E = h.diagnostics.severities["error"],
-                    F = h.diagnostics.severities["warning"],
-                    R = h.diagnostics.severities["error"],
+                    E = h.diagnostics.severities["error"], -- pycodestyle errors
+                    W = h.diagnostics.severities["warning"], -- pycodestyle warnings
+                    F = h.diagnostics.severities["information"], -- pyflakes
+                    A = h.diagnostics.severities["information"], -- flake8-builtins
+                    B = h.diagnostics.severities["warning"], -- flake8-bugbear
+                    C = h.diagnostics.severities["warning"], -- flake8-comprehensions
+                    T = h.diagnostics.severities["information"], -- flake8-print
+                    U = h.diagnostics.severities["information"], -- pyupgrade
+                    D = h.diagnostics.severities["information"], -- pydocstyle
+                    M = h.diagnostics.severities["information"], -- Meta
                 },
             }
         ),
