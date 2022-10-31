@@ -24,10 +24,12 @@ local function make_builtin(opts)
     -- merge valid user opts w/ generator opts
     generator_opts = vim.tbl_deep_extend("force", generator_opts, {
         args = opts.args,
+        check_exit_code = opts.check_exit_code,
         command = opts.command,
         env = opts.env,
         cwd = opts.cwd,
         diagnostics_format = opts.diagnostics_format,
+        diagnostic_config = opts.diagnostic_config,
         filter = opts.filter,
         diagnostics_postprocess = opts.diagnostics_postprocess,
         dynamic_command = opts.dynamic_command,

@@ -31,6 +31,7 @@ return h.make_builtin({
         "jsonc",
         "yaml",
         "markdown",
+        "markdown.mdx",
         "graphql",
         "handlebars",
     },
@@ -54,9 +55,9 @@ return h.make_builtin({
                 ".prettierrc.json5",
                 ".prettierrc.js",
                 ".prettierrc.cjs",
-                ".prettier.config.js",
-                ".prettier.config.cjs",
                 ".prettierrc.toml",
+                "prettier.config.js",
+                "prettier.config.cjs",
                 "package.json"
             )(params.bufname)
         end),

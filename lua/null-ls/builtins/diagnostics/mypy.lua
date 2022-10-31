@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -63,6 +64,15 @@ benefits of dynamic (or "duck") typing and static typing.]],
                 overrides = overrides,
             },
         }),
+        cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                -- https://mypy.readthedocs.io/en/stable/config_file.html
+                "mypy.ini",
+                ".mypy.ini",
+                "pyproject.toml",
+                "setup.cfg"
+            )(params.bufname)
+        end),
     },
     factory = h.generator_factory,
 })

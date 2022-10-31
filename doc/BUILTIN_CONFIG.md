@@ -148,15 +148,27 @@ local sources = {
 ### Environment Variables
 
 You can inject environment variables to the process via utilizing the `env`
-option. This option should be in the form of a dictionary. This will extend the
-operating system variables.
+option. This option can be in the form of a dictionary. It can also, just like
+`args` and `extra_args`, take a function receiving a `params` object. 
 
 ```lua
+-- Using a dictionary:
+
 local sources = {
     null_ls.builtins.formatting.prettierd.with({
         env = {
             PRETTIERD_DEFAULT_CONFIG = vim.fn.expand("~/.config/nvim/utils/linter-config/.prettierrc.json"),
         },
+    }),
+}
+
+-- Using a function:
+
+local sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+        env = function(params)
+            return { PYTHONPATH = params.root }
+        end,
     }),
 }
 ```
@@ -190,6 +202,29 @@ local sources = {
     }),
 }
 ```
+
+### Diagnostic config
+
+You can configure how Neovim displays source diagnostics by setting
+`diagnostic_config`:
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.shellcheck.with({
+        diagnostic_config = {
+            -- see :help vim.diagnostic.config()
+            underline = true,
+            virtual_text = false,
+            signs = true,
+            update_in_insert = false,
+            severity_sort = true,
+        },
+    }),
+}
+```
+
+- Specifying `diagnostic_config` for a built-in will override your global
+  `diagnostic_config` for that source.
 
 ### Diagnostics format
 

@@ -14,6 +14,25 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 ## Code Actions
 
+### [cspell](https://github.com/streetsidesoftware/cspell)
+
+Injects actions to fix typos found by `cspell`.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_actions.cspell }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `code_action`
+
+#### Notes
+
+- This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.
+
 ### [eslint](https://github.com/eslint/eslint)
 
 Injects actions to fix ESLint issues or ignore broken rules.
@@ -81,6 +100,23 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 
 - Filetypes: `{}`
 - Method: `code_action`
+
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown" }`
+- Method: `code_action`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
 
 ### [proselint](https://github.com/amperser/proselint)
 
@@ -376,6 +412,40 @@ local sources = { null_ls.builtins.diagnostics.checkmake }
 - Command: `checkmake`
 - Args: `{ "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}'", "$FILENAME" }`
 
+### [checkstyle](https://checkstyle.org)
+
+Checkstyle is a tool for checking Java source code for adherence to a Code Standard or set of
+validation rules (best practices).
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.checkstyle.with({
+        extra_args = { "-c", "/google_checks.xml" }, -- or "/sun_checks.xml" or path to self written rules
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{ "java" }`
+- Method: `diagnostics_on_save`
+- Command: `checkstyle`
+- Args: `{ "-f", "sarif", "$ROOT" }`
+
+#### Notes
+
+- Checkstyle only offers a jar file as download. It is recommended to put an executable wrapper script in
+your path.
+Example wrapper script:
+```bash
+#!/usr/bin/env bash
+java -jar path/to/checkstyle.jar "$@"
+```
+- Checkstyle needs a mandatory `-c` argument. Use `extra_args` to add yours. `extra_args` can also be a
+function to build more sophisticated logic.
+
 ### [chktex](https://www.nongnu.org/chktex/)
 
 `latex` semantic linter.
@@ -430,6 +500,23 @@ local sources = { null_ls.builtins.diagnostics.clj_kondo }
 - Method: `diagnostics`
 - Command: `clj-kondo`
 - Args: `{ "--cache", "--lint", "-", "--filename", "$FILENAME" }`
+
+### [cmake_lint](https://github.com/cheshirekow/cmake_format)
+
+Check cmake listfiles for style violations, common mistakes, and anti-patterns.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.cmake_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cmake" }`
+- Method: `diagnostics_on_save`
+- Command: `cmake-lint`
+- Args: `{ "$FILENAME" }`
 
 ### [codespell](https://github.com/codespell-project/codespell)
 
@@ -895,6 +982,23 @@ local sources = { null_ls.builtins.diagnostics.ktlint }
 - Command: `ktlint`
 - Args: `{ "--relative", "--reporter=json", "**/*.kt", "**/*.kts" }`
 
+### [ltrs](https://github.com/jeertmans/languagetool-rust)
+
+LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ltrs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "text", "markdown", "markdown" }`
+- Method: `diagnostics`
+- Command: `ltrs`
+- Args: `{ "check", "-m", "-r", "--text", "$TEXT" }`
+
 ### [luacheck](https://github.com/lunarmodules/luacheck)
 
 A tool for linting and static analysis of Lua code.
@@ -928,6 +1032,27 @@ local sources = { null_ls.builtins.diagnostics.markdownlint }
 - Method: `diagnostics`
 - Command: `markdownlint`
 - Args: `{ "--stdin" }`
+
+### [markdownlint_cli2](https://github.com/DavidAnson/markdownlint-cli2)
+
+A fast, flexible, configuration-based command-line interface for linting Markdown/CommonMark files with the markdownlint library
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.markdownlint_cli2 }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown" }`
+- Method: `diagnostics_on_save`
+- Command: `markdownlint-cli2`
+
+#### Notes
+
+- Must be configured using a [configuration file](https://github.com/DavidAnson/markdownlint-cli2#configuration).
+- See [the documentation](https://github.com/DavidAnson/markdownlint-cli2#overview) to understand the differences between markdownlint-cli2 and markdownlint-cli.
 
 ### [mdl](https://github.com/markdownlint/markdownlint)
 
@@ -974,7 +1099,7 @@ local sources = { null_ls.builtins.diagnostics.mlint }
 
 #### Defaults
 
-- Filetypes: `{ "matlab" }`
+- Filetypes: `{ "matlab", "octave" }`
 - Method: `diagnostics_on_save`
 - Command: `mlint`
 - Args: `{ "$FILENAME" }`
@@ -1013,6 +1138,23 @@ local sources = { null_ls.builtins.diagnostics.opacheck }
 - Method: `diagnostics_on_save`
 - Command: `opa`
 - Args: `{ "check", "-f", "json", "--strict", "$ROOT/src/", "$ROOT/test/" }`
+
+### [perlimports](https://metacpan.org/dist/App-perlimports/view/script/perlimports)
+
+A command line utility for cleaning up imports in your Perl code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.perlimports }
+```
+
+#### Defaults
+
+- Filetypes: `{ "perl" }`
+- Method: `diagnostics`
+- Command: `perlimports`
+- Args: `{ "--lint", "--read-stdin", "--filename", "$FILENAME" }`
 
 ### [php](https://www.php.net/)
 
@@ -1086,6 +1228,42 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 
 - Requires a valid `phpstan.neon` at root.
 - If in place validation is required set `method` to `diagnostics_on_save` and `to_temp_file` to `false`
+
+### [pmd](https://pmd.github.io)
+
+An extensible cross-language static code analyzer.
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pmd.with({
+        extra_args = {
+            "--rulesets",
+            "category/java/bestpractices.xml,category/jsp/bestpractices.xml" -- or path to self-written ruleset
+        },
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{ "java", "jsp" }`
+- Method: `diagnostics_on_save`
+- Command: `pmd`
+- Args: `{ "--format", "json", "--dir", "$ROOT" }`
+
+#### Notes
+
+- PMD only offers parameterized wrapper scripts as download. It is recommended to put an executable wrapper
+script in your path.
+Example wrapper script:
+```bash
+#!/usr/bin/env bash
+path/to/pmd/bin/run.sh pmd "$@"
+```
+- PMD needs a mandatory `--rulesets`/`-rulesets`/`-R` argument. Use `extra_args` to add yours. `extra_args`
+can also be a function to build more sophisticated logic.
 
 ### [proselint](https://github.com/amperser/proselint)
 
@@ -1401,7 +1579,7 @@ local sources = { null_ls.builtins.diagnostics.selene }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Method: `diagnostics`
 - Command: `selene`
 - Args: `{ "--display-style", "quiet", "-" }`
@@ -1422,6 +1600,23 @@ local sources = { null_ls.builtins.diagnostics.semgrep }
 - Method: `diagnostics`
 - Command: `semgrep`
 - Args: `{ "-q", "--json", "$FILENAME" }`
+
+### [semistandardjs](https://github.com/standard/semistandard)
+
+JavaScript style guide, linter, and formatter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `diagnostics`
+- Command: `semistandard`
+- Args: `{ "--stdin" }`
 
 ### [shellcheck](https://www.shellcheck.net/)
 
@@ -2885,7 +3080,7 @@ local sources = { null_ls.builtins.formatting.mix }
 - Filetypes: `{ "elixir" }`
 - Method: `formatting`
 - Command: `mix`
-- Args: `{ "format", "-" }`
+- Args: `{ "format", "--stdin-filename", "$FILENAME", "-" }`
 
 ### [nginx_beautifier](https://github.com/vasilevich/nginxbeautifier)
 
@@ -2969,6 +3164,23 @@ local sources = { null_ls.builtins.formatting.npm_groovy_lint }
 - Method: `formatting`
 - Command: `npm-groovy-lint`
 - Args: `{ "--format", "-" }`
+
+### [ocamlformat](https://github.com/ocaml-ppx/ocamlformat)
+
+Auto-formatter for OCaml code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.ocamlformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ocaml" }`
+- Method: `formatting`
+- Command: `ocamlformat`
+- Args: `{ "--enable-outside-detected-project", "-" }`
 
 ### [ocdc](https://github.com/mdwint/ocdc)
 
@@ -3117,7 +3329,7 @@ local sources = { null_ls.builtins.formatting.prettier }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Methods: `formatting, range_formatting`
 - Command: `prettier`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettier.lua))
@@ -3139,7 +3351,7 @@ local sources = { null_ls.builtins.formatting.prettierd }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Method: `formatting`
 - Command: `prettierd`
 - Args: `{ "$FILENAME" }`
@@ -3156,7 +3368,7 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }`
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
 - Methods: `formatting, range_formatting`
 - Command: `prettier_d_slim`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettier_d_slim.lua))
@@ -3251,6 +3463,27 @@ local sources = { null_ls.builtins.formatting.puppet_lint }
 - Command: `puppet-lint`
 - Args: `{ "--fix", "$FILENAME" }`
 
+### [purs_tidy](https://github.com/natefaubion/purescript-tidy)
+
+A syntax tidy-upper (formatter) for PureScript.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.purs_tidy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "purescript" }`
+- Method: `formatting`
+- Command: `purs-tidy`
+- Args: `{ "format" }`
+
+#### Notes
+
+- For installation, use npm: npm install -g purs-tidy
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
@@ -3289,6 +3522,23 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 
 - Requires Racket 8.0 or later
 - Install with `raco pkg install fmt`
+
+### [rego](https://www.openpolicyagent.org/docs/latest/policy-language)
+
+Rego (opa fmt) Formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rego }
+```
+
+#### Defaults
+
+- Filetypes: `{ "rego" }`
+- Method: `formatting`
+- Command: `opa`
+- Args: `{ "fmt" }`
 
 ### [remark](https://github.com/remarkjs/remark)
 
@@ -3455,6 +3705,23 @@ local sources = { null_ls.builtins.formatting.scalafmt }
 - Method: `formatting`
 - Command: `scalafmt`
 - Args: `{ "--stdin" }`
+
+### [semistandardjs](https://standardjs.com/)
+
+JavaScript Standard Style, a no-configuration automatic code formatter that just works.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.semistandardjs }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact" }`
+- Method: `formatting`
+- Command: `semistandard`
+- Args: `{ "--stdin", "--fix" }`
 
 ### [shellharden](https://github.com/anordal/shellharden)
 
@@ -3645,7 +3912,7 @@ local sources = { null_ls.builtins.formatting.stylua }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Methods: `formatting, range_formatting`
 - Command: `stylua`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/stylua.lua))
@@ -3886,7 +4153,7 @@ local sources = { null_ls.builtins.formatting.yamlfmt }
 - Filetypes: `{ "yaml" }`
 - Method: `formatting`
 - Command: `yamlfmt`
-- Args: `{ "$FILENAME" }`
+- Args: `{ "-" }`
 
 ### [yapf](https://github.com/google/yapf)
 
@@ -3956,7 +4223,7 @@ local sources = { null_ls.builtins.hover.dictionary }
 
 #### Defaults
 
-- Filetypes: `{ "text", "markdown" }`
+- Filetypes: `{ "org", "text", "markdown" }`
 - Method: `hover`
 
 #### Notes

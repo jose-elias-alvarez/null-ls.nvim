@@ -2,7 +2,7 @@ local log = require("null-ls.logger")
 local u = require("null-ls.utils")
 
 local uv = vim.loop
-local wrap = vim.schedule_wrap
+local wrap = vim.schedule_wrap --[[@as fun(cb: any): function]]
 
 local close_handle = function(handle)
     if handle and not handle:is_closing() then
@@ -144,9 +144,17 @@ M.spawn = function(cmd, args, opts)
         cmd, args = cmd[1], concat_args
     end
 
+    local exepath = vim.fn.exepath(cmd)
+    local spawn_params = {
+        args = args,
+        env = parsed_env,
+        stdio = stdio,
+        cwd = opts.cwd or vim.loop.cwd(),
+    }
+
     handle, pid = uv.spawn(
-        vim.fn.exepath(cmd),
-        { args = args, env = parsed_env, stdio = stdio, cwd = opts.cwd or vim.fn.getcwd() },
+        exepath ~= "" and exepath or cmd, -- if we can't resolve exepath, try spawning the command as-is
+        spawn_params,
         on_close
     )
 
@@ -220,16 +228,37 @@ M.temp_file = function(content, bufname)
     local dirname = vim.fn.fnamemodify(bufname, ":h")
     local base_name = vim.fn.fnamemodify(bufname, ":t")
 
-    local filename = string.format("_null-ls_%d_%s", math.random(100000, 999999), base_name)
+    local filename = string.format(".null-ls_%d_%s", math.random(100000, 999999), base_name)
     local temp_path = u.path.join(dirname, filename)
 
-    local fd = uv.fs_open(temp_path, "w", 384)
+    local fd, err = uv.fs_open(temp_path, "w", 384)
+    if not fd then
+        error("failed to create temp file: " .. err)
+    end
+
     uv.fs_write(fd, content, -1)
     uv.fs_close(fd)
 
+    local autocmd_id
     local cleanup = function()
+        if not temp_path then
+            return
+        end
+
         uv.fs_unlink(temp_path)
+        temp_path = nil
+
+        if autocmd_id then
+            vim.schedule(function()
+                vim.api.nvim_del_autocmd(autocmd_id)
+            end)
+        end
     end
+
+    -- make sure to run cleanup on exit
+    autocmd_id = vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = cleanup,
+    })
 
     return temp_path, cleanup
 end

@@ -11,7 +11,7 @@ return h.make_builtin({
         description = "An opinionated code formatter for Lua.",
     },
     method = { FORMATTING, RANGE_FORMATTING },
-    filetypes = { "lua" },
+    filetypes = { "lua", "luau" },
     generator_opts = {
         command = "stylua",
         args = h.range_formatting_args_factory({

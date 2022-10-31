@@ -193,6 +193,9 @@ return {
   npm_groovy_lint = {
     filetypes = { "groovy", "java", "Jenkinsfile" }
   },
+  ocamlformat = {
+    filetypes = { "ocaml" }
+  },
   ocdc = {
     filetypes = { "markdown" }
   },
@@ -218,16 +221,16 @@ return {
     filetypes = { "php" }
   },
   prettier = {
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
   },
   prettier_d_slim = {
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
   },
   prettier_standard = {
     filetypes = { "javascript", "javascriptreact" }
   },
   prettierd = {
-    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "graphql", "handlebars" }
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
   },
   prismaFmt = {
     filetypes = { "prisma" }
@@ -241,11 +244,17 @@ return {
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
   },
+  purs_tidy = {
+    filetypes = { "purescript" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },
   raco_fmt = {
     filetypes = { "racket" }
+  },
+  rego = {
+    filetypes = { "rego" }
   },
   remark = {
     filetypes = { "markdown" }
@@ -273,6 +282,9 @@ return {
   },
   scalafmt = {
     filetypes = { "scala" }
+  },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   shellharden = {
     filetypes = { "sh" }
@@ -305,7 +317,7 @@ return {
     filetypes = { "haskell" }
   },
   stylua = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   surface = {
     filetypes = { "elixir", "surface" }

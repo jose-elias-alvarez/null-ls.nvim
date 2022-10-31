@@ -1,5 +1,6 @@
 local stub = require("luassert.stub")
 local mock = require("luassert.mock")
+local spy = require("luassert.spy")
 
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
@@ -118,6 +119,27 @@ describe("generators", function()
             wait_for_results()
 
             assert.equals(vim.tbl_count(results), 0)
+        end)
+
+        it("should not copy params when < 2 generators", function()
+            local s = spy.on(vim, "deepcopy")
+
+            generators.run({ sync_generator }, mock_params, mock_opts, callback)
+            wait_for_results()
+
+            assert.spy(s).was_not_called()
+        end)
+
+        it("should copy params when >= 2 generators", function()
+            local s = spy.on(vim, "deepcopy")
+
+            generators.run({
+                sync_generator,
+                async_generator,
+            }, mock_params, mock_opts, callback)
+            wait_for_results()
+
+            assert.spy(s).was_called()
         end)
 
         it("should get result from sync generator", function()

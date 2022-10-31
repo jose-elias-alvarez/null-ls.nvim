@@ -24,65 +24,86 @@ body:
 
   - type: input
     attributes:
-      label: "Neovim Version"
-      description: "`nvim --version`:"
+      label: Neovim Version
+      description: Output of `nvim --version`.
     validations:
       required: true
+
+  - type: checkboxes
+    id: version-check
+    attributes:
+      label: Dev Version?
+      description: If your issue is exclusive to a dev version of Neovim, support is provided
+        on a best-effort basis, and you are encouraged to submit a PR solving your issue.
+      options:
+        - label: I am using a stable Neovim release version, or if I am using a dev version
+            of Neovim I have confirmed that my issue is reproducible on a stable version.
 
   - type: input
     attributes:
-      label: "Operating System"
-      description: "The operating system you are using null-ls on."
+      label: Operating System
+      description: The operating system and version you are using null-ls on.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: "Minimal config"
-      description: "Download the minimal config using `curl -fLO
+      label: Minimal Config
+      render: Lua
+      description: Download the minimal config using `curl -fLO
         https://raw.githubusercontent.com/jose-elias-alvarez/null-ls.nvim/main/scripts/minimal_init.lua`. Edit it to
-        include the configuration necessary to reproduce your bug and paste it here. Do not use your personal null-ls
-        config!"
+        include the configuration necessary to reproduce your bug and paste it here. Do **not** use your personal null-ls
+        config!
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: "Steps to reproduce"
+      label: Steps to Reproduce
       description:
-        "Full reproduction steps, starting with `nvim --clean -u minimal_init.lua`. Include a sample file if your issue
-        relates to a specific filetype."
+        Full reproduction steps, starting with `nvim --clean -u minimal_init.lua`. Include a sample file if your issue
+        relates to a specific filetype.
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Reproducibility Check
+      options:
+        - label: I confirm that my minimal config is based on the `minimal_init.lua` template
+            and that my issue is reproducible by running `nvim --clean -u minimal_init.lua` and
+            following the steps above.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: "Expected behavior"
-      description: "A description of the behavior you expected."
+      label: Expected Behavior
+      description: A description of the behavior you expected.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: "Actual behavior"
-      description: "A description of the actual behavior."
+      label: Actual Behavior
+      description: A description of the actual behavior.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: "Debug log"
+      label: Debug Log
       description:
-        "Debug log output from `:NullLsLog`, limited to the output from following your reproduction steps. Include this
-        even if you think it's irrelevant."
+        Debug log output from `:NullLsLog`, limited to the output from following your reproduction steps. Include this
+        even if you think it's irrelevant.
     validations:
       required: true
 
   - type: dropdown
     id: help
     attributes:
-      label: "Help"
-      description: "Would you be able to resolve this issue by submitting a pull request?"
+      label: Help
+      description: Would you be able to resolve this issue by submitting a pull request?
       options:
         - "Yes"
         - "Yes, but I don't know how to start. I would need guidance"
@@ -92,10 +113,10 @@ body:
 
   - type: textarea
     attributes:
-      label: "Implementation help"
+      label: Implementation Help
       description:
-        "If you selected yes in the last question please specify in detail what you would need help with in order to
-        implement this."
+        If you selected yes in the last question please specify in detail what you would need help with in order to
+        implement this.
     validations:
       required: false
 

@@ -44,6 +44,7 @@ return {
     formatting = { "cljstyle", "zprint" }
   },
   cmake = {
+    diagnostics = { "cmake_lint" },
     formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
@@ -171,18 +172,18 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "semgrep" },
+    diagnostics = { "checkstyle", "pmd", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
-    diagnostics = { "eslint", "eslint_d", "jshint", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "standardjs" }
+    diagnostics = { "eslint", "eslint_d", "jshint", "semistandardjs", "standardjs", "xo" },
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
-    diagnostics = { "eslint", "eslint_d", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "standardjs" }
+    diagnostics = { "eslint", "eslint_d", "semistandardjs", "standardjs", "xo" },
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "semistandardjs", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
@@ -194,6 +195,9 @@ return {
   },
   jsonc = {
     formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettierd" }
+  },
+  jsp = {
+    diagnostics = { "pmd" }
   },
   just = {
     formatting = { "just" }
@@ -214,14 +218,21 @@ return {
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
   },
+  luau = {
+    diagnostics = { "selene" },
+    formatting = { "stylua" }
+  },
   make = {
     diagnostics = { "checkmake" }
   },
   markdown = {
-    code_actions = { "proselint" },
-    diagnostics = { "alex", "markdownlint", "mdl", "proselint", "vale", "write_good" },
+    code_actions = { "ltrs", "proselint" },
+    diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "vale", "write_good" },
     formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
+  },
+  ["markdown.mdx"] = {
+    formatting = { "prettier", "prettier_d_slim", "prettierd" }
   },
   matlab = {
     diagnostics = { "mlint" }
@@ -237,13 +248,21 @@ return {
     diagnostics = { "deadnix", "statix" },
     formatting = { "alejandra", "nixfmt", "nixpkgs_fmt" }
   },
+  ocaml = {
+    formatting = { "ocamlformat" }
+  },
+  octave = {
+    diagnostics = { "mlint" }
+  },
   org = {
-    formatting = { "cbfmt" }
+    formatting = { "cbfmt" },
+    hover = { "dictionary" }
   },
   pascal = {
     formatting = { "ptop" }
   },
   perl = {
+    diagnostics = { "perlimports" },
     formatting = { "perlimports", "perltidy" }
   },
   pgsql = {
@@ -270,6 +289,9 @@ return {
     diagnostics = { "puppet_lint" },
     formatting = { "puppet_lint" }
   },
+  purescript = {
+    formatting = { "purs_tidy" }
+  },
   python = {
     code_actions = { "refactoring" },
     diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },
@@ -286,7 +308,8 @@ return {
     formatting = { "raco_fmt" }
   },
   rego = {
-    diagnostics = { "opacheck" }
+    diagnostics = { "opacheck" },
+    formatting = { "rego" }
   },
   rescript = {
     formatting = { "rescript" }
@@ -361,6 +384,8 @@ return {
     formatting = { "latexindent" }
   },
   text = {
+    code_actions = { "ltrs" },
+    diagnostics = { "ltrs" },
     hover = { "dictionary" }
   },
   tf = {

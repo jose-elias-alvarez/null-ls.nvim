@@ -2,6 +2,7 @@ local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
 local CODE_ACTION = methods.internal.CODE_ACTION
+local range_actions = { ["reset_hunk"] = true, ["stage_hunk"] = true }
 
 return h.make_builtin({
     name = "gitsigns",
@@ -23,11 +24,20 @@ return h.make_builtin({
             end
 
             local actions = {}
+            local mode = vim.api.nvim_get_mode().mode
             for name, action in pairs(gitsigns_actions) do
+                local title = name_to_title(name)
+                local cb = action
+                if (mode == "v" or mode == "V") and range_actions[name] then
+                    title = title:gsub("hunk", "selection")
+                    cb = function()
+                        action({ params.range.row, params.range.end_row })
+                    end
+                end
                 table.insert(actions, {
-                    title = name_to_title(name),
+                    title = title,
                     action = function()
-                        vim.api.nvim_buf_call(params.bufnr, action)
+                        vim.api.nvim_buf_call(params.bufnr, cb)
                     end,
                 })
             end

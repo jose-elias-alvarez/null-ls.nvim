@@ -60,6 +60,7 @@ null_ls.setup({
             },
             offsets = {
                 col = 1,
+                end_col = 1,
             },
         }),
     },

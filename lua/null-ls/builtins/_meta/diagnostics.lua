@@ -22,6 +22,9 @@ return {
   checkmake = {
     filetypes = { "make" }
   },
+  checkstyle = {
+    filetypes = { "java" }
+  },
   chktex = {
     filetypes = { "tex" }
   },
@@ -30,6 +33,9 @@ return {
   },
   clj_kondo = {
     filetypes = { "clojure" }
+  },
+  cmake_lint = {
+    filetypes = { "cmake" }
   },
   codespell = {
     filetypes = {}
@@ -109,10 +115,16 @@ return {
   ktlint = {
     filetypes = { "kotlin" }
   },
+  ltrs = {
+    filetypes = { "text", "markdown", "markdown" }
+  },
   luacheck = {
     filetypes = { "lua" }
   },
   markdownlint = {
+    filetypes = { "markdown" }
+  },
+  markdownlint_cli2 = {
     filetypes = { "markdown" }
   },
   mdl = {
@@ -122,13 +134,16 @@ return {
     filetypes = {}
   },
   mlint = {
-    filetypes = { "matlab" }
+    filetypes = { "matlab", "octave" }
   },
   mypy = {
     filetypes = { "python" }
   },
   opacheck = {
     filetypes = { "rego" }
+  },
+  perlimports = {
+    filetypes = { "perl" }
   },
   php = {
     filetypes = { "php" }
@@ -141,6 +156,9 @@ return {
   },
   phpstan = {
     filetypes = { "php" }
+  },
+  pmd = {
+    filetypes = { "java", "jsp" }
   },
   proselint = {
     filetypes = { "markdown", "tex" }
@@ -191,10 +209,13 @@ return {
     filetypes = { "ruby" }
   },
   selene = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   semgrep = {
     filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }
+  },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   shellcheck = {
     filetypes = { "sh" }
