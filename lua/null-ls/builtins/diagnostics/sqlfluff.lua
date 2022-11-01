@@ -22,10 +22,10 @@ local sources = {
         command = "sqlfluff",
         args = {
             "lint",
+            "--disable-progress-bar",
             "-f",
             "github-annotation",
             "-n",
-            "--disable_progress_bar",
             "$FILENAME",
         },
         from_stderr = false,
