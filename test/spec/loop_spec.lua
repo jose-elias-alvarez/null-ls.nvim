@@ -607,7 +607,7 @@ describe("loop", function()
 
     describe("temp_file", function()
         local mock_content = "write me to a temp file"
-        local mock_fd, mock_bufname = 57, "/Users/jose/my-file.lua"
+        local mock_fd, mock_bufname, mock_dirname = 57, "/Users/jose/my-file.lua", "/tmp"
         before_each(function()
             uv.fs_open.returns(mock_fd)
         end)
@@ -618,10 +618,17 @@ describe("loop", function()
             uv.fs_unlink:clear()
         end)
 
-        it("should call uv.fs_open with temp path", function()
+        it("should call uv.fs_open with temp path at bufname's parent dir", function()
             local temp_path = loop.temp_file(mock_content, mock_bufname)
 
             assert.equals(temp_path, string.format("/Users/jose/.null-ls_%d_my-file.lua", mock_random))
+            assert.stub(uv.fs_open).was_called_with(temp_path, "w", 384)
+        end)
+
+        it("should use dirname when defined", function()
+            local temp_path = loop.temp_file(mock_content, mock_bufname, mock_dirname)
+
+            assert.equals(temp_path, string.format("/tmp/.null-ls_%d_my-file.lua", mock_random))
             assert.stub(uv.fs_open).was_called_with(temp_path, "w", 384)
         end)
 

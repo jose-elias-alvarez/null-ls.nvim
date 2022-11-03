@@ -29,6 +29,7 @@ local type_overrides = {
     on_exit = { "function", "nil" },
     should_attach = { "function", "nil" },
     sources = { "table", "nil" },
+    temp_dir = { "string", "nil" },
 }
 
 local wanted_type = function(k)
