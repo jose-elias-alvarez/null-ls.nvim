@@ -194,6 +194,21 @@ local sources = { null_ls.builtins.code_actions.statix }
 - Command: `statix`
 - Args: `{ "check", "--stdin", "--format=json" }`
 
+### [typescript](https://github.com/jose-elias-alvarez/typescript.nvim)
+
+Injects actions for Typescript Language Server's code actions on save (addMissingImports, fixAll, removeUnused, and organizeImports)
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.typescript }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact" }`
+- Method: `code_action`
+
 ### [xo](https://github.com/xojs/xo)
 
 ❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
