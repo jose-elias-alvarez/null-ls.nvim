@@ -1567,6 +1567,23 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - Command: `rubocop`
 - Args: `{ "-f", "json", "--force-exclusion", "--stdin", "$FILENAME" }`
 
+### [ruff](https://github.com/charliermarsh/ruff/)
+
+An extremely fast Python linter, written in Rust.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ruff }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `diagnostics`
+- Command: `ruff`
+- Args: `{ "-n", "-e", "--stdin-filename", "$FILENAME", "-" }`
+
 ### [selene](https://kampfkarren.github.io/selene/)
 
 Command line tool designed to help write correct and idiomatic Lua code.

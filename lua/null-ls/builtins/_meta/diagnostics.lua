@@ -208,6 +208,9 @@ return {
   rubocop = {
     filetypes = { "ruby" }
   },
+  ruff = {
+    filetypes = { "python" }
+  },
   selene = {
     filetypes = { "lua", "luau" }
   },
