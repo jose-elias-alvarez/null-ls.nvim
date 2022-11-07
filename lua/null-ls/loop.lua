@@ -223,9 +223,10 @@ end
 --- creates a temp file at a given file's location
 ---@param content string
 ---@param bufname string
+---@param dirname string|nil
 ---@return string temp_path, fun() cleanup
-M.temp_file = function(content, bufname)
-    local dirname = vim.fn.fnamemodify(bufname, ":h")
+M.temp_file = function(content, bufname, dirname)
+    dirname = dirname or vim.fn.fnamemodify(bufname, ":h")
     local base_name = vim.fn.fnamemodify(bufname, ":t")
 
     local filename = string.format(".null-ls_%d_%s", math.random(100000, 999999), base_name)

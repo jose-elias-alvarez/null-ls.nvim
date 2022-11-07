@@ -62,6 +62,7 @@ local defaults = {
     on_exit = nil,
     root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
+    temp_dir = nil,
     update_in_insert = false,
 }
 ```
@@ -219,6 +220,22 @@ add built-in sources (see [BUILTINS.md](BUILTINS.md)) or custom sources (see
 If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The
 integration will register them independently.
+
+### temp_dir (string, optional)
+
+Defines the directory used to create temporary files for sources that rely on
+them (a workaround used for command-based sources that do not support `stdio`).
+
+To maximize compatibility, null-ls defaults to creating temp files in the same
+directory as the parent file. If this is causing issues, you can set it to
+`/tmp` (or another appropriate directory) here. Otherwise, there is no need to
+change this setting.
+
+**Note**: some null-ls built-in sources expect temp files to exist within a
+project for context and so will not work if this option changes.
+
+You can also configure `temp_dir` per built-in by using the `with` method,
+described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
 
 ### update_in_insert (boolean)
 

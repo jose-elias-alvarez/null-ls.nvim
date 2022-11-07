@@ -149,7 +149,7 @@ local sources = {
 
 You can inject environment variables to the process via utilizing the `env`
 option. This option can be in the form of a dictionary. It can also, just like
-`args` and `extra_args`, take a function receiving a `params` object. 
+`args` and `extra_args`, take a function receiving a `params` object.
 
 ```lua
 -- Using a dictionary:
@@ -327,28 +327,28 @@ ever timing out.
 
 ### Temp file sources
 
-Some builtins write the buffer's content to a temp file before command
-execution, as a workaround for commands that don't accept `stdin`. null-ls uses
-the following logic to determine where to put temp files:
+Some built-in sources write the buffer's content to a temp file before command
+execution and / or read from a temp file after execution, as a workaround for
+commands that don't support `stdio`. To maximize compatibility, null-ls defaults
+to creating temp files in the same directory as the parent file.
 
-1. On Unix, use `XDG_RUNTIME_DIR` if set. Otherwise, use `/tmp`.
-2. On Windows, use `TEMP`
-
-In most cases, temp file sources will work as expected without user
-intervention. For special cases, you can turn this off by setting `to_temp_file`
-to `false`:
+Under normal circumstances, this will work seamlessly, but if you run into
+issues with file watchers / other integrations, you can override the directory
+to `/tmp` (or another appropriate directory) using the `temp_dir` option:
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.phpstan.with({
-        to_temp_file = false,
+        temp_dir = "/tmp",
     }),
 }
 ```
 
-For diagnostics sources, you should also update the source to
-[run on save](#diagnostics-on-save), since otherwise diagnostics will go out of
-sync with buffer changes.
+**Note**: some null-ls built-in sources expect temp files to exist within a
+project for context and so will not work if this option changes.
+
+If you want to override this globally, you can change the `temp_dir` option in
+[CONFIG](CONFIG.md).
 
 ## Using local executables
 
