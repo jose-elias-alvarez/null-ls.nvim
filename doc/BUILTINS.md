@@ -1705,7 +1705,7 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `diagnostics`
 - Command: `sqlfluff`
-- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "$FILENAME" }`
+- Args: `{ "lint", "--disable-progress-bar", "-f", "github-annotation", "-n", "$FILENAME" }`
 
 #### Notes
 
@@ -3793,7 +3793,7 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `formatting`
 - Command: `sqlfluff`
-- Args: `{ "fix", "--disable_progress_bar", "-f", "-n", "-" }`
+- Args: `{ "fix", "--disable-progress-bar", "-f", "-n", "-" }`
 
 #### Notes
 
