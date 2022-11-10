@@ -180,6 +180,7 @@ end
 ---@class ConditionalUtils
 ---@field has_file fun(patterns: ...): boolean checks if file exists
 ---@field root_has_file fun(patterns: ...): boolean checks if file exists at root level
+---@field root_has_file_matches fun(pattern: string): boolean checks if pattern matches a file at root level
 ---@field root_matches fun(pattern: string): boolean checks if root matches pattern
 
 --- creates a table of conditional utils based on the current root directory
@@ -205,6 +206,20 @@ M.make_conditional_utils = function()
                     return true
                 end
             end
+            return false
+        end,
+        root_has_file_matches = function(pattern)
+            local handle = vim.loop.fs_scandir(root)
+            local entry = vim.loop.fs_scandir_next(handle)
+
+            while entry do
+                if entry:match(pattern) then
+                    return true
+                end
+
+                entry = vim.loop.fs_scandir_next(handle)
+            end
+
             return false
         end,
         root_matches = function(pattern)
