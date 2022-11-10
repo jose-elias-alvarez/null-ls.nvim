@@ -1,6 +1,7 @@
 local h = require("null-ls.helpers")
 local cmd_resolver = require("null-ls.helpers.command_resolver")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local FORMATTING = methods.internal.FORMATTING
 
@@ -23,6 +24,12 @@ return h.make_builtin({
             "$FILENAME",
         },
         dynamic_command = cmd_resolver.from_node_modules(),
+        cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                -- https://docs.rome.tools/configuration/
+                "rome.json"
+            )(params.bufname)
+        end),
         to_stdin = false,
         to_temp_file = true,
     },
