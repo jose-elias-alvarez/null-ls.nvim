@@ -53,6 +53,8 @@
 
 - Make sure your built-in source has a `name`.
 
+- Define a `can_run` field to verify if the plugin is installed (if possible).
+
 - Add the necessary `meta` field to your built-in so that we can generate extra
   documentation (basic information comes from the built-in's definition).
   Metadata should have the following structure:
