@@ -1,26 +1,23 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
-
 return h.make_builtin({
     name = "ansiblelint",
     meta = {
         url = "https://github.com/ansible-community/ansible-lint",
         description = "Linter for Ansible playbooks, roles and collections.",
     },
-    method = DIAGNOSTICS,
+    method = methods.internal.DIAGNOSTICS,
     filetypes = { "yaml.ansible" },
     generator_opts = {
         command = "ansible-lint",
-        to_stdin = true,
+        to_temp_file = true,
         ignore_stderr = true,
         args = { "-f", "codeclimate", "-q", "--nocolor", "$FILENAME" },
         format = "json",
         check_exit_code = function(code)
             return code <= 2
         end,
-        multiple_files = true,
         on_output = function(params)
             local severities = {
                 blocker = h.diagnostics.severities.error,
