@@ -1622,7 +1622,7 @@ describe("diagnostics", function()
             }, parsed)
         end)
 
-        it("should show the caching encouragement as warning", function()
+        it("should show stderr errors as errors", function()
             local output = vim.json.decode([[
                 {
                   "formatVersion": 0,
@@ -1634,14 +1634,64 @@ describe("diagnostics", function()
                   "configurationErrors": []
                 }
             ]])
-            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD encourageToUseIncrementalAnalysis
-WARNING: This analysis could be faster, please consider using Incremental Analysis: https://pmd.github.io/pmd-6.50.0/pmd_userdocs_incremental_analysis.html]]
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+ERROR: Some error text.    ]]
             local parsed = parser({ bufnr = 42, err = err, output = output })
             assert.same({
                 {
-                    code = "encourageToUseIncrementalAnalysis",
-                    message = "WARNING: This analysis could be faster, please consider using Incremental Analysis: https://pmd.github.io/pmd-6.50.0/pmd_userdocs_incremental_analysis.html",
+                    code = "stderr",
+                    message = "Some error text.",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should show stderr warnings as warnings", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+WARNING: Some warning text.    ]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "stderr",
+                    message = "Some warning text.",
                     severity = vim.diagnostic.severity.WARN,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should show stderr infos as infos", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+INFO: Some info text.    ]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "stderr",
+                    message = "Some info text.",
+                    severity = vim.diagnostic.severity.INFO,
                     bufnr = 42,
                 },
             }, parsed)
@@ -1664,27 +1714,18 @@ Run with --help for command line help.]],
             }, parsed)
         end)
 
-        it("should show other error messages", function()
-            local output = vim.json.decode([[
-                {
-                  "formatVersion": 0,
-                  "pmdVersion": "6.50.0",
-                  "timestamp": "2022-10-21T20:44:51.872+02:00",
-                  "files": [],
-                  "suppressedViolations": [],
-                  "processingErrors": [],
-                  "configurationErrors": []
-                }
-            ]])
-            local err = [[Some other message.]]
-            local parsed = parser({ bufnr = 42, err = err, output = output })
-            assert.same({
-                {
-                    message = err,
-                    severity = vim.diagnostic.severity.ERROR,
-                    bufnr = 42,
-                },
-            }, parsed)
+        it("should ignore the analysis cache messages", function()
+            local parsed = parser({
+                bufnr = 42,
+                output = nil,
+                err = [[Oct 27, 2022 10:27:21 AM net.sourceforge.pmd.cache.FileAnalysisCache loadFromFile
+INFO: Analysis cache loaded
+Oct 27, 2022 10:27:21 AM net.sourceforge.pmd.cache.AbstractAnalysisCache checkValidity
+INFO: Analysis cache invalidated, rulesets changed.
+Oct 27, 2022 10:27:27 AM net.sourceforge.pmd.cache.FileAnalysisCache persist
+INFO: Analysis cache updated]],
+            })
+            assert.same({}, parsed)
         end)
     end)
 end)
