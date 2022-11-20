@@ -15,7 +15,7 @@ return h.make_builtin({
         },
     },
     method = FORMATTING,
-    filetypes = { "javascript", "typescript" },
+    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
     generator_opts = {
         command = "rome",
         args = {
