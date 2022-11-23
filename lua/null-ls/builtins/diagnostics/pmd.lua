@@ -1,7 +1,15 @@
 local h = require("null-ls.helpers")
 
-local function parse_pmd_errors(params, output)
-    if params.err:match("The following option is required: %-%-rulesets") then
+local function parse_pmd_error(params, line, output)
+    if line:match("net%.sourceforge%.pmd") or line:match("Run with %-%-help for command line help%.") then
+        return
+    end
+
+    if vim.regex("\\vAnalysis cache (loaded|invalidated|updated)"):match_str(line) then
+        return
+    end
+
+    if line:match("The following option is required: %-%-rulesets") then
         table.insert(output, {
             message = "You need to specify a ruleset for PMD."
                 .. " See https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#pmd",
@@ -11,21 +19,31 @@ local function parse_pmd_errors(params, output)
         return
     end
 
-    if params.err:match("encourageToUseIncrementalAnalysis") then
-        table.insert(output, {
-            code = "encourageToUseIncrementalAnalysis",
-            message = vim.trim(vim.split(params.err, "\n")[2]),
-            severity = vim.diagnostic.severity.WARN,
-            bufnr = params.bufnr,
-        })
-        return
+    local severity = vim.diagnostic.severity.ERROR
+    if vim.regex("^WARNING:"):match_str(line) then
+        severity = vim.diagnostic.severity.WARN
+    elseif vim.regex("^INFO:"):match_str(line) then
+        severity = vim.diagnostic.severity.INFO
+    end
+
+    local message = line
+    if vim.regex("\\v^\\w+: "):match_str(line) then
+        message = line:sub(line:find(":") + 2)
     end
 
     table.insert(output, {
-        message = vim.trim(params.err),
-        severity = vim.diagnostic.severity.ERROR,
+        code = "stderr",
+        message = vim.trim(message),
+        severity = severity,
         bufnr = params.bufnr,
     })
+end
+
+local function parse_pmd_errors(params, output)
+    local lines = vim.split(params.err, "\n", { trimempty = true })
+    for _, line in ipairs(lines) do
+        parse_pmd_error(params, line, output)
+    end
 end
 
 local function handle_pmd_output(params)
@@ -46,7 +64,7 @@ local function handle_pmd_output(params)
                 end_col = violation.endcolumn and violation.endcolumn + 1,
                 code = violation.ruleset .. "/" .. violation.rule,
                 message = violation.description,
-                severity = violation.priority == 1 and violation.priority or violation.priority - 1,
+                severity = violation.priority and math.max(1, violation.priority - 1),
                 filename = file.filename,
             })
         end
