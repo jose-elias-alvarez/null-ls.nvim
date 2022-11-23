@@ -3624,7 +3624,7 @@ local sources = { null_ls.builtins.formatting.rome }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "typescript" }`
+- Filetypes: `{ "javascript", "typescript", "javascriptreact", "typescriptreact" }`
 - Method: `formatting`
 - Command: `rome`
 - Args: `{ "format", "--write", "$FILENAME" }`

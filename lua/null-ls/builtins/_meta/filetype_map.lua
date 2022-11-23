@@ -183,7 +183,7 @@ return {
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semistandardjs", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "semistandardjs", "standardjs" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
@@ -405,7 +405,7 @@ return {
   typescriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rome", "rustywind" }
   },
   verilog = {
     formatting = { "verible_verilog_format" }
