@@ -19,7 +19,7 @@ return h.make_builtin({
         command = "markdownlint-cli2",
         from_stderr = true,
         format = "line",
-        multiple_files = true,
+        multiple_files = false,
         on_output = h.diagnostics.from_patterns({
             {
                 pattern = [[(%g+):(%d+):(%d+) ([%w-/]+) (.*)]],
