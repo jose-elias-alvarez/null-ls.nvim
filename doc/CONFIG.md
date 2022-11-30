@@ -63,6 +63,7 @@ local defaults = {
     root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
     temp_dir = nil,
+    border = nil,
     update_in_insert = false,
 }
 ```
@@ -237,6 +238,13 @@ project for context and so will not work if this option changes.
 You can also configure `temp_dir` per built-in by using the `with` method,
 described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
 
+### border ( table, string, optional)
+
+Defines the border to use for the `:NullLsInfo` UI window. Uses
+`NullLsInfoBorder` highlight group (see [Highlight Groups](#highlight-groups)).
+Accepts same border values as `nvim_open_win()`. See `:help nvim_open_win()` for
+more info.
+
 ### update_in_insert (boolean)
 
 Controls whether diagnostic sources run in insert mode. If set to `false`,
@@ -248,6 +256,16 @@ Note that by default, Neovim will not display updated diagnostics in insert
 mode. Together with the option above, you need to pass `update_in_insert = true`
 to `vim.diagnostic.config` for diagnostics to work as expected. See
 `:help vim.diagnostic.config` for more info.
+
+## Highlight Groups
+
+Below are listed the highlight groups that you can override for the
+`:NullLsInfo` window.
+
+- `NullLsInfoHeader` Window header
+- `NullLsInfoTitle` Titles
+- `NullLsInfoBorder` Window border
+- `NullLsInfoSources` Sources names
 
 ## Explicitly defining the project root
 

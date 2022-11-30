@@ -30,6 +30,7 @@ local type_overrides = {
     should_attach = { "function", "nil" },
     sources = { "table", "nil" },
     temp_dir = { "string", "nil" },
+    border = { "table", "string", "nil" },
 }
 
 local wanted_type = function(k)
@@ -87,6 +88,15 @@ end
 M.setup = function(user_config)
     if config._setup then
         return
+    end
+
+    for group, hi in pairs({
+        NullLsInfoBorder = { link = "NormalFloat", default = true },
+        NullLsInfoHeader = { link = "Label", default = true },
+        NullLsInfoTitle = { link = "Type", default = true },
+        NullLsInfoSources = { link = "Title", default = true },
+    }) do
+        vim.api.nvim_set_hl(0, group, hi)
     end
 
     local validated = validate_config(user_config)
