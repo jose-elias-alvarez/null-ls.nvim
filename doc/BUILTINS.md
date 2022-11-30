@@ -4138,6 +4138,23 @@ local sources = { null_ls.builtins.formatting.verible_verilog_format }
 - Command: `verible-verilog-format`
 - Args: `{ "--stdin_name", "$FILENAME", "-" }`
 
+### [xmlformat](https://github.com/pamoller/xmlformatter)
+
+xmlformatter is an Open Source Python package, which provides formatting of XML documents.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.xmlformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "xml" }`
+- Method: `formatting`
+- Command: `xmlformat`
+- Args: `{ "-" }`
+
 ### [xmllint](http://xmlsoft.org/xmllint.html)
 
 Despite the name, xmllint can be used to format XML files as well as lint them, and that's the mode this builtin is using.

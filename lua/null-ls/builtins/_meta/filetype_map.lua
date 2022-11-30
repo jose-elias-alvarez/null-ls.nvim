@@ -420,7 +420,7 @@ return {
   },
   xml = {
     diagnostics = { "tidy" },
-    formatting = { "tidy", "xmllint" }
+    formatting = { "tidy", "xmlformat", "xmllint" }
   },
   yaml = {
     diagnostics = { "actionlint", "cfn_lint", "spectral", "yamllint" },

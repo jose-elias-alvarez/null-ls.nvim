@@ -355,6 +355,9 @@ return {
   verible_verilog_format = {
     filetypes = { "verilog", "systemverilog" }
   },
+  xmlformat = {
+    filetypes = { "xml" }
+  },
   xmllint = {
     filetypes = { "xml" }
   },
