@@ -67,6 +67,9 @@ return {
   djlint = {
     filetypes = { "django", "jinja.html", "htmldjango" }
   },
+  dotenv_linter = {
+    filetypes = { "sh" }
+  },
   editorconfig_checker = {
     filetypes = {}
   },

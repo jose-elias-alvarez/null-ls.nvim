@@ -343,7 +343,7 @@ return {
   },
   sh = {
     code_actions = { "shellcheck" },
-    diagnostics = { "shellcheck" },
+    diagnostics = { "dotenv_linter", "shellcheck" },
     formatting = { "beautysh", "shellharden", "shfmt" },
     hover = { "printenv" }
   },

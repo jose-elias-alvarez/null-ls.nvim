@@ -697,6 +697,23 @@ local sources = { null_ls.builtins.diagnostics.djlint }
 - Command: `djlint`
 - Args: `{ "$FILENAME" }`
 
+### [dotenv_linter](https://github.com/dotenv-linter/dotenv-linter)
+
+Lightning-fast linter for .env files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.dotenv_linter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sh" }`
+- Method: `diagnostics`
+- Command: `dotenv-linter`
+- Args: `{ "$FILENAME" }`
+
 ### [editorconfig_checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
 A tool to verify that your files are in harmony with your `.editorconfig`.
