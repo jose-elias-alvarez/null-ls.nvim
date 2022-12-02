@@ -416,6 +416,9 @@ return {
   verilog = {
     formatting = { "verible_verilog_format" }
   },
+  vhdl = {
+    formatting = { "emacs_vhdl_mode" }
+  },
   vim = {
     diagnostics = { "vint" }
   },

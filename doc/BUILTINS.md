@@ -2608,6 +2608,27 @@ local sources = { null_ls.builtins.formatting.emacs_scheme_mode }
 
 - Adjust the expression evaluated with the `--eval` flag to change settings within emacs.
 
+### [emacs_vhdl_mode](https://guest.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html)
+
+VHDL Mode is an Emacs major mode for editing VHDL code. Basically, using emacs in batch mode to format VHDL files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.emacs_vhdl_mode }
+```
+
+#### Defaults
+
+- Filetypes: `{ "vhdl" }`
+- Method: `formatting`
+- Command: `emacs`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/emacs_vhdl_mode.lua))
+
+#### Notes
+
+- Adjust the expression evaluated with the `--eval` flag to change settings within emacs.
+
 ### [erb_lint](https://github.com/Shopify/erb-lint)
 
 Lint your ERB or HTML files
