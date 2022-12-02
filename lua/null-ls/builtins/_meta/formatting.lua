@@ -88,6 +88,9 @@ return {
   elm_format = {
     filetypes = { "elm" }
   },
+  emacs_scheme_mode = {
+    filetypes = { "scheme", "scheme.guile" }
+  },
   erb_lint = {
     filetypes = { "eruby" }
   },

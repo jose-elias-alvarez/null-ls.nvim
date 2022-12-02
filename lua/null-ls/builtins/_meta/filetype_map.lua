@@ -337,6 +337,12 @@ return {
   scala = {
     formatting = { "scalafmt" }
   },
+  scheme = {
+    formatting = { "emacs_scheme_mode" }
+  },
+  ["scheme.guile"] = {
+    formatting = { "emacs_scheme_mode" }
+  },
   scss = {
     diagnostics = { "stylelint" },
     formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
