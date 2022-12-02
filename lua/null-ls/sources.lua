@@ -199,7 +199,7 @@ M.validate_and_transform = function(source)
         return source
     end
 
-    local generator, name = source.generator, source.name or "anonymous source"
+    local generator, name, can_run = source.generator, source.name or "anonymous source", source.can_run
     generator.opts = generator.opts or {}
     generator.opts.name = name
     local source_methods = type(source.method) == "table" and source.method or { source.method }
@@ -211,6 +211,7 @@ M.validate_and_transform = function(source)
         disabled_filetypes = { disabled_filetypes, "table", true },
         condition = { condition, "function", true },
         name = { name, "string" },
+        can_run = { can_run, "function", true },
         fn = { generator.fn, "function" },
         opts = { generator.opts, "table" },
         async = { generator.async, "boolean", true },
@@ -258,6 +259,7 @@ M.validate_and_transform = function(source)
     return {
         id = id,
         name = name,
+        can_run = can_run,
         generator = generator,
         filetypes = filetype_map,
         methods = method_map,
