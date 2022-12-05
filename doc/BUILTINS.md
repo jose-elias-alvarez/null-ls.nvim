@@ -298,7 +298,7 @@ local sources = { null_ls.builtins.diagnostics.actionlint }
 - Filetypes: `{ "yaml" }`
 - Method: `diagnostics`
 - Command: `actionlint`
-- Args: `{ "-no-color", "-format", "{{json .}}", "-" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/actionlint.lua))
 
 ### [alex](https://github.com/get-alex/alex)
 
