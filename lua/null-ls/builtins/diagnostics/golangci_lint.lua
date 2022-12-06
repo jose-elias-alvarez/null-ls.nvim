@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
@@ -21,7 +22,6 @@ return h.make_builtin({
             "--fix=false",
             "--fast",
             "--out-format=json",
-            "$DIRNAME",
             "--path-prefix",
             "$ROOT",
         },
@@ -31,6 +31,10 @@ return h.make_builtin({
         end,
         on_output = function(params)
             local diags = {}
+            if params.output["Report"] and params.output["Report"]["Error"] then
+                log:warn(params.output["Report"]["Error"])
+                return diags
+            end
             local issues = params.output["Issues"]
             if type(issues) == "table" then
                 for _, d in ipairs(issues) do
