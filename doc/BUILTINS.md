@@ -2404,7 +2404,7 @@ local sources = { null_ls.builtins.formatting.codespell }
 - Filetypes: `{}`
 - Method: `formatting`
 - Command: `codespell`
-- Args: `{ "--write-changes", "$FILENAME" }`
+- Args: `{ "--check-hidden", "--write-changes", "$FILENAME" }`
 
 ### [crystal_format](https://github.com/crystal-lang/crystal)
 
