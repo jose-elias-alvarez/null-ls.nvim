@@ -35,7 +35,7 @@ return h.make_builtin({
     },
     generator_opts = {
         command = "prettier-eslint",
-        args = { "$FILENAME" },
+        args = { "--stdin", "--stdin-filepath", "$FILENAME" },
         to_stdin = true,
         dynamic_command = cmd_resolver.from_node_modules(),
         cwd = h.cache.by_bufnr(function(params)
