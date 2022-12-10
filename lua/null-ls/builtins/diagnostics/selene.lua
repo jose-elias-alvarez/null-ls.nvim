@@ -10,7 +10,7 @@ return h.make_builtin({
         description = "Command line tool designed to help write correct and idiomatic Lua code.",
     },
     method = DIAGNOSTICS,
-    filetypes = { "lua" },
+    filetypes = { "lua", "luau" },
     generator_opts = {
         command = "selene",
         args = { "--display-style", "quiet", "-" },

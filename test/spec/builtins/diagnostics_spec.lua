@@ -1290,4 +1290,442 @@ describe("diagnostics", function()
             }, diagnostic)
         end)
     end)
+
+    describe("checkstyle", function()
+        local linter = diagnostics.checkstyle
+        local parser = linter._opts.on_output
+
+        it("should parse the usual output", function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        },
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/ReportController.java"
+                                },
+                                "region": {
+                                  "startColumn": 4,
+                                  "startLine": 74
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment (Test)."
+                          },
+                          "ruleId": "javadoc.missing.test"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local parsed = parser({ output = output })
+            assert.same({
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+                {
+                    row = 74,
+                    col = 4,
+                    end_col = 5,
+                    code = "javadoc.missing.test",
+                    message = "Missing a Javadoc comment (Test).",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+            }, parsed)
+        end)
+
+        it('should ignore the "ends with n errors" message', function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local err = [[Checkstyle ends with 42 errors.\n]]
+            local parsed = parser({ output = output, err = err })
+            assert.same({
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+            }, parsed)
+        end)
+
+        it("should rephrase the missing config message", function()
+            local parsed = parser({ bufnr = 42, output = nil, err = [[Must specify a config XML file.\n]] })
+            assert.same({
+                {
+                    message = "You need to specify a configuration for checkstyle. See"
+                        .. " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#checkstyle",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should add other errors", function()
+            local output = vim.json.decode([[
+                {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                    {
+                      "tool": {
+                        "driver": {
+                          "downloadUri": "https://github.com/checkstyle/checkstyle/releases/",
+                          "fullName": "Checkstyle",
+                          "informationUri": "https://checkstyle.org/",
+                          "language": "en",
+                          "name": "Checkstyle",
+                          "organization": "Checkstyle",
+                          "rules": [
+                          ],
+                          "semanticVersion": "10.3.4",
+                          "version": "10.3.4"
+                        }
+                      },
+                      "results": [
+                        {
+                          "level": "warning",
+                          "locations": [
+                            {
+                              "physicalLocation": {
+                                "artifactLocation": {
+                                  "uri": "/home/someuser/Code/someproject/FooController.java"
+                                },
+                                "region": {
+                                  "startColumn": 1,
+                                  "startLine": 1
+                                }
+                              }
+                            }
+                          ],
+                          "message": {
+                            "text": "Missing a Javadoc comment."
+                          },
+                          "ruleId": "javadoc.missing"
+                        }
+                      ]
+                    }
+                  ]
+                }
+            ]])
+            local err = [[Some other error.\n]]
+            local parsed = parser({ bufnr = 42, output = output, err = err })
+            assert.same({
+                {
+                    message = vim.trim(err),
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+                {
+                    row = 1,
+                    col = 1,
+                    end_col = 2,
+                    code = "javadoc.missing",
+                    message = "Missing a Javadoc comment.",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+            }, parsed)
+        end)
+    end)
+
+    describe("pmd", function()
+        local linter = diagnostics.pmd
+        local parser = linter._opts.on_output
+
+        it("should parse the usual output", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [
+                    {
+                      "filename": "/home/someuser/Code/someproject/FooController.java",
+                      "violations": [
+                        {
+                          "beginline": 1,
+                          "begincolumn": 8,
+                          "endline": 2,
+                          "endcolumn": 1,
+                          "description": "Class comments are required",
+                          "rule": "CommentRequired",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        }
+                      ]
+                    },
+                    {
+                      "filename": "/home/someuser/Code/someproject/ReportController.java",
+                      "violations": [
+                        {
+                          "beginline": 76,
+                          "begincolumn": 8,
+                          "endline": 712,
+                          "endcolumn": 1,
+                          "description": "Class comments are required 2",
+                          "rule": "CommentRequired2",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        },
+                        {
+                          "beginline": 77,
+                          "begincolumn": 23,
+                          "endline": 77,
+                          "endcolumn": 57,
+                          "description": "Field comments are required 3",
+                          "rule": "CommentRequired3",
+                          "ruleset": "Documentation",
+                          "priority": 3,
+                          "externalInfoUrl": "https://pmd.github.io/pmd-6.50.0/pmd_rules_java_documentation.html#commentrequired"
+                        }
+                      ]
+                    }
+                  ],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local parsed = parser({ output = output })
+            assert.same({
+                {
+                    row = 1,
+                    col = 8,
+                    end_row = 2,
+                    end_col = 2,
+                    code = "Documentation/CommentRequired",
+                    message = "Class comments are required",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/FooController.java",
+                },
+                {
+                    row = 76,
+                    col = 8,
+                    end_row = 712,
+                    end_col = 2,
+                    code = "Documentation/CommentRequired2",
+                    message = "Class comments are required 2",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+                {
+                    row = 77,
+                    col = 23,
+                    end_row = 77,
+                    end_col = 58,
+                    code = "Documentation/CommentRequired3",
+                    message = "Field comments are required 3",
+                    severity = vim.diagnostic.severity.WARN,
+                    filename = "/home/someuser/Code/someproject/ReportController.java",
+                },
+            }, parsed)
+        end)
+
+        it("should show stderr errors as errors", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+ERROR: Some error text.    ]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "stderr",
+                    message = "Some error text.",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should show stderr warnings as warnings", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+WARNING: Some warning text.    ]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "stderr",
+                    message = "Some warning text.",
+                    severity = vim.diagnostic.severity.WARN,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should show stderr infos as infos", function()
+            local output = vim.json.decode([[
+                {
+                  "formatVersion": 0,
+                  "pmdVersion": "6.50.0",
+                  "timestamp": "2022-10-21T20:44:51.872+02:00",
+                  "files": [],
+                  "suppressedViolations": [],
+                  "processingErrors": [],
+                  "configurationErrors": []
+                }
+            ]])
+            local err = [[Oct 21, 2022 10:57:30 PM net.sourceforge.pmd.PMD someCode
+INFO: Some info text.    ]]
+            local parsed = parser({ bufnr = 42, err = err, output = output })
+            assert.same({
+                {
+                    code = "stderr",
+                    message = "Some info text.",
+                    severity = vim.diagnostic.severity.INFO,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should rephrase the missing ruleset message", function()
+            local parsed = parser({
+                bufnr = 42,
+                output = nil,
+                err = [[The following option is required: --rulesets, -rulesets, -R
+Run with --help for command line help.]],
+            })
+            assert.same({
+                {
+                    message = "You need to specify a ruleset for PMD. See"
+                        .. " https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#pmd",
+                    severity = vim.diagnostic.severity.ERROR,
+                    bufnr = 42,
+                },
+            }, parsed)
+        end)
+
+        it("should ignore the analysis cache messages", function()
+            local parsed = parser({
+                bufnr = 42,
+                output = nil,
+                err = [[Oct 27, 2022 10:27:21 AM net.sourceforge.pmd.cache.FileAnalysisCache loadFromFile
+INFO: Analysis cache loaded
+Oct 27, 2022 10:27:21 AM net.sourceforge.pmd.cache.AbstractAnalysisCache checkValidity
+INFO: Analysis cache invalidated, rulesets changed.
+Oct 27, 2022 10:27:27 AM net.sourceforge.pmd.cache.FileAnalysisCache persist
+INFO: Analysis cache updated]],
+            })
+            assert.same({}, parsed)
+        end)
+    end)
 end)

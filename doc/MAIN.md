@@ -48,13 +48,13 @@ null-ls has already registered their sources to prevent duplicate registration.
 Sources may define a **condition**, which determines whether null-ls should
 register the source.
 
-The document describes these parameters below.
-
 ### Methods
 
 null-ls methods are analogous to LSP methods, but the plugin uses internal
 methods to avoid collisions. The safest way to use methods in a source
 definition is by referencing the `methods` object.
+
+The list below is non-exhaustive. See the matching source file for a full list.
 
 ```lua
 local null_ls = require("null-ls")
@@ -75,6 +75,50 @@ my_source.method = null_ls.methods.HOVER
 -- source will run on LSP completion request
 my_source.method = null_ls.methods.COMPLETION
 ```
+
+### Params
+
+Source callbacks have access to a `params` table as their first argument, which
+is broadly analogous to the language server protocol's `params` object. The
+table contains information about the current buffer, editor state, and other
+method-specific information.
+
+```lua
+local params = {
+    client_id, -- null-ls client id (number)
+    lsp_method, -- LSP method that triggered request / notification (string)
+    lsp_params, -- original LSP params from request / notification (table)
+    options, -- options from LSP params (e.g. formattingOptions) (table|nil)
+    content, -- current buffer content (string[])
+    bufnr, -- current buffer's number (number)
+    method, -- null-ls method (string)
+    row, -- cursor's current row (number, zero-indexed)
+    col, -- cursor's current column (number)
+    bufname, -- full path to current buffer (string)
+    filetype, -- current buffer's filetype (string)
+    root, -- current buffer's root directory (string)
+
+    -- method == null_ls.methods.RANGE_FORMATTING
+    range, -- converted LSP range (table)
+
+    -- method == null_ls.methods.COMPLETION
+    word_to_complete, -- keyword under cursor (string)
+}
+```
+
+#### Params Methods
+
+The `params` table has access to methods, which source callbacks can use to
+access information about the parent source:
+
+##### `params:get_source()`
+
+Returns the parent source of the params in question.
+
+##### `params:get_config()`
+
+Returns a table containing user-specific configuration for the parent source. If
+the user hasn't explicitly set this key, this method returns an empty table.
 
 ### Filetypes
 
@@ -207,24 +251,6 @@ my_source.generator = {
             },
         }
     end,
-}
-```
-
-For convenience, all generator functions have access to a `params` table as
-their first argument, which contains information about the current file and
-editor state.
-
-```lua
-local params = {
-    content, -- current buffer content (table, split at newline)
-    lsp_method, -- lsp method that triggered request (string)
-    method, -- null-ls method that triggered generator (string)
-    row, -- cursor's current row (number, zero-indexed)
-    col, -- cursor's current column (number)
-    bufnr, -- current buffer's number (number)
-    bufname, -- current buffer's full path (string)
-    ft, -- current buffer's filetype (string)
-    root, -- current buffer's root directory (string)
 }
 ```
 
@@ -378,7 +404,7 @@ the second popup will wipe out the first).
 ```lua
 return {
     {
-        items = {{ label = "Item #1", insertText = "Item #1", documentation = "A test completion item" }},
+        items = { { label = "Item #1", insertText = "Item #1", documentation = "A test completion item" } },
         isIncomplete = true,
     },
 }

@@ -8,7 +8,7 @@ local s = require("null-ls.state")
 
 mock(require("null-ls.logger"), true)
 
-local test_utils = require("null-ls.test-utils")
+local test_utils = require("null-ls.utils.test")
 local root = vim.fn.getcwd()
 
 describe("generator_factory", function()
@@ -51,6 +51,8 @@ describe("generator_factory", function()
 
         validate:clear()
         vim.validate = validate
+
+        c.reset()
     end)
 
     describe("parse_args", function()
@@ -133,7 +135,9 @@ describe("generator_factory", function()
             local parsed = loop.spawn.calls[1].refs[2]
             assert.same(parsed, generator_opts.args)
         end)
+    end)
 
+    describe("parse_env", function()
         it("should pass in the environment variables to the command", function()
             generator_opts.env = { TEST = "TESTING" }
 
@@ -142,6 +146,22 @@ describe("generator_factory", function()
 
             local parsed = loop.spawn.calls[1].refs[3]
             assert.same(parsed.env, generator_opts.env)
+        end)
+
+        it("should resolve function as a table of environment variables", function()
+            local environment_variables = { TEST = "TESTING" }
+
+            generator_opts.env = function()
+                return environment_variables
+            end
+
+            local generator = helpers.generator_factory(generator_opts)
+            local params = {}
+            generator.fn(params, done)
+
+            local parsed = loop.spawn.calls[1].refs[3]
+            assert.same(parsed.env, environment_variables)
+            assert.same(params.command, command)
         end)
     end)
 
@@ -542,37 +562,70 @@ describe("generator_factory", function()
 
         describe("to_temp_file", function()
             local cleanup = stub.new()
+            loop.temp_file.returns("temp-path", cleanup)
 
-            local params
+            local params, temp_file_generator_opts
             before_each(function()
-                loop.temp_file.returns("temp-path", cleanup)
-
                 params = { content = { "buffer content" }, bufname = "mock-file.lua" }
-                generator_opts.to_temp_file = true
-                generator_opts.args = { "$FILENAME" }
 
-                local generator = helpers.generator_factory(generator_opts)
-                generator.fn(params)
+                temp_file_generator_opts = vim.deepcopy(generator_opts)
+                temp_file_generator_opts.to_temp_file = true
+                temp_file_generator_opts.args = { "$FILENAME" }
             end)
+
             after_each(function()
                 cleanup:clear()
             end)
 
-            it("should call loop.temp_file with content and bufname", function()
-                assert.stub(loop.temp_file).was_called_with("buffer content", params.bufname)
+            it("should call loop.temp_file with content, bufname, and nil dirname", function()
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+
+                generator.fn(params)
+
+                assert.stub(loop.temp_file).was_called_with("buffer content", params.bufname, nil)
+            end)
+
+            it("should call loop.temp_file with source-specific temp_dir", function()
+                temp_file_generator_opts.temp_dir = "/source-temp-dir"
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+
+                generator.fn(params)
+
+                assert
+                    .stub(loop.temp_file)
+                    .was_called_with("buffer content", params.bufname, temp_file_generator_opts.temp_dir)
+            end)
+
+            it("should call loop.temp_file with global temp_dir", function()
+                c._set({ temp_dir = "/global-temp-dir" })
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+
+                generator.fn(params)
+
+                assert.stub(loop.temp_file).was_called_with("buffer content", params.bufname, c.get().temp_dir)
             end)
 
             it("should replace $FILENAME arg with temp path", function()
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+
+                generator.fn(params)
+
                 assert.same(loop.spawn.calls[1].refs[2], { "temp-path" })
             end)
 
             it("should assign temp_path to params", function()
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+
+                generator.fn(params)
+
                 assert.equals(params.temp_path, "temp-path")
             end)
 
             it("should call cleanup callback in on_stdout_end", function()
-                local on_stdout_end = loop.spawn.calls[1].refs[3].on_stdout_end
+                local generator = helpers.generator_factory(temp_file_generator_opts)
+                generator.fn(params)
 
+                local on_stdout_end = loop.spawn.calls[1].refs[3].on_stdout_end
                 on_stdout_end()
 
                 assert.stub(cleanup).was_called()

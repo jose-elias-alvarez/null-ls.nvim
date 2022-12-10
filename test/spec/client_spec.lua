@@ -3,7 +3,7 @@ local mock = require("luassert.mock")
 
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
-local tu = require("null-ls.test-utils")
+local tu = require("null-ls.utils.test")
 
 local lsp = mock(vim.lsp, true)
 local sources = mock(require("null-ls.sources"), true)

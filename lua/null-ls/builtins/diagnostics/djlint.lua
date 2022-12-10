@@ -23,8 +23,8 @@ return h.make_builtin({
         end,
         on_output = h.diagnostics.from_patterns({
             {
-                pattern = [[%w+ (%d+):(%d+) ([^.]+%.)]],
-                groups = { "row", "col", "message" },
+                pattern = [[(%w+) (%d+):(%d+) (.*).]],
+                groups = { "code", "row", "col", "message" },
                 overrides = {
                     diagnostic = { severity = INFO },
                     offsets = { col = 1 },
