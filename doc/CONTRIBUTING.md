@@ -121,3 +121,25 @@ local diagnostic = {
 
   - To prevent peformance issues, multi-file sources should default to the
     `ON_SAVE` method.
+
+### Configuration
+
+In contrast to plugins like [ALE](https://github.com/dense-analysis/ale), which
+allow source-specific configuration via buffer-local or global variables,
+null-ls configuration uses the `with` method to configure specific sources,
+described in further detail in [BUILTIN_CONFIG](./BUILTIN_CONFIG.md).
+
+You can access user configuration by using the `params:get_config()` method,
+described in [MAIN](./MAIN.md). You'll then want to document available
+configuration options using the `meta.config` table. Each entry in the table
+should define the following:
+
+- `key`: the name of the config option
+- `type`: the Lua type of the config option
+- `description`: a description of the option and what it does
+- `usage` (optional): a code snippet showing example usage (useful for
+  callbacks)
+
+See the
+[gitsigns.nvim built-in](../lua/null-ls/builtins/code_actions/gitsigns.lua) for
+examples of accessing and documenting configuration options.

@@ -161,6 +161,56 @@ local generate_builtin_defaults = function(source, method, name)
     return defaults
 end
 
+local generate_builtin_config = function(source, method, name)
+    if not source.meta.config or vim.tbl_isempty(source.meta.config) then
+        return {}
+    end
+
+    local config = {
+        "",
+        "#### Config",
+        "",
+    }
+    for _, option in ipairs(source.meta.config) do
+        vim.list_extend(config, {
+            string.format("##### `%s` (%s)", option.key, option.type),
+            "",
+            option.description,
+        })
+        if option.usage then
+            local indented_usage = {}
+            for i, line in ipairs(vim.split(option.usage, "\n")) do
+                if i > 1 then
+                    table.insert(indented_usage, string.rep(" ", 8) .. line)
+                else
+                    table.insert(indented_usage, line)
+                end
+            end
+            indented_usage = table.concat(indented_usage, "\n")
+
+            vim.list_extend(config, {
+                "",
+                string.format(
+                    [[
+```lua
+local %s = null_ls.builtins.%s.%s.with({
+    config = {
+        %s = %s
+    },
+})
+```]],
+                    name,
+                    method,
+                    name,
+                    option.key,
+                    indented_usage
+                ),
+            })
+        end
+    end
+    return config
+end
+
 local generate_builtin_notes = function(source)
     if not source.meta.notes or vim.tbl_isempty(source.meta.notes) then
         return {}
@@ -183,6 +233,7 @@ local generate_builtin_content = function(source, method, name)
     vim.list_extend(content, generate_builtin_description(source))
     vim.list_extend(content, generate_builtin_usage(source, method, name))
     vim.list_extend(content, generate_builtin_defaults(source, method, name))
+    vim.list_extend(content, generate_builtin_config(source, method, name))
     vim.list_extend(content, generate_builtin_notes(source))
 
     vim.list_extend(markdown_content, content)

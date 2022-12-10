@@ -394,8 +394,21 @@ Another solution is to use the `dynamic_command` option, as described in
 ### Other Configuration
 
 Sources may define other configuration options, which are available under the
-`config` key. See the source's documentation in [BUILTINS](./BUILTINS.md) for
-more details.
+`config` key. For example, the built-in `gitsigns` code action source has a
+`filter_actions` option to filter out unwanted actions:
+
+```lua
+local gitsigns = null_ls.builtins.code_actions.gitsigns.with({
+    config = {
+        filter_actions = function(title)
+            return title:lower():match("blame") == nil -- filter out blame actions
+        end,
+    },
+})
+```
+
+If a source allows configuration, you'll see available options in the source's
+documentation, available in [BUILTINS](./BUILTINS.md).
 
 ## Conditional sources
 
