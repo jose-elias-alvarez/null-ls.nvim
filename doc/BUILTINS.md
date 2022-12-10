@@ -3454,6 +3454,27 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 - May not work on some filetypes.
 - `prettierd` is more stable and recommended.
 
+### [prettier_eslint](https://github.com/prettier/prettier-eslint-cli)
+
+CLI for [prettier-eslint](https://github.com/prettier/prettier-eslint)
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettier_eslint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
+- Method: `formatting`
+- Command: `prettier-eslint`
+- Args: `{ "--stdin", "--stdin-filepath", "$FILENAME" }`
+
+#### Notes
+
+- Known Issues: https://github.com/idahogurl/vs-code-prettier-eslint/issues/72#issuecomment-1247516987
+
 ### [prettier_standard](https://github.com/sheerun/prettier-standard)
 
 Formats with Prettier and lints with ESLint+Standard! (✿◠‿◠)
