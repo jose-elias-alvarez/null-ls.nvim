@@ -70,6 +70,10 @@ relevant source file to see the default options passed to each built-in source.
 
 Some options are specific to built-in sources that spawn external commands.
 
+Descriptions below may refer to a `params` table, which is a table containing
+information about the current editor state. For details on the structure of this
+table and its available keys / methods, see [MAIN](./MAIN.md).
+
 ### Filetypes
 
 You can override a source's default filetypes as follows:
@@ -126,9 +130,10 @@ You can also override a source's arguments entirely using
 `with({ args = your_args })`.
 
 Both `args` and `extra_args` can also be functions that accept a single
-argument, `params`, which is an object containing information about editor
-state. LSP options (e.g. formatting options) are available as `params.options`,
-making it possible to dynamically set arguments based on these options:
+argument, a `params` table.
+
+LSP options (e.g. formatting options) are available as `params.options`, making
+it possible to dynamically set arguments based on these options:
 
 ```lua
 local sources = {
@@ -148,8 +153,8 @@ local sources = {
 ### Environment Variables
 
 You can inject environment variables to the process via utilizing the `env`
-option. This option can be in the form of a dictionary. It can also, just like
-`args` and `extra_args`, take a function receiving a `params` object.
+option. This option can be in the form of a dictionary. It can also, like `args`
+and `extra_args`, take a function receiving a `params` table.
 
 ```lua
 -- Using a dictionary:
@@ -385,6 +390,25 @@ local sources = {
 
 Another solution is to use the `dynamic_command` option, as described in
 [HELPERS](./HELPERS.md). Note that this option can affect performance.
+
+### Other Configuration
+
+Sources may define other configuration options, which are available under the
+`config` key. For example, the built-in `gitsigns` code action source has a
+`filter_actions` option to filter out unwanted actions:
+
+```lua
+local gitsigns = null_ls.builtins.code_actions.gitsigns.with({
+    config = {
+        filter_actions = function(title)
+            return title:lower():match("blame") == nil -- filter out blame actions
+        end,
+    },
+})
+```
+
+If a source allows configuration, you'll see available options in the source's
+documentation, available in [BUILTINS](./BUILTINS.md).
 
 ## Conditional sources
 

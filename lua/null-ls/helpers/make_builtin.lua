@@ -2,13 +2,14 @@ local cmd_resolver = require("null-ls.helpers.command_resolver")
 local u = require("null-ls.utils")
 
 local function make_builtin(opts)
-    local method, filetypes, extra_filetypes, disabled_filetypes, factory, condition, can_run, generator_opts, generator =
+    local method, filetypes, extra_filetypes, disabled_filetypes, factory, condition, config, can_run, generator_opts, generator =
         opts.method,
         opts.filetypes,
         opts.extra_filetypes,
         opts.disabled_filetypes,
         opts.factory,
         opts.condition,
+        opts.config,
         opts.can_run,
         vim.deepcopy(opts.generator_opts) or {},
         vim.deepcopy(opts.generator) or {}
@@ -45,14 +46,15 @@ local function make_builtin(opts)
     })
 
     local builtin = {
-        method = method,
-        filetypes = filetypes,
-        can_run = can_run,
-        disabled_filetypes = disabled_filetypes,
-        condition = condition,
-        name = opts.name or generator_opts.command,
         _opts = generator_opts,
+        can_run = can_run,
+        condition = condition,
+        config = config,
+        disabled_filetypes = disabled_filetypes,
+        filetypes = filetypes,
         meta = opts.meta or {},
+        method = method,
+        name = opts.name or generator_opts.command,
     }
 
     setmetatable(builtin, {

@@ -6,7 +6,7 @@ local main = require("null-ls")
 local c = require("null-ls.config")
 local u = require("null-ls.utils")
 local s = require("null-ls.state")
-local tu = require("null-ls.test-utils")
+local tu = require("null-ls.utils.test")
 
 local lsp = vim.lsp
 local api = vim.api

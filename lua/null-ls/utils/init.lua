@@ -1,5 +1,3 @@
-local methods = require("null-ls.methods")
-
 local api = vim.api
 
 local format_line_ending = {
@@ -10,45 +8,6 @@ local format_line_ending = {
 
 local M = {}
 
---- gets buffer content, attempting to minimize the number of API calls
----@param params table
----@param bufnr number
----@return string content
-local resolve_content = function(params, bufnr)
-    -- some notifications send full buffer content
-    if params.method == methods.lsp.DID_OPEN and params.textDocument and params.textDocument.text then
-        return M.split_at_newline(bufnr, params.textDocument.text)
-    end
-    if
-        params.method == methods.lsp.DID_CHANGE
-        and params.contentChanges
-        and params.contentChanges[1]
-        and params.contentChanges[1].text
-    then
-        return M.split_at_newline(bufnr, params.contentChanges[1].text)
-    end
-
-    return M.buf.content(bufnr)
-end
-
---- resolves bufnr from params
----@param params table
----@return number bufnr
-local resolve_bufnr = function(params)
-    -- if already set, return
-    if params.bufnr then
-        return params.bufnr
-    end
-
-    -- get from uri
-    if params.textDocument and params.textDocument.uri then
-        return vim.uri_to_bufnr(params.textDocument.uri)
-    end
-
-    -- fallback
-    return api.nvim_get_current_buf()
-end
-
 --- gets the line ending for the given buffer based on fileformat
 ---@param bufnr number?
 ---@return string line_ending
@@ -58,7 +17,7 @@ end
 
 --- joins text using the line ending for the buffer
 ---@param bufnr number?
----@param text string
+---@param text string[]
 ---@return string joined_text, string line_ending
 M.join_at_newline = function(bufnr, text)
     local line_ending = M.get_line_ending(bufnr)
@@ -68,10 +27,10 @@ end
 --- splits text using the line ending for the buffer
 ---@param bufnr number?
 ---@param text string
----@return string split_text, string line_ending
+---@return string[] split_text, string line_ending
 M.split_at_newline = function(bufnr, text)
     local line_ending = M.get_line_ending(bufnr)
-    return vim.split(text, line_ending), line_ending
+    return vim.split(text, line_ending, {}), line_ending
 end
 
 --- checks if the current neovim version is above the given version number
@@ -88,8 +47,8 @@ M.is_executable = function(cmd)
     return cmd and vim.fn.executable(cmd) == 1 or false
 end
 
----@alias NullLsRange table<"'row'"|"'col'"|"'end_row'"|"'end_col'", number>
----@alias LspRange table<"'start'"|"'end'", table<"'line'"|"'character'", number>>
+---@alias NullLsRange { row: number, col: number, end_row: number, end_col: number }
+---@alias LspRange { start_range: { line: number, character: number }, end_range: { line: number, character: number } }
 -- lsp-compatible range is 0-indexed
 -- lua-friendly range is 1-indexed
 M.range = {
@@ -124,58 +83,6 @@ M.range = {
         return range
     end,
 }
-
----@class NullLsParams
----@field client_id number null-ls client id
----@field lsp_method string|nil
----@field options table|nil table of options from lsp params
----@field content string buffer content
----@field bufnr number
----@field method string internal null-ls method
----@field row number current row number
----@field col number current column number
----@field bufname string
----@field ft string
----@field range NullLsRange|nil converted LSP range
----@field word_to_complete string|nil
----@field command string|nil set by generator_factory
----@field root string|nil set by generator_factory
-
----@param original_params table original LSP params
----@param method string internal null-ls method
----@return NullLsParams
-M.make_params = function(original_params, method)
-    local bufnr = resolve_bufnr(original_params)
-    local content = resolve_content(original_params, bufnr)
-    local pos = api.nvim_win_get_cursor(0)
-
-    local params = {
-        client_id = original_params.client_id,
-        lsp_method = original_params.method,
-        options = original_params.options,
-        content = content,
-        method = method,
-        row = pos[1],
-        col = pos[2],
-        bufnr = bufnr,
-        bufname = api.nvim_buf_get_name(bufnr),
-        ft = api.nvim_buf_get_option(bufnr, "filetype"),
-    }
-
-    if original_params.range then
-        params.range = M.range.from_lsp(original_params.range)
-    end
-
-    if params.lsp_method == methods.lsp.COMPLETION then
-        local line = params.content[params.row]
-        local line_to_cursor = line:sub(1, pos[2])
-        local regex = vim.regex("\\k*$")
-
-        params.word_to_complete = line:sub(regex:match_str(line_to_cursor) + 1, params.col)
-    end
-
-    return params
-end
 
 ---@class ConditionalUtils
 ---@field has_file fun(patterns: ...): boolean checks if file exists
@@ -231,8 +138,8 @@ end
 M.buf = {
     --- returns buffer content as string or table
     ---@param bufnr number|nil
-    ---@param to_string boolean
-    ---@return string|table content
+    ---@param to_string? boolean
+    ---@return string|string[] content
     content = function(bufnr, to_string)
         bufnr = bufnr or api.nvim_get_current_buf()
 
@@ -468,6 +375,10 @@ M.root_pattern = function(...)
     return function(startpath)
         return M.search_ancestors(startpath, matcher)
     end
+end
+
+M.make_params = function(...)
+    return require("null-ls.utils.make_params")(...)
 end
 
 return M

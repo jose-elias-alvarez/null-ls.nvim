@@ -1,9 +1,7 @@
 local stub = require("luassert.stub")
 
 local c = require("null-ls.config")
-local methods = require("null-ls.methods")
-
-local test_utils = require("null-ls.test-utils")
+local test_utils = require("null-ls.utils.test")
 
 describe("utils", function()
     local u = require("null-ls.utils")
@@ -182,138 +180,6 @@ describe("utils", function()
                 assert.equals(lua_range.col, 1)
                 assert.equals(lua_range.end_row, 1)
                 assert.equals(lua_range.end_col, 1)
-            end)
-        end)
-    end)
-
-    describe("make_params", function()
-        local mock_method = "mockMethod"
-        local mock_content = "I am some other content"
-        before_each(function()
-            test_utils.edit_test_file("test-file.lua")
-        end)
-        after_each(function()
-            vim.cmd("bufdo! bwipeout!")
-        end)
-
-        it("should return params from minimal original params", function()
-            local params = u.make_params({
-                method = methods.lsp.CODE_ACTION,
-            }, mock_method)
-
-            assert.equals(params.bufname, test_utils.test_dir .. "/files/test-file.lua")
-            assert.equals(params.lsp_method, methods.lsp.CODE_ACTION)
-            assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
-            assert.equals(params.col, 0)
-            assert.equals(params.row, 1)
-            assert.equals(params.ft, "lua")
-            assert.equals(params.method, mock_method)
-            assert.same(params.content, { 'print("I am a test file!")', "" })
-        end)
-
-        it("should convert original range and assign to params.range", function()
-            local original_params = {
-                range = {
-                    ["start"] = { line = 4, character = 0 },
-                    ["end"] = { line = 5, character = 6 },
-                },
-            }
-
-            local params = u.make_params(original_params)
-
-            assert.truthy(params.range)
-            assert.same(params.range, u.range.from_lsp(original_params.range))
-        end)
-
-        it("should set word_to_complete if method is COMPLETION", function()
-            vim.cmd("normal 5l") -- move cursor to end of "print"
-
-            local params = u.make_params({ method = methods.lsp.COMPLETION })
-
-            assert.equals(params.word_to_complete, "print")
-        end)
-
-        describe("resolve_bufnr", function()
-            it("should resolve bufnr from params", function()
-                local params = u.make_params({
-                    bufnr = vim.api.nvim_get_current_buf(),
-                }, mock_method)
-
-                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
-            end)
-
-            it("should resolve bufnr from uri", function()
-                local params = u.make_params({
-                    textDocument = { uri = vim.uri_from_bufnr(vim.api.nvim_get_current_buf()) },
-                }, mock_method)
-
-                assert.equals(params.bufnr, vim.api.nvim_get_current_buf())
-            end)
-        end)
-
-        describe("resolve_content", function()
-            describe("unix-style line endings", function()
-                it("should resolve content from params on DID_OPEN", function()
-                    local params = u.make_params({
-                        method = methods.lsp.DID_OPEN,
-                        textDocument = { text = mock_content },
-                    }, mock_method)
-
-                    assert.same(params.content, { mock_content })
-                end)
-
-                it("should resolve content from params on DID_CHANGE", function()
-                    local params = u.make_params({
-                        method = methods.lsp.DID_CHANGE,
-                        contentChanges = { { text = mock_content } },
-                    }, mock_method)
-
-                    assert.same(params.content, { mock_content })
-                end)
-
-                it("should directly get content from buffer if method does not match", function()
-                    local params = u.make_params({
-                        method = "otherMethod",
-                        contentChanges = { { text = mock_content } },
-                    }, mock_method)
-
-                    assert.same(params.content, { 'print("I am a test file!")', "" })
-                end)
-            end)
-
-            describe("non-unix style line endings", function()
-                it("should content from params on DID_OPEN", function()
-                    vim.bo.fileformat = "dos"
-
-                    local params = u.make_params({
-                        method = methods.lsp.DID_OPEN,
-                        textDocument = { text = mock_content },
-                    }, mock_method)
-
-                    assert.same(params.content, { mock_content })
-                end)
-
-                it("should get content from params on DID_CHANGE", function()
-                    vim.bo.fileformat = "dos"
-
-                    local params = u.make_params({
-                        method = methods.lsp.DID_CHANGE,
-                        contentChanges = { { text = mock_content } },
-                    }, mock_method)
-
-                    assert.same(params.content, { mock_content })
-                end)
-
-                it("should directly get content from buffer if method does not match", function()
-                    vim.bo.fileformat = "dos"
-
-                    local params = u.make_params({
-                        method = "otherMethod",
-                        contentChanges = { { text = mock_content } },
-                    }, mock_method)
-
-                    assert.same(params.content, { 'print("I am a test file!")', "" })
-                end)
             end)
         end)
     end)
