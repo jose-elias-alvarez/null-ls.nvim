@@ -1,4 +1,4 @@
-local health
+local health = vim.health
 
 local M = {}
 
@@ -44,10 +44,6 @@ local function report(source)
 end
 
 M.check = function()
-    if not health then
-        health = require("null-ls.utils").has_version("0.8") and vim.health or require("health")
-    end
-
     local registered_sources = require("null-ls.sources").get({})
     if #registered_sources == 0 then
         health.report_info("no sources registered")

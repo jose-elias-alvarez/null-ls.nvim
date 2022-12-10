@@ -223,13 +223,8 @@ your log.
 
 ### How do I format files?
 
-null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
-formatting by visually selecting part of the buffer and calling
-`vim.lsp.buf.range_formatting()`.
-
-On 0.8, you should use `vim.lsp.buf.format` (see the help file for usage
-instructions).
+Use `vim.lsp.buf.format()`. See `:help vim.lsp.buf.format()` for usage
+instructions.
 
 ### How do I format files on save?
 
@@ -294,10 +289,6 @@ This is an automatic mechanism and controlled by Neovim. You might want to
 increase the timeout in your call:
 
 ```lua
--- 0.7
-vim.lsp.buf.formatting_sync(nil, 2000) -- 2 seconds
-
--- 0.8
 vim.lsp.buf.format({ timeout_ms = 2000 })
 ```
 
