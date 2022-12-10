@@ -13,60 +13,6 @@ describe("rpc", function()
         c.reset()
     end)
 
-    describe("setup", function()
-        local original_rpc_start = require("vim.lsp.rpc").start
-        local rpc_start, start
-        before_each(function()
-            rpc_start = stub(require("vim.lsp.rpc"), "start")
-            start = stub(rpc, "start")
-        end)
-        after_each(function()
-            require("vim.lsp.rpc")._null_ls_setup = nil
-            require("vim.lsp.rpc").start = original_rpc_start
-            start:revert()
-        end)
-
-        it("should override original rpc.start method and set setup flag", function()
-            rpc.setup()
-
-            assert.is_not.equals(require("vim.lsp.rpc").start, rpc_start)
-            assert.truthy(require("vim.lsp.rpc")._null_ls_setup)
-        end)
-
-        it("should not do anything if already set up", function()
-            require("vim.lsp.rpc")._null_ls_setup = true
-
-            rpc.setup()
-
-            assert.equals(require("vim.lsp.rpc").start, rpc_start)
-        end)
-
-        it("should call original rpc_start method if config does not exist", function()
-            rpc.setup()
-
-            require("vim.lsp.rpc").start("command", "args", "dispatchers", "other_args")
-
-            assert.stub(rpc_start).was_called_with("command", "args", "dispatchers", "other_args")
-        end)
-
-        it("should call rpc.start override if command matches default", function()
-            rpc.setup()
-
-            require("vim.lsp.rpc").start("nvim", "args", "dispatchers", "other_args")
-
-            assert.stub(rpc.start).was_called_with("dispatchers")
-        end)
-
-        it("should call rpc.start override if command matches custom command", function()
-            c._set({ cmd = { "custom" } })
-            rpc.setup()
-
-            require("vim.lsp.rpc").start("custom", "args", "dispatchers", "other_args")
-
-            assert.stub(rpc.start).was_called_with("dispatchers")
-        end)
-    end)
-
     describe("start", function()
         local wait_for_scheduler = function()
             vim.wait(0)
@@ -98,20 +44,19 @@ describe("rpc", function()
         it("should return object with methods", function()
             assert.truthy(type(rpc_object.request) == "function")
             assert.truthy(type(rpc_object.notify) == "function")
-            assert.truthy(type(rpc_object.handle.is_closing) == "function")
-            assert.truthy(type(rpc_object.handle.kill) == "function")
-            assert.truthy(type(rpc_object.pid) == "number")
+            assert.truthy(type(rpc_object.is_closing) == "function")
+            assert.truthy(type(rpc_object.terminate) == "function")
         end)
 
         describe("stopped", function()
             it("should be false if not killed", function()
-                assert.falsy(rpc_object.handle.is_closing())
+                assert.falsy(rpc_object.is_closing())
             end)
 
             it("should be true if killed", function()
-                rpc_object.handle.kill()
+                rpc_object.terminate()
 
-                assert.truthy(rpc_object.handle.is_closing())
+                assert.truthy(rpc_object.is_closing())
             end)
         end)
 

@@ -3,15 +3,13 @@ local mock = require("luassert.mock")
 
 local c = require("null-ls.config")
 local methods = require("null-ls.methods")
-local tu = require("null-ls.test-utils")
-local u = require("null-ls.utils")
+local tu = require("null-ls.utils.test")
 
 local lsp = mock(vim.lsp, true)
 local sources = mock(require("null-ls.sources"), true)
 
 describe("client", function()
     local client = require("null-ls.client")
-    local has = stub(u, "has_version")
 
     local mock_client_id = 1
     local mock_bufnr = 2
@@ -48,7 +46,7 @@ describe("client", function()
             local opts = lsp.start_client.calls[1].refs[1]
             assert.equals(opts.name, "null-ls")
             assert.equals(opts.root_dir, vim.loop.cwd())
-            assert.equals(opts.cmd, c.get().cmd)
+            assert.equals(opts.cmd, require("null-ls.rpc").start)
             assert.same(opts.flags, { debounce_text_changes = c.get().debounce })
             assert.truthy(type(opts.on_init) == "function")
             assert.truthy(type(opts.on_exit) == "function")
@@ -76,24 +74,6 @@ describe("client", function()
             lsp.start_client.calls[1].refs[1].on_init(mock_client, mock_initialize_result)
 
             assert.stub(on_init).was_called_with(mock_client, mock_initialize_result)
-        end)
-
-        it("should pass configured cmd on 0.7", function()
-            has.returns(false)
-
-            client.start_client()
-
-            local opts = lsp.start_client.calls[1].refs[1]
-            assert.equals(opts.cmd, c.get().cmd)
-        end)
-
-        it("should pass rpc client callback on 0.8", function()
-            has.returns(true)
-
-            client.start_client()
-
-            local opts = lsp.start_client.calls[1].refs[1]
-            assert.equals(opts.cmd, require("null-ls.rpc").start)
         end)
 
         describe("on_exit", function()
@@ -164,34 +144,14 @@ describe("client", function()
                     assert.equals(is_supported, false)
                 end)
 
-                describe("0.8", function()
-                    before_each(function()
-                        has.returns(true)
-                    end)
-                    it("should return false if server_capabilities disables method", function()
-                        mock_client.server_capabilities.codeActionProvider = false
-                        on_init(mock_client)
+                it("should return false if server_capabilities disables method", function()
+                    mock_client.server_capabilities.codeActionProvider = false
+                    on_init(mock_client)
 
-                        local is_supported = mock_client.supports_method(methods.lsp.CODE_ACTION)
+                    local is_supported = mock_client.supports_method(methods.lsp.CODE_ACTION)
 
-                        assert.stub(can_run).was_not_called()
-                        assert.equals(is_supported, false)
-                    end)
-                end)
-
-                describe("0.7", function()
-                    before_each(function()
-                        has.returns(false)
-                    end)
-                    it("should return false if resolved_capabilities disables method", function()
-                        mock_client.resolved_capabilities.code_action = false
-                        on_init(mock_client)
-
-                        local is_supported = mock_client.supports_method(methods.lsp.CODE_ACTION)
-
-                        assert.stub(can_run).was_not_called()
-                        assert.equals(is_supported, false)
-                    end)
+                    assert.stub(can_run).was_not_called()
+                    assert.equals(is_supported, false)
                 end)
             end)
         end)

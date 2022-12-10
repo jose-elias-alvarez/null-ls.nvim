@@ -24,7 +24,7 @@ local sources = {
         command = "sqlfluff",
         args = {
             "fix",
-            "--disable_progress_bar",
+            "--disable-progress-bar",
             "-f",
             "-n",
             "-",

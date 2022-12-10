@@ -72,11 +72,13 @@ To get started, you must set up null-ls and register at least one source. See
 null-ls.
 
 ```lua
-require("null-ls").setup({
+local null_ls = require("null-ls")
+
+null_ls.setup({
     sources = {
-        require("null-ls").builtins.formatting.stylua,
-        require("null-ls").builtins.diagnostics.eslint,
-        require("null-ls").builtins.completion.spell,
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.diagnostics.eslint,
+        null_ls.builtins.completion.spell,
     },
 })
 ```
@@ -221,13 +223,8 @@ your log.
 
 ### How do I format files?
 
-null-ls formatters run when you call `vim.lsp.buf.formatting()` or
-`vim.lsp.buf.formatting_sync()`. If a source supports it, you can run range
-formatting by visually selecting part of the buffer and calling
-`vim.lsp.buf.range_formatting()`.
-
-On 0.8, you should use `vim.lsp.buf.format` (see the help file for usage
-instructions).
+Use `vim.lsp.buf.format()`. See `:help vim.lsp.buf.format()` for usage
+instructions.
 
 ### How do I format files on save?
 
@@ -292,10 +289,6 @@ This is an automatic mechanism and controlled by Neovim. You might want to
 increase the timeout in your call:
 
 ```lua
--- 0.7
-vim.lsp.buf.formatting_sync(nil, 2000) -- 2 seconds
-
--- 0.8
 vim.lsp.buf.format({ timeout_ms = 2000 })
 ```
 
@@ -328,4 +321,4 @@ All tests expect the latest Neovim master.
 Thanks to everyone who sponsors my projects and makes continued development /
 maintenance possible!
 
-<!-- sponsors --><a href="https://github.com/hituzi-no-sippo"><img src="https://github.com/hituzi-no-sippo.png" width="60px" alt="" /></a><a href="https://github.com/sbc64"><img src="https://github.com/sbc64.png" width="60px" alt="" /></a><a href="https://github.com/chase"><img src="https://github.com/chase.png" width="60px" alt="" /></a><a href="https://github.com/williamboman"><img src="https://github.com/williamboman.png" width="60px" alt="" /></a><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/yutkat"><img src="https://github.com/yutkat.png" width="60px" alt="" /></a><a href="https://github.com/hituzi-no-sippo"><img src="https://github.com/hituzi-no-sippo.png" width="60px" alt="" /></a><a href="https://github.com/sbc64"><img src="https://github.com/sbc64.png" width="60px" alt="" /></a><a href="https://github.com/chase"><img src="https://github.com/chase.png" width="60px" alt="" /></a><a href="https://github.com/andrewferrier"><img src="https://github.com/andrewferrier.png" width="60px" alt="" /></a><a href="https://github.com/sirupsen"><img src="https://github.com/sirupsen.png" width="60px" alt="" /></a><a href="https://github.com/dhensen"><img src="https://github.com/dhensen.png" width="60px" alt="" /></a><a href="https://github.com/iwpnd"><img src="https://github.com/iwpnd.png" width="60px" alt="" /></a><a href="https://github.com/ehaynes99"><img src="https://github.com/ehaynes99.png" width="60px" alt="" /></a><!-- sponsors -->

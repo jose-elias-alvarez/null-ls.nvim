@@ -6,12 +6,15 @@ local u = require("null-ls.utils")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "prettierd",
+    name = "prettier_eslint",
     meta = {
-        url = "https://github.com/fsouza/prettierd",
-        description = "prettier, as a daemon, for ludicrous formatting speed.",
+        url = "https://github.com/prettier/prettier-eslint-cli",
+        description = "CLI for [prettier-eslint](https://github.com/prettier/prettier-eslint)",
+        notes = {
+            "Known Issues: https://github.com/idahogurl/vs-code-prettier-eslint/issues/72#issuecomment-1247516987",
+        },
     },
-    method = FORMATTING,
+    method = { FORMATTING },
     filetypes = {
         "javascript",
         "javascriptreact",
@@ -31,12 +34,13 @@ return h.make_builtin({
         "handlebars",
     },
     generator_opts = {
-        command = "prettierd",
-        args = { "$FILENAME" },
-        dynamic_command = cmd_resolver.from_node_modules(),
+        command = "prettier-eslint",
+        args = { "--stdin", "--stdin-filepath", "$FILENAME" },
         to_stdin = true,
+        dynamic_command = cmd_resolver.from_node_modules(),
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern(
+                -- supports both eslint and prettier config files
                 -- https://prettier.io/docs/en/configuration.html
                 ".prettierrc",
                 ".prettierrc.json",
@@ -45,9 +49,17 @@ return h.make_builtin({
                 ".prettierrc.json5",
                 ".prettierrc.js",
                 ".prettierrc.cjs",
+                ".prettier.config.js",
+                ".prettier.config.cjs",
                 ".prettierrc.toml",
-                "prettier.config.js",
-                "prettier.config.cjs",
+                "eslint.config.js",
+                -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
+                ".eslintrc",
+                ".eslintrc.js",
+                ".eslintrc.cjs",
+                ".eslintrc.yaml",
+                ".eslintrc.yml",
+                ".eslintrc.json",
                 "package.json"
             )(params.bufname)
         end),

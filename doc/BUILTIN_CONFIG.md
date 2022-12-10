@@ -70,6 +70,10 @@ relevant source file to see the default options passed to each built-in source.
 
 Some options are specific to built-in sources that spawn external commands.
 
+Descriptions below may refer to a `params` table, which is a table containing
+information about the current editor state. For details on the structure of this
+table and its available keys / methods, see [MAIN](./MAIN.md).
+
 ### Filetypes
 
 You can override a source's default filetypes as follows:
@@ -126,9 +130,10 @@ You can also override a source's arguments entirely using
 `with({ args = your_args })`.
 
 Both `args` and `extra_args` can also be functions that accept a single
-argument, `params`, which is an object containing information about editor
-state. LSP options (e.g. formatting options) are available as `params.options`,
-making it possible to dynamically set arguments based on these options:
+argument, a `params` table.
+
+LSP options (e.g. formatting options) are available as `params.options`, making
+it possible to dynamically set arguments based on these options:
 
 ```lua
 local sources = {
@@ -148,15 +153,27 @@ local sources = {
 ### Environment Variables
 
 You can inject environment variables to the process via utilizing the `env`
-option. This option should be in the form of a dictionary. This will extend the
-operating system variables.
+option. This option can be in the form of a dictionary. It can also, like `args`
+and `extra_args`, take a function receiving a `params` table.
 
 ```lua
+-- Using a dictionary:
+
 local sources = {
     null_ls.builtins.formatting.prettierd.with({
         env = {
             PRETTIERD_DEFAULT_CONFIG = vim.fn.expand("~/.config/nvim/utils/linter-config/.prettierrc.json"),
         },
+    }),
+}
+
+-- Using a function:
+
+local sources = {
+    null_ls.builtins.diagnostics.pylint.with({
+        env = function(params)
+            return { PYTHONPATH = params.root }
+        end,
     }),
 }
 ```
@@ -315,28 +332,28 @@ ever timing out.
 
 ### Temp file sources
 
-Some builtins write the buffer's content to a temp file before command
-execution, as a workaround for commands that don't accept `stdin`. null-ls uses
-the following logic to determine where to put temp files:
+Some built-in sources write the buffer's content to a temp file before command
+execution and / or read from a temp file after execution, as a workaround for
+commands that don't support `stdio`. To maximize compatibility, null-ls defaults
+to creating temp files in the same directory as the parent file.
 
-1. On Unix, use `XDG_RUNTIME_DIR` if set. Otherwise, use `/tmp`.
-2. On Windows, use `TEMP`
-
-In most cases, temp file sources will work as expected without user
-intervention. For special cases, you can turn this off by setting `to_temp_file`
-to `false`:
+Under normal circumstances, this will work seamlessly, but if you run into
+issues with file watchers / other integrations, you can override the directory
+to `/tmp` (or another appropriate directory) using the `temp_dir` option:
 
 ```lua
 local sources = {
     null_ls.builtins.formatting.phpstan.with({
-        to_temp_file = false,
+        temp_dir = "/tmp",
     }),
 }
 ```
 
-For diagnostics sources, you should also update the source to
-[run on save](#diagnostics-on-save), since otherwise diagnostics will go out of
-sync with buffer changes.
+**Note**: some null-ls built-in sources expect temp files to exist within a
+project for context and so will not work if this option changes.
+
+If you want to override this globally, you can change the `temp_dir` option in
+[CONFIG](CONFIG.md).
 
 ## Using local executables
 
@@ -373,6 +390,25 @@ local sources = {
 
 Another solution is to use the `dynamic_command` option, as described in
 [HELPERS](./HELPERS.md). Note that this option can affect performance.
+
+### Other Configuration
+
+Sources may define other configuration options, which are available under the
+`config` key. For example, the built-in `gitsigns` code action source has a
+`filter_actions` option to filter out unwanted actions:
+
+```lua
+local gitsigns = null_ls.builtins.code_actions.gitsigns.with({
+    config = {
+        filter_actions = function(title)
+            return title:lower():match("blame") == nil -- filter out blame actions
+        end,
+    },
+})
+```
+
+If a source allows configuration, you'll see available options in the source's
+documentation, available in [BUILTINS](./BUILTINS.md).
 
 ## Conditional sources
 

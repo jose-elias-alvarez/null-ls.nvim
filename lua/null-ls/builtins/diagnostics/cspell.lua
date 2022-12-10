@@ -57,16 +57,27 @@ return h.make_builtin({
         check_exit_code = function(code)
             return code <= 1
         end,
-        on_output = h.diagnostics.from_pattern(
-            ".*:(%d+):(%d+)%s*-%s*(.*%((.*)%))%s*Suggestions:%s*%[(.*)%]",
-            { "row", "col", "message", "_quote", "_suggestions" },
+        on_output = h.diagnostics.from_patterns({
             {
-                adapters = {
-                    h.diagnostics.adapters.end_col.from_quote,
-                    custom_user_data,
+                pattern = ".*:(%d+):(%d+)%s*-%s*(.*%((.*)%))%s*Suggestions:%s*%[(.*)%]",
+                groups = { "row", "col", "message", "_quote", "_suggestions" },
+                overrides = {
+                    adapters = {
+                        h.diagnostics.adapters.end_col.from_quote,
+                        custom_user_data,
+                    },
                 },
-            }
-        ),
+            },
+            {
+                pattern = [[.*:(%d+):(%d+)%s*-%s*(.*%((.*)%))]],
+                groups = { "row", "col", "message", "_quote" },
+                overrides = {
+                    adapters = {
+                        h.diagnostics.adapters.end_col.from_quote,
+                    },
+                },
+            },
+        }),
     },
     factory = h.generator_factory,
 })
