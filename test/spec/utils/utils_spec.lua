@@ -190,6 +190,7 @@ describe("utils", function()
         it("should return object containing utils", function()
             assert.truthy(type(utils.has_file) == "function")
             assert.truthy(type(utils.root_has_file) == "function")
+            assert.truthy(type(utils.root_has_file_matches) == "function")
             assert.truthy(type(utils.root_matches) == "function")
         end)
 
@@ -226,6 +227,16 @@ describe("utils", function()
 
             it("should return false if file does not exist at root", function()
                 assert.falsy(utils.root_has_file("bad-file"))
+            end)
+        end)
+
+        describe("root_has_file_matches", function()
+            it("should return true if some file exists at root", function()
+                assert.truthy(utils.root_has_file_matches(".?stylua.toml"))
+            end)
+
+            it("should return false if some file not exists at root", function()
+                assert.falsy(utils.root_has_file_matches("bad-file"))
             end)
         end)
 

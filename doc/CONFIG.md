@@ -31,11 +31,13 @@ example below and [BUILTIN_CONFIG](BUILTIN_CONFIG.md) for information on how to
 configure these sources.
 
 ```lua
-require("null-ls").setup({
+local null_ls = require("null-ls")
+
+null_ls.setup({
     sources = {
-        require("null-ls").builtins.formatting.stylua,
-        require("null-ls").builtins.diagnostics.eslint,
-        require("null-ls").builtins.completion.spell,
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.diagnostics.eslint,
+        null_ls.builtins.completion.spell,
     },
 })
 ```
@@ -60,6 +62,8 @@ local defaults = {
     on_exit = nil,
     root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
     sources = nil,
+    temp_dir = nil,
+    border = nil,
     update_in_insert = false,
 }
 ```
@@ -218,6 +222,29 @@ If you've installed an integration that provides its own sources and aren't
 interested in built-in sources, you don't have to define any sources here. The
 integration will register them independently.
 
+### temp_dir (string, optional)
+
+Defines the directory used to create temporary files for sources that rely on
+them (a workaround used for command-based sources that do not support `stdio`).
+
+To maximize compatibility, null-ls defaults to creating temp files in the same
+directory as the parent file. If this is causing issues, you can set it to
+`/tmp` (or another appropriate directory) here. Otherwise, there is no need to
+change this setting.
+
+**Note**: some null-ls built-in sources expect temp files to exist within a
+project for context and so will not work if this option changes.
+
+You can also configure `temp_dir` per built-in by using the `with` method,
+described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
+
+### border ( table, string, optional)
+
+Defines the border to use for the `:NullLsInfo` UI window. Uses
+`NullLsInfoBorder` highlight group (see [Highlight Groups](#highlight-groups)).
+Accepts same border values as `nvim_open_win()`. See `:help nvim_open_win()` for
+more info.
+
 ### update_in_insert (boolean)
 
 Controls whether diagnostic sources run in insert mode. If set to `false`,
@@ -229,6 +256,16 @@ Note that by default, Neovim will not display updated diagnostics in insert
 mode. Together with the option above, you need to pass `update_in_insert = true`
 to `vim.diagnostic.config` for diagnostics to work as expected. See
 `:help vim.diagnostic.config` for more info.
+
+## Highlight Groups
+
+Below are listed the highlight groups that you can override for the
+`:NullLsInfo` window.
+
+- `NullLsInfoHeader` Window header
+- `NullLsInfoTitle` Titles
+- `NullLsInfoBorder` Window border
+- `NullLsInfoSources` Sources names
 
 ## Explicitly defining the project root
 

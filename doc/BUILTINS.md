@@ -298,7 +298,7 @@ local sources = { null_ls.builtins.diagnostics.actionlint }
 - Filetypes: `{ "yaml" }`
 - Method: `diagnostics`
 - Command: `actionlint`
-- Args: `{ "-no-color", "-format", "{{json .}}", "-" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/actionlint.lua))
 
 ### [alex](https://github.com/get-alex/alex)
 
@@ -411,6 +411,40 @@ local sources = { null_ls.builtins.diagnostics.checkmake }
 - Method: `diagnostics`
 - Command: `checkmake`
 - Args: `{ "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}'", "$FILENAME" }`
+
+### [checkstyle](https://checkstyle.org)
+
+Checkstyle is a tool for checking Java source code for adherence to a Code Standard or set of
+validation rules (best practices).
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.checkstyle.with({
+        extra_args = { "-c", "/google_checks.xml" }, -- or "/sun_checks.xml" or path to self written rules
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{ "java" }`
+- Method: `diagnostics_on_save`
+- Command: `checkstyle`
+- Args: `{ "-f", "sarif", "$ROOT" }`
+
+#### Notes
+
+- Checkstyle only offers a jar file as download. It is recommended to put an executable wrapper script in
+your path.
+Example wrapper script:
+```bash
+#!/usr/bin/env bash
+java -jar path/to/checkstyle.jar "$@"
+```
+- Checkstyle needs a mandatory `-c` argument. Use `extra_args` to add yours. `extra_args` can also be a
+function to build more sophisticated logic.
 
 ### [chktex](https://www.nongnu.org/chktex/)
 
@@ -663,6 +697,23 @@ local sources = { null_ls.builtins.diagnostics.djlint }
 - Command: `djlint`
 - Args: `{ "$FILENAME" }`
 
+### [dotenv_linter](https://github.com/dotenv-linter/dotenv-linter)
+
+Lightning-fast linter for .env files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.dotenv_linter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sh" }`
+- Method: `diagnostics`
+- Command: `dotenv-linter`
+- Args: `{ "$FILENAME" }`
+
 ### [editorconfig_checker](https://github.com/editorconfig-checker/editorconfig-checker)
 
 A tool to verify that your files are in harmony with your `.editorconfig`.
@@ -861,7 +912,7 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - Filetypes: `{ "go" }`
 - Method: `diagnostics_on_save`
 - Command: `golangci-lint`
-- Args: `{ "run", "--fix=false", "--fast", "--out-format=json", "$DIRNAME", "--path-prefix", "$ROOT" }`
+- Args: `{ "run", "--fix=false", "--fast", "--out-format=json", "--path-prefix", "$ROOT" }`
 
 ### [hadolint](https://github.com/hadolint/hadolint)
 
@@ -1065,7 +1116,7 @@ local sources = { null_ls.builtins.diagnostics.mlint }
 
 #### Defaults
 
-- Filetypes: `{ "matlab" }`
+- Filetypes: `{ "matlab", "octave" }`
 - Method: `diagnostics_on_save`
 - Command: `mlint`
 - Args: `{ "$FILENAME" }`
@@ -1194,6 +1245,42 @@ local sources = { null_ls.builtins.diagnostics.phpstan }
 
 - Requires a valid `phpstan.neon` at root.
 - If in place validation is required set `method` to `diagnostics_on_save` and `to_temp_file` to `false`
+
+### [pmd](https://pmd.github.io)
+
+An extensible cross-language static code analyzer.
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.pmd.with({
+        extra_args = {
+            "--rulesets",
+            "category/java/bestpractices.xml,category/jsp/bestpractices.xml" -- or path to self-written ruleset
+        },
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{ "java", "jsp" }`
+- Method: `diagnostics_on_save`
+- Command: `pmd`
+- Args: `{ "--format", "json", "--dir", "$ROOT" }`
+
+#### Notes
+
+- PMD only offers parameterized wrapper scripts as download. It is recommended to put an executable wrapper
+script in your path.
+Example wrapper script:
+```bash
+#!/usr/bin/env bash
+path/to/pmd/bin/run.sh pmd "$@"
+```
+- PMD needs a mandatory `--rulesets`/`-rulesets`/`-R` argument. Use `extra_args` to add yours. `extra_args`
+can also be a function to build more sophisticated logic.
 
 ### [proselint](https://github.com/amperser/proselint)
 
@@ -1497,6 +1584,23 @@ local sources = { null_ls.builtins.diagnostics.rubocop }
 - Command: `rubocop`
 - Args: `{ "-f", "json", "--force-exclusion", "--stdin", "$FILENAME" }`
 
+### [ruff](https://github.com/charliermarsh/ruff/)
+
+An extremely fast Python linter, written in Rust.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.ruff }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `diagnostics`
+- Command: `ruff`
+- Args: `{ "-n", "-e", "--stdin-filename", "$FILENAME", "-" }`
+
 ### [selene](https://kampfkarren.github.io/selene/)
 
 Command line tool designed to help write correct and idiomatic Lua code.
@@ -1509,7 +1613,7 @@ local sources = { null_ls.builtins.diagnostics.selene }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Method: `diagnostics`
 - Command: `selene`
 - Args: `{ "--display-style", "quiet", "-" }`
@@ -1618,7 +1722,7 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `diagnostics`
 - Command: `sqlfluff`
-- Args: `{ "lint", "-f", "github-annotation", "-n", "--disable_progress_bar", "$FILENAME" }`
+- Args: `{ "lint", "--disable-progress-bar", "-f", "github-annotation", "-n", "$FILENAME" }`
 
 #### Notes
 
@@ -2300,7 +2404,7 @@ local sources = { null_ls.builtins.formatting.codespell }
 - Filetypes: `{}`
 - Method: `formatting`
 - Command: `codespell`
-- Args: `{ "--write-changes", "$FILENAME" }`
+- Args: `{ "--check-hidden", "--write-changes", "$FILENAME" }`
 
 ### [crystal_format](https://github.com/crystal-lang/crystal)
 
@@ -2482,6 +2586,48 @@ local sources = { null_ls.builtins.formatting.elm_format }
 - Method: `formatting`
 - Command: `elm-format`
 - Args: `{ "--stdin" }`
+
+### [emacs_scheme_mode](https://www.gnu.org/savannah-checkouts/gnu/emacs/emacs.html)
+
+An extensible, customizable, free/libre text editor — and more. Basically, using emacs in batch mode to format scheme files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.emacs_scheme_mode }
+```
+
+#### Defaults
+
+- Filetypes: `{ "scheme", "scheme.guile" }`
+- Method: `formatting`
+- Command: `emacs`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/emacs_scheme_mode.lua))
+
+#### Notes
+
+- Adjust the expression evaluated with the `--eval` flag to change settings within emacs.
+
+### [emacs_vhdl_mode](https://guest.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html)
+
+VHDL Mode is an Emacs major mode for editing VHDL code. Basically, using emacs in batch mode to format VHDL files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.emacs_vhdl_mode }
+```
+
+#### Defaults
+
+- Filetypes: `{ "vhdl" }`
+- Method: `formatting`
+- Command: `emacs`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/emacs_vhdl_mode.lua))
+
+#### Notes
+
+- Adjust the expression evaluated with the `--eval` flag to change settings within emacs.
 
 ### [erb_lint](https://github.com/Shopify/erb-lint)
 
@@ -3308,6 +3454,27 @@ local sources = { null_ls.builtins.formatting.prettier_d_slim }
 - May not work on some filetypes.
 - `prettierd` is more stable and recommended.
 
+### [prettier_eslint](https://github.com/prettier/prettier-eslint-cli)
+
+CLI for [prettier-eslint](https://github.com/prettier/prettier-eslint)
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.prettier_eslint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
+- Method: `formatting`
+- Command: `prettier-eslint`
+- Args: `{ "--stdin", "--stdin-filepath", "$FILENAME" }`
+
+#### Notes
+
+- Known Issues: https://github.com/idahogurl/vs-code-prettier-eslint/issues/72#issuecomment-1247516987
+
 ### [prettier_standard](https://github.com/sheerun/prettier-standard)
 
 Formats with Prettier and lints with ESLint+Standard! (✿◠‿◠)
@@ -3537,7 +3704,7 @@ local sources = { null_ls.builtins.formatting.rome }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "typescript" }`
+- Filetypes: `{ "javascript", "typescript", "javascriptreact", "typescriptreact" }`
 - Method: `formatting`
 - Command: `rome`
 - Args: `{ "format", "--write", "$FILENAME" }`
@@ -3706,7 +3873,7 @@ local sources = {
 - Filetypes: `{ "sql" }`
 - Method: `formatting`
 - Command: `sqlfluff`
-- Args: `{ "fix", "--disable_progress_bar", "-f", "-n", "-" }`
+- Args: `{ "fix", "--disable-progress-bar", "-f", "-n", "-" }`
 
 #### Notes
 
@@ -3842,7 +4009,7 @@ local sources = { null_ls.builtins.formatting.stylua }
 
 #### Defaults
 
-- Filetypes: `{ "lua" }`
+- Filetypes: `{ "lua", "luau" }`
 - Methods: `formatting, range_formatting`
 - Command: `stylua`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/stylua.lua))
@@ -4050,6 +4217,23 @@ local sources = { null_ls.builtins.formatting.verible_verilog_format }
 - Method: `formatting`
 - Command: `verible-verilog-format`
 - Args: `{ "--stdin_name", "$FILENAME", "-" }`
+
+### [xmlformat](https://github.com/pamoller/xmlformatter)
+
+xmlformatter is an Open Source Python package, which provides formatting of XML documents.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.xmlformat }
+```
+
+#### Defaults
+
+- Filetypes: `{ "xml" }`
+- Method: `formatting`
+- Command: `xmlformat`
+- Args: `{ "-" }`
 
 ### [xmllint](http://xmlsoft.org/xmllint.html)
 

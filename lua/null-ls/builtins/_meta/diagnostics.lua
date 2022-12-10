@@ -22,6 +22,9 @@ return {
   checkmake = {
     filetypes = { "make" }
   },
+  checkstyle = {
+    filetypes = { "java" }
+  },
   chktex = {
     filetypes = { "tex" }
   },
@@ -63,6 +66,9 @@ return {
   },
   djlint = {
     filetypes = { "django", "jinja.html", "htmldjango" }
+  },
+  dotenv_linter = {
+    filetypes = { "sh" }
   },
   editorconfig_checker = {
     filetypes = {}
@@ -131,7 +137,7 @@ return {
     filetypes = {}
   },
   mlint = {
-    filetypes = { "matlab" }
+    filetypes = { "matlab", "octave" }
   },
   mypy = {
     filetypes = { "python" }
@@ -153,6 +159,9 @@ return {
   },
   phpstan = {
     filetypes = { "php" }
+  },
+  pmd = {
+    filetypes = { "java", "jsp" }
   },
   proselint = {
     filetypes = { "markdown", "tex" }
@@ -202,8 +211,11 @@ return {
   rubocop = {
     filetypes = { "ruby" }
   },
+  ruff = {
+    filetypes = { "python" }
+  },
   selene = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   semgrep = {
     filetypes = { "typescript", "typescriptreact", "ruby", "python", "java", "go" }

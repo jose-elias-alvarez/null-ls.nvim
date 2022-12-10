@@ -88,6 +88,12 @@ return {
   elm_format = {
     filetypes = { "elm" }
   },
+  emacs_scheme_mode = {
+    filetypes = { "scheme", "scheme.guile" }
+  },
+  emacs_vhdl_mode = {
+    filetypes = { "vhdl" }
+  },
   erb_lint = {
     filetypes = { "eruby" }
   },
@@ -226,6 +232,9 @@ return {
   prettier_d_slim = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
   },
+  prettier_eslint = {
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
+  },
   prettier_standard = {
     filetypes = { "javascript", "javascriptreact" }
   },
@@ -266,7 +275,7 @@ return {
     filetypes = { "rescript" }
   },
   rome = {
-    filetypes = { "javascript", "typescript" }
+    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" }
   },
   rubocop = {
     filetypes = { "ruby" }
@@ -317,7 +326,7 @@ return {
     filetypes = { "haskell" }
   },
   stylua = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   surface = {
     filetypes = { "elixir", "surface" }
@@ -354,6 +363,9 @@ return {
   },
   verible_verilog_format = {
     filetypes = { "verilog", "systemverilog" }
+  },
+  xmlformat = {
+    filetypes = { "xml" }
   },
   xmllint = {
     filetypes = { "xml" }

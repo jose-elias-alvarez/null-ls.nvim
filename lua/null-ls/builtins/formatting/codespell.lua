@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = {},
     generator_opts = {
         command = "codespell",
-        args = { "--write-changes", "$FILENAME" },
+        args = { "--check-hidden", "--write-changes", "$FILENAME" },
         to_temp_file = true,
     },
     factory = h.formatter_factory,

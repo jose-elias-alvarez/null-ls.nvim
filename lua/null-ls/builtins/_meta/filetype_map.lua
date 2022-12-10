@@ -62,7 +62,7 @@ return {
   },
   css = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "stylelint" }
   },
   cuda = {
     formatting = { "clang_format" }
@@ -146,7 +146,7 @@ return {
     formatting = { "gofmt", "gofumpt", "goimports", "goimports_reviser", "golines" }
   },
   graphql = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   groovy = {
     formatting = { "npm_groovy_lint" }
@@ -155,7 +155,7 @@ return {
     diagnostics = { "haml_lint" }
   },
   handlebars = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   haskell = {
     formatting = { "brittany", "fourmolu", "stylish_haskell" }
@@ -165,25 +165,25 @@ return {
   },
   html = {
     diagnostics = { "tidy" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "rustywind", "tidy" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "rustywind", "tidy" }
   },
   htmldjango = {
     diagnostics = { "curlylint", "djlint" },
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "semgrep" },
+    diagnostics = { "checkstyle", "pmd", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "jshint", "semistandardjs", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
   javascriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semistandardjs", "standardjs", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_standard", "prettierd", "rustywind", "semistandardjs", "standardjs" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
@@ -191,10 +191,13 @@ return {
   },
   json = {
     diagnostics = { "cfn_lint", "jsonlint", "spectral" },
-    formatting = { "deno_fmt", "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "deno_fmt", "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   jsonc = {
-    formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
+  },
+  jsp = {
+    diagnostics = { "pmd" }
   },
   just = {
     formatting = { "just" }
@@ -208,12 +211,16 @@ return {
   },
   less = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "stylelint" }
   },
   lua = {
     code_actions = { "refactoring" },
     diagnostics = { "luacheck", "selene" },
     formatting = { "lua_format", "stylua" }
+  },
+  luau = {
+    diagnostics = { "selene" },
+    formatting = { "stylua" }
   },
   make = {
     diagnostics = { "checkmake" }
@@ -221,11 +228,11 @@ return {
   markdown = {
     code_actions = { "ltrs", "proselint" },
     diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "vale", "write_good" },
-    formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettierd", "remark", "terrafmt" },
+    formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "remark", "terrafmt" },
     hover = { "dictionary" }
   },
   ["markdown.mdx"] = {
-    formatting = { "prettier", "prettier_d_slim", "prettierd" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   matlab = {
     diagnostics = { "mlint" }
@@ -243,6 +250,9 @@ return {
   },
   ocaml = {
     formatting = { "ocamlformat" }
+  },
+  octave = {
+    diagnostics = { "mlint" }
   },
   org = {
     formatting = { "cbfmt" },
@@ -284,7 +294,7 @@ return {
   },
   python = {
     code_actions = { "refactoring" },
-    diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "semgrep", "vulture" },
+    diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "ruff", "semgrep", "vulture" },
     formatting = { "autopep8", "black", "blue", "isort", "reorder_python_imports", "usort", "yapf" }
   },
   qml = {
@@ -327,13 +337,19 @@ return {
   scala = {
     formatting = { "scalafmt" }
   },
+  scheme = {
+    formatting = { "emacs_scheme_mode" }
+  },
+  ["scheme.guile"] = {
+    formatting = { "emacs_scheme_mode" }
+  },
   scss = {
     diagnostics = { "stylelint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "stylelint" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "stylelint" }
   },
   sh = {
     code_actions = { "shellcheck" },
-    diagnostics = { "shellcheck" },
+    diagnostics = { "dotenv_linter", "shellcheck" },
     formatting = { "beautysh", "shellharden", "shfmt" },
     hover = { "printenv" }
   },
@@ -390,15 +406,18 @@ return {
   typescript = {
     code_actions = { "eslint", "eslint_d", "refactoring", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rome", "rustywind" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "rome", "rustywind" }
   },
   typescriptreact = {
     code_actions = { "eslint", "eslint_d", "xo" },
     diagnostics = { "eslint", "eslint_d", "semgrep", "tsc", "xo" },
-    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "rome", "rustywind" }
   },
   verilog = {
     formatting = { "verible_verilog_format" }
+  },
+  vhdl = {
+    formatting = { "emacs_vhdl_mode" }
   },
   vim = {
     diagnostics = { "vint" }
@@ -406,15 +425,15 @@ return {
   vue = {
     code_actions = { "eslint", "eslint_d" },
     diagnostics = { "eslint", "eslint_d" },
-    formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettierd", "rustywind" }
+    formatting = { "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "rustywind" }
   },
   xml = {
     diagnostics = { "tidy" },
-    formatting = { "tidy", "xmllint" }
+    formatting = { "tidy", "xmlformat", "xmllint" }
   },
   yaml = {
     diagnostics = { "actionlint", "cfn_lint", "spectral", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettierd", "yamlfmt" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt" }
   },
   ["yaml.ansible"] = {
     diagnostics = { "ansiblelint" }
