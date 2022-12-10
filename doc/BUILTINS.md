@@ -101,6 +101,22 @@ local sources = { null_ls.builtins.code_actions.gitsigns }
 - Filetypes: `{}`
 - Method: `code_action`
 
+#### Config
+
+##### `filter_actions` (function)
+
+Callback to filter out unwanted actions.
+
+```lua
+local gitsigns = null_ls.builtins.code_actions.gitsigns.with({
+    config = {
+        filter_actions = function(title)
+            return title:lower():match("blame") == nil -- filter out blame actions
+        end,
+    },
+})
+```
+
 ### [ltrs](https://github.com/jeertmans/languagetool-rust)
 
 LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
