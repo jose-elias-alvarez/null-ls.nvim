@@ -12,6 +12,12 @@ local helpers = require("null-ls.helpers")
 Please see the [built-in files](../lua/null-ls/builtins/) for examples of how to
 use helpers to create generators.
 
+## Params
+
+Descriptions below may refer to a `params` table, which is a table containing
+information about the current editor state. For details on the structure of this
+table and its available keys / methods, see [MAIN](./MAIN.md).
+
 ## generator_factory
 
 `generator_factory` is a general-purpose helper that returns a generator which
@@ -51,8 +57,8 @@ the first time.
 ### args
 
 A table containing the arguments passed when spawning the command or a function
-that takes one argument, `params` (an object containing information about the
-current editor status) and returns an `args` table. Defaults to `{}`.
+that takes one argument, a `params` table, and returns an `args` table. Defaults
+to `{}`.
 
 null-ls will transform the following special arguments before spawning:
 
@@ -84,8 +90,7 @@ failure.
 ### command
 
 A string containing the command that the generator will spawn or a function that
-takes one argument, `params` (an object containing information about the current
-editor status) and returns a command string.
+takes one argument, a `params` table, and returns a command string.
 
 If `command` is a function, it will run once when the generator first runs and
 keep the same return value as long as the same Neovim instance is running,
@@ -94,17 +99,15 @@ making it suitable for resolving executables based on the current project.
 ### cwd
 
 Optional callback to set the working directory for the spawned process. Takes a
-single argument, `params`, which is a table containing information about the
-current editor state (described in [MAIN](./MAIN.md)). If the callback returns
-`nil`, the working directory defaults to the project's root.
+single argument, a `params` table. If the callback returns `nil`, the working
+directory defaults to the project's root.
 
 ### dynamic_command
 
 Optional callback to set `command` dynamically. Takes one arguments, a `params`
-object containing information about the current buffer's state. The generator's
-original command (if set) is available as `params.command`. The callback should
-return a string containing the command to run or `nil`, meaning that no command
-should run.
+table. The generator's original command (if set) is available as
+`params.command`. The callback should return a string containing the command to
+run or `nil`, meaning that no command should run.
 
 `dynamic_command` runs every time its parent generator runs and can affect
 performance, so it's best to cache its output when possible.
@@ -113,10 +116,9 @@ Note that setting `dynamic_command` will disable `command` validation.
 
 ### env
 
-A key-value pair table containing the environment variables that should be passed
-when spawning the command or a function that takes one argument, `params` (an
-object containing information about the current editor status) and returns an
-`env` table. Defaults to `nil`.
+A key-value pair table containing the environment variables passed when spawning
+the command or a function that takes one argument, a `params` table, and returns
+an `env` table. Defaults to `nil`.
 
 ### format
 
@@ -188,9 +190,7 @@ one file if this option is `true` and each diagnostic specifies a `bufnr` or
 
 ### on_output
 
-A callback function that receives a `params` object, which contains information
-about the current buffer and editor state (see _Generators_ in [MAIN](MAIN.md)
-for details).
+A callback function that receives a single argument, a `params` table.
 
 Generators created by `generator_factory` have access to an extra parameter,
 `params.output`, which contains the output from the spawned command. The
@@ -199,9 +199,8 @@ structure of `params.output` depends on `format`, described below.
 ### runtime_condition
 
 Optional callback called when generating a list of sources to run for a given
-method. Takes a single argument, `params`, which is a table containing
-information about the current editor state (described in [MAIN](./MAIN.md)). If
-the callback's return value is falsy, the source does not run.
+method. Takes a single argument, a `params` table. If the callback's return
+value is falsy, the source does not run.
 
 Be aware that the callback runs _every_ time a source can run and thus should
 avoid doing anything overly expensive.
@@ -355,9 +354,8 @@ Helpers used to cache output from callbacks and help improve performance.
 
 Creates a function that caches the result of `callback`, indexed by `bufnr`. On
 the first run of the created function, null-ls will call `callback` with a
-`params` object containing information about the buffer's state and cache its
-output using `bufnr` as a key. On the next run, it will directly return the
-cached value without calling `callback` again.
+`params` table. On the next run, it will directly return the cached value
+without calling `callback` again.
 
 This is useful when the return value of `callback` is not expected to change
 over the lifetime of the buffer, which works well for `cwd` and
