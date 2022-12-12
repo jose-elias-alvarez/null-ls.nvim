@@ -295,7 +295,7 @@ return {
   python = {
     code_actions = { "refactoring" },
     diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "ruff", "semgrep", "vulture" },
-    formatting = { "autopep8", "black", "blue", "isort", "reorder_python_imports", "usort", "yapf" }
+    formatting = { "autopep8", "black", "blue", "isort", "reorder_python_imports", "ruff", "usort", "yapf" }
   },
   qml = {
     diagnostics = { "qmllint" },

@@ -280,6 +280,9 @@ return {
   rubocop = {
     filetypes = { "ruby" }
   },
+  ruff = {
+    filetypes = { "python" }
+  },
   rufo = {
     filetypes = { "ruby" }
   },
