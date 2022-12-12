@@ -53,7 +53,20 @@
 
 - Make sure your built-in source has a `name`.
 
-- Define a `can_run` field to verify if the plugin is installed (if possible).
+- If the source doesn't use `generator_factory` to spawn an external command,
+  define a `can_run` field to verify if the plugin is installed. Note that this
+  is only necessary for clarification when `:checkhealth` is run. For example,
+  the gitrebase source relies on git being installed:
+
+```lua
+local gitrebase = require("null-ls.helpers").make_builtin({
+    name = "gitrebase",
+    -- other fields...
+    can_run = function()
+        return require("null-ls.utils").is_executable("git")
+    end,
+})
+```
 
 - Add the necessary `meta` field to your built-in so that we can generate extra
   documentation (basic information comes from the built-in's definition).

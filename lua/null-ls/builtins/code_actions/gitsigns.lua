@@ -23,6 +23,11 @@ end,]],
     },
     method = CODE_ACTION,
     filetypes = {},
+    can_run = function()
+        local status, _ = pcall(require, "gitsigns")
+
+        return status
+    end,
     generator = {
         fn = function(params)
             local ok, gitsigns_actions = pcall(require("gitsigns").get_actions)
