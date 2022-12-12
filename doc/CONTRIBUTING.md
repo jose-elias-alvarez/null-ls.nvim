@@ -53,7 +53,7 @@
 
 - Make sure your built-in source has a `name`.
 
-- If the source doesn't use `genertor_factory` to spawn an external command,
+- If the source doesn't use `generator_factory` to spawn an external command,
   define a `can_run` field to verify if the plugin is installed. Note that this
   is only necessary for clarification when `:checkhealth` is run. For example,
   the gitrebase source relies on git being installed:
