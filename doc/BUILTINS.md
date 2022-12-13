@@ -2140,6 +2140,23 @@ local sources = { null_ls.builtins.formatting.astyle }
 - Command: `astyle`
 - Args: `{ "--quiet" }`
 
+### [autoflake](https://github.com/PyCQA/autoflake)
+
+Removes unused imports and unused variables as reported by pyflakes
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.autoflake }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+- Command: `autoflake`
+- Args: `{ "--stdin-display-name", "$FILENAME", "-" }`
+
 ### [autopep8](https://github.com/hhatto/autopep8)
 
 A tool that automatically formats Python code to conform to the PEP 8 style guide.
