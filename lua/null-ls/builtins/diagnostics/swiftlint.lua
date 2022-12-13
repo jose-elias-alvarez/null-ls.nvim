@@ -33,8 +33,7 @@ return h.make_builtin({
         command = "swiftlint",
         args = { "--reporter", "json", "--use-stdin", "--quiet" },
         to_stdin = true,
-        format = "json_raw",
-        use_cache = true,
+        format = "json",
         on_output = handle_swiftlint_output,
         cwd = h.cache.by_bufnr(function(params)
             return u.root_pattern("Package.swift", ".git")(params.bufname)
