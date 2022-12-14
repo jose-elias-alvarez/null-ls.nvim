@@ -340,6 +340,9 @@ return {
   swiftformat = {
     filetypes = { "swift" }
   },
+  swiftlint = {
+    filetypes = { "swift" }
+  },
   taplo = {
     filetypes = { "toml" }
   },

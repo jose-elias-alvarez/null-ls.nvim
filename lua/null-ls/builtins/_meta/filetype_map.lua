@@ -373,7 +373,8 @@ return {
     formatting = { "rustywind" }
   },
   swift = {
-    formatting = { "swiftformat" }
+    diagnostics = { "swiftlint" },
+    formatting = { "swiftformat", "swiftlint" }
   },
   systemverilog = {
     formatting = { "verible_verilog_format" }
