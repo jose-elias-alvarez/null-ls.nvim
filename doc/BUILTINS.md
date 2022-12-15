@@ -1850,6 +1850,23 @@ local sources = { null_ls.builtins.diagnostics.stylint }
 - Command: `stylint`
 - Args: `{ "$FILENAME" }`
 
+### [swiftlint](https://github.com/realm/SwiftLint)
+
+A tool to enforce Swift style and conventions.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.swiftlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "swift" }`
+- Method: `diagnostics`
+- Command: `swiftlint`
+- Args: `{ "--reporter", "json", "--use-stdin", "--quiet" }`
+
 ### [teal](https://github.com/teal-language/tl)
 
 The compiler for Teal, a typed dialect of Lua.
@@ -4097,6 +4114,23 @@ local sources = { null_ls.builtins.formatting.swiftformat }
 - Method: `formatting`
 - Command: `swiftformat`
 - Args: `{ "--stdinpath", "$FILENAME" }`
+
+### [swiftlint](https://github.com/realm/SwiftLint)
+
+A tool to enforce Swift style and conventions.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.swiftlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "swift" }`
+- Method: `formatting`
+- Command: `swiftlint`
+- Args: `{ "lint", "--use-stdin", "--fix" }`
 
 ### [taplo](https://taplo.tamasfe.dev/)
 

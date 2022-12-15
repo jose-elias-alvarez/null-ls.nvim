@@ -216,7 +216,8 @@ M.retry_add = function(bufnr)
 end
 
 M.send_progress_notification = function(token, opts)
-    if not id then
+    local client_id = id -- copy into closure to avoid race condition
+    if not client_id then
         return
     end
 
@@ -235,7 +236,7 @@ M.send_progress_notification = function(token, opts)
                 message = opts.message,
             },
         }, {
-            client_id = id,
+            client_id = client_id,
         })
     end)
 end

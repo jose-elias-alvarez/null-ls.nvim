@@ -253,6 +253,9 @@ return {
   stylint = {
     filetypes = { "stylus" }
   },
+  swiftlint = {
+    filetypes = { "swift" }
+  },
   teal = {
     filetypes = { "teal" }
   },
