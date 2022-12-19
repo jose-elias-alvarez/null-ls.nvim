@@ -4032,6 +4032,23 @@ local sources = { null_ls.builtins.formatting.standardrb }
 - Command: `standardrb`
 - Args: `{ "--fix", "--format", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
+### [standardts](https://standardjs.com/#typescript)
+
+JavaScript Standard Style, a no-configuration automatic code formatter that just works.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.standardts }
+```
+
+#### Defaults
+
+- Filetypes: `{ "typescript", "typescriptreact" }`
+- Method: `formatting`
+- Command: `ts-standard`
+- Args: `{ "--stdin", "--fix" }`
+
 ### [stylelint](https://github.com/stylelint/stylelint)
 
 A mighty, modern linter that helps you avoid errors and enforce conventions in your styles.

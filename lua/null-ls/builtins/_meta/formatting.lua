@@ -322,6 +322,9 @@ return {
   standardrb = {
     filetypes = { "ruby" }
   },
+  standardts = {
+    filetypes = { "typescript", "typescriptreact" }
+  },
   stylelint = {
     filetypes = { "scss", "less", "css", "sass" }
   },
