@@ -19,6 +19,7 @@ local exec = function(bufname, struct_name, field_name, op, tag)
     table.insert(opts, op)
     table.insert(opts, tag)
 
+    vim.fn.execute(":update") -- write when the buffer has been modified
     local cmd = BIN .. table.concat(opts, " ")
     local output = vim.fn.system(cmd)
     if vim.api.nvim_get_vvar("shell_error") == 0 then
@@ -96,6 +97,7 @@ return h.make_builtin({
     meta = {
         url = "https://github.com/fatih/gomodifytags",
         description = "Go tool to modify struct field tags",
+        notes = { "Requires installing the Go tree-sitter parser." },
     },
     method = CODE_ACTION,
     filetypes = { "go" },
