@@ -117,6 +117,25 @@ local gitsigns = null_ls.builtins.code_actions.gitsigns.with({
 })
 ```
 
+### [gomodifytags](https://github.com/fatih/gomodifytags)
+
+Go tool to modify struct field tags
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.gomodifytags }
+```
+
+#### Defaults
+
+- Filetypes: `{ "go" }`
+- Method: `code_action`
+
+#### Notes
+
+- Requires installing the Go tree-sitter parser.
+
 ### [ltrs](https://github.com/jeertmans/languagetool-rust)
 
 LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.

@@ -141,7 +141,7 @@ return {
     diagnostics = { "glslc" }
   },
   go = {
-    code_actions = { "refactoring" },
+    code_actions = { "gomodifytags", "refactoring" },
     diagnostics = { "golangci_lint", "revive", "semgrep", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "goimports_reviser", "golines" }
   },
