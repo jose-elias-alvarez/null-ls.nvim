@@ -13,7 +13,14 @@ local cspell_diagnostics = function(bufnr, lnum, cursor_col)
     return diagnostics
 end
 
-local CSPELL_CONFIG_FILES = { "cspell.json", ".cspell.json", ".cspell.config.json" }
+local CSPELL_CONFIG_FILES = {
+    "cspell.json",
+    ".cspell.json",
+    "cSpell.json",
+    ".Sspell.json",
+    ".cspell.config.json",
+}
+
 -- find the first cspell.json file in the directory tree
 local find_cspell_config = function()
     local cspell_json_file = nil
@@ -86,15 +93,20 @@ return h.make_builtin({
                             return
                         end
 
-                        local cspell = vim.fn.json_decode(vim.fn.readfile(cspell_json_file))
+                        local ok, cspell = pcall(vim.json.decode, vim.fn.readfile(cspell_json_file)[1])
+
+                        if not ok then
+                            vim.notify("\nCannot parse cspell json file as JSON.\n", vim.log.levels.ERROR)
+                            return
+                        end
 
                         if not cspell.words then
                             cspell.words = {}
                         end
 
                         table.insert(cspell.words, word)
-                        local json = vim.fn.json_encode(cspell)
-                        vim.fn.writefile({ json }, cspell_json_file)
+
+                        vim.fn.writefile({ vim.json.encode(cspell) }, cspell_json_file)
 
                         -- replace word in buffer to trigger cspell to update diagnostics
                         vim.api.nvim_buf_set_text(
