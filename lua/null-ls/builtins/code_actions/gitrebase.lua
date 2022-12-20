@@ -20,6 +20,9 @@ return h.make_builtin({
     },
     method = CODE_ACTION,
     filetypes = { "gitrebase" },
+    can_run = function()
+        return require("null-ls.utils").is_executable("git")
+    end,
     generator = {
         fn = function(params)
             local lines = vim.api.nvim_buf_get_lines(params.bufnr, params.range.row - 1, params.range.row, true)

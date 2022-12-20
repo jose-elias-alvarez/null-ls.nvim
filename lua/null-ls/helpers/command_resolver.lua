@@ -10,18 +10,19 @@ local M = {}
 ---@return string|nil, string|nil
 local function search_ancestors_for_executable(start_path, end_path, executable)
     local resolved_executable, resolved_dir
-    u.path.traverse_parents(start_path, function(dir)
+    for dir in vim.fs.parents(start_path) do
         local maybe_executable = u.path.join(dir, executable)
         if u.is_executable(maybe_executable) then
             resolved_executable = maybe_executable
             resolved_dir = dir
-            return true
+            break
         end
         -- stop at end_path
         if dir == end_path then
-            return true
+            break
         end
-    end)
+    end
+
     return resolved_executable, resolved_dir
 end
 

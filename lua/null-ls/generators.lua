@@ -46,6 +46,8 @@ M.run = function(generators, params, opts, callback)
     for i, generator in ipairs(generators) do
         table.insert(futures, function()
             local copied_params = copy_params(opts.make_params and opts.make_params() or params)
+            -- pass to enable params:get_source()
+            copied_params.source_id = generator.source_id
 
             local runtime_condition = generator.opts and generator.opts.runtime_condition
             if runtime_condition and not runtime_condition(copied_params) then

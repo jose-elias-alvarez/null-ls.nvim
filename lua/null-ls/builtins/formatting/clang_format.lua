@@ -18,7 +18,7 @@ return h.make_builtin({
             { "-assume-filename", "$FILENAME" },
             "--offset",
             "--length",
-            { use_length = true }
+            { use_length = true, row_offset = -1, col_offset = -1 }
         ),
         to_stdin = true,
     },

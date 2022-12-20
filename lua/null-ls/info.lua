@@ -1,3 +1,4 @@
+local c = require("null-ls.config")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 local sources = require("null-ls.sources")
@@ -7,7 +8,7 @@ local api = vim.api
 local fmt = string.format
 
 -- adapted from nvim-lspconfig's :LspInfo window
-local make_window = function(height_percentage, width_percentage)
+local make_window = function(height_percentage, width_percentage, border)
     local row_start_percentage = (1 - height_percentage) / 2
     local col_start_percentage = (1 - width_percentage) / 2
 
@@ -23,16 +24,7 @@ local make_window = function(height_percentage, width_percentage)
         width = width,
         height = height,
         style = "minimal",
-        border = {
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-            { " ", "NormalFloat" },
-        },
+        border = border or "solid",
     }
 
     local bufnr = api.nvim_create_buf(false, true)
@@ -57,7 +49,8 @@ end
 
 local M = {}
 
-M.show_window = function()
+M.show_window = function(opts)
+    opts = opts or {}
     local client = require("null-ls.client").get_client()
     local bufnr = api.nvim_get_current_buf()
     local filetype = api.nvim_buf_get_option(bufnr, "filetype")
@@ -96,9 +89,9 @@ M.show_window = function()
 
         for _, source in ipairs(sources.get_available(ft)) do
             info_lines = vim.list_extend(info_lines, create_source_info(source))
-            table.insert(highlights, { "Title", "name:.*\\zs" .. source.name .. "\\ze" })
+            table.insert(highlights, { "NullLsInfoSources", "name:.*\\zs" .. source.name .. "\\ze" })
         end
-        table.insert(highlights, { "Type", info_lines[1] })
+        table.insert(highlights, { "NullLsInfoTitle", info_lines[1] })
         return info_lines
     end
 
@@ -115,7 +108,7 @@ M.show_window = function()
             })
         end
 
-        table.insert(highlights, { "Type", info_lines[1] })
+        table.insert(highlights, { "NullLsInfoTitle", info_lines[1] })
         return info_lines
     end
 
@@ -125,7 +118,7 @@ M.show_window = function()
             "* current level: " .. log.__handle.level,
             "* path: " .. log:get_path(),
         }
-        table.insert(highlights, { "Type", info_lines[1] })
+        table.insert(highlights, { "NullLsInfoTitle", info_lines[1] })
         return info_lines
     end
 
@@ -135,7 +128,7 @@ M.show_window = function()
         "null-ls",
         "https://github.com/jose-elias-alvarez/null-ls.nvim",
     }
-    table.insert(highlights, { "Label", header[1] })
+    table.insert(highlights, { "NullLsInfoHeader", header[1] })
 
     local methods_info = create_supported_methods_info(filetype)
     local sources_info = nil
@@ -160,20 +153,19 @@ M.show_window = function()
 
     if not is_attached then
         local info_lines = { "* Note: current buffer has no sources attached" }
-        table.insert(highlights, { "Type", info_lines[1] })
+        table.insert(highlights, { "NullLsInfoTitle", info_lines[1] })
 
         lines = vim.list_extend(lines, indent_lines({ "" }))
         lines = vim.list_extend(lines, indent_lines(info_lines))
     end
 
-    local win_bufnr, win_id = make_window(0.8, 0.7)
+    local win_bufnr, win_id = make_window(0.8, 0.7, opts.border or c.get().border)
+    api.nvim_win_set_option(win_id, "winhl", "FloatBorder:NullLsInfoBorder")
 
     api.nvim_buf_set_lines(win_bufnr, 0, -1, true, lines)
     api.nvim_buf_set_option(win_bufnr, "buftype", "nofile")
     api.nvim_buf_set_option(win_bufnr, "filetype", "null-ls-info")
     api.nvim_buf_set_option(win_bufnr, "modifiable", false)
-
-    vim.cmd([[highlight link NullLsInfoHeader Type]])
 
     for _, hi in ipairs(highlights) do
         vim.fn.matchadd(hi[1], hi[2])

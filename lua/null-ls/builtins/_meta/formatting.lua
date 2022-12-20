@@ -10,6 +10,9 @@ return {
   astyle = {
     filetypes = { "arduino", "c", "cpp", "cs", "java" }
   },
+  autoflake = {
+    filetypes = { "python" }
+  },
   autopep8 = {
     filetypes = { "python" }
   },
@@ -87,6 +90,12 @@ return {
   },
   elm_format = {
     filetypes = { "elm" }
+  },
+  emacs_scheme_mode = {
+    filetypes = { "scheme", "scheme.guile" }
+  },
+  emacs_vhdl_mode = {
+    filetypes = { "vhdl" }
   },
   erb_lint = {
     filetypes = { "eruby" }
@@ -193,6 +202,9 @@ return {
   npm_groovy_lint = {
     filetypes = { "groovy", "java", "Jenkinsfile" }
   },
+  ocamlformat = {
+    filetypes = { "ocaml" }
+  },
   ocdc = {
     filetypes = { "markdown" }
   },
@@ -223,6 +235,9 @@ return {
   prettier_d_slim = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
   },
+  prettier_eslint = {
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }
+  },
   prettier_standard = {
     filetypes = { "javascript", "javascriptreact" }
   },
@@ -240,6 +255,9 @@ return {
   },
   puppet_lint = {
     filetypes = { "puppet", "epuppet" }
+  },
+  purs_tidy = {
+    filetypes = { "purescript" }
   },
   qmlformat = {
     filetypes = { "qml" }
@@ -260,10 +278,13 @@ return {
     filetypes = { "rescript" }
   },
   rome = {
-    filetypes = { "javascript", "typescript" }
+    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" }
   },
   rubocop = {
     filetypes = { "ruby" }
+  },
+  ruff = {
+    filetypes = { "python" }
   },
   rufo = {
     filetypes = { "ruby" }
@@ -276,6 +297,9 @@ return {
   },
   scalafmt = {
     filetypes = { "scala" }
+  },
+  semistandardjs = {
+    filetypes = { "javascript", "javascriptreact" }
   },
   shellharden = {
     filetypes = { "sh" }
@@ -298,6 +322,9 @@ return {
   standardrb = {
     filetypes = { "ruby" }
   },
+  standardts = {
+    filetypes = { "typescript", "typescriptreact" }
+  },
   stylelint = {
     filetypes = { "scss", "less", "css", "sass" }
   },
@@ -308,12 +335,15 @@ return {
     filetypes = { "haskell" }
   },
   stylua = {
-    filetypes = { "lua" }
+    filetypes = { "lua", "luau" }
   },
   surface = {
     filetypes = { "elixir", "surface" }
   },
   swiftformat = {
+    filetypes = { "swift" }
+  },
+  swiftlint = {
     filetypes = { "swift" }
   },
   taplo = {
@@ -345,6 +375,9 @@ return {
   },
   verible_verilog_format = {
     filetypes = { "verilog", "systemverilog" }
+  },
+  xmlformat = {
+    filetypes = { "xml" }
   },
   xmllint = {
     filetypes = { "xml" }

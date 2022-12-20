@@ -70,6 +70,7 @@ M.handler = function(method, original_params, handler)
         local after_each = function(edits)
             local ok, err =
                 pcall(lsp.util.apply_text_edits, edits, temp_bufnr, require("null-ls.client").get_offset_encoding())
+            api.nvim_buf_set_option(temp_bufnr, "buflisted", false) -- apply_text_edits sets buflisted to true
             if not ok then
                 handle_err(err)
             end
