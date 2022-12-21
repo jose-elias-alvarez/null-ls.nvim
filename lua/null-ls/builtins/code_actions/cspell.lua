@@ -22,10 +22,10 @@ local CSPELL_CONFIG_FILES = {
 }
 
 -- find the first cspell.json file in the directory tree
-local find_cspell_config = function()
+local find_cspell_config = function(cwd)
     local cspell_json_file = nil
     for _, file in ipairs(CSPELL_CONFIG_FILES) do
-        local path = vim.fn.findfile(file, vim.fn.getcwd() .. ";")
+        local path = vim.fn.findfile(file, (cwd or vim.loop.cwd()) .. ";")
         if path ~= "" then
             cspell_json_file = path
             break
@@ -87,7 +87,7 @@ return h.make_builtin({
                             {}
                         )[1]
 
-                        local cspell_json_file = find_json()
+                        local cspell_json_file = find_json(params.cwd)
                         if cspell_json_file == "" then
                             vim.notify("\nNo cspell json file found in the directory tree.\n", vim.log.levels.ERROR)
                             return
