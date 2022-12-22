@@ -88,8 +88,9 @@ return h.make_builtin({
                         )[1]
 
                         local cspell_json_file = find_json(params.cwd)
-                        if cspell_json_file == "" then
-                            vim.notify("\nNo cspell json file found in the directory tree.\n", vim.log.levels.ERROR)
+
+                        if cspell_json_file == nil or cspell_json_file == "" then
+                            vim.notify("\nNo cspell json file found in the directory tree.\n", vim.log.levels.WARN)
                             return
                         end
 
