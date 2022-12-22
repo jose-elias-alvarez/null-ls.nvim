@@ -93,7 +93,7 @@ return h.make_builtin({
                             return
                         end
 
-                        local ok, cspell = pcall(vim.json.decode, vim.fn.readfile(cspell_json_file)[1])
+                        local ok, cspell = pcall(vim.json.decode, table.concat(vim.fn.readfile(cspell_json_file), " "))
 
                         if not ok then
                             vim.notify("\nCannot parse cspell json file as JSON.\n", vim.log.levels.ERROR)
