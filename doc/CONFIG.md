@@ -48,6 +48,7 @@ The following code block shows the available options and their defaults.
 
 ```lua
 local defaults = {
+    border = nil,
     cmd = { "nvim" },
     debounce = 250,
     debug = false,
@@ -61,6 +62,7 @@ local defaults = {
     on_init = nil,
     on_exit = nil,
     root_dir = require("null-ls.utils").root_pattern(".null-ls-root", "Makefile", ".git"),
+    should_attach = nil,
     sources = nil,
     temp_dir = nil,
     border = nil,
@@ -76,6 +78,13 @@ If an option you want to use is missing, open an issue or PR.
 Note that setting `autostart = true` is unnecessary (and unsupported), as
 null-ls will always attempt to attach to buffers automatically if you've
 configured and registered sources.
+
+### border (table|string, optional)
+
+Defines the border to use for the `:NullLsInfo` UI window. Uses
+`NullLsInfoBorder` highlight group (see [Highlight Groups](#highlight-groups)).
+Accepts same border values as `nvim_open_win()`. See `:help nvim_open_win()` for
+more info.
 
 ### cmd (table)
 
@@ -238,13 +247,6 @@ project for context and so will not work if this option changes.
 You can also configure `temp_dir` per built-in by using the `with` method,
 described in [BUILTIN_CONFIG](BUILTIN_CONFIG.md).
 
-### border ( table, string, optional)
-
-Defines the border to use for the `:NullLsInfo` UI window. Uses
-`NullLsInfoBorder` highlight group (see [Highlight Groups](#highlight-groups)).
-Accepts same border values as `nvim_open_win()`. See `:help nvim_open_win()` for
-more info.
-
 ### update_in_insert (boolean)
 
 Controls whether diagnostic sources run in insert mode. If set to `false`,
@@ -259,8 +261,8 @@ to `vim.diagnostic.config` for diagnostics to work as expected. See
 
 ## Highlight Groups
 
-Below are listed the highlight groups that you can override for the
-`:NullLsInfo` window.
+Below are the highlight groups that you can override for the `:NullLsInfo`
+window.
 
 - `NullLsInfoHeader` Window header
 - `NullLsInfoTitle` Titles
