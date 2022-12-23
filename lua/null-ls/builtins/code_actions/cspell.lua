@@ -43,7 +43,7 @@ local create_cspell_json = function(cwd)
         flagWords = {},
     }
     local cspell_json_str = vim.json.encode(cspell_json)
-    local cspell_json_file_path = (cwd or vim.loop.cwd()) .. "/cspell.json"
+    local cspell_json_file_path = require("null-ls.utils").path.join(cwd or vim.loop.cwd(), "cspell.json")
     vim.fn.writefile({ cspell_json_str }, cspell_json_file_path)
     vim.notify("Created a new cspell.json file at " .. cspell_json_file_path, vim.log.levels.INFO)
     return cspell_json_file_path
@@ -105,7 +105,6 @@ return h.make_builtin({
                             {}
                         )[1]
 
-                        -- local cspell_json_file = find_json(params.cwd) or create_cspell_json(params.cwd)
                         local cspell_json_file = find_json(params.cwd)
                             or (create_config_file and create_cspell_json(params.cwd))
                             or nil
