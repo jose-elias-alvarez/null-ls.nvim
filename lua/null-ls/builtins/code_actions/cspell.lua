@@ -82,9 +82,9 @@ return h.make_builtin({
             local create_config_file_name = config.create_config_file_name or "cspell.json"
             if not is_cspell_config_file_name(create_cspell_json) then
                 vim.notify(
-                    "Invalid default file name for cspell.json: "
+                    "Invalid default file name for cspell json file: "
                     .. create_config_file_name
-                    .. ". The name cpsell.json will be used instead",
+                    .. '. The name "cpsell.json" will be used instead',
                     vim.log.levels.WARN
                 )
                 create_config_file_name = "cspell.json"
