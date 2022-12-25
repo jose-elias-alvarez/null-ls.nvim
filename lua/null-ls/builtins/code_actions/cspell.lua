@@ -34,8 +34,17 @@ local find_cspell_config = function(cwd)
     return cspell_json_file
 end
 
+local is_cspell_config_file_name = function(file_name)
+    for _, file in ipairs(CSPELL_CONFIG_FILES) do
+        if file_name == file then
+            return true
+        end
+    end
+    return false
+end
+
 -- create a bare minimum cspell.json file
-local create_cspell_json = function(cwd)
+local create_cspell_json = function(cwd, file_name)
     local cspell_json = {
         version = "0.2",
         language = "en",
@@ -43,7 +52,7 @@ local create_cspell_json = function(cwd)
         flagWords = {},
     }
     local cspell_json_str = vim.json.encode(cspell_json)
-    local cspell_json_file_path = require("null-ls.utils").path.join(cwd or vim.loop.cwd(), "cspell.json")
+    local cspell_json_file_path = require("null-ls.utils").path.join(cwd or vim.loop.cwd(), file_name)
     vim.fn.writefile({ cspell_json_str }, cspell_json_file_path)
     vim.notify("Created a new cspell.json file at " .. cspell_json_file_path, vim.log.levels.INFO)
     return cspell_json_file_path
@@ -64,12 +73,22 @@ return h.make_builtin({
     generator = {
         fn = function(params)
             local actions = {}
-
             local config = params:get_config()
             local find_json = config.find_json or find_cspell_config
 
             -- create_config_file if nil defaults to true
             local create_config_file = config.create_config_file ~= false
+
+            local create_config_file_name = config.create_config_file_name or "cspell.json"
+            if not is_cspell_config_file_name(create_cspell_json) then
+                vim.notify(
+                    "Invalid default file name for cspell.json: "
+                    .. create_config_file_name
+                    .. ". The name cpsell.json will be used instead",
+                    vim.log.levels.WARN
+                )
+                create_config_file_name = "cspell.json"
+            end
 
             local diagnostics = cspell_diagnostics(params.bufnr, params.row - 1, params.col)
             if vim.tbl_isempty(diagnostics) then
@@ -106,7 +125,7 @@ return h.make_builtin({
                         )[1]
 
                         local cspell_json_file = find_json(params.cwd)
-                            or (create_config_file and create_cspell_json(params.cwd))
+                            or (create_config_file and create_cspell_json(params.cwd, create_config_file_name))
                             or nil
 
                         if cspell_json_file == nil or cspell_json_file == "" then
