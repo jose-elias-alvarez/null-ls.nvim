@@ -42,7 +42,16 @@ local sources = {
     generator_opts = {
         command = "deno",
         args = function(params)
-            return { "fmt", "-", "--ext", extensions[params.ft] }
+            return {
+                "fmt",
+                "-",
+                "--ext",
+                extensions[params.ft],
+                "--options-line-width",
+                vim.bo[params.bufnr].textwidth,
+                "--options-indent-width",
+                vim.bo[params.bufnr].shiftwidth,
+            }
         end,
         to_stdin = true,
     },
