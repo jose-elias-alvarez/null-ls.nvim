@@ -69,7 +69,7 @@ return {
   },
   cue = {
     diagnostics = { "cue_fmt" },
-    formatting = { "cue_fmt" }
+    formatting = { "cue_fmt", "cueimports" }
   },
   d = {
     formatting = { "dfmt" }

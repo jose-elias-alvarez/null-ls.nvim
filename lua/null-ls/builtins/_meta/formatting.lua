@@ -70,6 +70,9 @@ return {
   cue_fmt = {
     filetypes = { "cue" }
   },
+  cueimports = {
+    filetypes = { "cue" }
+  },
   dart_format = {
     filetypes = { "dart" }
   },

@@ -2509,6 +2509,22 @@ local sources = { null_ls.builtins.formatting.csharpier }
 - Command: `dotnet-csharpier`
 - Args: `{ "--write-stdout" }`
 
+### [cueimports](https://pkg.go.dev/github.com/asdine/cueimports)
+
+CUE tool that updates your import lines, adding missing ones and removing unused ones.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.cueimports }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cue" }`
+- Method: `formatting`
+- Command: `cueimports`
+
 ### [cue_fmt](https://cuelang.org/)
 
 A CUE language formatter.
