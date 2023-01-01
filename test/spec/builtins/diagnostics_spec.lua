@@ -1,4 +1,7 @@
+local mock = require("luassert.mock")
+
 local diagnostics = require("null-ls.builtins").diagnostics
+mock(require("null-ls.logger"), true)
 
 describe("diagnostics", function()
     describe("spectral", function()

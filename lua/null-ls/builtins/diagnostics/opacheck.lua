@@ -1,11 +1,13 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
 
 local handle_opacheck_output = function(params)
     local diags = {}
     if params.output.errors == nil then
         return diags
     end
+    local cnt = 0
     for _, d in ipairs(params.output.errors) do
         if d.location ~= nil then
             table.insert(diags, {
@@ -17,6 +19,9 @@ local handle_opacheck_output = function(params)
                 filename = d.location.file,
                 code = d.code,
             })
+        elseif cnt < 5 then -- reduce number of notifications in case of non diagnostics errors
+            cnt = cnt + 1
+            log:warn(d.message)
         end
     end
     return diags
