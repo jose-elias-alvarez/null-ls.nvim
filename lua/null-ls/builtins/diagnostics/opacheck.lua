@@ -37,7 +37,17 @@ return h.make_builtin({
     filetypes = { "rego" },
     generator_opts = {
         command = "opa",
-        args = { "check", "-f", "json", "--strict", "$ROOT/src/", "$ROOT/test/" },
+        args = {
+            "check",
+            "-f",
+            "json",
+            "--strict",
+            "$ROOT",
+            "--ignore=*.yaml",
+            "--ignore=*.yml",
+            "--ignore=*.json",
+            "--ignore=.git/**/*",
+        },
         format = "json",
         check_exit_code = function(code)
             return code <= 1
