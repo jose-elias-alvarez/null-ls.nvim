@@ -1189,7 +1189,7 @@ local sources = { null_ls.builtins.diagnostics.opacheck }
 - Filetypes: `{ "rego" }`
 - Method: `diagnostics_on_save`
 - Command: `opa`
-- Args: `{ "check", "-f", "json", "--strict", "$ROOT/src/", "$ROOT/test/" }`
+- Args: `{ "check", "-f", "json", "--strict", "$ROOT", "--ignore=*.yaml", "--ignore=*.yml", "--ignore=*.json", "--ignore=.git/**/*" }`
 
 ### [perlimports](https://metacpan.org/dist/App-perlimports/view/script/perlimports)
 
