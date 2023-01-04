@@ -84,7 +84,7 @@ return h.make_builtin({
                 vim.notify(
                     "Invalid default file name for cspell json file: "
                         .. create_config_file_name
-                        .. '. The name "cpsell.json" will be used instead',
+                        .. '. The name "cspell.json" will be used instead',
                     vim.log.levels.WARN
                 )
                 create_config_file_name = "cspell.json"
