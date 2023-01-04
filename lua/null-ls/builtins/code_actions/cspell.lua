@@ -34,15 +34,6 @@ local find_cspell_config = function(cwd)
     return cspell_json_file
 end
 
-local is_cspell_config_file_name = function(file_name)
-    for _, file in ipairs(CSPELL_CONFIG_FILES) do
-        if file_name == file then
-            return true
-        end
-    end
-    return false
-end
-
 -- create a bare minimum cspell.json file
 local create_cspell_json = function(cwd, file_name)
     local cspell_json = {
@@ -80,7 +71,7 @@ return h.make_builtin({
             local create_config_file = config.create_config_file ~= false
 
             local create_config_file_name = config.create_config_file_name or "cspell.json"
-            if not is_cspell_config_file_name(create_cspell_json) then
+            if not vim.tbl_contains(CSPELL_CONFIG_FILES, create_config_file_name) then
                 vim.notify(
                     "Invalid default file name for cspell json file: "
                         .. create_config_file_name
