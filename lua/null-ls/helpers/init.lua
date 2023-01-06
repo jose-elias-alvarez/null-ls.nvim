@@ -1,5 +1,6 @@
 return {
     cache = require("null-ls.helpers.cache"),
+    cspell = require("null-ls.helpers.cspell"),
     diagnostics = require("null-ls.helpers.diagnostics"),
     formatter_factory = require("null-ls.helpers.formatter_factory"),
     generator_factory = require("null-ls.helpers.generator_factory"),

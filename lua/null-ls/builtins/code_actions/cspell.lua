@@ -13,27 +13,6 @@ local cspell_diagnostics = function(bufnr, lnum, cursor_col)
     return diagnostics
 end
 
-local CSPELL_CONFIG_FILES = {
-    "cspell.json",
-    ".cspell.json",
-    "cSpell.json",
-    ".Sspell.json",
-    ".cspell.config.json",
-}
-
--- find the first cspell.json file in the directory tree
-local find_cspell_config = function(cwd)
-    local cspell_json_file = nil
-    for _, file in ipairs(CSPELL_CONFIG_FILES) do
-        local path = vim.fn.findfile(file, (cwd or vim.loop.cwd()) .. ";")
-        if path ~= "" then
-            cspell_json_file = path
-            break
-        end
-    end
-    return cspell_json_file
-end
-
 -- create a bare minimum cspell.json file
 local create_cspell_json = function(cwd, file_name)
     local cspell_json = {
@@ -65,13 +44,13 @@ return h.make_builtin({
         fn = function(params)
             local actions = {}
             local config = params:get_config()
-            local find_json = config.find_json or find_cspell_config
+            local find_json = config.find_json or h.cspell.find_cspell_config
 
             -- create_config_file if nil defaults to true
             local create_config_file = config.create_config_file ~= false
 
             local create_config_file_name = config.create_config_file_name or "cspell.json"
-            if not vim.tbl_contains(CSPELL_CONFIG_FILES, create_config_file_name) then
+            if not vim.tbl_contains(h.cspell.CSPELL_CONFIG_FILES, create_config_file_name) then
                 vim.notify(
                     "Invalid default file name for cspell json file: "
                         .. create_config_file_name
