@@ -383,6 +383,7 @@ return {
     diagnostics = { "teal" }
   },
   terraform = {
+    diagnostics = { "tfsec" },
     formatting = { "terraform_fmt" }
   },
   tex = {

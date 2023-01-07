@@ -1920,6 +1920,23 @@ local sources = { null_ls.builtins.diagnostics.textlint }
 - Command: `textlint`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
 
+### [tfsec](https://github.com/aquasecurity/tfsec)
+
+Security scanner for Terraform code
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.tfsec }
+```
+
+#### Defaults
+
+- Filetypes: `{ "terraform" }`
+- Method: `diagnostics_on_save`
+- Command: `tfsec`
+- Args: `{ "-s", "-f", "json", "$DIRNAME" }`
+
 ### [tidy](https://www.html-tidy.org/)
 
 Tidy corrects and cleans up HTML and XML documents by fixing markup errors and upgrading legacy code to modern standards.

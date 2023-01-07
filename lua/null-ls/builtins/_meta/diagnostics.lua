@@ -262,6 +262,9 @@ return {
   textlint = {
     filetypes = {}
   },
+  tfsec = {
+    filetypes = { "terraform" }
+  },
   tidy = {
     filetypes = { "html", "xml" }
   },
