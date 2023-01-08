@@ -14,7 +14,7 @@ return h.make_builtin({
     generator_opts = {
         command = "yamlfmt",
         to_stdin = true,
-        args = { "-" },
+        args = { "-in" },
     },
     factory = h.formatter_factory,
 })
