@@ -4,10 +4,10 @@ local methods = require("null-ls.methods")
 
 local CODE_ACTION = methods.internal.CODE_ACTION
 
-local BIN = "gomodifytags -w -quiet "
-
-local exec = function(bufname, struct_name, field_name, op, tag)
+local exec = function(generator_opts, bufname, struct_name, field_name, op, tag)
     local opts = {}
+    table.insert(opts, "-w")
+    table.insert(opts, "-quiet")
     table.insert(opts, "-file")
     table.insert(opts, bufname)
     table.insert(opts, "-struct")
@@ -20,7 +20,7 @@ local exec = function(bufname, struct_name, field_name, op, tag)
     table.insert(opts, tag)
 
     vim.fn.execute(":update") -- write when the buffer has been modified
-    local cmd = BIN .. table.concat(opts, " ")
+    local cmd = generator_opts.command .. " " .. table.concat(opts, " ")
     local output = vim.fn.system(cmd)
     if vim.api.nvim_get_vvar("shell_error") == 0 then
         vim.fn.execute(":e " .. bufname) -- reload the file
@@ -29,65 +29,65 @@ local exec = function(bufname, struct_name, field_name, op, tag)
     end
 end
 
-local get_input_tag_and_exec = function(bufname, struct_name, field_name, op)
+local get_input_tag_and_exec = function(generator_opts, bufname, struct_name, field_name, op)
     vim.ui.input({ prompt = "Enter tags: " }, function(tag)
         if tag == nil then
             return
         end
-        exec(bufname, struct_name, field_name, op, tag)
+        exec(generator_opts, bufname, struct_name, field_name, op, tag)
     end)
 end
 
-local add_tags = function(bufname, struct_name, field_name)
+local add_tags = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: add tags",
         action = function()
-            get_input_tag_and_exec(bufname, struct_name, field_name, "-add-tags")
+            get_input_tag_and_exec(generator_opts, bufname, struct_name, field_name, "-add-tags")
         end,
     }
 end
 
-local remove_tags = function(bufname, struct_name, field_name)
+local remove_tags = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: remove tags",
         action = function()
-            get_input_tag_and_exec(bufname, struct_name, field_name, "-remove-tags")
+            get_input_tag_and_exec(generator_opts, bufname, struct_name, field_name, "-remove-tags")
         end,
     }
 end
 
-local clear_tags = function(bufname, struct_name, field_name)
+local clear_tags = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: clear tags",
         action = function()
-            exec(bufname, struct_name, field_name, "-clear-tags", nil)
+            exec(generator_opts, bufname, struct_name, field_name, "-clear-tags", nil)
         end,
     }
 end
 
-local add_options = function(bufname, struct_name, field_name)
+local add_options = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: add options",
         action = function()
-            get_input_tag_and_exec(bufname, struct_name, field_name, "-add-options")
+            get_input_tag_and_exec(generator_opts, bufname, struct_name, field_name, "-add-options")
         end,
     }
 end
 
-local remove_options = function(bufname, struct_name, field_name)
+local remove_options = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: remove options",
         action = function()
-            get_input_tag_and_exec(bufname, struct_name, field_name, "-remove-options")
+            get_input_tag_and_exec(generator_opts, bufname, struct_name, field_name, "-remove-options")
         end,
     }
 end
 
-local clear_options = function(bufname, struct_name, field_name)
+local clear_options = function(generator_opts, bufname, struct_name, field_name)
     return {
         title = "gomodifytags: clear options",
         action = function()
-            exec(bufname, struct_name, field_name, "-clear-options", nil)
+            exec(generator_opts, bufname, struct_name, field_name, "-clear-options", nil)
         end,
     }
 end
@@ -104,7 +104,11 @@ return h.make_builtin({
     can_run = function()
         return require("null-ls.utils").is_executable("gomodifytags")
     end,
-    generator = {
+    generator_opts = {
+      command = "gomodifytags"
+    },
+    factory = function(opts)
+      return {
         fn = function(params)
             local bufnr = params.bufnr
             local bufname = params.bufname
@@ -123,13 +127,13 @@ return h.make_builtin({
                     return
                 end
 
-                table.insert(actions, add_tags(bufname, struct_name))
-                table.insert(actions, remove_tags(bufname, struct_name))
-                table.insert(actions, clear_tags(bufname, struct_name))
+                table.insert(actions, add_tags(opts, bufname, struct_name))
+                table.insert(actions, remove_tags(opts, bufname, struct_name))
+                table.insert(actions, clear_tags(opts, bufname, struct_name))
 
-                table.insert(actions, add_options(bufname, struct_name))
-                table.insert(actions, remove_options(bufname, struct_name))
-                table.insert(actions, clear_options(bufname, struct_name))
+                table.insert(actions, add_options(opts, bufname, struct_name))
+                table.insert(actions, remove_options(opts, bufname, struct_name))
+                table.insert(actions, clear_options(opts, bufname, struct_name))
                 return actions
             end
 
@@ -146,15 +150,16 @@ return h.make_builtin({
                     return
                 end
 
-                table.insert(actions, add_tags(bufname, struct_name, field_name))
-                table.insert(actions, remove_tags(bufname, struct_name, field_name))
-                table.insert(actions, clear_tags(bufname, struct_name, field_name))
+                table.insert(actions, add_tags(opts, bufname, struct_name, field_name))
+                table.insert(actions, remove_tags(opts, bufname, struct_name, field_name))
+                table.insert(actions, clear_tags(opts, bufname, struct_name, field_name))
 
-                table.insert(actions, add_options(bufname, struct_name, field_name))
-                table.insert(actions, remove_options(bufname, struct_name, field_name))
-                table.insert(actions, clear_options(bufname, struct_name, field_name))
+                table.insert(actions, add_options(opts, bufname, struct_name, field_name))
+                table.insert(actions, remove_options(opts, bufname, struct_name, field_name))
+                table.insert(actions, clear_options(opts, bufname, struct_name, field_name))
                 return actions
             end
         end,
-    },
+      }
+    end
 })
