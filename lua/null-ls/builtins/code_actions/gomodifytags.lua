@@ -105,61 +105,61 @@ return h.make_builtin({
         return require("null-ls.utils").is_executable("gomodifytags")
     end,
     generator_opts = {
-      command = "gomodifytags"
+        command = "gomodifytags",
     },
     factory = function(opts)
-      return {
-        fn = function(params)
-            local bufnr = params.bufnr
-            local bufname = params.bufname
+        return {
+            fn = function(params)
+                local bufnr = params.bufnr
+                local bufname = params.bufname
 
-            local row = params.range.row
-            local col = params.range.col
-            local tsnode = vim.treesitter.get_node_at_pos(bufnr, row - 1, col - 1, {})
+                local row = params.range.row
+                local col = params.range.col
+                local tsnode = vim.treesitter.get_node_at_pos(bufnr, row - 1, col - 1, {})
 
-            local actions = {}
-            local struct_name
+                local actions = {}
+                local struct_name
 
-            -- struct
-            if (tsnode:type()) == "type_identifier" then
-                struct_name = vim.treesitter.query.get_node_text(tsnode, 0)
-                if struct_name == nil then
-                    return
+                -- struct
+                if (tsnode:type()) == "type_identifier" then
+                    struct_name = vim.treesitter.query.get_node_text(tsnode, 0)
+                    if struct_name == nil then
+                        return
+                    end
+
+                    table.insert(actions, add_tags(opts, bufname, struct_name))
+                    table.insert(actions, remove_tags(opts, bufname, struct_name))
+                    table.insert(actions, clear_tags(opts, bufname, struct_name))
+
+                    table.insert(actions, add_options(opts, bufname, struct_name))
+                    table.insert(actions, remove_options(opts, bufname, struct_name))
+                    table.insert(actions, clear_options(opts, bufname, struct_name))
+                    return actions
                 end
 
-                table.insert(actions, add_tags(opts, bufname, struct_name))
-                table.insert(actions, remove_tags(opts, bufname, struct_name))
-                table.insert(actions, clear_tags(opts, bufname, struct_name))
+                -- struct field
+                if (tsnode:type()) == "field_identifier" then
+                    local field_name = vim.treesitter.query.get_node_text(tsnode, 0)
+                    local tspnode = tsnode:parent():parent():parent()
+                    if tspnode ~= nil and (tspnode:type()) == "struct_type" then
+                        tspnode = tspnode:parent():child(0)
+                        struct_name = vim.treesitter.query.get_node_text(tspnode, 0)
+                    end
 
-                table.insert(actions, add_options(opts, bufname, struct_name))
-                table.insert(actions, remove_options(opts, bufname, struct_name))
-                table.insert(actions, clear_options(opts, bufname, struct_name))
-                return actions
-            end
+                    if struct_name == nil or field_name == nil then
+                        return
+                    end
 
-            -- struct field
-            if (tsnode:type()) == "field_identifier" then
-                local field_name = vim.treesitter.query.get_node_text(tsnode, 0)
-                local tspnode = tsnode:parent():parent():parent()
-                if tspnode ~= nil and (tspnode:type()) == "struct_type" then
-                    tspnode = tspnode:parent():child(0)
-                    struct_name = vim.treesitter.query.get_node_text(tspnode, 0)
+                    table.insert(actions, add_tags(opts, bufname, struct_name, field_name))
+                    table.insert(actions, remove_tags(opts, bufname, struct_name, field_name))
+                    table.insert(actions, clear_tags(opts, bufname, struct_name, field_name))
+
+                    table.insert(actions, add_options(opts, bufname, struct_name, field_name))
+                    table.insert(actions, remove_options(opts, bufname, struct_name, field_name))
+                    table.insert(actions, clear_options(opts, bufname, struct_name, field_name))
+                    return actions
                 end
-
-                if struct_name == nil or field_name == nil then
-                    return
-                end
-
-                table.insert(actions, add_tags(opts, bufname, struct_name, field_name))
-                table.insert(actions, remove_tags(opts, bufname, struct_name, field_name))
-                table.insert(actions, clear_tags(opts, bufname, struct_name, field_name))
-
-                table.insert(actions, add_options(opts, bufname, struct_name, field_name))
-                table.insert(actions, remove_options(opts, bufname, struct_name, field_name))
-                table.insert(actions, clear_options(opts, bufname, struct_name, field_name))
-                return actions
-            end
-        end,
-      }
-    end
+            end,
+        }
+    end,
 })
