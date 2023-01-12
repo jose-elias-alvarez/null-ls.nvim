@@ -1731,4 +1731,42 @@ INFO: Analysis cache updated]],
             assert.same({}, parsed)
         end)
     end)
+
+    describe("clazy", function()
+        local linter = diagnostics.clazy
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with warning severity", function()
+            local output =
+                "/home/null-ls/project/src/file.cpp:57:5: warning: signal selected is overloaded [-Wclazy-overloaded-signal]"
+            local diagnostic = parser(output, {
+                bufname = "/home/null-ls/project/src/file.cpp",
+            })
+
+            assert.same({
+                row = "57",
+                col = "5",
+                source = "clazy",
+                message = "signal selected is overloaded [-Wclazy-overloaded-signal]",
+                severity = 2,
+            }, diagnostic)
+        end)
+        it("should ignore line with diagnostic from other file", function()
+            local output =
+                "/home/null-ls/project/src/other_file.cpp:57:5: warning: signal selected is overloaded [-Wclazy-overloaded-signal]"
+            local diagnostic = parser(output, {
+                bufname = "/home/null-ls/project/src/file.cpp",
+            })
+
+            assert.same(nil, diagnostic)
+        end)
+        it("should ignore line with no diagnostic info", function()
+            local output = "In file included from /home/null-ls/project/src/file.cpp:40:"
+            local diagnostic = parser(output, {
+                bufname = "/home/null-ls/project/src/file.cpp",
+            })
+
+            assert.same(nil, diagnostic)
+        end)
+    end)
 end)
