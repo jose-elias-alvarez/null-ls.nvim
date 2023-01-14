@@ -1,6 +1,5 @@
 local cache = require("null-ls.helpers.cache")
 local u = require("null-ls.utils")
-local is_windows = vim.loop.os_uname().version:match("Windows")
 local M = {}
 
 --- search for a local executable and its parent directory from start_path to end_path
@@ -46,8 +45,11 @@ end
 M.from_node_modules = function()
     local node_modules_resolver = M.generic(u.path.join("node_modules", ".bin"))
     return function(params)
-        if is_windows then
-            params.command = params.command .. ".cmd"
+        if u.path.is_windows then
+            local windows_params = vim.deepcopy(params)
+            windows_params.command = windows_params.command .. ".cmd"
+            local resolved_executable = node_modules_resolver(windows_params)
+            return resolved_executable or windows_params.command
         end
 
         local resolved_executable = node_modules_resolver(params)
