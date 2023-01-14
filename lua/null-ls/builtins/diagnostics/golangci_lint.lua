@@ -20,7 +20,6 @@ return h.make_builtin({
         args = {
             "run",
             "--fix=false",
-            "--fast",
             "--out-format=json",
             "--path-prefix",
             "$ROOT",
