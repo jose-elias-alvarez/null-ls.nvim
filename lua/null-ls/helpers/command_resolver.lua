@@ -46,10 +46,7 @@ M.from_node_modules = function()
     local node_modules_resolver = M.generic(u.path.join("node_modules", ".bin"))
     return function(params)
         if u.path.is_windows then
-            local windows_params = vim.deepcopy(params)
-            windows_params.command = windows_params.command .. ".cmd"
-            local resolved_executable = node_modules_resolver(windows_params)
-            return resolved_executable or windows_params.command
+            params.command = params.command .. ".cmd"
         end
 
         local resolved_executable = node_modules_resolver(params)
