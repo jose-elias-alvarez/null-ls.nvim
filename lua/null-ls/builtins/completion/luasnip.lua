@@ -37,6 +37,7 @@ return h.make_builtin({
                             type = "luasnip",
                             filetype = ft,
                             ft_indx = j,
+                            snip_id = snip.id,
                             show_condition = snip.show_condition,
                         }
                         if not snip.hidden then
