@@ -10,7 +10,7 @@ return h.make_builtin({
         description = "The terraform-fmt command rewrites `terraform` configuration files to a canonical format and style.",
     },
     method = FORMATTING,
-    filetypes = { "terraform", "tf" },
+    filetypes = { "terraform", "tf", "terraform-vars" },
     generator_opts = {
         command = "terraform",
         args = {
