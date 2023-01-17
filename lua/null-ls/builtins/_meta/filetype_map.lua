@@ -386,6 +386,9 @@ return {
     diagnostics = { "tfsec" },
     formatting = { "terraform_fmt" }
   },
+  ["terraform-vars"] = {
+    formatting = { "terraform_fmt" }
+  },
   tex = {
     code_actions = { "proselint" },
     diagnostics = { "chktex", "proselint", "vale" },

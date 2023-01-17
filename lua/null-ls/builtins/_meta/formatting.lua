@@ -356,7 +356,7 @@ return {
     filetypes = { "markdown" }
   },
   terraform_fmt = {
-    filetypes = { "terraform", "tf" }
+    filetypes = { "terraform", "tf", "terraform-vars" }
   },
   textlint = {
     filetypes = {}

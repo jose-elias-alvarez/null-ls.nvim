@@ -4247,7 +4247,7 @@ local sources = { null_ls.builtins.formatting.terraform_fmt }
 
 #### Defaults
 
-- Filetypes: `{ "terraform", "tf" }`
+- Filetypes: `{ "terraform", "tf", "terraform-vars" }`
 - Method: `formatting`
 - Command: `terraform`
 - Args: `{ "fmt", "-" }`
