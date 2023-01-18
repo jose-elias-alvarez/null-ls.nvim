@@ -3530,9 +3530,9 @@ local sources = { null_ls.builtins.formatting.prettierd }
 #### Defaults
 
 - Filetypes: `{ "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" }`
-- Method: `formatting`
+- Methods: `formatting, range_formatting`
 - Command: `prettierd`
-- Args: `{ "$FILENAME" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettierd.lua))
 
 ### [prettier_d_slim](https://github.com/mikew/prettier_d_slim)
 
