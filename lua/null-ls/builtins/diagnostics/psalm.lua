@@ -3,6 +3,22 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local u = require("null-ls.utils")
+local is_windows = vim.loop.os_uname().version:match("Windows")
+local path_separator = is_windows and "\\" or "/"
+
+-- executable search in the project, if there is no search in the global scope
+local function get_executable()
+  local exec_name = "psalm";
+  local exec = u.get_root() .. path_separator .. "vendor" .. path_separator .. "bin" .. path_separator .. exec_name
+  local file = io.open(exec, "r")
+  if file ~= nil then io.close(file)
+    return exec
+  else
+    return exec_name
+  end
+end
+
 return h.make_builtin({
     name = "psalm",
     meta = {
@@ -12,7 +28,7 @@ return h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = { "php" },
     generator_opts = {
-        command = "psalm",
+        command = get_executable(),
         args = { "--output-format=json", "--no-progress", "$FILENAME" },
         format = "json_raw",
         from_stderr = true,
