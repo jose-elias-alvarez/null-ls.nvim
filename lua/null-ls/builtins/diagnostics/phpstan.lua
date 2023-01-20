@@ -9,7 +9,7 @@ local path_separator = is_windows and "\\" or "/"
 
 -- try get file from project, if not exists try global
 local function get_executable()
-  local exec_name = "phpstan";
+  local exec_name = "phpstan"
   local exec = u.get_root() .. path_separator .. "vendor" .. path_separator .. "bin" .. path_separator .. exec_name
   local file = io.open(exec, "r")
   if file ~= nil then io.close(file)
