@@ -355,7 +355,7 @@ project for context and so will not work if this option changes.
 If you want to override this globally, you can change the `temp_dir` option in
 [CONFIG](CONFIG.md).
 
-## Using local executables
+### Using local executables
 
 To prefer using a local executable for a built-in, use the `prefer_local`
 option. This will cause null-ls to search upwards from the current buffer's
