@@ -14,7 +14,8 @@ return h.make_builtin({
     filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {
         command = "djlint",
-        args = { "$FILENAME" },
+        args = { "--quiet", "-" },
+        to_stdin = true,
         from_stderr = false,
         ignore_stderr = true,
         format = "line",
