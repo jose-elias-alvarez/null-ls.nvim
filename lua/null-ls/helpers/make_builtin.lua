@@ -101,7 +101,7 @@ local function make_builtin(opts)
     generator_opts._last_cwd = nil
 
     builtin.with = function(user_opts)
-        return make_builtin(vim.tbl_extend("force", opts, user_opts))
+        return make_builtin(vim.tbl_deep_extend("force", opts, user_opts))
     end
 
     return builtin
