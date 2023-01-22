@@ -38,6 +38,7 @@ return h.make_builtin({
     generator_opts = {
         command = "prettier",
         args = h.range_formatting_args_factory({
+            "--no-plugin-search",
             "--stdin-filepath",
             "$FILENAME",
         }, "--range-start", "--range-end", { row_offset = -1, col_offset = -1 }),
