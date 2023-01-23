@@ -31,6 +31,9 @@ return {
   clang_check = {
     filetypes = { "c", "cpp" }
   },
+  clazy = {
+    filetypes = { "cpp" }
+  },
   clj_kondo = {
     filetypes = { "clojure" }
   },

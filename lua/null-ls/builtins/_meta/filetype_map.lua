@@ -48,7 +48,7 @@ return {
     formatting = { "cmake_format", "gersemi" }
   },
   cpp = {
-    diagnostics = { "clang_check", "cppcheck", "cpplint", "gccdiag" },
+    diagnostics = { "clang_check", "clazy", "cppcheck", "cpplint", "gccdiag" },
     formatting = { "astyle", "clang_format", "uncrustify" }
   },
   crystal = {

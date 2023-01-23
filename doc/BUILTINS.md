@@ -519,6 +519,37 @@ local sources = { null_ls.builtins.diagnostics.clang_check }
 
 - `clang-check` will be run only when files are saved to disk, so that `compile_commands.json` files can be used. It is recommended to use this linter in combination with `compile_commands.json` files.
 
+### [clazy](https://github.com/KDE/clazy)
+
+Qt-oriented static code analyzer based on the Clang framework
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.clazy }
+```
+
+#### Defaults
+
+- Filetypes: `{ "cpp" }`
+- Method: `diagnostics_on_save`
+- Command: `clazy-standalone`
+- Args: `{ "--ignore-included-files", "--header-filter=$ROOT/.*", "$FILENAME" }`
+
+#### Notes
+
+- `clazy` needs a compilation database (`compile_commands.json`) to work. By default `clazy` will search for a compilation database in all parent folders of the input file.
+- If the compilation database is not in a parent folder, the `-p` option can be used to point to the corresponding folder (e.g. the projects build directory):
+```lua
+local sources = {
+    null_ls.builtins.diagnostics.clazy.with({
+        extra_args = { "-p=$ROOT/build" },
+    }),
+}
+```
+- Alternatively, `compile_commands.json` can be linked into the project's root directory. For more information see https://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
+- `clazy` will be run only when files are saved to disk, so that `compile_commands.json` can be used.
+
 ### [clj_kondo](https://github.com/clj-kondo/clj-kondo)
 
 A linter for clojure code that sparks joy
