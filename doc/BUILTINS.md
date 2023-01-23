@@ -3045,6 +3045,22 @@ local sources = { null_ls.builtins.formatting.google_java_format }
 - Command: `google-java-format`
 - Args: `{ "-" }`
 
+### [hclfmt](https://github.com/fatih/hclfmt)
+
+Formatter for HCL configuration files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.hclfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "hcl" }`
+- Method: `formatting`
+- Command: `hclfmt`
+
 ### [isort](https://github.com/PyCQA/isort)
 
 Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.

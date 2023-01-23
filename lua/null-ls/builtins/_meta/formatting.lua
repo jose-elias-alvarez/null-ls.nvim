@@ -154,6 +154,9 @@ return {
   google_java_format = {
     filetypes = { "java" }
   },
+  hclfmt = {
+    filetypes = { "hcl" }
+  },
   isort = {
     filetypes = { "python" }
   },

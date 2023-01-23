@@ -161,7 +161,7 @@ return {
     formatting = { "brittany", "fourmolu", "stylish_haskell" }
   },
   hcl = {
-    formatting = { "packer" }
+    formatting = { "hclfmt", "packer" }
   },
   html = {
     diagnostics = { "tidy" },
