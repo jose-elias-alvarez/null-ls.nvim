@@ -730,7 +730,7 @@ local sources = { null_ls.builtins.diagnostics.djlint }
 - Filetypes: `{ "django", "jinja.html", "htmldjango" }`
 - Method: `diagnostics`
 - Command: `djlint`
-- Args: `{ "$FILENAME" }`
+- Args: `{ "--quiet", "-" }`
 
 ### [dotenv_linter](https://github.com/dotenv-linter/dotenv-linter)
 
