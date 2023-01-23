@@ -27,10 +27,8 @@ return h.make_builtin({
                 local bufname = params.bufname
                 local row = params.range.row
                 local col = params.range.col
-                print(vim.inspect(vim.fn.expand("%:p:h")))
 
                 local exec = function(cmd_opts)
-                    print(vim.inspect(cmd_opts))
                     local cmd = table.concat(cmd_opts, " ")
                     local output = vim.fn.system(cmd)
                     if vim.api.nvim_get_vvar("shell_error") == 0 then
