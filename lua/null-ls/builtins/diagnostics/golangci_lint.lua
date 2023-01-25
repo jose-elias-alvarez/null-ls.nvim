@@ -17,13 +17,16 @@ return h.make_builtin({
         to_stdin = true,
         from_stderr = false,
         ignore_stderr = true,
+        cwd = function(params)
+            local patterns = { "go.mod", "go.work", ".git" }
+            local opts = { upward = true, path = params.bufname }
+            local cwd = vim.fs.dirname(vim.fs.find(patterns, opts)[1]) or vim.fn.getcwd()
+            return vim.loop.fs_realpath(cwd)
+        end,
         args = {
             "run",
-            "--fix=false",
             "--fast",
             "--out-format=json",
-            "--path-prefix",
-            "$ROOT",
         },
         format = "json",
         check_exit_code = function(code)
@@ -38,7 +41,8 @@ return h.make_builtin({
             local issues = params.output["Issues"]
             if type(issues) == "table" then
                 for _, d in ipairs(issues) do
-                    if d.Pos.Filename == params.bufname then
+                    local fname = params.cwd .. "/" .. d.Pos.Filename
+                    if fname == params.bufname then
                         table.insert(diags, {
                             source = string.format("golangci-lint:%s", d.FromLinter),
                             row = d.Pos.Line,
