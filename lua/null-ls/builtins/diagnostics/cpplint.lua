@@ -3,6 +3,20 @@ local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
+local diagnostics = h.diagnostics.from_pattern(
+    "[^:]+:(%d+):  (.+)  %[(.+)%/(.+)%] %[%d+%]",
+    { "row", "message", "severity", "label" },
+    {
+        severities = {
+            build = h.diagnostics.severities["warning"],
+            whitespace = h.diagnostics.severities["hint"],
+            runtime = h.diagnostics.severities["warning"],
+            legal = h.diagnostics.severities["information"],
+            readability = h.diagnostics.severities["information"],
+        },
+    }
+)
+
 return h.make_builtin({
     name = "cpplint",
     meta = {
@@ -20,19 +34,15 @@ return h.make_builtin({
         to_stdin = false,
         from_stderr = true,
         to_temp_file = true,
-        on_output = h.diagnostics.from_pattern(
-            "[^:]+:(%d+):  (.+)  %[(.+)%/.+%] %[%d+%]",
-            { "row", "message", "severity" },
-            {
-                severities = {
-                    build = h.diagnostics.severities["warning"],
-                    whitespace = h.diagnostics.severities["hint"],
-                    runtime = h.diagnostics.severities["warning"],
-                    legal = h.diagnostics.severities["information"],
-                    readability = h.diagnostics.severities["information"],
-                },
-            }
-        ),
+        on_output = function(line, params)
+            local rez = diagnostics(line, params)
+
+            if rez.severity == 2 and (rez.label == "include_order" or rez.label == "header_guard") then
+                return nil
+            end
+
+            return rez
+        end,
         check_exit_code = function(code)
             return code >= 1
         end,
