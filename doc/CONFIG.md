@@ -65,7 +65,6 @@ local defaults = {
     should_attach = nil,
     sources = nil,
     temp_dir = nil,
-    border = nil,
     update_in_insert = false,
 }
 ```
