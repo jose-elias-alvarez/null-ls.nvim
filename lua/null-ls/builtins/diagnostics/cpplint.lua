@@ -37,7 +37,7 @@ return h.make_builtin({
         on_output = function(line, params)
             local rez = diagnostics(line, params)
 
-            if rez.severity == 2 and (rez.label == "include_order" or rez.label == "header_guard") then
+            if rez and rez.severity == 2 and (rez.label == "include_order" or rez.label == "header_guard") then
                 return nil
             end
 
