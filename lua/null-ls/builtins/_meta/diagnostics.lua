@@ -106,6 +106,9 @@ return {
   golangci_lint = {
     filetypes = { "go" }
   },
+  gospel = {
+    filetypes = { "go" }
+  },
   hadolint = {
     filetypes = { "dockerfile" }
   },

@@ -980,6 +980,23 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - Command: `golangci-lint`
 - Args: `{ "run", "--fix=false", "--out-format=json", "--path-prefix", "$ROOT" }`
 
+### [gospel](https://github.com/kortschak/gospel)
+
+misspelled word linter for Go comments, string literals and embedded files
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.gospel }
+```
+
+#### Defaults
+
+- Filetypes: `{ "go" }`
+- Method: `diagnostics`
+- Command: `gospel`
+- Args: `{ "$DIRNAME" }`
+
 ### [hadolint](https://github.com/hadolint/hadolint)
 
 A smarter Dockerfile linter that helps you build best practice Docker images.

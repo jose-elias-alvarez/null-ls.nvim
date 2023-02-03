@@ -142,7 +142,7 @@ return {
   },
   go = {
     code_actions = { "gomodifytags", "refactoring" },
-    diagnostics = { "golangci_lint", "revive", "semgrep", "staticcheck" },
+    diagnostics = { "golangci_lint", "gospel", "revive", "semgrep", "staticcheck" },
     formatting = { "gofmt", "gofumpt", "goimports", "goimports_reviser", "golines" }
   },
   graphql = {
