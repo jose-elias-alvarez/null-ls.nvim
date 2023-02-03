@@ -12,7 +12,7 @@ return h.make_builtin({
     method = DIAGNOSTICS,
     filetypes = {},
     generator_opts = {
-        command = "ec",
+        command = "editorconfig-checker",
         args = {
             "-no-color",
             "$FILENAME",
