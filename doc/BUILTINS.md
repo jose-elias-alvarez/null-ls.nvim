@@ -794,7 +794,7 @@ local sources = { null_ls.builtins.diagnostics.editorconfig_checker }
 
 - Filetypes: `{}`
 - Method: `diagnostics`
-- Command: `ec`
+- Command: `editorconfig-checker`
 - Args: `{ "-no-color", "$FILENAME" }`
 
 ### [erb_lint](https://github.com/Shopify/erb-lint)
