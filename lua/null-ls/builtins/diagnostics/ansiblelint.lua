@@ -37,7 +37,7 @@ return h.make_builtin({
                 table.insert(params.messages, {
                     row = row,
                     col = col,
-                    message = message.check_name,
+                    message = message.description,
                     severity = severities[message.severity],
                     filename = message.location.path,
                 })
