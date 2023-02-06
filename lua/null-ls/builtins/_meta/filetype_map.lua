@@ -106,7 +106,7 @@ return {
   },
   eruby = {
     diagnostics = { "erb_lint" },
-    formatting = { "erb_lint" }
+    formatting = { "erb_format", "erb_lint" }
   },
   fennel = {
     formatting = { "fnlfmt" }

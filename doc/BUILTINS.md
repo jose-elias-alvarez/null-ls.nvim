@@ -2779,6 +2779,23 @@ local sources = { null_ls.builtins.formatting.emacs_vhdl_mode }
 
 - Adjust the expression evaluated with the `--eval` flag to change settings within emacs.
 
+### [erb_format](https://github.com/nebulab/erb-formatter)
+
+Format ERB files with speed and precision.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.erb_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "eruby" }`
+- Method: `formatting`
+- Command: `erb-format`
+- Args: `{ "--stdin" }`
+
 ### [erb_lint](https://github.com/Shopify/erb-lint)
 
 Lint your ERB or HTML files

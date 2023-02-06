@@ -100,6 +100,9 @@ return {
   emacs_vhdl_mode = {
     filetypes = { "vhdl" }
   },
+  erb_format = {
+    filetypes = { "eruby" }
+  },
   erb_lint = {
     filetypes = { "eruby" }
   },
