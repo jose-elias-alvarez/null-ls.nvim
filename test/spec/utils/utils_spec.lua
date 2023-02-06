@@ -407,4 +407,17 @@ describe("utils", function()
             assert.equals(root, vim.loop.cwd())
         end)
     end)
+
+    describe("root_pattern", function()
+        local test_path = u.path.join(u.get_root(), "test")
+        local start_path = u.path.join(u.get_root(), "test", "spec", "utils")
+
+        it("matches the pattern in the start_path", function()
+            assert.equals(start_path, u.root_pattern("utils_spec.lua")(start_path))
+        end)
+
+        it("matches the pattern in the start_path parents", function()
+            assert.equals(test_path, u.root_pattern("minimal.vim")(start_path))
+        end)
+    end)
 end)
