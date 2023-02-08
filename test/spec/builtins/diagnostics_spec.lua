@@ -1035,35 +1035,58 @@ describe("diagnostics", function()
         it("should create a diagnostic", function()
             local output = [[
                 [
-                  {
-                    "type": "issue",
-                    "check_name": "[risky-file-permissions] File permissions unset or incorrect",
-                    "categories": [
-                      "unpredictability",
-                      "experimental"
-                    ],
-                    "severity": "blocker",
-                    "description": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like ``mode: 0644`` to avoid hitting this rule. Special ``preserve`` value is accepted only by copy, template modules. See https://github.com/ansible/ansible/issues/71200",
-                    "fingerprint": "b66d9f9db860c0fedb7d1d583c5a808df9a1ed72b8abdbedeff0aad836490951",
-                    "location": {
-                      "path": "playbooks/test-ansible.yaml",
-                      "lines": {
-                        "begin": 5
-                      }
+                    {
+                        "type": "issue",
+                        "check_name": "[risky-file-permissions] File permissions unset or incorrect",
+                        "categories": [
+                            "unpredictability",
+                            "experimental"
+                        ],
+                        "severity": "blocker",
+                        "description": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like ``mode: 0644`` to avoid hitting this rule. Special ``preserve`` value is accepted only by copy, template modules. See https://github.com/ansible/ansible/issues/71200",
+                        "fingerprint": "b66d9f9db860c0fedb7d1d583c5a808df9a1ed72b8abdbedeff0aad836490951",
+                        "location": {
+                            "path": "playbooks/.null-ls_123456_test-ansible.yaml",
+                            "lines": {
+                                "begin": 5
+                            }
+                        },
+                        "content": {
+                            "body": "Task/Handler: This tasks is no good"
+                        }
                     },
-                    "content": {
-                      "body": "Task/Handler: This tasks is no good"
+                    {
+                        "type": "issue",
+                        "check_name": "yaml[truthy]",
+                        "categories": [
+                            "formatting",
+                            "yaml"
+                        ],
+                        "severity": "info",
+                        "description": "truthy value should be one of \\[false, true]",
+                        "fingerprint": "8564f80bca9d93054e646e7ec5cfe5ee2c279b821ca183183c79d055bc062b8d",
+                        "location": {
+                            "path": "playbooks/imported-tasks.yaml",
+                            "lines": {
+                                "begin": 3
+                            }
+                        }
                     }
-                  }
                 ]
             ]]
-            local diagnostic = parser({ output = vim.json.decode(output), content = file })
+            local diagnostic = parser({
+                output = vim.json.decode(output),
+                content = file,
+                temp_path = "/home/null-ls/test/playbooks/.null-ls_123456_test-ansible.yaml",
+                root = "/home/null-ls/test",
+                bufname = "/home/null-ls/test/playbooks/test-ansible.yaml",
+            })
             assert.same({
                 {
                     row = 5,
                     severity = 1,
                     message = "[risky-file-permissions] File permissions unset or incorrect",
-                    filename = "playbooks/test-ansible.yaml",
+                    filename = "/home/null-ls/test/playbooks/test-ansible.yaml",
                 },
             }, diagnostic)
         end)

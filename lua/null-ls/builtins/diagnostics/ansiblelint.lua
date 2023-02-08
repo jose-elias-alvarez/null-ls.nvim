@@ -28,19 +28,21 @@ return h.make_builtin({
             }
             params.messages = {}
             for _, message in ipairs(params.output) do
-                local col = nil
-                local row = message.location.lines.begin
-                if type(row) == "table" then
-                    row = row.line
-                    col = row.column
+                if params.temp_path:match(vim.pesc(message.location.path)) then
+                    local col = nil
+                    local row = message.location.lines.begin
+                    if type(row) == "table" then
+                        row = row.line
+                        col = row.column
+                    end
+                    table.insert(params.messages, {
+                        row = row,
+                        col = col,
+                        message = message.check_name,
+                        severity = severities[message.severity],
+                        filename = params.bufname,
+                    })
                 end
-                table.insert(params.messages, {
-                    row = row,
-                    col = col,
-                    message = message.check_name,
-                    severity = severities[message.severity],
-                    filename = message.location.path,
-                })
             end
             return params.messages
         end,
