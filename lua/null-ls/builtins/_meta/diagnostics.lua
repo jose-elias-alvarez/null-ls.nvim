@@ -289,6 +289,9 @@ return {
   vale = {
     filetypes = { "markdown", "tex", "asciidoc" }
   },
+  verilator = {
+    filetypes = { "verilog", "systemverilog" }
+  },
   vint = {
     filetypes = { "vim" }
   },
