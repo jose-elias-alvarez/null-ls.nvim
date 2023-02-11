@@ -29,7 +29,7 @@ return h.make_builtin({
         description = "The pluggable linting tool for text and Markdown.",
     },
     method = DIAGNOSTICS,
-    filetypes = {},
+    filetypes = {"txt", "markdown"},
     generator_opts = {
         command = "textlint",
         to_stdin = true,
