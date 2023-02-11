@@ -15,6 +15,17 @@ return h.make_builtin({
         command = "textlint",
         args = { "--fix", "$FILENAME" },
         to_temp_file = true,
+        cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                -- https://textlint.github.io/docs/configuring.html
+                ".textlintrc",
+                ".textlintrc.js",
+                ".textlintrc.json",
+                ".textlintrc.yml",
+                ".textlintrc.yaml",
+                "package.json"
+            )(params.bufname)
+        end),
     },
     factory = h.formatter_factory,
 })
