@@ -22,7 +22,7 @@ return h.make_builtin({
         },
         format = "line",
         check_exit_code = function(code)
-            return code <= 1
+            return code <= 3
         end,
         on_output = h.diagnostics.from_pattern(
             [[(%d+):(%d+):(%d+):(%w+):(%d+):(.+)]],
