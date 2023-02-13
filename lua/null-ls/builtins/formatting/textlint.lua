@@ -12,7 +12,7 @@ return h.make_builtin({
         description = "The pluggable linting tool for text and Markdown.",
     },
     method = FORMATTING,
-    filetypes = {"txt", "markdown"},
+    filetypes = { "txt", "markdown" },
     generator_opts = {
         command = "textlint",
         args = { "--fix", "$FILENAME" },
