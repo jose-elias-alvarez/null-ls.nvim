@@ -365,7 +365,7 @@ return {
     filetypes = { "terraform", "tf", "terraform-vars" }
   },
   textlint = {
-    filetypes = {}
+    filetypes = { "txt", "markdown" }
   },
   tidy = {
     filetypes = { "html", "xml" }

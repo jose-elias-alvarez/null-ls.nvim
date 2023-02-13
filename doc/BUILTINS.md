@@ -1963,7 +1963,7 @@ local sources = { null_ls.builtins.diagnostics.textlint }
 
 #### Defaults
 
-- Filetypes: `{}`
+- Filetypes: `{ "txt", "markdown" }`
 - Method: `diagnostics`
 - Command: `textlint`
 - Args: `{ "-f", "json", "--stdin", "--stdin-filename", "$FILENAME" }`
@@ -4362,7 +4362,7 @@ local sources = { null_ls.builtins.formatting.textlint }
 
 #### Defaults
 
-- Filetypes: `{}`
+- Filetypes: `{ "txt", "markdown" }`
 - Method: `formatting`
 - Command: `textlint`
 - Args: `{ "--fix", "$FILENAME" }`

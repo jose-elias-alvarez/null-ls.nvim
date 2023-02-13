@@ -266,7 +266,7 @@ return {
     filetypes = { "teal" }
   },
   textlint = {
-    filetypes = {}
+    filetypes = { "txt", "markdown" }
   },
   tfsec = {
     filetypes = { "terraform" }
