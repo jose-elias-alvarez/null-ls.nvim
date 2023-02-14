@@ -4452,6 +4452,23 @@ local sources = { null_ls.builtins.formatting.usort }
 - Command: `usort`
 - Args: `{ "format", "-" }`
 
+### [vacuum](https://quobix.com/vacuum)
+
+The world’s fastest and most scalable OpenAPI linter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.vacuum }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml", "json" }`
+- Method: `diagnostics`
+- Command: `vacuum`
+- Args: `{ "spectral-report", "--stdin", "--stdout" }`
+
 ### [verible_verilog_format](https://github.com/chipsalliance/verible)
 
 The verible-verilog-format formatter manages whitespace in accordance with a particular style. The main goal is to relieve humans of having to manually manage whitespace, wrapping, and indentation, and to provide a tool that can be integrated into any editor to enable editor-independent consistency.
