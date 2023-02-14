@@ -29,9 +29,9 @@ return h.make_builtin({
             local diags = {}
             for _, d in ipairs(params.output) do
                 table.insert(diags, {
-                    row = d.range.start.line + 1,
+                    row = d.range.start.line,
                     col = d.range.start.character,
-                    end_row = d.range["end"].line + 1,
+                    end_row = d.range["end"].line,
                     end_col = d.range["end"].character,
                     source = "Vacuum",
                     message = d.message,
