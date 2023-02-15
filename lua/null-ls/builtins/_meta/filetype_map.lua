@@ -190,7 +190,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   json = {
-    diagnostics = { "cfn_lint", "jsonlint", "spectral" },
+    diagnostics = { "cfn_lint", "jsonlint", "spectral", "vacuum" },
     formatting = { "deno_fmt", "dprint", "fixjson", "jq", "json_tool", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   jsonc = {
@@ -443,7 +443,7 @@ return {
     formatting = { "tidy", "xmlformat", "xmllint" }
   },
   yaml = {
-    diagnostics = { "actionlint", "cfn_lint", "spectral", "yamllint" },
+    diagnostics = { "actionlint", "cfn_lint", "spectral", "vacuum", "yamllint" },
     formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt" }
   },
   ["yaml.ansible"] = {

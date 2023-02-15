@@ -286,6 +286,9 @@ return {
   twigcs = {
     filetypes = { "twig" }
   },
+  vacuum = {
+    filetypes = { "yaml", "json" }
+  },
   vale = {
     filetypes = { "markdown", "tex", "asciidoc" }
   },

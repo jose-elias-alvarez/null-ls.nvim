@@ -2066,6 +2066,23 @@ local sources = { null_ls.builtins.diagnostics.twigcs }
 - Command: `twigcs`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
 
+### [vacuum](https://quobix.com/vacuum)
+
+The world’s fastest and most scalable OpenAPI linter.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.vacuum }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml", "json" }`
+- Method: `diagnostics`
+- Command: `vacuum`
+- Args: `{ "spectral-report", "--stdin", "--stdout" }`
+
 ### [vale](https://docs.errata.ai/vale/about)
 
 Syntax-aware linter for prose built with speed and extensibility in mind.
@@ -4451,23 +4468,6 @@ local sources = { null_ls.builtins.formatting.usort }
 - Method: `formatting`
 - Command: `usort`
 - Args: `{ "format", "-" }`
-
-### [vacuum](https://quobix.com/vacuum)
-
-The world’s fastest and most scalable OpenAPI linter.
-
-#### Usage
-
-```lua
-local sources = { null_ls.builtins.diagnostics.vacuum }
-```
-
-#### Defaults
-
-- Filetypes: `{ "yaml", "json" }`
-- Method: `diagnostics`
-- Command: `vacuum`
-- Args: `{ "spectral-report", "--stdin", "--stdout" }`
 
 ### [verible_verilog_format](https://github.com/chipsalliance/verible)
 
