@@ -178,7 +178,10 @@ M.on_source_change = vim.schedule_wrap(function()
             M.retry_add(bufnr)
 
             -- if in named buffer, we can register conditional sources immediately
-            if s.has_conditional_sources() and api.nvim_buf_get_name(bufnr) ~= "" then
+            -- we need to check only for normal buffers, excluding nofile and terminals
+            local buftype = api.nvim_buf_get_option(bufnr, "buftype")
+            local bufname = api.nvim_buf_get_name(bufnr)
+            if s.has_conditional_sources() and bufname ~= "" and buftype == "" then
                 s.register_conditional_sources()
             end
         else
