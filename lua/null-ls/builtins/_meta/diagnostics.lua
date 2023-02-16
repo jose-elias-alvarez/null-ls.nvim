@@ -265,6 +265,9 @@ return {
   teal = {
     filetypes = { "teal" }
   },
+  terraform_validate = {
+    filetypes = { "terraform" }
+  },
   textlint = {
     filetypes = { "txt", "markdown" }
   },

@@ -1951,6 +1951,23 @@ local sources = { null_ls.builtins.diagnostics.teal }
 - Command: `tl`
 - Args: `{ "check", "$FILENAME" }`
 
+### [terraform_validate](https://github.com/hashicorp/terraform)
+
+Terraform validate is is a subcommand of terraform to validate configuration files in a directory
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.terraform_validate }
+```
+
+#### Defaults
+
+- Filetypes: `{ "terraform" }`
+- Method: `diagnostics_on_save`
+- Command: `terraform`
+- Args: `{ "validate", "-json" }`
+
 ### [textlint](https://github.com/textlint/textlint)
 
 The pluggable linting tool for text and Markdown.

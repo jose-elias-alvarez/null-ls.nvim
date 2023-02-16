@@ -384,7 +384,7 @@ return {
     diagnostics = { "teal" }
   },
   terraform = {
-    diagnostics = { "tfsec" },
+    diagnostics = { "terraform_validate", "tfsec" },
     formatting = { "terraform_fmt" }
   },
   ["terraform-vars"] = {
