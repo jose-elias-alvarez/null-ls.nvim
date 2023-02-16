@@ -1792,4 +1792,124 @@ INFO: Analysis cache updated]],
             assert.same(nil, diagnostic)
         end)
     end)
+
+    describe("terraform_validate", function()
+        local linter = diagnostics.terraform_validate
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic for general errors", function()
+            local output = vim.json.decode([[
+              {
+                "format_version": "1.0",
+                "valid": false,
+                "error_count": 1,
+                "warning_count": 0,
+                "diagnostics": [
+                  {
+                    "severity": "error",
+                    "summary": "missing provider provider[\"registry.terraform.io/hashicorp/aws\"].foobar",
+                    "detail": ""
+                  }
+                ]
+              }
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    col = 0,
+                    message = 'missing provider provider["registry.terraform.io/hashicorp/aws"].foobar - ',
+                    row = 0,
+                    severity = 1,
+                    source = "terraform validate",
+                },
+            }, diagnostic)
+        end)
+        it("should create a diagnostic for specific errors", function()
+            local output = vim.json.decode([[
+              {
+                "format_version": "1.0",
+                "valid": false,
+                "error_count": 2,
+                "warning_count": 0,
+                "diagnostics": [
+                  {
+                    "severity": "error",
+                    "summary": "Reference to undeclared local value",
+                    "detail": "A local value with the name \"foobar\" has not been declared.",
+                    "range": {
+                      "filename": "main.tf",
+                      "start": {
+                        "line": 102,
+                        "column": 17,
+                        "byte": 2555
+                      },
+                      "end": {
+                        "line": 102,
+                        "column": 50,
+                        "byte": 2588
+                      }
+                    },
+                    "snippet": {
+                      "context": "module \"foo\"",
+                      "code": "  bucket_name = local.foobar",
+                      "start_line": 102,
+                      "highlight_start_offset": 16,
+                      "highlight_end_offset": 49,
+                      "values": []
+                    }
+                  },
+                  {
+                    "severity": "error",
+                    "summary": "Reference to undeclared local value",
+                    "detail": "A local value with the name \"foobar\" has not been declared.",
+                    "range": {
+                      "filename": "main.tf",
+                      "start": {
+                        "line": 97,
+                        "column": 17,
+                        "byte": 2438
+                      },
+                      "end": {
+                        "line": 97,
+                        "column": 50,
+                        "byte": 2471
+                      }
+                    },
+                    "snippet": {
+                      "context": "module \"bar\"",
+                      "code": "  bucket_name = local.foobar",
+                      "start_line": 97,
+                      "highlight_start_offset": 16,
+                      "highlight_end_offset": 49,
+                      "values": []
+                    }
+                  }
+                ]
+              }
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    col = 17,
+                    end_col = 50,
+                    end_row = 102,
+                    filename = "main.tf",
+                    message = 'Reference to undeclared local value - A local value with the name "foobar" has not been declared.',
+                    row = 102,
+                    severity = 1,
+                    source = "terraform validate",
+                },
+                {
+                    col = 17,
+                    end_col = 50,
+                    end_row = 97,
+                    filename = "main.tf",
+                    message = 'Reference to undeclared local value - A local value with the name "foobar" has not been declared.',
+                    row = 97,
+                    severity = 1,
+                    source = "terraform validate",
+                },
+            }, diagnostic)
+        end)
+    end)
 end)
