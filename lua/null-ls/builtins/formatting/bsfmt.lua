@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "brs" },
     generator_opts = {
         command = "bsfmt",
-        args = { "*.brs" },
+        args = { "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
