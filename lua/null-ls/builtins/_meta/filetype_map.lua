@@ -25,6 +25,9 @@ return {
   blade = {
     formatting = { "blade_formatter" }
   },
+  brs = {
+    formatting = { "bsfmt" }
+  },
   bzl = {
     diagnostics = { "buildifier" },
     formatting = { "buildifier" }

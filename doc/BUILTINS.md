@@ -2456,6 +2456,23 @@ local sources = { null_ls.builtins.formatting.brittany }
 - Method: `formatting`
 - Command: `brittany`
 
+### [bsfmt](https://github.com/rokucommunity/brighterscript-formatter)
+
+A code formatter for BrightScript and BrighterScript.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.bsfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "brs" }`
+- Method: `formatting`
+- Command: `bsfmt`
+- Args: `{ "$FILENAME" }`
+
 ### [buf](https://github.com/bufbuild/buf)
 
 A new way of working with Protocol Buffers.

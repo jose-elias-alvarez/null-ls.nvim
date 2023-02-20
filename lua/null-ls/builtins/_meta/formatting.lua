@@ -37,6 +37,9 @@ return {
   brittany = {
     filetypes = { "haskell" }
   },
+  bsfmt = {
+    filetypes = { "brs" }
+  },
   buf = {
     filetypes = { "proto" }
   },
