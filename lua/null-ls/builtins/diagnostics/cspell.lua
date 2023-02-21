@@ -36,7 +36,7 @@ return h.make_builtin({
                 "lint",
                 "--language-id",
                 params.ft,
-                "stdin",
+                params.bufname,
             }
 
             -- only enable suggestions when using the code actions built-in, since they slow down the command
