@@ -43,7 +43,7 @@ benefits of dynamic (or "duck") typing and static typing.]],
         check_exit_code = function(code)
             return code <= 2
         end,
-        multiple_files = true,
+        multiple_files = false,
         on_output = h.diagnostics.from_patterns({
             -- see spec for pattern examples
             {
