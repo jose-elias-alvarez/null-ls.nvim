@@ -14,7 +14,9 @@ return h.make_builtin({
     generator_opts = {
         command = "rubocop",
         args = {
-            "--auto-correct",
+            -- NOTE: For backwards compatibility,
+            -- we are still using "-a" shorthand' for both "--auto-correct" (pre-1.3.0) and "--autocorrect" (1.3.0+).
+            "-a",
             "-f",
             "quiet",
             "--stderr",
