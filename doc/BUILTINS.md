@@ -2640,7 +2640,7 @@ local sources = { null_ls.builtins.formatting.crystal_format }
 - Filetypes: `{ "crystal" }`
 - Method: `formatting`
 - Command: `crystal`
-- Args: `{ "tool", "format" }`
+- Args: `{ "tool", "format", "-" }`
 
 ### [csharpier](https://csharpier.com/)
 
