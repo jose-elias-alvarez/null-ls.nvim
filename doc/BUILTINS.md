@@ -2136,7 +2136,7 @@ local sources = { null_ls.builtins.diagnostics.verilator }
 - Filetypes: `{ "verilog", "systemverilog" }`
 - Method: `diagnostics`
 - Command: `verilator`
-- Args: `{ "-lint-only", "$FILENAME" }`
+- Args: `{ "-lint-only", "-Wno-fatal", "$FILENAME" }`
 
 ### [vint](https://github.com/Vimjas/vint)
 
