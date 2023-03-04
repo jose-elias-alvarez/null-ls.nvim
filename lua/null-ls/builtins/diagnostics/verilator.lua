@@ -15,6 +15,7 @@ return h.make_builtin({
         command = "verilator",
         args = {
             "-lint-only",
+            "-Wno-fatal",
             "$FILENAME",
         },
         from_stderr = true,
@@ -24,7 +25,7 @@ return h.make_builtin({
         end,
         on_output = function(line, params)
             local path = params.bufname
-            local pattern = [[%%(%w+)-.*]] .. path .. [[:(%d+):(%d+): (.*)]]
+            local pattern = [[%%(%w+).*]] .. path .. [[:(%d+):(%d+): (.*)]]
             local overrides = {
                 severities = {
                     ["Error"] = 1,
