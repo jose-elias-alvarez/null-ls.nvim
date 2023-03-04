@@ -1229,13 +1229,13 @@ Lint, format and auto-fix Groovy, Jenkinsfile, and Gradle files.
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.diagnostic.npm_groovy_lint }
+local sources = { null_ls.builtins.diagnostics.npm_groovy_lint }
 ```
 
 #### Defaults
 
 - Filetypes: `{ "groovy", "java", "Jenkinsfile" }`
-- Method: `diagnostic`
+- Method: `diagnostics`
 - Command: `npm-groovy-lint`
 - Args: `{ "-o", "json", "-" }`
 

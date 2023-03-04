@@ -148,6 +148,9 @@ return {
   mypy = {
     filetypes = { "python" }
   },
+  npm_groovy_lint = {
+    filetypes = { "groovy", "java", "Jenkinsfile" }
+  },
   opacheck = {
     filetypes = { "rego" }
   },
