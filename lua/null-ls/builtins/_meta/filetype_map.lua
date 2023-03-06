@@ -2,6 +2,7 @@
 -- stylua: ignore
 return {
   Jenkinsfile = {
+    diagnostics = { "npm_groovy_lint" },
     formatting = { "npm_groovy_lint" }
   },
   arduino = {
@@ -24,6 +25,9 @@ return {
   },
   blade = {
     formatting = { "blade_formatter" }
+  },
+  brs = {
+    formatting = { "bsfmt" }
   },
   bzl = {
     diagnostics = { "buildifier" },
@@ -149,6 +153,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   groovy = {
+    diagnostics = { "npm_groovy_lint" },
     formatting = { "npm_groovy_lint" }
   },
   haml = {
@@ -172,7 +177,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "checkstyle", "pmd", "semgrep" },
+    diagnostics = { "checkstyle", "npm_groovy_lint", "pmd", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
