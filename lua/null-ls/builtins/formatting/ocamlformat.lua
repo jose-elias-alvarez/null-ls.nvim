@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "ocaml" },
     generator_opts = {
         command = "ocamlformat",
-        args = { "--enable-outside-detected-project", "-" },
+        args = { "--enable-outside-detected-project", "--name", "$FILENAME", "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
