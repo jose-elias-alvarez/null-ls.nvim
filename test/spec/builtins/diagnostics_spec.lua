@@ -1085,7 +1085,8 @@ describe("diagnostics", function()
                 {
                     row = 5,
                     severity = 1,
-                    message = "[risky-file-permissions] File permissions unset or incorrect",
+                    message = "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like ``mode: 0644`` to avoid hitting this rule. Special ``preserve`` value is accepted only by copy, template modules. See https://github.com/ansible/ansible/issues/71200",
+                    code = "[risky-file-permissions] File permissions unset or incorrect",
                     filename = "/home/null-ls/test/playbooks/test-ansible.yaml",
                 },
             }, diagnostic)
