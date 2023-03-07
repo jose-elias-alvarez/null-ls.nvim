@@ -4,15 +4,15 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "yq",
+    name = "xq",
     meta = {
-        url = "https://github.com/mikefarah/yq",
-        description = "yq is a portable command-line YAML, JSON, XML, CSV and properties processor.",
+        url = "https://github.com/sibprogrammer/xq",
+        description = "Command-line XML and HTML beautifier and content extractor",
     },
     method = FORMATTING,
-    filetypes = { "yml", "yaml" },
+    filetypes = { "xml" },
     generator_opts = {
-        command = "yq",
+        command = "xq",
         args = { ".", "$FILENAME" },
         to_stdin = true,
         to_temp_file = false,
