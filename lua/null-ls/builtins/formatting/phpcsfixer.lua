@@ -6,7 +6,7 @@ local FORMATTING = methods.internal.FORMATTING
 return h.make_builtin({
     name = "phpcsfixer",
     meta = {
-        url = "https://github.com/FriendsOfPhp/PHP-CS-Fixer",
+        url = "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer",
         description = "Formatter for php files.",
     },
     method = FORMATTING,

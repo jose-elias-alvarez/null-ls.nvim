@@ -3644,7 +3644,7 @@ local sources = { null_ls.builtins.formatting.phpcbf }
 - Command: `phpcbf`
 - Args: `{ "-q", "--stdin-path=$FILENAME", "-" }`
 
-### [phpcsfixer](https://github.com/FriendsOfPhp/PHP-CS-Fixer)
+### [phpcsfixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer)
 
 Formatter for php files.
 
