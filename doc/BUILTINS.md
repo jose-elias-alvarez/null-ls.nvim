@@ -3541,7 +3541,7 @@ local sources = { null_ls.builtins.formatting.ocamlformat }
 - Filetypes: `{ "ocaml" }`
 - Method: `formatting`
 - Command: `ocamlformat`
-- Args: `{ "--enable-outside-detected-project", "-" }`
+- Args: `{ "--enable-outside-detected-project", "--name", "$FILENAME", "-" }`
 
 ### [ocdc](https://github.com/mdwint/ocdc)
 
