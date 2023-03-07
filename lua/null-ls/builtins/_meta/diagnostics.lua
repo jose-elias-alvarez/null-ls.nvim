@@ -10,6 +10,9 @@ return {
   ansiblelint = {
     filetypes = { "yaml.ansible" }
   },
+  bslint = {
+    filetypes = { "brs" }
+  },
   buf = {
     filetypes = { "proto" }
   },

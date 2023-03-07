@@ -369,6 +369,23 @@ local sources = { null_ls.builtins.diagnostics.ansiblelint }
 - Command: `ansible-lint`
 - Args: `{ "-f", "codeclimate", "-q", "--nocolor", "$FILENAME" }`
 
+### [bslint](https://github.com/rokucommunity/bslint)
+
+A brighterscript CLI tool to lint your code without compiling your project.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.bslint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "brs" }`
+- Method: `diagnostics`
+- Command: `bslint`
+- Args: `{ "--files", "$FILENAME" }`
+
 ### [buf](https://github.com/bufbuild/buf)
 
 A new way of working with Protocol Buffers.

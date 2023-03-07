@@ -27,6 +27,7 @@ return {
     formatting = { "blade_formatter" }
   },
   brs = {
+    diagnostics = { "bslint" },
     formatting = { "bsfmt" }
   },
   bzl = {
