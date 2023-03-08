@@ -3866,6 +3866,23 @@ local sources = { null_ls.builtins.formatting.purs_tidy }
 
 - For installation, use npm: npm install -g purs-tidy
 
+### [pyflyby](https://github.com/deshaw/pyflyby)
+
+Pyflyby is a set of Python programming productivity tools, useful for auto-import libraries
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.pyflyby }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+- Command: `tidy-imports`
+- Args: `{ "-n" }`
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.

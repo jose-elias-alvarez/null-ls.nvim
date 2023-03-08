@@ -271,6 +271,9 @@ return {
   purs_tidy = {
     filetypes = { "purescript" }
   },
+  pyflyby = {
+    filetypes = { "python" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },
