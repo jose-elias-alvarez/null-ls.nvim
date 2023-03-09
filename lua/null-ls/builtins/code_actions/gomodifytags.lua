@@ -109,7 +109,7 @@ return h.make_builtin({
                 -- End of Execution helpers
 
                 -- Main
-                local tsnode = vim.treesitter.get_node_at_pos(bufnr, row - 1, col - 1, {})
+                local tsnode = vim.treesitter.get_node({ bufnr = bufnr, row = row - 1, col = col - 1 })
                 local actions = {}
                 local struct_name
 
