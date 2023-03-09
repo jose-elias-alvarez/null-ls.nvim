@@ -13,6 +13,7 @@ return h.make_builtin({
     filetypes = { "django", "jinja.html", "htmldjango" },
     generator_opts = {
         command = "djhtml",
+        args = { "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
