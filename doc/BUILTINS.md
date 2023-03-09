@@ -4030,7 +4030,7 @@ local sources = { null_ls.builtins.formatting.rubocop }
 - Filetypes: `{ "ruby" }`
 - Method: `formatting`
 - Command: `rubocop`
-- Args: `{ "--auto-correct", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
+- Args: `{ "-a", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" }`
 
 ### [ruff](https://github.com/charliermarsh/ruff/)
 
