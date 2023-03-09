@@ -2783,6 +2783,7 @@ local sources = { null_ls.builtins.formatting.djhtml }
 - Filetypes: `{ "django", "jinja.html", "htmldjango" }`
 - Method: `formatting`
 - Command: `djhtml`
+- Args: `{ "-" }`
 
 ### [djlint](https://github.com/Riverside-Healthcare/djLint)
 
