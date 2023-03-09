@@ -446,14 +446,17 @@ return {
   },
   xml = {
     diagnostics = { "tidy" },
-    formatting = { "tidy", "xmlformat", "xmllint" }
+    formatting = { "tidy", "xmlformat", "xmllint", "xq" }
   },
   yaml = {
     diagnostics = { "actionlint", "cfn_lint", "spectral", "vacuum", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt", "yq" }
   },
   ["yaml.ansible"] = {
     diagnostics = { "ansiblelint" }
+  },
+  yml = {
+    formatting = { "yq" }
   },
   zig = {
     formatting = { "zigfmt" }

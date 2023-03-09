@@ -397,11 +397,17 @@ return {
   xmllint = {
     filetypes = { "xml" }
   },
+  xq = {
+    filetypes = { "xml" }
+  },
   yamlfmt = {
     filetypes = { "yaml" }
   },
   yapf = {
     filetypes = { "python" }
+  },
+  yq = {
+    filetypes = { "yml", "yaml" }
   },
   zigfmt = {
     filetypes = { "zig" }

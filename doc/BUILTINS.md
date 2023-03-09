@@ -4605,6 +4605,23 @@ local sources = { null_ls.builtins.formatting.xmllint }
 - Command: `xmllint`
 - Args: `{ "--format", "-" }`
 
+### [xq](https://github.com/sibprogrammer/xq)
+
+Command-line XML and HTML beautifier and content extractor
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.xq }
+```
+
+#### Defaults
+
+- Filetypes: `{ "xml" }`
+- Method: `formatting`
+- Command: `xq`
+- Args: `{ ".", "$FILENAME" }`
+
 ### [yamlfmt](https://github.com/google/yamlfmt)
 
 yamlfmt is an extensible command line tool or library to format yaml files.
@@ -4638,6 +4655,23 @@ local sources = { null_ls.builtins.formatting.yapf }
 - Methods: `formatting, range_formatting`
 - Command: `yapf`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/yapf.lua))
+
+### [yq](https://github.com/mikefarah/yq)
+
+yq is a portable command-line YAML, JSON, XML, CSV and properties processor.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.yq }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yml", "yaml" }`
+- Method: `formatting`
+- Command: `yq`
+- Args: `{ ".", "$FILENAME" }`
 
 ### [zigfmt](https://github.com/ziglang/zig)
 
