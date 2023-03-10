@@ -43,7 +43,7 @@ return h.make_builtin({
                             col = col,
                             code = code,
                             source = "bslint",
-                            message = " " .. message,
+                            message = message,
                             severity = severity[err],
                         })
                     end
