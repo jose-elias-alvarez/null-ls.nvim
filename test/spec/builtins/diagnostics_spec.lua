@@ -576,8 +576,81 @@ describe("diagnostics", function()
         local linter = diagnostics.eslint
         local parser = linter._opts.on_output
 
-        it("should create a diagnostic with warning severity", function()
-            local output = vim.json.decode([[
+        describe("with non fixable diagnostic", function()
+            it("should create a diagnostic with warning severity", function()
+                local output = vim.json.decode([[
+            [{
+              "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
+              "messages": [
+                {
+                  "ruleId": "quotes",
+                  "severity": 1,
+                  "message": "Strings must use singlequote.",
+                  "line": 1,
+                  "column": 19,
+                  "nodeType": "Literal",
+                  "messageId": "wrongQuotes",
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              ]
+            }] ]])
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 2,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = false,
+                        },
+                    },
+                }, diagnostic)
+            end)
+
+            it("should create a diagnostic with error severity", function()
+                local output = vim.json.decode([[
+            [{
+              "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
+              "messages": [
+                {
+                  "ruleId": "quotes",
+                  "severity": 2,
+                  "message": "Strings must use singlequote.",
+                  "line": 1,
+                  "column": 19,
+                  "nodeType": "Literal",
+                  "messageId": "wrongQuotes",
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              ]
+            }] ]])
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 1,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = false,
+                        },
+                    },
+                }, diagnostic)
+            end)
+        end)
+
+        describe("with fixable diagnostic", function()
+            it("should create a diagnostic with warning severity", function()
+                local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -601,21 +674,25 @@ describe("diagnostics", function()
                 }
               ]
             }] ]])
-            local diagnostic = parser({ output = output })
-            assert.same({
-                {
-                    row = 1,
-                    end_row = 1,
-                    col = 19,
-                    end_col = 26,
-                    severity = 2,
-                    code = "quotes",
-                    message = "Strings must use singlequote.",
-                },
-            }, diagnostic)
-        end)
-        it("should create a diagnostic with error severity", function()
-            local output = vim.json.decode([[
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 2,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = true,
+                        },
+                    },
+                }, diagnostic)
+            end)
+
+            it("should create a diagnostic with error severity", function()
+                local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -639,18 +716,22 @@ describe("diagnostics", function()
                 }
               ]
             }] ]])
-            local diagnostic = parser({ output = output })
-            assert.same({
-                {
-                    row = 1,
-                    end_row = 1,
-                    col = 19,
-                    end_col = 26,
-                    severity = 1,
-                    code = "quotes",
-                    message = "Strings must use singlequote.",
-                },
-            }, diagnostic)
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 1,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = true,
+                        },
+                    },
+                }, diagnostic)
+            end)
         end)
     end)
 
