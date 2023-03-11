@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -63,6 +64,16 @@ null_ls.setup({
                 end_col = 1,
             },
         }),
+        cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                -- https://pylint.readthedocs.io/en/latest/user_guide/usage/run.html#command-line-options
+                "pylintrc",
+                ".pylintrc",
+                "pyproject.toml",
+                "setup.cfg",
+                "tox.ini"
+            )(params.bufname)
+        end),
     },
     factory = h.generator_factory,
 })
