@@ -462,7 +462,7 @@ local sources = { null_ls.builtins.diagnostics.checkmake }
 - Filetypes: `{ "make" }`
 - Method: `diagnostics`
 - Command: `checkmake`
-- Args: `{ "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}'", "$FILENAME" }`
+- Args: `{ "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}\n'", "$FILENAME" }`
 
 ### [checkstyle](https://checkstyle.org)
 

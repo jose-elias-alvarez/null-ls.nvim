@@ -14,7 +14,7 @@ return h.make_builtin({
     generator_opts = {
         command = "checkmake",
         args = {
-            "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}'",
+            "--format='{{.LineNumber}}:{{.Rule}}:{{.Violation}}\n'",
             "$FILENAME",
         },
         to_stdin = false,
