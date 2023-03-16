@@ -4,17 +4,18 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "djhtml",
+    name = "xq",
     meta = {
-        url = "https://github.com/rtts/djhtml",
-        description = "A pure-Python Django/Jinja template indenter without dependencies.",
+        url = "https://github.com/sibprogrammer/xq",
+        description = "Command-line XML and HTML beautifier and content extractor",
     },
     method = FORMATTING,
-    filetypes = { "django", "jinja.html", "htmldjango" },
+    filetypes = { "xml" },
     generator_opts = {
-        command = "djhtml",
-        args = { "-" },
+        command = "xq",
+        args = { ".", "$FILENAME" },
         to_stdin = true,
+        to_temp_file = false,
     },
     factory = h.formatter_factory,
 })

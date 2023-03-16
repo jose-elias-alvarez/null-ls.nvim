@@ -2,6 +2,7 @@
 -- stylua: ignore
 return {
   Jenkinsfile = {
+    diagnostics = { "npm_groovy_lint" },
     formatting = { "npm_groovy_lint" }
   },
   arduino = {
@@ -26,6 +27,7 @@ return {
     formatting = { "blade_formatter" }
   },
   brs = {
+    diagnostics = { "bslint" },
     formatting = { "bsfmt" }
   },
   bzl = {
@@ -152,6 +154,7 @@ return {
     formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
   groovy = {
+    diagnostics = { "npm_groovy_lint" },
     formatting = { "npm_groovy_lint" }
   },
   haml = {
@@ -175,7 +178,7 @@ return {
     formatting = { "djhtml", "djlint" }
   },
   java = {
-    diagnostics = { "checkstyle", "pmd", "semgrep" },
+    diagnostics = { "checkstyle", "npm_groovy_lint", "pmd", "semgrep" },
     formatting = { "astyle", "clang_format", "google_java_format", "npm_groovy_lint", "uncrustify" }
   },
   javascript = {
@@ -298,7 +301,7 @@ return {
   python = {
     code_actions = { "refactoring" },
     diagnostics = { "flake8", "mypy", "pycodestyle", "pydocstyle", "pylama", "pylint", "pyproject_flake8", "ruff", "semgrep", "vulture" },
-    formatting = { "autoflake", "autopep8", "black", "blue", "isort", "reorder_python_imports", "ruff", "usort", "yapf" }
+    formatting = { "autoflake", "autopep8", "black", "blue", "isort", "pyflyby", "reorder_python_imports", "ruff", "usort", "yapf" }
   },
   qml = {
     diagnostics = { "qmllint" },
@@ -443,14 +446,17 @@ return {
   },
   xml = {
     diagnostics = { "tidy" },
-    formatting = { "tidy", "xmlformat", "xmllint" }
+    formatting = { "tidy", "xmlformat", "xmllint", "xq" }
   },
   yaml = {
     diagnostics = { "actionlint", "cfn_lint", "spectral", "vacuum", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt", "yq" }
   },
   ["yaml.ansible"] = {
     diagnostics = { "ansiblelint" }
+  },
+  yml = {
+    formatting = { "yq" }
   },
   zig = {
     formatting = { "zigfmt" }

@@ -10,6 +10,9 @@ return {
   ansiblelint = {
     filetypes = { "yaml.ansible" }
   },
+  bslint = {
+    filetypes = { "brs" }
+  },
   buf = {
     filetypes = { "proto" }
   },
@@ -147,6 +150,9 @@ return {
   },
   mypy = {
     filetypes = { "python" }
+  },
+  npm_groovy_lint = {
+    filetypes = { "groovy", "java", "Jenkinsfile" }
   },
   opacheck = {
     filetypes = { "rego" }

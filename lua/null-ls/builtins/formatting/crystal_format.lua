@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "crystal" },
     generator_opts = {
         command = "crystal",
-        args = { "tool", "format" },
+        args = { "tool", "format", "-" },
         to_stdin = true,
     },
     factory = h.formatter_factory,

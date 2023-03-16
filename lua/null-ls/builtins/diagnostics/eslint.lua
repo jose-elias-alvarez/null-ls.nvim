@@ -13,11 +13,19 @@ local handle_eslint_output = function(params)
 
     local parser = h.diagnostics.from_json({
         attributes = {
+            _fix = "fix",
             severity = "severity",
         },
         severities = {
             h.diagnostics.severities["warning"],
             h.diagnostics.severities["error"],
+        },
+        adapters = {
+            {
+                user_data = function(entries)
+                    return { fixable = not not entries._fix }
+                end,
+            },
         },
     })
 

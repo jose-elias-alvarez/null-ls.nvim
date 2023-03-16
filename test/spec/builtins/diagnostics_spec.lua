@@ -1,4 +1,6 @@
 local mock = require("luassert.mock")
+local stub = require("luassert.stub")
+local spy = require("luassert.spy")
 
 local diagnostics = require("null-ls.builtins").diagnostics
 mock(require("null-ls.logger"), true)
@@ -576,8 +578,81 @@ describe("diagnostics", function()
         local linter = diagnostics.eslint
         local parser = linter._opts.on_output
 
-        it("should create a diagnostic with warning severity", function()
-            local output = vim.json.decode([[
+        describe("with non fixable diagnostic", function()
+            it("should create a diagnostic with warning severity", function()
+                local output = vim.json.decode([[
+            [{
+              "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
+              "messages": [
+                {
+                  "ruleId": "quotes",
+                  "severity": 1,
+                  "message": "Strings must use singlequote.",
+                  "line": 1,
+                  "column": 19,
+                  "nodeType": "Literal",
+                  "messageId": "wrongQuotes",
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              ]
+            }] ]])
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 2,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = false,
+                        },
+                    },
+                }, diagnostic)
+            end)
+
+            it("should create a diagnostic with error severity", function()
+                local output = vim.json.decode([[
+            [{
+              "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
+              "messages": [
+                {
+                  "ruleId": "quotes",
+                  "severity": 2,
+                  "message": "Strings must use singlequote.",
+                  "line": 1,
+                  "column": 19,
+                  "nodeType": "Literal",
+                  "messageId": "wrongQuotes",
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              ]
+            }] ]])
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 1,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = false,
+                        },
+                    },
+                }, diagnostic)
+            end)
+        end)
+
+        describe("with fixable diagnostic", function()
+            it("should create a diagnostic with warning severity", function()
+                local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -601,21 +676,25 @@ describe("diagnostics", function()
                 }
               ]
             }] ]])
-            local diagnostic = parser({ output = output })
-            assert.same({
-                {
-                    row = 1,
-                    end_row = 1,
-                    col = 19,
-                    end_col = 26,
-                    severity = 2,
-                    code = "quotes",
-                    message = "Strings must use singlequote.",
-                },
-            }, diagnostic)
-        end)
-        it("should create a diagnostic with error severity", function()
-            local output = vim.json.decode([[
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 2,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = true,
+                        },
+                    },
+                }, diagnostic)
+            end)
+
+            it("should create a diagnostic with error severity", function()
+                local output = vim.json.decode([[
             [{
               "filePath": "/home/luc/Projects/Pi-OpenCast/webapp/src/index.js",
               "messages": [
@@ -639,18 +718,22 @@ describe("diagnostics", function()
                 }
               ]
             }] ]])
-            local diagnostic = parser({ output = output })
-            assert.same({
-                {
-                    row = 1,
-                    end_row = 1,
-                    col = 19,
-                    end_col = 26,
-                    severity = 1,
-                    code = "quotes",
-                    message = "Strings must use singlequote.",
-                },
-            }, diagnostic)
+                local diagnostic = parser({ output = output })
+                assert.same({
+                    {
+                        row = 1,
+                        end_row = 1,
+                        col = 19,
+                        end_col = 26,
+                        severity = 1,
+                        code = "quotes",
+                        message = "Strings must use singlequote.",
+                        user_data = {
+                            fixable = true,
+                        },
+                    },
+                }, diagnostic)
+            end)
         end)
     end)
 
@@ -752,6 +835,88 @@ describe("diagnostics", function()
                 severity = 1,
                 code = "E265",
                 message = "block comment should start with '# '",
+            }, diagnostic)
+        end)
+    end)
+
+    describe("pylint", function()
+        local linter = diagnostics.pylint
+        local parser = linter._opts.on_output
+        local u = require("null-ls.utils")
+        local params = { bufnr = 4, bufname = "test" }
+        local root_pattern
+        local output = vim.json.decode([[
+        [
+            {
+                "type": "convention",
+                "module": "test",
+                "obj": "",
+                "line": 1,
+                "column": 0,
+                "endLine": null,
+                "endColumn": null,
+                "path": "test.py",
+                "symbol": "missing-module-docstring",
+                "message": "Missing module docstring",
+                "message-id": "C0114"
+                },
+                {
+                "type": "convention",
+                "module": "test",
+                "obj": "",
+                "line": 1,
+                "column": 0,
+                "endLine": 1,
+                "endColumn": 1,
+                "path": "test.py",
+                "symbol": "invalid-name",
+                "message": "Constant name \"s\" doesn't conform to UPPER_CASE naming style",
+                "message-id": "C0103"
+                }
+        ]
+        ]])
+        before_each(function()
+            root_pattern = stub(u, "root_pattern")
+        end)
+        after_each(function()
+            root_pattern:revert()
+        end)
+
+        it("should set the cwd param", function()
+            assert.truthy(type(linter._opts.cwd) == "function")
+            local s = spy.new(function(loc_params)
+                return loc_params
+            end)
+            root_pattern.returns(s)
+            local cwd = linter._opts.cwd(params)
+            assert.same(params.bufname, cwd)
+            assert.stub(root_pattern).was.called_with("pylintrc", ".pylintrc", "pyproject.toml", "setup.cfg", "tox.ini")
+            assert.spy(s).was.called_with(params.bufname)
+        end)
+
+        it("should create a diagnostic from json output", function()
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    code = "missing-module-docstring",
+                    col = 1,
+                    message_id = "C0114",
+                    message = "Missing module docstring",
+                    row = 1,
+                    severity = 3,
+                    symbol = "missing-module-docstring",
+                },
+                {
+                    row = 1,
+                    col = 1,
+                    severity = 3,
+                    code = "invalid-name",
+                    message_id = "C0103",
+                    message = 'Constant name "s" doesn\'t conform to UPPER_CASE naming style',
+                    symbol = "invalid-name",
+                    end_col = 2,
+                    end_row = 1,
+                },
             }, diagnostic)
         end)
     end)
@@ -1085,7 +1250,8 @@ describe("diagnostics", function()
                 {
                     row = 5,
                     severity = 1,
-                    message = "[risky-file-permissions] File permissions unset or incorrect",
+                    message = "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like ``mode: 0644`` to avoid hitting this rule. Special ``preserve`` value is accepted only by copy, template modules. See https://github.com/ansible/ansible/issues/71200",
+                    code = "[risky-file-permissions] File permissions unset or incorrect",
                     filename = "/home/null-ls/test/playbooks/test-ansible.yaml",
                 },
             }, diagnostic)
