@@ -163,6 +163,9 @@ return {
   hclfmt = {
     filetypes = { "hcl" }
   },
+  htmlbeautifier = {
+    filetypes = { "eruby" }
+  },
   isort = {
     filetypes = { "python" }
   },

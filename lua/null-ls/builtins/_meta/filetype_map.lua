@@ -111,7 +111,7 @@ return {
   },
   eruby = {
     diagnostics = { "erb_lint" },
-    formatting = { "erb_format", "erb_lint" }
+    formatting = { "erb_format", "erb_lint", "htmlbeautifier" }
   },
   fennel = {
     formatting = { "fnlfmt" }

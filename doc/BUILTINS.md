@@ -3229,6 +3229,23 @@ local sources = { null_ls.builtins.formatting.hclfmt }
 - Method: `formatting`
 - Command: `hclfmt`
 
+### [htmlbeautifier](https://github.com/threedaymonk/htmlbeautifier)
+
+A normaliser/beautifier for HTML that also understands embedded Ruby. Ideal for tidying up Rails templates.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.htmlbeautifier }
+```
+
+#### Defaults
+
+- Filetypes: `{ "eruby" }`
+- Method: `formatting`
+- Command: `htmlbeautifier`
+- Args: `{}`
+
 ### [isort](https://github.com/PyCQA/isort)
 
 Python utility / library to sort imports alphabetically and automatically separate them into sections and by type.
