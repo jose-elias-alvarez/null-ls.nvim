@@ -1,6 +1,7 @@
 local h = require("null-ls.helpers")
 local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local CODE_ACTION = methods.internal.CODE_ACTION
 
@@ -14,7 +15,7 @@ return h.make_builtin({
     method = CODE_ACTION,
     filetypes = { "go" },
     can_run = function()
-        return require("null-ls.utils").is_executable("gomodifytags")
+        return u.is_executable("gomodifytags")
     end,
     generator_opts = {
         command = "gomodifytags",
@@ -109,7 +110,12 @@ return h.make_builtin({
                 -- End of Execution helpers
 
                 -- Main
-                local tsnode = vim.treesitter.get_node({ bufnr = bufnr, row = row - 1, col = col - 1 })
+                local tsnode
+                if u.has_version("0.9.0") then
+                    tsnode = vim.treesitter.get_node({ bufnr = bufnr, row = row - 1, col = col - 1 })
+                else
+                    tsnode = vim.treesitter.get_node_at_pos(bufnr, row - 1, col - 1, {})
+                end
                 local actions = {}
                 local struct_name
 
