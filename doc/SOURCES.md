@@ -77,6 +77,7 @@ structure:
 ```lua
 local query = {
     name = "my-source", -- string
+    filetype = "lua", -- filetype
     method = require("null-ls").methods.FORMATTING, -- null-ls method
     id = 1, -- number
 }

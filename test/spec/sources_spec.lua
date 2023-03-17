@@ -158,16 +158,19 @@ describe("sources", function()
                 name = "first-mock-source",
                 methods = { [methods.internal.FORMATTING] = true },
                 id = 1,
+                filetypes = { ["lua"] = true },
             }
             local second_source = {
                 name = "second-mock-source",
                 methods = { [methods.internal.DIAGNOSTICS] = true },
                 id = 2,
+                filetypes = { ["_all"] = true },
             }
             local third_source = {
                 name = "third-mock-source",
                 methods = { [methods.internal.FORMATTING] = true },
                 id = 3,
+                filetypes = { ["_all"] = true, ["lua"] = false },
             }
             sources._set({ first_source, second_source, third_source })
         end)
@@ -228,6 +231,12 @@ describe("sources", function()
 
                 assert.truthy(#matching == 1)
             end)
+
+            it("should get source matching filetype query", function()
+                local matching = sources.get({ filetype = "lua" })
+
+                assert.truthy(#matching == 2)
+            end)
         end)
 
         describe("complex query", function()
@@ -249,8 +258,26 @@ describe("sources", function()
                 assert.truthy(#matching == 1)
             end)
 
+            it("should get sources matching name and filetype query", function()
+                local matching = sources.get({ name = "mock", filetype = "lua" })
+
+                assert.truthy(#matching == 2)
+            end)
+
             it("should get source matching method and id query", function()
                 local matching = sources.get({ method = methods.internal.FORMATTING, id = 1 })
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should get sources matching method and filetype query", function()
+                local matching = sources.get({ method = methods.internal.FORMATTING, filetype = "lua" })
+
+                assert.truthy(#matching == 1)
+            end)
+
+            it("should get sources matching id and filetype query", function()
+                local matching = sources.get({ id = 1, filetype = "lua" })
 
                 assert.truthy(#matching == 1)
             end)
