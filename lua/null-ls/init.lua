@@ -32,9 +32,23 @@ M.setup = function(user_config)
     vim.api.nvim_create_user_command("NullLsInfo", function()
         require("null-ls.info").show_window()
     end, {})
+
     vim.api.nvim_create_user_command("NullLsLog", function()
         vim.cmd(string.format("edit %s", require("null-ls.logger"):get_path()))
     end, {})
+
+    vim.api.nvim_create_user_command("NullLsToggle", function(opts)
+        M.toggle(opts.args)
+    end, {
+        nargs = "?",
+        complete = function()
+            local list = {}
+            for _, source in ipairs(sources.get(vim.bo.filetype)) do
+                list[#list + 1] = source.name
+            end
+            return list
+        end,
+    })
 
     local augroup = vim.api.nvim_create_augroup("NullLs", {})
     vim.api.nvim_create_autocmd("FileType", {
