@@ -2586,7 +2586,7 @@ local sources = { null_ls.builtins.formatting.clang_format }
 
 #### Defaults
 
-- Filetypes: `{ "c", "cpp", "cs", "java", "cuda" }`
+- Filetypes: `{ "c", "cpp", "cs", "java", "cuda", "proto" }`
 - Methods: `formatting, range_formatting`
 - Command: `clang-format`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/clang_format.lua))

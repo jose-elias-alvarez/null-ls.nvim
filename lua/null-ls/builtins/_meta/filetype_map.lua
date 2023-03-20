@@ -283,7 +283,7 @@ return {
   },
   proto = {
     diagnostics = { "buf", "protoc_gen_lint", "protolint" },
-    formatting = { "buf", "protolint" }
+    formatting = { "buf", "clang_format", "protolint" }
   },
   ps1 = {
     hover = { "printenv" }

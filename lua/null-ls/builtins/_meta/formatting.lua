@@ -53,7 +53,7 @@ return {
     filetypes = { "markdown", "org" }
   },
   clang_format = {
-    filetypes = { "c", "cpp", "cs", "java", "cuda" }
+    filetypes = { "c", "cpp", "cs", "java", "cuda", "proto" }
   },
   cljstyle = {
     filetypes = { "clojure" }
