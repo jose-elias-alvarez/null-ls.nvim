@@ -11,7 +11,7 @@ return h.make_builtin({
         description = "Tool to format C/C++/… code according to a set of rules and heuristics.",
     },
     method = { FORMATTING, RANGE_FORMATTING },
-    filetypes = { "c", "cpp", "cs", "java", "cuda" },
+    filetypes = { "c", "cpp", "cs", "java", "cuda", "proto" },
     generator_opts = {
         command = "clang-format",
         args = h.range_formatting_args_factory(
