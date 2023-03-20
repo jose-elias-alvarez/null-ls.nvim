@@ -2132,7 +2132,7 @@ local sources = { null_ls.builtins.diagnostics.vacuum }
 - Filetypes: `{ "yaml", "json" }`
 - Method: `diagnostics`
 - Command: `vacuum`
-- Args: `{ "spectral-report", "--stdin", "--stdout" }`
+- Args: `{ "report", "--stdin", "--stdout" }`
 
 ### [vale](https://docs.errata.ai/vale/about)
 
