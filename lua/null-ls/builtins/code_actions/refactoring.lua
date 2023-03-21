@@ -19,7 +19,6 @@ return h.make_builtin({
         -- so we ignore params
         fn = function(context)
             if context.lsp_params.range.start == context.lsp_params.range["end"] then
-                print("Refactoring only works on visual selection")
                 return
             end
 
