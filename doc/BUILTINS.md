@@ -689,7 +689,22 @@ local sources = { null_ls.builtins.diagnostics.credo }
 - Filetypes: `{ "elixir" }`
 - Method: `diagnostics`
 - Command: `mix`
-- Args: `{ "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/credo.lua))
+
+#### Config
+
+##### `full_workspace` (boolean)
+
+- `false` (default) - run credo for a single file
+- `true` - run credo on the entire workspace. If this is slow on large projects, you may wish to set `method = null_ls.methods.DIAGNOSTICS_ON_SAVE` in `with()` call.
+
+```lua
+local credo = null_ls.builtins.diagnostics.credo.with({
+    config = {
+        full_workspace = true
+    },
+})
+```
 
 #### Notes
 
