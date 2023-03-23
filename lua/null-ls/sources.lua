@@ -14,14 +14,51 @@ local registered = {
 
 local M = {}
 
+local matches_filetype = function(source, filetype)
+    if filetype:find("%.") then
+        local filetypes = vim.split(filetype, ".", { plain = true })
+        table.insert(filetypes, filetype)
+
+        local is_match = source.filetypes["_all"]
+        for _, ft in ipairs(filetypes) do
+            if source.filetypes[ft] == false then
+                return false
+            end
+
+            is_match = is_match or source.filetypes[ft]
+        end
+
+        return is_match
+    end
+
+    return source.filetypes[filetype] or source.filetypes["_all"] and source.filetypes[filetype] == nil
+end
+
+local matches_method = function(source, method)
+    if source.methods[method] then
+        return true
+    end
+
+    if methods.overrides[method] then
+        for m in pairs(methods.overrides[method]) do
+            if source.methods[m] then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 local matches_query = function(source, query)
     query = type(query) == "string" and { name = vim.pesc(query) } or query
-    local name, method, id = query.name, query.method, query.id
+    local name, method, id, filetype = query.name, query.method, query.id, query.filetype
 
     local name_matches = name == nil and true or source.name:find(name)
-    local method_matches = method == nil and true or source.methods[method]
+    local method_matches = method == nil and true or matches_method(source, method)
     local id_matches = id == nil and true or source.id == id
-    return name_matches and method_matches and id_matches
+    local filetype_matches = filetype == nil and true or matches_filetype(source, filetype)
+    return name_matches and method_matches and id_matches and filetype_matches
 end
 
 local for_each_matching = function(query, cb)
@@ -59,42 +96,6 @@ local register_source = function(source)
 
     table.insert(registered.sources, source)
     registered.names[source.name] = true
-end
-
-local matches_filetype = function(source, filetype)
-    if filetype:find("%.") then
-        local filetypes = vim.split(filetype, ".", { plain = true })
-        table.insert(filetypes, filetype)
-
-        local is_match = source.filetypes["_all"]
-        for _, ft in ipairs(filetypes) do
-            if source.filetypes[ft] == false then
-                return false
-            end
-
-            is_match = is_match or source.filetypes[ft]
-        end
-
-        return is_match
-    end
-
-    return source.filetypes[filetype] or source.filetypes["_all"] and source.filetypes[filetype] == nil
-end
-
-local matches_method = function(source, method)
-    if source.methods[method] then
-        return true
-    end
-
-    if methods.overrides[method] then
-        for m in pairs(methods.overrides[method]) do
-            if source.methods[m] then
-                return true
-            end
-        end
-    end
-
-    return false
 end
 
 M.is_available = function(source, filetype, method)
