@@ -136,6 +136,25 @@ local sources = { null_ls.builtins.code_actions.gomodifytags }
 
 - Requires installing the Go tree-sitter parser.
 
+### [impl](https://github.com/josharian/impl)
+
+impl generates method stubs for implementing an interface.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.impl }
+```
+
+#### Defaults
+
+- Filetypes: `{ "go" }`
+- Method: `code_action`
+
+#### Notes
+
+- Also requires installing the Go tree-sitter parser.
+
 ### [ltrs](https://github.com/jeertmans/languagetool-rust)
 
 LanguageTool-Rust (LTRS) is both an executable and a Rust library that aims to provide correct and safe bindings for the LanguageTool API.
