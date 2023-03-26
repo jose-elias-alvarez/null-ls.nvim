@@ -121,6 +121,15 @@ return h.make_builtin({
 
                 -- Ops on struct
                 if (tsnode:type()) == "type_identifier" then
+                    local tspnode = tsnode:parent()
+                    if tspnode == nil or tspnode:type() ~= "type_spec" then
+                        return
+                    end
+                    local typename_node = tspnode:field("type")[1]
+                    if typename_node == nil or typename_node:type() ~= "struct_type" then
+                        return
+                    end
+
                     struct_name = vim.treesitter.query.get_node_text(tsnode, 0)
                     if struct_name == nil then
                         return
