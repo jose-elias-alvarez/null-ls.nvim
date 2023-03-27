@@ -4,6 +4,7 @@ local methods = require("null-ls.methods")
 local u = require("null-ls.utils")
 
 local CODE_ACTION = methods.internal.CODE_ACTION
+local get_node_text = vim.treesitter.get_node_text or vim.treesitter.query.get_node_text
 
 return h.make_builtin({
     name = "gomodifytags",
@@ -121,7 +122,7 @@ return h.make_builtin({
 
                 -- Ops on struct
                 if (tsnode:type()) == "type_identifier" then
-                    struct_name = vim.treesitter.query.get_node_text(tsnode, 0)
+                    struct_name = get_node_text(tsnode, 0)
                     if struct_name == nil then
                         return
                     end
@@ -138,11 +139,11 @@ return h.make_builtin({
 
                 -- Ops on struct field
                 if (tsnode:type()) == "field_identifier" then
-                    local field_name = vim.treesitter.query.get_node_text(tsnode, 0)
+                    local field_name = get_node_text(tsnode, 0)
                     local tspnode = tsnode:parent():parent():parent()
                     if tspnode ~= nil and (tspnode:type()) == "struct_type" then
                         tspnode = tspnode:parent():child(0)
-                        struct_name = vim.treesitter.query.get_node_text(tspnode, 0)
+                        struct_name = get_node_text(tspnode, 0)
                     end
 
                     if struct_name == nil or field_name == nil then
