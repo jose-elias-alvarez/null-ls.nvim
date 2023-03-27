@@ -1171,6 +1171,23 @@ local sources = { null_ls.builtins.diagnostics.markdownlint_cli2 }
 - Must be configured using a [configuration file](https://github.com/DavidAnson/markdownlint-cli2#configuration).
 - See [the documentation](https://github.com/DavidAnson/markdownlint-cli2#overview) to understand the differences between markdownlint-cli2 and markdownlint-cli.
 
+### [markuplint](https://github.com/markuplint/markuplint)
+
+A linter for all markup developers.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.markuplint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "html" }`
+- Method: `diagnostics`
+- Command: `markuplint`
+- Args: `{ "--format", "JSON", "$FILENAME" }`
+
 ### [mdl](https://github.com/markdownlint/markdownlint)
 
 A tool to check Markdown files and flag style issues.
