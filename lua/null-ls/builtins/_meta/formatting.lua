@@ -301,6 +301,9 @@ return {
   rubocop = {
     filetypes = { "ruby" }
   },
+  rubyfmt = {
+    filetypes = { "ruby" }
+  },
   ruff = {
     filetypes = { "python" }
   },

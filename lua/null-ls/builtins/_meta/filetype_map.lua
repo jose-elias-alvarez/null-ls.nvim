@@ -331,7 +331,7 @@ return {
   },
   ruby = {
     diagnostics = { "rubocop", "semgrep", "standardrb" },
-    formatting = { "rubocop", "rufo", "standardrb" }
+    formatting = { "rubocop", "rubyfmt", "rufo", "standardrb" }
   },
   rust = {
     formatting = { "dprint", "rustfmt" }
