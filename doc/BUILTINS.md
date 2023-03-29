@@ -4067,6 +4067,23 @@ local sources = { null_ls.builtins.formatting.ruff }
 - Command: `ruff`
 - Args: `{ "--fix", "-e", "-n", "--stdin-filename", "$FILENAME", "-" }`
 
+### [rubyfmt](https://github.com/fables-tales/rubyfmt)
+
+Ruby autoformatter, written in Rust. Can be installed on macOS with `brew install rubyfmt`.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.rubyfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ruby" }`
+- Method: `formatting`
+- Command: `rubyfmt`
+- Args: `{ }`
+
 ### [rufo](https://github.com/ruby-formatter/rufo)
 
 Opinionated ruby formatter.
