@@ -334,6 +334,9 @@ return {
   sqlfluff = {
     filetypes = { "sql" }
   },
+  sqlfmt = {
+    filetypes = { "sql", "jinja" }
+  },
   sqlformat = {
     filetypes = { "sql" }
   },

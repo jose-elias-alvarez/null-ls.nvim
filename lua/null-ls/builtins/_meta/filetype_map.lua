@@ -191,6 +191,9 @@ return {
     diagnostics = { "eslint", "eslint_d", "semistandardjs", "standardjs", "xo" },
     formatting = { "deno_fmt", "dprint", "eslint", "eslint_d", "prettier", "prettier_d_slim", "prettier_eslint", "prettier_standard", "prettierd", "rome", "rustywind", "semistandardjs", "standardjs" }
   },
+  jinja = {
+    formatting = { "sqlfmt" }
+  },
   ["jinja.html"] = {
     diagnostics = { "curlylint", "djlint" },
     formatting = { "djhtml", "djlint" }
@@ -367,7 +370,7 @@ return {
   },
   sql = {
     diagnostics = { "sqlfluff" },
-    formatting = { "pg_format", "sql_formatter", "sqlfluff", "sqlformat" }
+    formatting = { "pg_format", "sql_formatter", "sqlfluff", "sqlfmt", "sqlformat" }
   },
   stylus = {
     diagnostics = { "stylint" }
