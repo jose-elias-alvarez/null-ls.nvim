@@ -24,7 +24,7 @@ return h.make_builtin({
         to_stdin = true,
         check_exit_code = { 0, 1 },
         cwd = h.cache.by_bufnr(function(params)
-            return u.root_pattern("dbt_project.yml")(params.bufnr) or vim.fn.getcwd()
+            return u.root_pattern("dbt_project.yml")(params.bufnr)
         end),
     },
     factory = h.formatter_factory,
