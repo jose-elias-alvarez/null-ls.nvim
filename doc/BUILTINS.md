@@ -1845,6 +1845,23 @@ local sources = {
 
 - SQLFluff needs a mandatory `--dialect` argument. Use `extra_args` to add yours, or create a .sqlfluff file in the same directory as the SQL file to specify the dialect (see the sqlfluff docs for details). `extra_args` can also be a function to build more sophisticated logic.
 
+### [sqlfmt](https://sqlfmt.com/)
+
+sqlfmt formats your dbt SQL files so you don't have to. It is similar in nature to Black, gofmt, and rustfmt (but for SQL).
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.sqlfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sql", "jinja" }`
+- Method: `formatting`
+- Command: `sqlfmt`
+- Args: `{ }`
+
 ### [standardjs](https://standardjs.com/)
 
 JavaScript style guide, linter, and formatter.
