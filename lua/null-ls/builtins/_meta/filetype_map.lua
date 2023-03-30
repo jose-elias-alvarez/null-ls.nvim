@@ -170,7 +170,7 @@ return {
     formatting = { "hclfmt", "packer" }
   },
   html = {
-    diagnostics = { "tidy" },
+    diagnostics = { "markuplint", "tidy" },
     formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "rustywind", "tidy" }
   },
   htmldjango = {
