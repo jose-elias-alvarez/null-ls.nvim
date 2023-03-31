@@ -13,8 +13,11 @@ return h.make_builtin({
     filetypes = { "go" },
     generator_opts = {
         command = "goimports-reviser",
-        args = { "-file-path", "$FILENAME", "-output", "stdout" },
-        to_stdin = true,
+        args = { "$FILENAME" },
+        -- goimports-reviser doesn't support reading from stdin
+        -- can use `to_stdin = true` with args = { "-output", "stdout", "$FILENAME" }
+        -- when it does
+        to_temp_file = true,
     },
     factory = h.formatter_factory,
 })
