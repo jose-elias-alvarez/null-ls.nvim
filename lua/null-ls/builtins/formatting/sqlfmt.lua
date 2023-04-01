@@ -1,6 +1,5 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
-local u = require("null-ls.utils")
 
 local FORMATTING = methods.internal.FORMATTING
 
