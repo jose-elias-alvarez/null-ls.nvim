@@ -17,7 +17,11 @@ return h.make_builtin({
     generator = {
         -- the plugin currently returns all refactors, regardless of context / availability
         -- so we ignore params
-        fn = function(_)
+        fn = function(context)
+            if context.lsp_params.range.start == context.lsp_params.range["end"] then
+                return
+            end
+
             local ok, refactors = pcall(require("refactoring").get_refactors)
             if not ok then
                 return
