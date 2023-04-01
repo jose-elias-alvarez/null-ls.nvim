@@ -330,7 +330,7 @@ return {
     diagnostics = { "rstcheck" }
   },
   ruby = {
-    diagnostics = { "rubocop", "semgrep", "standardrb" },
+    diagnostics = { "reek", "rubocop", "semgrep", "standardrb" },
     formatting = { "rubocop", "rubyfmt", "rufo", "standardrb" }
   },
   rust = {

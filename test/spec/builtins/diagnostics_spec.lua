@@ -1959,6 +1959,75 @@ INFO: Analysis cache updated]],
         end)
     end)
 
+    describe("reek", function()
+        local linter = diagnostics.reek
+        local parser = linter._opts.on_output
+
+        it("should return no errors when no output", function()
+            assert.same({}, parser({ output = nil }))
+            assert.same({}, parser({ output = {} }))
+        end)
+
+        it("should generate a diagnostic for errors", function()
+            local output = vim.json.decode([[
+              [
+                {
+                  "context": "Validators::Commission::AirlineAndConsolidator",
+                  "lines": [
+                    3, 10
+                  ],
+                  "message": "assumes too much for instance variable '@commission'",
+                  "smell_type": "InstanceVariableAssumption",
+                  "source": "app/validators/commission/sample.rb",
+                  "assumption": "@commission",
+                  "documentation_link": "https://github.com/troessner/reek/blob/v6.1.4/docs/Instance-Variable-Assumption.md"
+                },
+                {
+                  "context": "Validators::Commission::ChargeAmount#call",
+                  "lines": [
+                    4
+                  ],
+                  "message": "has approx 6 statements",
+                  "smell_type": "TooManyStatements",
+                  "source": "app/validators/commission/charge_amount.rb",
+                  "count": 6,
+                  "documentation_link": "https://github.com/troessner/reek/blob/v6.1.4/docs/Too-Many-Statements.md"
+                }
+              ]
+            ]])
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    message = "InstanceVariableAssumption: assumes too much for instance variable '@commission'",
+                    filename = "app/validators/commission/sample.rb",
+                    smell_type = "InstanceVariableAssumption",
+                    severity = 2,
+                    row = 3,
+                    col = 0,
+                    end_col = 1,
+                },
+                {
+                    message = "InstanceVariableAssumption: assumes too much for instance variable '@commission'",
+                    filename = "app/validators/commission/sample.rb",
+                    smell_type = "InstanceVariableAssumption",
+                    severity = 2,
+                    row = 10,
+                    col = 0,
+                    end_col = 1,
+                },
+                {
+                    message = "TooManyStatements: has approx 6 statements",
+                    filename = "app/validators/commission/charge_amount.rb",
+                    smell_type = "TooManyStatements",
+                    severity = 2,
+                    row = 4,
+                    col = 0,
+                    end_col = 1,
+                },
+            }, diagnostic)
+        end)
+    end)
+
     describe("terraform_validate", function()
         local linter = diagnostics.terraform_validate
         local parser = linter._opts.on_output
