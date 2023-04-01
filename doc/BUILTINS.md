@@ -3195,7 +3195,7 @@ local sources = { null_ls.builtins.formatting.goimports_reviser }
 - Filetypes: `{ "go" }`
 - Method: `formatting`
 - Command: `goimports-reviser`
-- Args: `{ "-file-path", "$FILENAME", "-output", "stdout" }`
+- Args: `{ "$FILENAME" }`
 
 ### [golines](https://pkg.go.dev/github.com/segmentio/golines)
 
