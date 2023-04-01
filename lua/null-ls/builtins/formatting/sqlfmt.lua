@@ -13,19 +13,17 @@ return h.make_builtin({
             "Install sqlfmt with `pip install shandy-sqlfmt[jinjafmt]`",
         },
     },
-    METHOD = FORMATTING,
+    method = FORMATTING,
     filetypes = {
         "sql",
         "jinja",
     },
     generator_opts = {
         command = "sqlfmt",
-        args = {},
-        to_stdin = true,
-        check_exit_code = { 0, 1 },
-        cwd = h.cache.by_bufnr(function(params)
-            return u.root_pattern("dbt_project.yml")(params.bufnr)
-        end),
+        args = {
+            "$FILENAME",
+        },
+        to_temp_file = true,
     },
     factory = h.formatter_factory,
 })
