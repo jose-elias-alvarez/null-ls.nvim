@@ -1680,7 +1680,7 @@ local sources = { null_ls.builtins.diagnostics.reek }
 - Filetypes: `{ "ruby" }`
 - Method: `diagnostics`
 - Command: `reek`
-- Args: `{ "--format", "json", "--stdin-filename", $FILENAME" }`
+- Args: `{ "--format", "json", "--stdin-filename", "$FILENAME" }`
 
 ### [revive](https://revive.run/)
 
