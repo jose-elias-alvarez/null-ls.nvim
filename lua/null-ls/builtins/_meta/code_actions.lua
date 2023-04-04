@@ -19,6 +19,9 @@ return {
   gomodifytags = {
     filetypes = { "go" }
   },
+  impl = {
+    filetypes = { "go" }
+  },
   ltrs = {
     filetypes = { "text", "markdown" }
   },
