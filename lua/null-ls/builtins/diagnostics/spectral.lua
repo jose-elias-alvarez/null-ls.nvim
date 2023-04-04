@@ -45,4 +45,5 @@ return h.make_builtin({
             return diags
         end,
     },
+    factory = h.generator_factory,
 })
