@@ -153,7 +153,7 @@ local sources = { null_ls.builtins.code_actions.impl }
 
 #### Notes
 
-- Also requires installing the Go tree-sitter parser.
+- Requires installing the Go tree-sitter parser.
 
 ### [ltrs](https://github.com/jeertmans/languagetool-rust)
 
@@ -4286,9 +4286,9 @@ local sources = { null_ls.builtins.formatting.sqlfmt }
 #### Defaults
 
 - Filetypes: `{ "sql", "jinja" }`
-- Method: ``
+- Method: `formatting`
 - Command: `sqlfmt`
-- Args: `{}`
+- Args: `{ "$FILENAME" }`
 
 #### Notes
 
