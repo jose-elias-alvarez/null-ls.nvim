@@ -1665,6 +1665,23 @@ local sources = { null_ls.builtins.diagnostics.qmllint }
 - Command: `qmllint`
 - Args: `{ "$FILENAME" }`
 
+### [reek](https://github.com/troessner/reek)
+
+Code smell detector for Ruby
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.reek }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ruby" }`
+- Method: `diagnostics`
+- Command: `reek`
+- Args: `{ "--format", "json", "--stdin-filename", $FILENAME" }`
+
 ### [revive](https://revive.run/)
 
 Fast, configurable, extensible, flexible, and beautiful linter for Go.

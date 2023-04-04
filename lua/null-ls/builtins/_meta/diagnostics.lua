@@ -214,6 +214,9 @@ return {
   qmllint = {
     filetypes = { "qml" }
   },
+  reek = {
+    filetypes = { "ruby" }
+  },
   revive = {
     filetypes = { "go" }
   },
