@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "fsharp" },
     generator_opts = {
         command = "fantomas",
-        args = { "--out", "$FILENAME" },
+        args = { "$FILENAME" },
         to_temp_file = true,
         from_temp_file = true,
     },
