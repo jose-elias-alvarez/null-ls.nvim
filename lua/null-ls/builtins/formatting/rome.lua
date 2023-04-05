@@ -11,7 +11,7 @@ return h.make_builtin({
         url = "https://rome.tools",
         description = "Formatter, linter, bundler, and more for JavaScript, TypeScript, JSON, HTML, Markdown, and CSS.",
         notes = {
-            "Currently support only JavaScript and TypeScript. See status [here](https://rome.tools/#language-support)",
+            "Currently support only JavaScript, TypeScript and JSON. See status [here](https://rome.tools/#language-support)",
         },
     },
     method = FORMATTING,
