@@ -1,3 +1,4 @@
+local formatting = require "formatting"
 -- THIS FILE IS GENERATED. DO NOT EDIT MANUALLY.
 -- stylua: ignore
 return {
@@ -125,6 +126,9 @@ return {
   },
   fortran = {
     formatting = { "fprettify" }
+  },
+  fsharp = {
+    formatting = { "fantomas" }
   },
   gd = {
     formatting = { "gdformat" }

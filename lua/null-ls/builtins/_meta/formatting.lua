@@ -118,6 +118,9 @@ return {
   eslint_d = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },
+  fantomas = {
+    filetypes = { "fsharp "},
+  },
   fish_indent = {
     filetypes = { "fish" }
   },
