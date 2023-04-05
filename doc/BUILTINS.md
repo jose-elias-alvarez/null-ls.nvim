@@ -4077,14 +4077,14 @@ local sources = { null_ls.builtins.formatting.rome }
 
 #### Defaults
 
-- Filetypes: `{ "javascript", "typescript", "javascriptreact", "typescriptreact" }`
+- Filetypes: `{ "javascript", "typescript", "javascriptreact", "typescriptreact", "json" }`
 - Method: `formatting`
 - Command: `rome`
 - Args: `{ "format", "--write", "$FILENAME" }`
 
 #### Notes
 
-- Currently support only JavaScript and TypeScript. See status [here](https://rome.tools/#language-support)
+- Currently support only JavaScript, TypeScript and JSON. See status [here](https://rome.tools/#language-support)
 
 ### [rubocop](https://github.com/rubocop/rubocop)
 

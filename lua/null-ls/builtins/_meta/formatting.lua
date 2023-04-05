@@ -296,7 +296,7 @@ return {
     filetypes = { "rescript" }
   },
   rome = {
-    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" }
+    filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "json" }
   },
   rubocop = {
     filetypes = { "ruby" }
