@@ -15,7 +15,6 @@ return h.make_builtin({
         command = "fantomas",
         args = { "$FILENAME" },
         to_temp_file = true,
-        from_temp_file = true,
     },
     factory = h.formatter_factory,
 })
