@@ -11,7 +11,7 @@ return h.make_builtin({
     filetypes = { "c", "cpp" },
     async = true,
     to_temp_file = true,
-    generator = h.generator_factory {
+    generator = h.generator_factory({
         command = "flawfinder",
         args = {
             "-S",
@@ -28,13 +28,13 @@ return h.make_builtin({
             { "file", "row", "col", "severity", "message" },
             {
                 severities = {
-                    ['5'] = vim.diagnostic.severity.WARN,
-                    ['4'] = vim.diagnostic.severity.WARN,
-                    ['3'] = vim.diagnostic.severity.WARN,
-                    ['2'] = vim.diagnostic.severity.WARN,
-                    ['1'] = vim.diagnostic.severity.WARN, 
+                    ["5"] = vim.diagnostic.severity.WARN,
+                    ["4"] = vim.diagnostic.severity.WARN,
+                    ["3"] = vim.diagnostic.severity.WARN,
+                    ["2"] = vim.diagnostic.severity.WARN,
+                    ["1"] = vim.diagnostic.severity.WARN,
                 },
             }
         ),
-    },
+    }),
 })
