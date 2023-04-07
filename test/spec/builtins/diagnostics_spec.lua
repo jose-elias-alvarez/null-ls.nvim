@@ -345,6 +345,7 @@ describe("diagnostics", function()
                 row = "1",
                 col = "1",
                 message = "Inline HTML [Element: a]",
+                severity = 2,
             }, diagnostic)
         end)
         it("should create a diagnostic without a column", function()
@@ -355,6 +356,7 @@ describe("diagnostics", function()
                 row = "2",
                 code = "MD012/no-multiple-blanks",
                 message = "Multiple consecutive blank lines [Expected: 1; Actual: 2]",
+                severity = 2,
             }, diagnostic)
         end)
     end)
