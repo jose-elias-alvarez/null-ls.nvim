@@ -4265,6 +4265,23 @@ local sources = { null_ls.builtins.formatting.shfmt }
 - Command: `shfmt`
 - Args: `{ "-filename", "$FILENAME" }`
 
+### [smlfmt](https://github.com/shwestrick/smlfmt)
+
+A custom parser/auto-formatter for Standard ML
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.smlfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sml" }`
+- Method: `formatting`
+- Command: `smlfmt`
+- Args: `{ "--force", "$FILENAME" }`
+
 ### [sqlfluff](https://github.com/sqlfluff/sqlfluff)
 
 A SQL linter and auto-formatter for Humans

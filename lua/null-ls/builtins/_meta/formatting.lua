@@ -328,6 +328,9 @@ return {
   shfmt = {
     filetypes = { "sh" }
   },
+  smlfmt = {
+    filetypes = { "sml" }
+  },
   sql_formatter = {
     filetypes = { "sql" }
   },

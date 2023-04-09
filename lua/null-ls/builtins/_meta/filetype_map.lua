@@ -362,6 +362,9 @@ return {
     formatting = { "beautysh", "shellharden", "shfmt" },
     hover = { "printenv" }
   },
+  sml = {
+    formatting = { "smlfmt" }
+  },
   solidity = {
     diagnostics = { "solhint" }
   },
