@@ -126,6 +126,9 @@ return {
   fortran = {
     formatting = { "fprettify" }
   },
+  fsharp = {
+    formatting = { "fantomas" }
+  },
   gd = {
     formatting = { "gdformat" }
   },
