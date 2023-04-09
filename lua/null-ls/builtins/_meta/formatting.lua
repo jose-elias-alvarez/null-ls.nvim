@@ -119,7 +119,7 @@ return {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" }
   },
   fantomas = {
-    filetypes = { "fsharp "},
+    filetypes = { "fsharp" }
   },
   fish_indent = {
     filetypes = { "fish" }
