@@ -415,6 +415,9 @@ return {
   xq = {
     filetypes = { "xml" }
   },
+  yamlfix = {
+    filetypes = { "yaml" }
+  },
   yamlfmt = {
     filetypes = { "yaml" }
   },
