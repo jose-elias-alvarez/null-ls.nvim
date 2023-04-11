@@ -4769,6 +4769,23 @@ local sources = { null_ls.builtins.formatting.xq }
 - Command: `xq`
 - Args: `{ ".", "$FILENAME" }`
 
+### [yamlfix](https://github.com/lyz-code/yamlfix)
+
+A configurable YAML formatter that keeps comments.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.yamlfix }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml" }`
+- Method: `formatting`
+- Command: `yamlfix`
+- Args: `{ "-" }`
+
 ### [yamlfmt](https://github.com/google/yamlfmt)
 
 yamlfmt is an extensible command line tool or library to format yaml files.

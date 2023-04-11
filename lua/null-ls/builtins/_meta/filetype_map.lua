@@ -459,7 +459,7 @@ return {
   },
   yaml = {
     diagnostics = { "actionlint", "cfn_lint", "spectral", "vacuum", "yamllint" },
-    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfmt", "yq" }
+    formatting = { "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "yamlfix", "yamlfmt", "yq" }
   },
   ["yaml.ansible"] = {
     diagnostics = { "ansiblelint" }
