@@ -403,6 +403,7 @@ return {
     formatting = { "terraform_fmt" }
   },
   ["terraform-vars"] = {
+    diagnostics = { "terraform_validate", "tfsec" },
     formatting = { "terraform_fmt" }
   },
   tex = {
@@ -416,6 +417,7 @@ return {
     hover = { "dictionary" }
   },
   tf = {
+    diagnostics = { "terraform_validate", "tfsec" },
     formatting = { "terraform_fmt" }
   },
   toml = {
