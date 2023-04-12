@@ -22,16 +22,16 @@ local CSPELL_CONFIG_FILES = {
 }
 
 -- find the first cspell.json file in the directory tree
-local find_cspell_config = function(cwd)
-    local cspell_json_file = nil
+local find_cspell_config_path = function(cwd)
+    local cspell_json_path = nil
     for _, file in ipairs(CSPELL_CONFIG_FILES) do
         local path = vim.fn.findfile(file, (cwd or vim.loop.cwd()) .. ";")
         if path ~= "" then
-            cspell_json_file = path
+            cspell_json_path = path
             break
         end
     end
-    return cspell_json_file
+    return cspell_json_path
 end
 
 -- create a bare minimum cspell.json file
@@ -47,6 +47,17 @@ local create_cspell_json = function(cwd, file_name)
     vim.fn.writefile({ cspell_json_str }, cspell_json_file_path)
     vim.notify("Created a new cspell.json file at " .. cspell_json_file_path, vim.log.levels.INFO)
     return cspell_json_file_path
+end
+
+local get_word = function(diagnostic)
+    return vim.api.nvim_buf_get_text(
+        diagnostic.bufnr,
+        diagnostic.lnum,
+        diagnostic.col,
+        diagnostic.end_lnum,
+        diagnostic.end_col,
+        {}
+    )[1]
 end
 
 return h.make_builtin({
@@ -65,7 +76,7 @@ return h.make_builtin({
         fn = function(params)
             local actions = {}
             local config = params:get_config()
-            local find_json = config.find_json or find_cspell_config
+            local find_json = config.find_json or find_cspell_config_path
 
             -- create_config_file if nil defaults to true
             local create_config_file = config.create_config_file ~= false
@@ -79,6 +90,27 @@ return h.make_builtin({
                     vim.log.levels.WARN
                 )
                 create_config_file_name = "cspell.json"
+            end
+
+            ---@return table|nil cspell, string|nil cspell_json_path
+            local get_or_create_cspell_config = function()
+                local cspell_json_path = find_json(params.cwd)
+                    or (create_config_file and create_cspell_json(params.cwd, create_config_file_name))
+                    or nil
+
+                if cspell_json_path == nil or cspell_json_path == "" then
+                    vim.notify("\nNo cspell json file found in the directory tree.\n", vim.log.levels.WARN)
+                    return
+                end
+
+                local ok, cspell = pcall(vim.json.decode, table.concat(vim.fn.readfile(cspell_json_path), " "))
+
+                if not ok then
+                    vim.notify("\nCannot parse cspell json file as JSON.\n", vim.log.levels.ERROR)
+                    return
+                end
+
+                return cspell, cspell_json_path
             end
 
             local diagnostics = cspell_diagnostics(params.bufnr, params.row - 1, params.col)
@@ -106,28 +138,8 @@ return h.make_builtin({
                 table.insert(actions, {
                     title = "Add to cspell json file",
                     action = function()
-                        local word = vim.api.nvim_buf_get_text(
-                            diagnostic.bufnr,
-                            diagnostic.lnum,
-                            diagnostic.col,
-                            diagnostic.end_lnum,
-                            diagnostic.end_col,
-                            {}
-                        )[1]
-
-                        local cspell_json_file = find_json(params.cwd)
-                            or (create_config_file and create_cspell_json(params.cwd, create_config_file_name))
-                            or nil
-
-                        if cspell_json_file == nil or cspell_json_file == "" then
-                            vim.notify("\nNo cspell json file found in the directory tree.\n", vim.log.levels.WARN)
-                            return
-                        end
-
-                        local ok, cspell = pcall(vim.json.decode, table.concat(vim.fn.readfile(cspell_json_file), " "))
-
-                        if not ok then
-                            vim.notify("\nCannot parse cspell json file as JSON.\n", vim.log.levels.ERROR)
+                        local cspell, cspell_json_path = get_or_create_cspell_config()
+                        if cspell == nil or cspell_json_path == nil then
                             return
                         end
 
@@ -135,9 +147,11 @@ return h.make_builtin({
                             cspell.words = {}
                         end
 
+                        local word = get_word(diagnostic)
+
                         table.insert(cspell.words, word)
 
-                        vim.fn.writefile({ vim.json.encode(cspell) }, cspell_json_file)
+                        vim.fn.writefile({ vim.json.encode(cspell) }, cspell_json_path)
 
                         -- replace word in buffer to trigger cspell to update diagnostics
                         vim.api.nvim_buf_set_text(
@@ -148,6 +162,54 @@ return h.make_builtin({
                             diagnostic.end_col,
                             { word }
                         )
+                    end,
+                })
+
+                table.insert(actions, {
+                    title = "Add to a custom dictionary",
+                    action = function()
+                        local cspell = get_or_create_cspell_config()
+                        if cspell == nil then
+                            return
+                        end
+
+                        local options = vim.tbl_filter(function(definition)
+                            return definition.addWords
+                        end, cspell.dictionaryDefinitions or {})
+
+                        if vim.tbl_isempty(options) then
+                            vim.notify(
+                                "There are no custom dictionaries.\nFor details, see: https://cspell.org/docs/dictionaries-custom/",
+                                vim.log.levels.WARN
+                            )
+                            return
+                        end
+                        local word = get_word(diagnostic)
+
+                        local custom_dictionary_options = {
+                            prompt = 'Add "' .. word .. '" to a custom dictionary',
+                            format_item = function(definition)
+                                return definition.name .. " - " .. definition.path
+                            end,
+                        }
+
+                        local custom_dictionary_action = function(definition)
+                            if definition == nil then
+                                return
+                            end
+                            local dictionary_path = vim.fn.expand(definition.path)
+                            local dictionary_ok, dictionary_body = pcall(vim.fn.readfile, dictionary_path)
+                            if not dictionary_ok then
+                                vim.notify("Can't read " .. dictionary_path, vim.log.levels.ERROR)
+                                return
+                            end
+                            table.insert(dictionary_body, word)
+
+                            vim.fn.writefile(dictionary_body, dictionary_path)
+                            vim.notify('Added "' .. word .. '" to ' .. definition.path, vim.log.levels.INFO)
+                        end
+
+                        vim.ui.select(options, custom_dictionary_options, custom_dictionary_action)
                     end,
                 })
             end
