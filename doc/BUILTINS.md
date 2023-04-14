@@ -248,6 +248,21 @@ local sources = { null_ls.builtins.code_actions.statix }
 - Command: `statix`
 - Args: `{ "check", "--stdin", "--format=json" }`
 
+### [ts_node_action](https://github.com/CKolkey/ts-node-action)
+
+A framework for running functions on Tree-sitter nodes, and updating the buffer with the result.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.ts_node_action }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `code_action`
+
 ### [xo](https://github.com/xojs/xo)
 
 ❤️ JavaScript/TypeScript linter (ESLint wrapper) with great defaults
