@@ -19,8 +19,6 @@ return h.make_builtin({
             "-C",
             "$FILENAME",
         },
-        to_stdin = false,
-        from_stderr = false,
         format = "line",
         on_output = h.diagnostics.from_pattern(
             [[^(.*):(%d+):(%d+): *%[([0-5])%] (.*)$]],
