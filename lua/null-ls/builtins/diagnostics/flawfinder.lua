@@ -9,7 +9,6 @@ return h.make_builtin({
     },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
     filetypes = { "c", "cpp" },
-    async = true,
     to_temp_file = true,
     generator = h.generator_factory({
         command = "flawfinder",
