@@ -60,6 +60,17 @@ local get_word = function(diagnostic)
     )[1]
 end
 
+local set_word = function(diagnostic, word)
+    vim.api.nvim_buf_set_text(
+        diagnostic.bufnr,
+        diagnostic.lnum,
+        diagnostic.col,
+        diagnostic.end_lnum,
+        diagnostic.end_col,
+        { word }
+    )
+end
+
 return h.make_builtin({
     name = "cspell",
     meta = {
@@ -122,14 +133,7 @@ return h.make_builtin({
                     table.insert(actions, {
                         title = string.format("Use %s", suggestion),
                         action = function()
-                            vim.api.nvim_buf_set_text(
-                                diagnostic.bufnr,
-                                diagnostic.lnum,
-                                diagnostic.col,
-                                diagnostic.end_lnum,
-                                diagnostic.end_col,
-                                { suggestion }
-                            )
+                            set_word(diagnostic, suggestion)
                         end,
                     })
                 end
@@ -154,14 +158,7 @@ return h.make_builtin({
                         vim.fn.writefile({ vim.json.encode(cspell) }, cspell_json_path)
 
                         -- replace word in buffer to trigger cspell to update diagnostics
-                        vim.api.nvim_buf_set_text(
-                            diagnostic.bufnr,
-                            diagnostic.lnum,
-                            diagnostic.col,
-                            diagnostic.end_lnum,
-                            diagnostic.end_col,
-                            { word }
-                        )
+                        set_word(diagnostic, word)
                     end,
                 })
 
@@ -207,6 +204,9 @@ return h.make_builtin({
 
                             vim.fn.writefile(dictionary_body, dictionary_path)
                             vim.notify('Added "' .. word .. '" to ' .. definition.path, vim.log.levels.INFO)
+
+                            -- replace word in buffer to trigger cspell to update diagnostics
+                            set_word(diagnostic, word)
                         end
 
                         vim.ui.select(options, custom_dictionary_options, custom_dictionary_action)
