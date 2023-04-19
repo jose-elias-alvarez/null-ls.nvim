@@ -138,9 +138,11 @@ return h.make_builtin({
                     })
                 end
 
+                local word = get_word(diagnostic)
+
                 -- add word to "words" in cspell.json
                 table.insert(actions, {
-                    title = "Add to cspell json file",
+                    title = 'Add "' .. word .. '" to cspell json file',
                     action = function()
                         local cspell, cspell_json_path = get_or_create_cspell_config()
                         if cspell == nil or cspell_json_path == nil then
@@ -151,8 +153,6 @@ return h.make_builtin({
                             cspell.words = {}
                         end
 
-                        local word = get_word(diagnostic)
-
                         table.insert(cspell.words, word)
 
                         vim.fn.writefile({ vim.json.encode(cspell) }, cspell_json_path)
@@ -162,8 +162,9 @@ return h.make_builtin({
                     end,
                 })
 
+                local custom_dictionary_title = 'Add "' .. word .. '" to a custom dictionary'
                 table.insert(actions, {
-                    title = "Add to a custom dictionary",
+                    title = custom_dictionary_title,
                     action = function()
                         local cspell = get_or_create_cspell_config()
                         if cspell == nil then
@@ -181,10 +182,9 @@ return h.make_builtin({
                             )
                             return
                         end
-                        local word = get_word(diagnostic)
 
                         local custom_dictionary_options = {
-                            prompt = 'Add "' .. word .. '" to a custom dictionary',
+                            prompt = custom_dictionary_title,
                             format_item = function(definition)
                                 return definition.name .. " - " .. definition.path
                             end,
