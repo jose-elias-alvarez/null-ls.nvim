@@ -37,6 +37,9 @@ return {
   statix = {
     filetypes = { "nix" }
   },
+  ts_node_action = {
+    filetypes = {}
+  },
   xo = {
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
   }
