@@ -58,7 +58,7 @@ return h.make_builtin({
             end
 
             -- return early if no output
-            if output == nil then
+            if output ~= vim.NIL then
                 return done(issues)
             end
             
