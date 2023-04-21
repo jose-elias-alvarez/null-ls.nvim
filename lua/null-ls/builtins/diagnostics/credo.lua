@@ -57,6 +57,11 @@ return h.make_builtin({
                 output = params.output
             end
 
+            -- return early if no output
+            if output == nil then
+                return done(issues)
+            end
+            
             local json_index, _ = output:find("{")
 
             -- if no json included, something went wrong and nothing to parse
