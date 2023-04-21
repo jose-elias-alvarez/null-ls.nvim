@@ -2050,7 +2050,7 @@ local sources = { null_ls.builtins.diagnostics.terraform_validate }
 
 #### Defaults
 
-- Filetypes: `{ "terraform" }`
+- Filetypes: `{ "terraform", "tf", "terraform-vars" }`
 - Method: `diagnostics_on_save`
 - Command: `terraform`
 - Args: `{ "validate", "-json" }`
@@ -2084,7 +2084,7 @@ local sources = { null_ls.builtins.diagnostics.tfsec }
 
 #### Defaults
 
-- Filetypes: `{ "terraform" }`
+- Filetypes: `{ "terraform", "tf", "terraform-vars" }`
 - Method: `diagnostics_on_save`
 - Command: `tfsec`
 - Args: `{ "-s", "-f", "json", "$DIRNAME" }`

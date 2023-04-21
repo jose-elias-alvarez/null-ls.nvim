@@ -11,7 +11,7 @@ return h.make_builtin({
         description = "Terraform validate is is a subcommand of terraform to validate configuration files in a directory",
     },
     method = DIAGNOSTICS_ON_SAVE,
-    filetypes = { "terraform" },
+    filetypes = { "terraform", "tf", "terraform-vars" },
     generator_opts = {
         command = "terraform",
         args = {

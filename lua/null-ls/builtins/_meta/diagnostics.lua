@@ -278,13 +278,13 @@ return {
     filetypes = { "teal" }
   },
   terraform_validate = {
-    filetypes = { "terraform" }
+    filetypes = { "terraform", "tf", "terraform-vars" }
   },
   textlint = {
     filetypes = { "txt", "markdown" }
   },
   tfsec = {
-    filetypes = { "terraform" }
+    filetypes = { "terraform", "tf", "terraform-vars" }
   },
   tidy = {
     filetypes = { "html", "xml" }
