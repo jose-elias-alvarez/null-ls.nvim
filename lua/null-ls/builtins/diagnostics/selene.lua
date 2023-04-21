@@ -1,5 +1,6 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
+local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -24,6 +25,10 @@ return h.make_builtin({
             { "row", "col", "severity", "code", "message", "_quote" },
             { adapters = { h.diagnostics.adapters.end_col.from_quote } }
         ),
+        cwd = h.cache.by_bufnr(function(params)
+            -- https://kampfkarren.github.io/selene/usage/configuration.html
+            return u.root_pattern("selene.toml")(params.bufname)
+        end),
     },
     factory = h.generator_factory,
 })
