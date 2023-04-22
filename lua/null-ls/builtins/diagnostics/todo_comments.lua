@@ -89,11 +89,6 @@ return h.make_builtin({
     generator = {
         fn = function(params)
             local ft = params.ft
-
-            if ft == "tex" then
-                ft = "latex"
-            end
-
             local result = {}
             for _, node in ipairs(get_comments(params.bufnr, ft)) do
                 local content = vim.treesitter.get_node_text(node, params.bufnr):match("^%s*(.*)")
