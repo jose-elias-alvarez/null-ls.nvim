@@ -11,7 +11,8 @@ local comment_types = {
 }
 
 local function get_document_root(bufnr, filetype)
-    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, filetype)
+    local lang = vim.treesitter.language.get_lang(filetype)
+    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
     if not has_parser then
         return
     end
