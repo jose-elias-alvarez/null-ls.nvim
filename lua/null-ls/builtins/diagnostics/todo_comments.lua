@@ -1,4 +1,5 @@
 local h = require("null-ls.helpers")
+local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
@@ -14,6 +15,7 @@ local function get_document_root(bufnr, filetype)
     local lang = vim.treesitter.language.get_lang(filetype)
     local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
     if not has_parser then
+        log:debug("no parser available for lang " .. lang)
         return
     end
 
