@@ -12,6 +12,9 @@ install-hooks:
 check:
 	pre-commit run --all-files
 
+clean:
+	rm -rf .tests/
+
 # do not run manually! (runs via CI)
 .PHONY: autogen
 autogen:

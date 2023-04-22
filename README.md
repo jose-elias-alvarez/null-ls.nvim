@@ -298,6 +298,14 @@ The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
 
+To avoid a dependency on any plugin managers, the test suite will set up its
+plugin runtime under the `./tests` directory to always have a plenary version
+available.
+
+If you run into plenary-related issues while running the tests, make sure you
+have an up-to-date version of the plugin by clearing that cache with:
+`make clean`.
+
 All tests expect the latest Neovim master.
 
 ## Alternatives
