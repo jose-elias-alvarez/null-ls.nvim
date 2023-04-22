@@ -163,6 +163,9 @@ return {
   google_java_format = {
     filetypes = { "java" }
   },
+  haxe_formatter = {
+    filetypes = { "haxe" }
+  },
   hclfmt = {
     filetypes = { "hcl" }
   },

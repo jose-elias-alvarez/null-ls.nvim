@@ -169,6 +169,9 @@ return {
   haskell = {
     formatting = { "brittany", "fourmolu", "stylish_haskell" }
   },
+  haxe = {
+    formatting = { "haxe_formatter" }
+  },
   hcl = {
     formatting = { "hclfmt", "packer" }
   },

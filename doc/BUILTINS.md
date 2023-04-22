@@ -3298,6 +3298,23 @@ local sources = { null_ls.builtins.formatting.google_java_format }
 - Command: `google-java-format`
 - Args: `{ "-" }`
 
+### [haxe_formatter](https://github.com/HaxeCheckstyle/haxe-formatter)
+
+Haxe code formatter based on tokentree
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.haxe_formatter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "haxe" }`
+- Method: `formatting`
+- Command: `haxelib`
+- Args: `{ "run", "formatter", "--stdin", "--source", "$FILENAME" }`
+
 ### [hclfmt](https://github.com/fatih/hclfmt)
 
 Formatter for HCL configuration files
