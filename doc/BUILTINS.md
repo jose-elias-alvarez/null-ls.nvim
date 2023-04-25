@@ -4682,6 +4682,30 @@ local sources = { null_ls.builtins.formatting.tidy }
 - Command: `tidy`
 - Args: `{ "--tidy-mark", "no", "-quiet", "-indent", "-wrap", "-" }`
 
+### [treefmt](https://github.com/numtide/treefmt)
+
+One CLI to format your repo
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.treefmt.with({
+        -- treefmt requires a config file
+        condition = function(utils)
+            return utils.root_has_file("treefmt.toml")
+        end,
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `formatting`
+- Command: `treefmt`
+- Args: `{ "--allow-missing-formatter", "--stdin", "$FILENAME" }`
+
 ### trim_newlines
 
 A simple wrapper around `awk` to remove trailing newlines.

@@ -397,6 +397,9 @@ return {
   tidy = {
     filetypes = { "html", "xml" }
   },
+  treefmt = {
+    filetypes = {}
+  },
   trim_newlines = {
     filetypes = {}
   },
