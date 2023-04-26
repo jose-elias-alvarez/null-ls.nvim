@@ -64,10 +64,9 @@ return h.make_builtin({
                 type = "function",
                 description = "Customizing the location of cspell config",
                 usage = [[
-find_json = function(cwd)
+function(cwd)
     return vim.fn.expand(cwd .. "/cspell.json")
-end
-]],
+end]],
             },
             {
                 key = "on_success",
@@ -83,8 +82,7 @@ function(cspell_config_file, params)
             cspell_config_file
         )
     )
-end
-]],
+end]],
             },
         },
     },
