@@ -3230,6 +3230,23 @@ local sources = { null_ls.builtins.formatting.gersemi }
 - Command: `gersemi`
 - Args: `{ "-" }`
 
+### [gn_format](http://gn.googlesource.com/gn)
+
+A build system that generates build files for Ninja, can also format GN scripts
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.gn_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gn" }`
+- Methods: `formatting`
+- Command: `gn`
+- Args: `{"format", "--stdin"}`
+
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
 Formats go programs.
