@@ -15,12 +15,6 @@ return h.make_builtin({
         from_stderr = true,
         args = { "--nocolor", "--json", "$FILENAME" },
         format = "json",
-        check_exit_code = function(code, stderr)
-            local success = code == 0
-            if not success then
-                print(stderr)
-            end
-        end,
         on_output = h.diagnostics.from_json({
             attributes = {
                 row = "linenumber",
