@@ -145,6 +145,9 @@ return {
   gersemi = {
     filetypes = { "cmake" }
   },
+  gn_format = {
+    filetypes = { "gn" }
+  },
   gofmt = {
     filetypes = { "go" }
   },

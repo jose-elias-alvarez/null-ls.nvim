@@ -148,6 +148,9 @@ return {
   glsl = {
     diagnostics = { "glslc" }
   },
+  gn = {
+    formatting = { "gn_format" }
+  },
   go = {
     code_actions = { "gomodifytags", "impl", "refactoring" },
     diagnostics = { "golangci_lint", "gospel", "revive", "semgrep", "staticcheck" },

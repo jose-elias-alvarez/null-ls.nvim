@@ -3232,7 +3232,7 @@ local sources = { null_ls.builtins.formatting.gersemi }
 
 ### [gn_format](http://gn.googlesource.com/gn)
 
-A build system that generates build files for Ninja, can also format GN scripts
+Format your GN code!
 
 #### Usage
 
@@ -3243,9 +3243,13 @@ local sources = { null_ls.builtins.formatting.gn_format }
 #### Defaults
 
 - Filetypes: `{ "gn" }`
-- Methods: `formatting`
+- Method: `formatting`
 - Command: `gn`
-- Args: `{"format", "--stdin"}`
+- Args: `{ "format", "--stdin" }`
+
+#### Notes
+
+- Install google depot_tools to use gn
 
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
