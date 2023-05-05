@@ -2091,7 +2091,7 @@ local sources = { null_ls.builtins.diagnostics.teal }
 
 ### [terraform_validate](https://github.com/hashicorp/terraform)
 
-Terraform validate is a subcommand of terraform to validate configuration files in a directory
+Terraform validate is is a subcommand of terraform to validate configuration files in a directory
 
 #### Usage
 
