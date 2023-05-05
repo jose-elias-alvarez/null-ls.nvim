@@ -53,7 +53,12 @@ return h.make_builtin({
     name = "cspell",
     meta = {
         url = "https://github.com/streetsidesoftware/cspell",
-        description = "Injects actions to fix typos found by `cspell`.",
+        description = [[Injects actions to fix typos found by `cspell`.
+
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+]],
         notes = {
             "This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.",
         },
