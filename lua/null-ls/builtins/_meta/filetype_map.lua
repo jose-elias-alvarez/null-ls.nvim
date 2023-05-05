@@ -371,6 +371,9 @@ return {
     formatting = { "beautysh", "shellharden", "shfmt" },
     hover = { "printenv" }
   },
+  sls = {
+    diagnostics = { "saltlint" }
+  },
   sml = {
     formatting = { "smlfmt" }
   },

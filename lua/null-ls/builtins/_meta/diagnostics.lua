@@ -232,6 +232,9 @@ return {
   ruff = {
     filetypes = { "python" }
   },
+  saltlint = {
+    filetypes = { "sls" }
+  },
   selene = {
     filetypes = { "lua", "luau" }
   },
