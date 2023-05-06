@@ -25,7 +25,12 @@ return h.make_builtin({
     name = "cspell",
     meta = {
         url = "https://github.com/streetsidesoftware/cspell",
-        description = "cspell is a spell checker for code.",
+        description = [[cspell is a spell checker for code.
+
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+]],
     },
     method = DIAGNOSTICS,
     filetypes = {},
