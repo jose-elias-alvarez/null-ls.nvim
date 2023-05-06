@@ -18,6 +18,10 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 Injects actions to fix typos found by `cspell`.
 
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+
 #### Usage
 
 ```lua
@@ -768,6 +772,10 @@ local sources = { null_ls.builtins.diagnostics.credo }
 ### [cspell](https://github.com/streetsidesoftware/cspell)
 
 cspell is a spell checker for code.
+
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
 
 #### Usage
 
