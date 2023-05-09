@@ -4635,7 +4635,7 @@ Swift formatter from apple. Requires building from source with `swift build`
 #### Usage
 
 ```lua
-local sources = { null_ls.builtins.formatting.swift-format }
+local sources = { null_ls.builtins.formatting["swift-format"]}
 ```
 
 #### Defaults
