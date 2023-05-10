@@ -17,6 +17,7 @@ return h.make_builtin({
         to_stdin = true,
         from_stderr = false,
         ignore_stderr = true,
+        multiple_files = true,
         args = {
             "run",
             "--fix=false",
@@ -37,15 +38,14 @@ return h.make_builtin({
             local issues = params.output["Issues"]
             if type(issues) == "table" then
                 for _, d in ipairs(issues) do
-                    if d.Pos.Filename == params.bufname then
-                        table.insert(diags, {
-                            source = string.format("golangci-lint:%s", d.FromLinter),
-                            row = d.Pos.Line,
-                            col = d.Pos.Column,
-                            message = d.Text,
-                            severity = h.diagnostics.severities["warning"],
-                        })
-                    end
+                    table.insert(diags, {
+                        source = string.format("golangci-lint:%s", d.FromLinter),
+                        row = d.Pos.Line,
+                        col = d.Pos.Column,
+                        message = d.Text,
+                        severity = h.diagnostics.severities["warning"],
+                        filename = d.Pos.Filename,
+                    })
                 end
             end
             return diags
