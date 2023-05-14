@@ -40,6 +40,7 @@ local function make_builtin(opts)
         timeout = opts.timeout,
         to_temp_file = opts.to_temp_file,
         temp_dir = opts.temp_dir,
+        prepend_extra_args = opts.prepend_extra_args,
         -- this isn't ideal, but since we don't have a way to modify on_output's behavior,
         -- it's better than nothing
         on_output = opts.on_output,
@@ -65,17 +66,23 @@ local function make_builtin(opts)
 
     if opts.extra_args then
         local original_args, original_extra_args = generator_opts.args, opts.extra_args
+        local prepend_extra_args = generator_opts.prepend_extra_args
         generator_opts.args = function(params)
             local original_args_copy = u.handle_function_opt(original_args, params) or {}
             local extra_args_copy = u.handle_function_opt(original_extra_args, params) or {}
+            local args
 
-            -- make sure "-" stays last
-            if original_args_copy[#original_args_copy] == "-" then
-                table.remove(original_args_copy)
-                table.insert(extra_args_copy, "-")
+            if prepend_extra_args then
+                args = vim.list_extend(extra_args_copy, original_args_copy)
+            else
+                -- make sure "-" stays last
+                if original_args_copy[#original_args_copy] == "-" then
+                    table.remove(original_args_copy)
+                    table.insert(extra_args_copy, "-")
+                end
+                args = vim.list_extend(original_args_copy, extra_args_copy)
             end
-
-            return vim.list_extend(original_args_copy, extra_args_copy)
+            return args
         end
     end
 

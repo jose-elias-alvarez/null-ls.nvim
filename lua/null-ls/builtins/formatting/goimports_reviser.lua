@@ -18,6 +18,7 @@ return h.make_builtin({
         -- can use `to_stdin = true` with args = { "-output", "stdout", "$FILENAME" }
         -- when it does
         to_temp_file = true,
+        prepend_extra_args = true,
     },
     factory = h.formatter_factory,
 })

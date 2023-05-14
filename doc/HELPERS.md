@@ -48,6 +48,7 @@ helpers.generator_factory({
     to_stdin, -- boolean (optional)
     to_temp_file, -- boolean (optional)
     use_cache, -- boolean (optional)
+    prepend_extra_args, -- boolean (optional)
 })
 ```
 
@@ -236,6 +237,13 @@ Sources that rely on up-to-date buffer content should avoid using this option.
 
 Note that this option effectively does nothing for diagnostics, since the
 handler will always invalidate the buffer's cache before running generators.
+
+### prepend_extra_args
+
+Prepends the extra_args from the user before the ones provided in the
+generator_ops if true.
+
+This can be needed for some commands that need specific order to work.
 
 ## formatter_factory
 
