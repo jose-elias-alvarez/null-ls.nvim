@@ -19,10 +19,8 @@ return h.make_builtin({
     },
     generator_opts = {
         command = "sqlfmt",
-        args = {
-            "$FILENAME",
-        },
-        to_temp_file = true,
+        args = { "-" },
+        to_stdin = true,
     },
     factory = h.formatter_factory,
 })
