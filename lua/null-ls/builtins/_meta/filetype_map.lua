@@ -255,8 +255,14 @@ return {
   matlab = {
     diagnostics = { "mlint" }
   },
+  ncl = {
+    formatting = { "topiary" }
+  },
   nginx = {
     formatting = { "nginx_beautifier" }
+  },
+  nickel = {
+    formatting = { "topiary" }
   },
   nim = {
     formatting = { "nimpretty" }

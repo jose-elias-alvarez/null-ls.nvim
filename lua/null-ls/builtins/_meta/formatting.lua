@@ -400,6 +400,9 @@ return {
   tidy = {
     filetypes = { "html", "xml" }
   },
+  topiary = {
+    filetypes = { "ncl", "nickel" }
+  },
   treefmt = {
     filetypes = {}
   },

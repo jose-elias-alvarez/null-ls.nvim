@@ -4764,6 +4764,23 @@ local sources = { null_ls.builtins.formatting.tidy }
 - Command: `tidy`
 - Args: `{ "--tidy-mark", "no", "-quiet", "-indent", "-wrap", "-" }`
 
+### [topiary](https://github.com/tweag/topiary)
+
+A uniform formatter for simple languages
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.topiary }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ncl", "nickel" }`
+- Method: `formatting`
+- Command: `topiary`
+- Args: `{ "-i", "-f", "$FILENAME" }`
+
 ### [treefmt](https://github.com/numtide/treefmt)
 
 One CLI to format your repo
