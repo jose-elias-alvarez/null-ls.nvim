@@ -1073,7 +1073,7 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - Filetypes: `{ "go" }`
 - Method: `diagnostics_on_save`
 - Command: `golangci-lint`
-- Args: `{ "run", "--fix=false", "--out-format=json", "--path-prefix", "$ROOT" }`
+- Args: `{ "run", "--fix=false", "--out-format=json" }`
 
 ### [gospel](https://github.com/kortschak/gospel)
 
