@@ -4470,7 +4470,7 @@ local sources = { null_ls.builtins.formatting.sqlfmt }
 - Filetypes: `{ "sql", "jinja" }`
 - Method: `formatting`
 - Command: `sqlfmt`
-- Args: `{ "$FILENAME" }`
+- Args: `{ "-" }`
 
 #### Notes
 
