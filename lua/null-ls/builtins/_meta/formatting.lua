@@ -286,6 +286,9 @@ return {
   pyflyby = {
     filetypes = { "python" }
   },
+  pyink = {
+    filetypes = { "python" }
+  },
   qmlformat = {
     filetypes = { "qml" }
   },

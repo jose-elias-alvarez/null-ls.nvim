@@ -4085,6 +4085,23 @@ local sources = { null_ls.builtins.formatting.pyflyby }
 - Command: `tidy-imports`
 - Args: `{ "-n" }`
 
+### [pyink](https://github.com/google/pyink)
+
+The Google Python code formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.pyink }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+- Command: `pyink`
+- Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
