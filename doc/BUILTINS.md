@@ -3993,8 +3993,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 - Filetypes: `{ "prisma" }`
 - Method: `formatting`
-- Command: `prisma-fmt`
-- Args: `{ "format", "-i", "$FILENAME" }`
+- Command: `prisma`
+- Args: `{ "format", "$FILENAME" }`
 
 ### [protolint](https://github.com/yoheimuta/protolint)
 
