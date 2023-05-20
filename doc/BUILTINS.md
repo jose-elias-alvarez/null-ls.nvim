@@ -841,6 +841,23 @@ local sources = { null_ls.builtins.diagnostics.deadnix }
 - Command: `deadnix`
 - Args: `{ "--output-format=json", "$FILENAME" }`
 
+### [deno_lint](https://github.com/denoland/deno_lint)
+
+Blazing fast linter for JavaScript and TypeScript written in Rust
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.deno_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javaScript", "typescript", "typescriptreact", "javascriptreact" }`
+- Method: `diagnostics`
+- Command: `deno`
+- Args: `{ "lint", "--json", "$FILENAME" }`
+
 ### [djlint](https://github.com/Riverside-Healthcare/djLint)
 
 ✨ 📜 🪄 ✨ HTML Template Linter and Formatter.
