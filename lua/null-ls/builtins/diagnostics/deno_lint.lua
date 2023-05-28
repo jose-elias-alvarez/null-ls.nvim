@@ -11,7 +11,7 @@ return h.make_builtin({
         description = "Blazing fast linter for JavaScript and TypeScript written in Rust",
     },
     method = DIAGNOSTICS,
-    filetypes = { "javaScript", "typescript", "typescriptreact", "javascriptreact" },
+    filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact" },
     generator_opts = {
         command = "deno",
         args = { "lint", "--json", "$FILENAME" },
