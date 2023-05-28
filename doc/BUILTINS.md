@@ -853,7 +853,7 @@ local sources = { null_ls.builtins.diagnostics.deno_lint }
 
 #### Defaults
 
-- Filetypes: `{ "javaScript", "typescript", "typescriptreact", "javascriptreact" }`
+- Filetypes: `{ "javascript", "typescript", "typescriptreact", "javascriptreact" }`
 - Method: `diagnostics`
 - Command: `deno`
 - Args: `{ "lint", "--json", "$FILENAME" }`

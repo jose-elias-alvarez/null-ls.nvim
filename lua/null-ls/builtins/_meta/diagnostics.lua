@@ -70,6 +70,9 @@ return {
   deadnix = {
     filetypes = { "nix" }
   },
+  deno_lint = {
+    filetypes = { "javascript", "typescript", "typescriptreact", "javascriptreact" }
+  },
   djlint = {
     filetypes = { "django", "jinja.html", "htmldjango" }
   },
