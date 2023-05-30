@@ -404,7 +404,7 @@ return {
   },
   swift = {
     diagnostics = { "swiftlint" },
-    formatting = { "swift-format", "swiftformat", "swiftlint" }
+    formatting = { "swift_format", "swiftformat", "swiftlint" }
   },
   systemverilog = {
     diagnostics = { "verilator" },

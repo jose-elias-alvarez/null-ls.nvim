@@ -379,7 +379,7 @@ return {
   surface = {
     filetypes = { "elixir", "surface" }
   },
-  ["swift-format"] = {
+  swift_format = {
     filetypes = { "swift" }
   },
   swiftformat = {

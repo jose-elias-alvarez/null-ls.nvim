@@ -4662,23 +4662,6 @@ local sources = { null_ls.builtins.formatting.surface }
 - Command: `mix`
 - Args: `{ "surface.format", "-" }`
 
-### [swift-format](https://github.com/apple/swift-format)
-
-Swift formatter from apple. Requires building from source with `swift build`
-
-#### Usage
-
-```lua
-local sources = { null_ls.builtins.formatting.swift-format }
-```
-
-#### Defaults
-
-- Filetypes: `{ "swift" }`
-- Method: `formatting`
-- Command: `swift-format`
-- Args: `{}`
-
 ### [swiftformat](https://github.com/nicklockwood/SwiftFormat)
 
 SwiftFormat is a code library and command-line tool for reformatting `swift` code on macOS or Linux.
@@ -4712,6 +4695,23 @@ local sources = { null_ls.builtins.formatting.swiftlint }
 - Method: `formatting`
 - Command: `swiftlint`
 - Args: `{ "lint", "--use-stdin", "--fix" }`
+
+### [swift_format](https://github.com/apple/swift-format)
+
+Swift formatter from apple. Requires building from source with `swift build`
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.swift_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "swift" }`
+- Method: `formatting`
+- Command: `swift-format`
+- Args: `{}`
 
 ### [taplo](https://taplo.tamasfe.dev/)
 
