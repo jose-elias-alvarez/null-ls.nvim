@@ -130,6 +130,9 @@ return {
   fnlfmt = {
     filetypes = { "fennel", "fnl" }
   },
+  forge_fmt = {
+    filetypes = { "solidity" }
+  },
   format_r = {
     filetypes = { "r", "rmd" }
   },

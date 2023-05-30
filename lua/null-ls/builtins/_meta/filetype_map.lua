@@ -384,7 +384,8 @@ return {
     formatting = { "smlfmt" }
   },
   solidity = {
-    diagnostics = { "solhint" }
+    diagnostics = { "solhint" },
+    formatting = { "forge_fmt" }
   },
   spec = {
     diagnostics = { "rpmspec" }

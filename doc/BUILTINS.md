@@ -3187,6 +3187,23 @@ local sources = { null_ls.builtins.formatting.fnlfmt }
 - Command: `fnlfmt`
 - Args: `{ "-" }`
 
+### [forge_fmt](https://book.getfoundry.sh/reference/config/formatter)
+
+Formats Solidity source files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.forge_fmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "solidity" }`
+- Method: `formatting`
+- Command: `forge`
+- Args: `{ "fmt", "$FILENAME" }`
+
 ### [format_r](https://github.com/yihui/formatR)
 
 Format R code automatically.
