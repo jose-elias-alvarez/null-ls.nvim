@@ -10,7 +10,7 @@ return h.make_builtin({
         url = "https://github.com/google/pyink",
         description = "The Google Python code formatter",
     },
-    method = {FORMATTING, RANGE_FORMATTING},
+    method = { FORMATTING, RANGE_FORMATTING },
     filetypes = { "python" },
     generator_opts = {
         command = "pyink",
