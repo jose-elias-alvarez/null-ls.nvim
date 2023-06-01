@@ -329,7 +329,7 @@ return {
     formatting = { "format_r", "styler" }
   },
   racket = {
-    formatting = { "raco_fmt" }
+    formatting = { "raco_fmt", "racket_fixw" }
   },
   rego = {
     diagnostics = { "opacheck" },

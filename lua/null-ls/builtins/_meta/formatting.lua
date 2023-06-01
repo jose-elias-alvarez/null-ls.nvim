@@ -298,6 +298,9 @@ return {
   raco_fmt = {
     filetypes = { "racket" }
   },
+  racket_fixw = {
+    filetypes = { "racket" }
+  },
   rego = {
     filetypes = { "rego" }
   },
