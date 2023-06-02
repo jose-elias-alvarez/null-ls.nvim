@@ -99,9 +99,14 @@ describe("diagnostics", function()
     describe("credo", function()
         local linter = diagnostics.credo
         local parser = linter._opts.on_output
+        local args = linter._opts.args
         local credo_diagnostics
         local done = function(_diagnostics)
             credo_diagnostics = _diagnostics
+        end
+        local config = {}
+        local get_config = function()
+            return config
         end
         after_each(function()
             credo_diagnostics = nil
@@ -125,7 +130,7 @@ describe("diagnostics", function()
                 }
               ]
             } ]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -153,7 +158,7 @@ describe("diagnostics", function()
                 "trigger": "@impl true"
               }]
             } ]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -181,7 +186,7 @@ describe("diagnostics", function()
                 "trigger": "TODO: implement check"
               }]
             } ]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -209,7 +214,7 @@ describe("diagnostics", function()
                 "trigger": "|>"
               }]
             } ]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -224,7 +229,7 @@ describe("diagnostics", function()
         it("returns errors as diagnostics", function()
             local error =
                 [[** (Mix) The task "credo" could not be found\nNote no mix.exs was found in the current directory]]
-            parser({ err = error }, done)
+            parser({ err = error, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -233,7 +238,7 @@ describe("diagnostics", function()
                 },
             }, credo_diagnostics)
         end)
-        it("should handle compile warnings preceeding output", function()
+        it("should handle compile warnings preceding output", function()
             local output = [[
             00:00:00.000 [warn] IMPORTING DEV.SECRET
 
@@ -253,7 +258,8 @@ describe("diagnostics", function()
                 }
               ]
             } ]]
-            parser({ output = output }, done)
+
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -267,7 +273,7 @@ describe("diagnostics", function()
         end)
         it("should handle messages with incomplete json", function()
             local output = [[Some incomplete message that shouldn't really happen { "issues": ]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -278,7 +284,7 @@ describe("diagnostics", function()
         end)
         it("should handle messages without json", function()
             local output = [[Another message that shouldn't really happen]]
-            parser({ output = output }, done)
+            parser({ output = output, get_config = get_config }, done)
             assert.same({
                 {
                     source = "credo",
@@ -286,6 +292,72 @@ describe("diagnostics", function()
                     row = 1,
                 },
             }, credo_diagnostics)
+        end)
+
+        describe("full_workspace is falsey", function()
+            config = {
+                full_workspace = false,
+            }
+
+            it("creates diagnostic without filename", function()
+                local output = [[
+                {
+                  "issues": [{
+                    "category": "design",
+                    "check": "Credo.Check.Design.TagTODO",
+                    "column": null,
+                    "column_end": null,
+                    "filename": "./foo.ex",
+                    "line_no": 8,
+                    "message": "Found a TODO tag in a comment: \"TODO: implement check\"",
+                    "priority": -5,
+                    "scope": null,
+                    "trigger": "TODO: implement check"
+                  }]
+                } ]]
+                parser({ output = output, get_config = get_config }, done)
+                assert.same(credo_diagnostics[1].filename, nil)
+            end)
+
+            it("calls credo for a specific file", function()
+                assert.same(
+                    args({ get_config = get_config }),
+                    { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }
+                )
+            end)
+        end)
+
+        describe("full_workspace is truthy", function()
+            local get_source = function()
+                return { generator = {} }
+            end
+            config = {
+                full_workspace = true,
+            }
+
+            it("creates diagnostic with filename", function()
+                local output = [[
+                {
+                  "issues": [{
+                    "category": "design",
+                    "check": "Credo.Check.Design.TagTODO",
+                    "column": null,
+                    "column_end": null,
+                    "filename": "./foo.ex",
+                    "line_no": 8,
+                    "message": "Found a TODO tag in a comment: \"TODO: implement check\"",
+                    "priority": -5,
+                    "scope": null,
+                    "trigger": "TODO: implement check"
+                  }]
+                } ]]
+                parser({ output = output, get_config = get_config, get_source = get_source }, done)
+                assert.same("./foo.ex", credo_diagnostics[1].filename)
+            end)
+
+            it("calls credo for workspace", function()
+                assert.same(args({ get_config = get_config }), { "credo", "suggest", "--format", "json" })
+            end)
         end)
     end)
 

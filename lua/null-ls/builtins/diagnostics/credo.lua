@@ -19,6 +19,15 @@ return h.make_builtin({
         notes = {
             "Searches upwards from the buffer to the project root and tries to find the first `.credo.exs` file in case the project has nested `credo` configs.",
         },
+        config = {
+            {
+                key = "full_workspace",
+                type = "boolean",
+                description = [[- `false` (default) - run credo for a single file
+- `true` - run credo on the entire workspace. If this is slow on large projects, you may wish to set `method = null_ls.methods.DIAGNOSTICS_ON_SAVE` in `with()` call.]],
+                usage = [[true]],
+            },
+        },
     },
     method = DIAGNOSTICS,
     filetypes = { "elixir" },
@@ -34,11 +43,28 @@ return h.make_builtin({
                 return params.root
             end
         end,
-        args = { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" },
+        args = function(params)
+            if params:get_config().full_workspace then
+                return { "credo", "suggest", "--format", "json" }
+            else
+                return { "credo", "suggest", "--format", "json", "--read-from-stdin", "$FILENAME" }
+            end
+        end,
         format = "raw",
         to_stdin = true,
         on_output = function(params, done)
             local issues = {}
+
+            -- `multiple_files = true` must be set ONLY if running
+            -- `full_workspace=true`.
+            -- If it is set when credo is only generating diagnostics per file,
+            -- then existing diagnostics in open buffers will be cleared on
+            -- each subsequent execution in a different buffer
+            if params:get_config().full_workspace then
+                -- this is hacky, but there isn't any way to set `multiple_files`
+                -- dynamically based on user config properly
+                params:get_source().generator.multiple_files = true
+            end
 
             -- credo is behaving in a bit of a tricky way:
             -- 1. if there are no elixir warnings, it will give its output
@@ -83,6 +109,10 @@ return h.make_builtin({
                     row = issue.line_no,
                     source = "credo",
                 }
+
+                if params:get_config().full_workspace then
+                    err.filename = issue.filename
+                end
 
                 -- using the dynamic priority ranges from credo source
                 if issue.priority >= 10 then
