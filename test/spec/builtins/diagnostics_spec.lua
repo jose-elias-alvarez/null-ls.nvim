@@ -287,6 +287,10 @@ describe("diagnostics", function()
                 },
             }, credo_diagnostics)
         end)
+        it("should return no errors when no output or errors", function()
+            parser({ output = nil, errors = nil }, done)
+            assert.same({}, credo_diagnostics)
+        end)
     end)
 
     describe("luacheck", function()
