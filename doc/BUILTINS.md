@@ -4175,6 +4175,27 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 - Requires Racket 8.0 or later
 - Install with `raco pkg install fmt`
 
+### [racket_fixw](https://github.com/6cdh/racket-fixw)
+
+A Racket formatter that add/remove some whitespaces but respects newline.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.racket_fixw }
+```
+
+#### Defaults
+
+- Filetypes: `{ "racket" }`
+- Method: `formatting`
+- Command: `raco`
+- Args: `{ "fixw" }`
+
+#### Notes
+
+- Install with `raco pkg install fixw`
+
 ### [rego](https://www.openpolicyagent.org/docs/latest/policy-language)
 
 Rego (opa fmt) Formatter
