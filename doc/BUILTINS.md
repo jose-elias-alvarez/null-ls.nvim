@@ -4132,9 +4132,9 @@ local sources = { null_ls.builtins.formatting.pyink }
 #### Defaults
 
 - Filetypes: `{ "python" }`
-- Method: `formatting`
+- Methods: `formatting, range_formatting`
 - Command: `pyink`
-- Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/pyink.lua))
 
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
