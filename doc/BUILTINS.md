@@ -4153,6 +4153,27 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 - Command: `qmlformat`
 - Args: `{ "-i", "$FILENAME" }`
 
+### [racket_fixw](https://github.com/6cdh/racket-fixw)
+
+A Racket formatter that add/remove some whitespaces but respects newline.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.racket_fixw }
+```
+
+#### Defaults
+
+- Filetypes: `{ "racket" }`
+- Method: `formatting`
+- Command: `raco`
+- Args: `{ "fixw" }`
+
+#### Notes
+
+- Install with `raco pkg install fixw`
+
 ### [raco_fmt](https://docs.racket-lang.org/fmt/)
 
 The fmt package provides an extensible tool to format Racket code, using an expressive pretty printer library to compute the optimal layout.
@@ -4174,27 +4195,6 @@ local sources = { null_ls.builtins.formatting.raco_fmt }
 
 - Requires Racket 8.0 or later
 - Install with `raco pkg install fmt`
-
-### [racket_fixw](https://github.com/6cdh/racket-fixw)
-
-A Racket formatter that add/remove some whitespaces but respects newline.
-
-#### Usage
-
-```lua
-local sources = { null_ls.builtins.formatting.racket_fixw }
-```
-
-#### Defaults
-
-- Filetypes: `{ "racket" }`
-- Method: `formatting`
-- Command: `raco`
-- Args: `{ "fixw" }`
-
-#### Notes
-
-- Install with `raco pkg install fixw`
 
 ### [rego](https://www.openpolicyagent.org/docs/latest/policy-language)
 

@@ -295,10 +295,10 @@ return {
   qmlformat = {
     filetypes = { "qml" }
   },
-  raco_fmt = {
+  racket_fixw = {
     filetypes = { "racket" }
   },
-  racket_fixw = {
+  raco_fmt = {
     filetypes = { "racket" }
   },
   rego = {
