@@ -1351,6 +1351,23 @@ local sources = { null_ls.builtins.diagnostics.mypy }
 - Command: `mypy`
 - Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/diagnostics/mypy.lua))
 
+### [nelua](https://github.com/edubart/nelua-lang)
+
+Nelua can analize code using `nelua -a`
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.nelua }
+```
+
+#### Defaults
+
+- Filetypes: `{ "nelua" }`
+- Method: `diagnostics`
+- Command: `nelua`
+- Args: `{ "-a", "$FILENAME", "-L", "$DIRNAME" }`
+
 ### [npm_groovy_lint](https://github.com/nvuillam/npm-groovy-lint)
 
 Lint, format and auto-fix Groovy, Jenkinsfile, and Gradle files.
