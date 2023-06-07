@@ -3531,6 +3531,23 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - Command: `python`
 - Args: `{ "-m", "json.tool" }`
 
+### [jsonnetfmt](https://github.com/google/jsonnet)
+
+Tool for formatting jsonnet files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.jsonnet }
+```
+
+#### Defaults
+
+- Filetypes: `{ "jsonnet" }`
+- Method: `formatting`
+- Command: `jsonnnetfmt`
+- Args: `{ "-" }`
+
 ### [just](https://just.systems/)
 
 Format your Justfile
