@@ -190,6 +190,9 @@ return {
   json_tool = {
     filetypes = { "json" }
   },
+  jsonnetfmt = {
+    filetypes = { "jsonnet" }
+  },
   just = {
     filetypes = { "just" }
   },

@@ -3514,6 +3514,23 @@ local sources = { null_ls.builtins.formatting.jq }
 - Method: `formatting`
 - Command: `jq`
 
+### [jsonnetfmt](https://github.com/google/jsonnet)
+
+Formats jsonnet files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.jsonnetfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "jsonnet" }`
+- Method: `formatting`
+- Command: `jsonnetfmt`
+- Args: `{ "-" }`
+
 ### [json_tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
 Provides a simple command line interface to validate and pretty-print JSON objects.
@@ -3530,23 +3547,6 @@ local sources = { null_ls.builtins.formatting.json_tool }
 - Method: `formatting`
 - Command: `python`
 - Args: `{ "-m", "json.tool" }`
-
-### [jsonnetfmt](https://github.com/google/jsonnet)
-
-Tool for formatting jsonnet files.
-
-#### Usage
-
-```lua
-local sources = { null_ls.builtins.formatting.jsonnet }
-```
-
-#### Defaults
-
-- Filetypes: `{ "jsonnet" }`
-- Method: `formatting`
-- Command: `jsonnnetfmt`
-- Args: `{ "-" }`
 
 ### [just](https://just.systems/)
 

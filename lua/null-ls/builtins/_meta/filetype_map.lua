@@ -214,6 +214,9 @@ return {
   jsonc = {
     formatting = { "deno_fmt", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd" }
   },
+  jsonnet = {
+    formatting = { "jsonnetfmt" }
+  },
   jsp = {
     diagnostics = { "pmd" }
   },
