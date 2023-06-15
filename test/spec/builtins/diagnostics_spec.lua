@@ -1384,6 +1384,25 @@ describe("diagnostics", function()
         end)
     end)
 
+    describe("typos", function()
+        local linter = diagnostics.typos
+        local parser = linter._opts.on_output
+
+        it("should create a diagnostic with error severity", function()
+            local output = [[{"type":"typo","path":"diagnostics_spec.lua","line_num":1154,"byte_offset":32,"typo":"Ba","corrections":["By","Be"]}]]
+            local diagnostic = parser({ output = output })
+            assert.same({
+                {
+                    row = 1154,
+                    col = 33,
+                    end_col = 35,
+                    severity = 1,
+                    message = "`Ba` should be `By`, `Be`",
+                    user_data = { corrections = { "By", "Be" } }
+                },
+            }, diagnostic)
+    end)
+
     describe("opacheck", function()
         local linter = diagnostics.opacheck
         local parser = linter._opts.on_output
