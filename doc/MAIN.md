@@ -219,8 +219,8 @@ handle common conditional checks.
 - `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
   the root matches the specified pattern.
 
-- `utils.root_has_file_matches`: accepts a Lua string matcher pattern. Returns `true` if
-  a file matches the specified pattern.
+- `utils.root_has_file_matches`: accepts a Lua string matcher pattern. Returns
+  `true` if a file matches the specified pattern.
 
 On registration, null-ls will store conditional sources in state and check
 `condition` at the first opportunity (typically upon entering a named buffer).
