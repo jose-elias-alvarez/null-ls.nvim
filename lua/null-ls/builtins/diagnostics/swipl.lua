@@ -61,17 +61,10 @@ return h.make_builtin({
                     local _
                     i = i + 1
                     _, _, row, msg = line:find("^Warning:.-:(%d+):%s*(.*)")
-                    if msg then
-                        warning = true
-                        goto continue
-                    end
+                    warning = msg ~= nil
                     _, _, row, msg = line:find("^ERROR:.-:(%d+):%s*(.*)")
-                    if msg then
-                        err = true
-                        goto continue
-                    end
+                    err = msg ~= nil
                 end
-                ::continue::
             end
             if err or warning then
                 table.insert(diagnostics, {
