@@ -1,6 +1,7 @@
+local curl = require("plenary.curl")
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
-local curl = require("plenary.curl")
+local u = require("null-ls.utils")
 
 local FORMATTING = methods.internal.FORMATTING
 
@@ -12,23 +13,26 @@ return h.make_builtin({
     },
     method = FORMATTING,
     filetypes = { "python" },
-    generator = {
-        fn = function(params)
-            local hostname = params.options.hostname or "localhost"
-            local port = params.options.port or 45484
-            local response = curl.post(hostname .. ":" .. port, {
-                body = table.concat(params.content, "\n"),
-                headers = {
-                    ["X-Line-Length"] = params.options.line_length,
-                    ["X-Skip-Source-First-Line"] = params.options.skip_source_first_line and "true",
-                    ["X-Skip-String-Normalization"] = params.options.skip_string_normalization and "true",
-                    ["X-Skip-Magic-Trailing-Comma"] = params.options.skip_magic_trailing_comma and "true",
-                    ["X-Preview"] = params.options.preview and "true",
-                    ["X-Fast-Or-Safe"] = params.options.fast and "fast",
-                    ["X-Python-Variant"] = params.options.python_variant,
-                },
-            })
-            return response.status == 200 and { { text = response.body } }
-        end,
-    },
+    factory = function(opts)
+        return {
+            fn = function(params)
+                local options = u.handle_function_opt(opts.args)
+                local hostname = options.hostname or "localhost"
+                local port = options.port or 45484
+                local response = curl.post(hostname .. ":" .. port, {
+                    body = table.concat(params.content, "\n"),
+                    headers = {
+                        ["X-Line-Length"] = options.line_length,
+                        ["X-Skip-Source-First-Line"] = options.skip_source_first_line and "true",
+                        ["X-Skip-String-Normalization"] = options.skip_string_normalization and "true",
+                        ["X-Skip-Magic-Trailing-Comma"] = options.skip_magic_trailing_comma and "true",
+                        ["X-Preview"] = options.preview and "true",
+                        ["X-Fast-Or-Safe"] = options.fast and "fast",
+                        ["X-Python-Variant"] = options.python_variant,
+                    },
+                })
+                return response.status == 200 and { { text = response.body } }
+            end,
+        }
+    end,
 })
