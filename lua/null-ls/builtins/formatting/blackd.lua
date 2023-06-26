@@ -28,7 +28,7 @@ return h.make_builtin({
                     ["Python-Variant"] = params.options.python_variant,
                 },
             })
-            return response.body == "" and {} or { { text = response.body } }
+            return response.status == 200 and { { text = response.body } }
         end,
     },
 })
