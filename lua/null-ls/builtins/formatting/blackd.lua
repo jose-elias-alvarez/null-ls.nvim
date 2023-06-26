@@ -24,8 +24,8 @@ return h.make_builtin({
                     ["X-Skip-String-Normalization"] = params.options.skip_string_normalization and "true",
                     ["X-Skip-Magic-Trailing-Comma"] = params.options.skip_magic_trailing_comma and "true",
                     ["X-Preview"] = params.options.preview and "true",
-                    ["Fast-Or-Safe"] = params.options.fast_or_safe and "fast",
-                    ["Python-Variant"] = params.options.python_variant,
+                    ["X-Fast-Or-Safe"] = params.options.fast and "fast",
+                    ["X-Python-Variant"] = params.options.python_variant,
                 },
             })
             return response.status == 200 and { { text = response.body } }
