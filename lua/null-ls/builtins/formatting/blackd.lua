@@ -23,11 +23,11 @@ return h.make_builtin({
                     body = table.concat(params.content, "\n"),
                     headers = {
                         ["X-Line-Length"] = options.line_length,
-                        ["X-Skip-Source-First-Line"] = options.skip_source_first_line and "true",
-                        ["X-Skip-String-Normalization"] = options.skip_string_normalization and "true",
-                        ["X-Skip-Magic-Trailing-Comma"] = options.skip_magic_trailing_comma and "true",
-                        ["X-Preview"] = options.preview and "true",
-                        ["X-Fast-Or-Safe"] = options.fast and "fast",
+                        ["X-Skip-Source-First-Line"] = options.skip_source_first_line,
+                        ["X-Skip-String-Normalization"] = options.skip_string_normalization,
+                        ["X-Skip-Magic-Trailing-Comma"] = options.skip_magic_trailing_comma,
+                        ["X-Preview"] = options.preview,
+                        ["X-Fast-Or-Safe"] = options.fast_or_safe,
                         ["X-Python-Variant"] = options.python_variant,
                     },
                 })
