@@ -307,6 +307,9 @@ return {
   twigcs = {
     filetypes = { "twig" }
   },
+  typos = {
+    filetypes = {}
+  },
   vacuum = {
     filetypes = { "yaml", "json" }
   },

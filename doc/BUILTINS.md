@@ -2263,6 +2263,23 @@ local sources = { null_ls.builtins.diagnostics.twigcs }
 - Command: `twigcs`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
 
+### [typos](https://github.com/crate-ci/typos)
+
+Source code spell checker written in rust
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.typos }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `diagnostics`
+- Command: `typos`
+- Args: `{ "--format", "json", "-" }`
+
 ### [vacuum](https://quobix.com/vacuum)
 
 The world’s fastest and most scalable OpenAPI linter.
