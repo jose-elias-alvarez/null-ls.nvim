@@ -13,7 +13,7 @@ return h.make_builtin({
     filetypes = { "haskell" },
     generator_opts = {
         command = "fourmolu",
-        args = { "--stdin-input-file", "$FILEPATH" },
+        args = { "--stdin-input-file", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,
