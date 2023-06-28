@@ -2153,4 +2153,28 @@ INFO: Analysis cache updated]],
             }, diagnostic)
         end)
     end)
+
+    describe("typos", function()
+        local linter = diagnostics.typos
+        local parser = linter._opts.on_output
+        local file = {
+            [[Did I misspell langauge ?]],
+        }
+
+        it("should crrate a diagnostic with warning severity", function()
+            local output =
+                [[{"type":"typo","path":"diagnostics_spec.lua","line_num":1,"byte_offset":16,"typo":"Ba","corrections":["By","Be"]}]]
+            local diagnostic = parser(output, { content = file })
+            assert.same({
+                message = "`Ba` should be `By` or `Be`.",
+                severity = 2,
+                row = 1,
+                col = 17,
+                end_col = 19,
+                end_row = 1,
+                source = "Typos",
+                user_data = { corrections = { "By", "Be" } },
+            }, diagnostic)
+        end)
+    end)
 end)
