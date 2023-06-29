@@ -414,7 +414,7 @@ return {
 ```
 
 Completion sources must return a
-[CompletionList](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionList).
+[CompletionList](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionList).
 You can leverage the full attributes of `CompletionItem` from the LSP
 specification. Other plugins (e.g completion plugins) can then use these
 attributes to provide more context about the highlighted completion item.
