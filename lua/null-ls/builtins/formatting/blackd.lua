@@ -15,11 +15,12 @@ return h.make_builtin({
     filetypes = { "python" },
     factory = function(opts)
         return {
-            fn = function(params)
+            async = true,
+            fn = function(params, done)
                 local options = u.handle_function_opt(opts.args)
                 local hostname = options.hostname or "localhost"
                 local port = options.port or 45484
-                local response = curl.post(hostname .. ":" .. port, {
+                curl.post(hostname .. ":" .. port, {
                     body = table.concat(params.content, "\n"),
                     headers = {
                         ["X-Line-Length"] = options.line_length,
@@ -30,8 +31,13 @@ return h.make_builtin({
                         ["X-Fast-Or-Safe"] = options.fast_or_safe,
                         ["X-Python-Variant"] = options.python_variant,
                     },
+                    callback = function(response)
+                        if response.status == 200 then
+                            return done({ { text = response.body } })
+                        end
+                        return done()
+                    end,
                 })
-                return response.status == 200 and { { text = response.body } }
             end,
         }
     end,
