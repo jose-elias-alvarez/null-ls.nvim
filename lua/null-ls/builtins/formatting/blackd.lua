@@ -44,7 +44,7 @@ return h.make_builtin({
             {
                 key = "fast",
                 type = "boolean",
-                description = "If set to true, Black will not perform an AST safety check after formatting.",
+                description = "If set to true, Black will not perform an AST safety check after formatting. Defaults to false.",
             },
             {
                 key = "python_variant",
