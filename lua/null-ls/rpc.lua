@@ -31,7 +31,7 @@ local capabilities = {
     },
     executeCommandProvider = {
         commands = {
-            methods.internal.CODE_ACTION
+            methods.internal.CODE_ACTION,
         },
     },
     documentFormattingProvider = true,
