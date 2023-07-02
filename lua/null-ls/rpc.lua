@@ -32,7 +32,7 @@ local capabilities = {
     executeCommandProvider = {
         commands = {
             methods.internal.CODE_ACTION
-        }
+        },
     },
     documentFormattingProvider = true,
     documentRangeFormattingProvider = true,
