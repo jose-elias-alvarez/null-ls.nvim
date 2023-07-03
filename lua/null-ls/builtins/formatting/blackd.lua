@@ -1,4 +1,3 @@
-local curl = require("plenary.curl")
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
@@ -62,7 +61,7 @@ return h.make_builtin({
             local config = params:get_config()
             local hostname = config.hostname or "localhost"
             local port = config.port or 45484
-            curl.post(hostname .. ":" .. port, {
+            require("plenary.curl").post(hostname .. ":" .. port, {
                 body = table.concat(params.content, "\n"),
                 headers = {
                     ["X-Line-Length"] = config.line_length or 88,
