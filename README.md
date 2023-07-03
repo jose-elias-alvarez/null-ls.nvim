@@ -306,7 +306,7 @@ If you run into plenary-related issues while running the tests, make sure you
 have an up-to-date version of the plugin by clearing that cache with:
 `make clean`.
 
-All tests expect the latest Neovim master.
+All tests expect to run on the latest release version of Neovim and are not guaranteed to work on versions built from `HEAD`.
 
 ## Alternatives
 
