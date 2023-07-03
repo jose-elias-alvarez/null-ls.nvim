@@ -8,7 +8,8 @@ return h.make_builtin({
     name = "blackd",
     meta = {
         url = "https://github.com/psf/black",
-        description = "blackd is a small HTTP server that exposes Black’s functionality over a simple protocol. The main benefit of using it is to avoid the cost of starting up a new Black process every time you want to blacken a file.",
+        description = "blackd is a small HTTP server that exposes Black’s functionality over a simple protocol. The main benefit of using it is to avoid the cost of starting up a new Black process every time you want to blacken a file. The only way to configure the formatter is by using the provided config options, it will not pick up on config files.",
+
         config = {
             {
                 key = "hostname",
