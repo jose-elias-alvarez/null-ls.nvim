@@ -2603,6 +2603,51 @@ local sources = { null_ls.builtins.formatting.black }
 - Command: `black`
 - Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
 
+### [blackd](https://github.com/psf/black)
+
+blackd is a small HTTP server that exposes Black’s functionality over a simple protocol. The main benefit of using it is to avoid the cost of starting up a new Black process every time you want to blacken a file. The only way to configure the formatter is by using the provided config options, it will not pick up on config files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.blackd }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+
+#### Config
+
+##### `hostname` (string)
+
+Address to bind the server to. Defaults to localhost.
+##### `port` (string)
+
+Port to listen on. Defaults to 45484.
+##### `line_length` (number)
+
+Set how many characters per line to allow. Defaults to 88.
+##### `skip_source_first_line` (boolean)
+
+If set to true, the first line of the source code will be ignored. Defaults to false.
+##### `skip_string_normalization` (boolean)
+
+If set to true, no string normalization will be performed. Defaults to false.
+##### `skip_magic_trailing_comma` (boolean)
+
+If set to true, trailing commas will not be used as a reason to split lines. Defaults to false.
+##### `preview` (boolean)
+
+If set to true, experimental and potentially disruptive style changes will be used. Defaults to false.
+##### `fast` (boolean)
+
+If set to true, Black will not perform an AST safety check after formatting. Defaults to false.
+##### `python_variant` (string)
+
+If set to pyi, Black will format all input files like typing stubs regardless of the file extension. Otherwise, its value must correspond to a Python version or a set of comma-separated Python versions, optionally prefixed with py. (e.g. py3.5,py3.6). Defaults to empty string.
+
 ### [blade_formatter](https://github.com/shufo/blade-formatter)
 
 An opinionated blade template formatter for Laravel that respects readability

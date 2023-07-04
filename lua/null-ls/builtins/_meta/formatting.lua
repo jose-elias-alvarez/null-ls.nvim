@@ -28,6 +28,9 @@ return {
   black = {
     filetypes = { "python" }
   },
+  blackd = {
+    filetypes = { "python" }
+  },
   blade_formatter = {
     filetypes = { "blade" }
   },
