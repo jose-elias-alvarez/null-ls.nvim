@@ -28,6 +28,9 @@ return {
   black = {
     filetypes = { "python" }
   },
+  blackd = {
+    filetypes = { "python" }
+  },
   blade_formatter = {
     filetypes = { "blade" }
   },
@@ -130,6 +133,9 @@ return {
   fnlfmt = {
     filetypes = { "fennel", "fnl" }
   },
+  forge_fmt = {
+    filetypes = { "solidity" }
+  },
   format_r = {
     filetypes = { "r", "rmd" }
   },
@@ -144,6 +150,9 @@ return {
   },
   gersemi = {
     filetypes = { "cmake" }
+  },
+  gn_format = {
+    filetypes = { "gn" }
   },
   gofmt = {
     filetypes = { "go" }
@@ -163,6 +172,9 @@ return {
   google_java_format = {
     filetypes = { "java" }
   },
+  haxe_formatter = {
+    filetypes = { "haxe" }
+  },
   hclfmt = {
     filetypes = { "hcl" }
   },
@@ -180,6 +192,9 @@ return {
   },
   json_tool = {
     filetypes = { "json" }
+  },
+  jsonnetfmt = {
+    filetypes = { "jsonnet" }
   },
   just = {
     filetypes = { "just" }
@@ -280,8 +295,14 @@ return {
   pyflyby = {
     filetypes = { "python" }
   },
+  pyink = {
+    filetypes = { "python" }
+  },
   qmlformat = {
     filetypes = { "qml" }
+  },
+  racket_fixw = {
+    filetypes = { "racket" }
   },
   raco_fmt = {
     filetypes = { "racket" }
@@ -370,6 +391,9 @@ return {
   surface = {
     filetypes = { "elixir", "surface" }
   },
+  swift_format = {
+    filetypes = { "swift" }
+  },
   swiftformat = {
     filetypes = { "swift" }
   },
@@ -390,6 +414,12 @@ return {
   },
   tidy = {
     filetypes = { "html", "xml" }
+  },
+  topiary = {
+    filetypes = { "ncl", "nickel" }
+  },
+  treefmt = {
+    filetypes = {}
   },
   trim_newlines = {
     filetypes = {}
@@ -414,6 +444,9 @@ return {
   },
   xq = {
     filetypes = { "xml" }
+  },
+  yamlfix = {
+    filetypes = { "yaml" }
   },
   yamlfmt = {
     filetypes = { "yaml" }

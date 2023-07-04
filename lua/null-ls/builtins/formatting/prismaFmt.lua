@@ -12,8 +12,8 @@ return h.make_builtin({
     method = FORMATTING,
     filetypes = { "prisma" },
     generator_opts = {
-        command = "prisma-fmt",
-        args = { "format", "-i", "$FILENAME" },
+        command = "prisma",
+        args = { "format", "$FILENAME" },
         to_stdin = true,
     },
     factory = h.formatter_factory,

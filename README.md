@@ -298,7 +298,15 @@ The test suite includes unit and integration tests and depends on plenary.nvim.
 Run `make test` in the root of the project to run the suite or
 `FILE=filename_spec.lua make test-file` to test an individual file.
 
-All tests expect the latest Neovim master.
+To avoid a dependency on any plugin managers, the test suite will set up its
+plugin runtime under the `./tests` directory to always have a plenary version
+available.
+
+If you run into plenary-related issues while running the tests, make sure you
+have an up-to-date version of the plugin by clearing that cache with:
+`make clean`.
+
+All tests expect to run on the latest release version of Neovim and are not guaranteed to work on versions built from `HEAD`.
 
 ## Alternatives
 
@@ -315,10 +323,3 @@ All tests expect the latest Neovim master.
 
 - [hover.nvim](https://github.com/lewis6991/hover.nvim): Hover plugin framework
   for Neovim.
-
-## Sponsors
-
-Thanks to everyone who sponsors my projects and makes continued development /
-maintenance possible!
-
-<!-- sponsors --><a href="https://github.com/yutkat"><img src="https://github.com/yutkat.png" width="60px" alt="" /></a><a href="https://github.com/hituzi-no-sippo"><img src="https://github.com/hituzi-no-sippo.png" width="60px" alt="" /></a><a href="https://github.com/sbc64"><img src="https://github.com/sbc64.png" width="60px" alt="" /></a><a href="https://github.com/chase"><img src="https://github.com/chase.png" width="60px" alt="" /></a><a href="https://github.com/andrewferrier"><img src="https://github.com/andrewferrier.png" width="60px" alt="" /></a><a href="https://github.com/sirupsen"><img src="https://github.com/sirupsen.png" width="60px" alt="" /></a><a href="https://github.com/dhensen"><img src="https://github.com/dhensen.png" width="60px" alt="" /></a><a href="https://github.com/iwpnd"><img src="https://github.com/iwpnd.png" width="60px" alt="" /></a><a href="https://github.com/ehaynes99"><img src="https://github.com/ehaynes99.png" width="60px" alt="" /></a><!-- sponsors -->

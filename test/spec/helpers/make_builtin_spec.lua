@@ -94,6 +94,57 @@ describe("make_builtin", function()
             assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second" })
         end)
 
+        it("should prepend args with extra_args table and prepend_extra_args user input", function()
+            local copy = builtin.with({ extra_args = { "user_first", "user_second" }, prepend_extra_args = true })
+
+            assert.equals(type(copy._opts.args), "function")
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+            -- Multiple calls should yield the same results
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+        end)
+
+        it("should prepend args with extra_args table", function()
+            local test_opts = {
+                method = "mockMethod",
+                name = "mock-builtin",
+                filetypes = { "lua" },
+                generator_opts = {
+                    args = { "first", "second" },
+                    prepend_extra_args = true,
+                },
+            }
+            builtin = helpers.make_builtin(test_opts)
+            local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
+
+            assert.equals(type(copy._opts.args), "function")
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+            -- Multiple calls should yield the same results
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+        end)
+
+        it("should prepend args with extra_args function", function()
+            local test_opts = {
+                method = "mockMethod",
+                name = "mock-builtin",
+                filetypes = { "lua" },
+                generator_opts = {
+                    args = { "first", "second" },
+                    prepend_extra_args = true,
+                },
+            }
+            builtin = helpers.make_builtin(test_opts)
+            local copy = builtin.with({
+                extra_args = function()
+                    return { "user_first", "user_second" }
+                end,
+            })
+
+            assert.equals(type(copy._opts.args), "function")
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+            -- Multiple calls should yield the same results
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second" })
+        end)
+
         it("should keep original args if extra_args returns nil", function()
             local copy = builtin.with({
                 extra_args = function()
@@ -157,6 +208,27 @@ describe("make_builtin", function()
             assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
             -- Multiple calls should yield the same results
             assert.same(copy._opts.args(), { "first", "second", "user_first", "user_second", "-" })
+        end)
+
+        it("should prepend args with extra_args, but keep '-' arg last", function()
+            -- local test_opts = vim.deep_copy(opts) stack overflows
+            local test_opts = {
+                method = "mockMethod",
+                name = "mock-builtin",
+                filetypes = { "lua" },
+                generator_opts = {
+                    args = { "first", "second", "-" },
+                    prepend_extra_args = true,
+                },
+            }
+
+            builtin = helpers.make_builtin(test_opts)
+            local copy = builtin.with({ extra_args = { "user_first", "user_second" } })
+
+            assert.equals(type(copy._opts.args), "function")
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second", "-" })
+            -- Multiple calls should yield the same results
+            assert.same(copy._opts.args(), { "user_first", "user_second", "first", "second", "-" })
         end)
     end)
 

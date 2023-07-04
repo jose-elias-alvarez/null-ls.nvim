@@ -53,11 +53,43 @@ return h.make_builtin({
     name = "cspell",
     meta = {
         url = "https://github.com/streetsidesoftware/cspell",
-        description = "Injects actions to fix typos found by `cspell`.",
+        description = [[Injects actions to fix typos found by `cspell`.
+
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+]],
         notes = {
             "This source depends on the `cspell` built-in diagnostics source, so make sure to register it, too.",
         },
         usage = "local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_actions.cspell }",
+        config = {
+            {
+                key = "find_json",
+                type = "function",
+                description = "Customizing the location of cspell config",
+                usage = [[
+function(cwd)
+    return vim.fn.expand(cwd .. "/cspell.json")
+end]],
+            },
+            {
+                key = "on_success",
+                type = "function",
+                description = "Callback after successful execution of code action.",
+                usage = [[
+function(cspell_config_file, params)
+    -- format the cspell config file
+    os.execute(
+        string.format(
+            "cat %s | jq -S '.words |= sort' | tee %s > /dev/null",
+            cspell_config_file,
+            cspell_config_file
+        )
+    )
+end]],
+            },
+        },
     },
     method = CODE_ACTION,
     filetypes = {},
@@ -148,6 +180,11 @@ return h.make_builtin({
                             diagnostic.end_col,
                             { word }
                         )
+
+                        local on_success = config.on_success
+                        if on_success then
+                            on_success(cspell_json_file, params)
+                        end
                     end,
                 })
             end

@@ -4,7 +4,7 @@ local methods = require("null-ls.methods")
 local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 local get_severity = function(severity)
-    if severity == "error" then
+    if severity == "error" or severity == "fatal error" then
         return h.diagnostics.severities.error
     elseif severity == "warning" then
         return h.diagnostics.severities.warning
@@ -50,7 +50,7 @@ local sources = {
                 return
             end
 
-            local row, col, sev, msg = string.match(line, "[^:]+:(%d+):(%d+): (%w+): (.*)$")
+            local row, col, sev, msg = string.match(line, "[^:]+:(%d+):(%d+): ([%w ]+): (.*)$")
             return {
                 row = row,
                 col = col,

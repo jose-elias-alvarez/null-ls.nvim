@@ -18,6 +18,10 @@ See [BUILTIN_CONFIG](BUILTIN_CONFIG.md) to learn how to set up and configure the
 
 Injects actions to fix typos found by `cspell`.
 
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+
 #### Usage
 
 ```lua
@@ -28,6 +32,42 @@ local sources = { null_ls.builtins.diagnostics.cspell, null_ls.builtins.code_act
 
 - Filetypes: `{}`
 - Method: `code_action`
+
+#### Config
+
+##### `find_json` (function)
+
+Customizing the location of cspell config
+
+```lua
+local cspell = null_ls.builtins.code_actions.cspell.with({
+    config = {
+        find_json = function(cwd)
+            return vim.fn.expand(cwd .. "/cspell.json")
+        end
+    },
+})
+```
+##### `on_success` (function)
+
+Callback after successful execution of code action.
+
+```lua
+local cspell = null_ls.builtins.code_actions.cspell.with({
+    config = {
+        on_success = function(cspell_config_file, params)
+            -- format the cspell config file
+            os.execute(
+                string.format(
+                    "cat %s | jq -S '.words |= sort' | tee %s > /dev/null",
+                    cspell_config_file,
+                    cspell_config_file
+                )
+            )
+        end
+    },
+})
+```
 
 #### Notes
 
@@ -247,6 +287,21 @@ local sources = { null_ls.builtins.code_actions.statix }
 - Method: `code_action`
 - Command: `statix`
 - Args: `{ "check", "--stdin", "--format=json" }`
+
+### [ts_node_action](https://github.com/CKolkey/ts-node-action)
+
+A framework for running functions on Tree-sitter nodes, and updating the buffer with the result.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.code_actions.ts_node_action }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `code_action`
 
 ### [xo](https://github.com/xojs/xo)
 
@@ -718,6 +773,10 @@ local sources = { null_ls.builtins.diagnostics.credo }
 
 cspell is a spell checker for code.
 
+**This source is not actively developed in this repository.**
+
+An up-to-date version exists as a companion plugin in [cspell.nvim](https://github.com/davidmh/cspell.nvim)
+
 #### Usage
 
 ```lua
@@ -781,6 +840,23 @@ local sources = { null_ls.builtins.diagnostics.deadnix }
 - Method: `diagnostics`
 - Command: `deadnix`
 - Args: `{ "--output-format=json", "$FILENAME" }`
+
+### [deno_lint](https://github.com/denoland/deno_lint)
+
+Blazing fast linter for JavaScript and TypeScript written in Rust
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.deno_lint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "javascript", "typescript", "typescriptreact", "javascriptreact" }`
+- Method: `diagnostics`
+- Command: `deno`
+- Args: `{ "lint", "--json", "$FILENAME" }`
 
 ### [djlint](https://github.com/Riverside-Healthcare/djLint)
 
@@ -1014,7 +1090,7 @@ local sources = { null_ls.builtins.diagnostics.golangci_lint }
 - Filetypes: `{ "go" }`
 - Method: `diagnostics_on_save`
 - Command: `golangci-lint`
-- Args: `{ "run", "--fix=false", "--out-format=json", "--path-prefix", "$ROOT" }`
+- Args: `{ "run", "--fix=false", "--out-format=json" }`
 
 ### [gospel](https://github.com/kortschak/gospel)
 
@@ -1771,6 +1847,23 @@ local sources = { null_ls.builtins.diagnostics.ruff }
 - Command: `ruff`
 - Args: `{ "-n", "-e", "--stdin-filename", "$FILENAME", "-" }`
 
+### [saltlint](https://github.com/warpnet/salt-lint)
+
+A command-line utility that checks for best practices in SaltStack.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.saltlint }
+```
+
+#### Defaults
+
+- Filetypes: `{ "sls" }`
+- Method: `diagnostics_on_save`
+- Command: `salt-lint`
+- Args: `{ "--nocolor", "--json", "$FILENAME" }`
+
 ### [selene](https://kampfkarren.github.io/selene/)
 
 Command line tool designed to help write correct and idiomatic Lua code.
@@ -2050,7 +2143,7 @@ local sources = { null_ls.builtins.diagnostics.terraform_validate }
 
 #### Defaults
 
-- Filetypes: `{ "terraform" }`
+- Filetypes: `{ "terraform", "tf", "terraform-vars" }`
 - Method: `diagnostics_on_save`
 - Command: `terraform`
 - Args: `{ "validate", "-json" }`
@@ -2084,7 +2177,7 @@ local sources = { null_ls.builtins.diagnostics.tfsec }
 
 #### Defaults
 
-- Filetypes: `{ "terraform" }`
+- Filetypes: `{ "terraform", "tf", "terraform-vars" }`
 - Method: `diagnostics_on_save`
 - Command: `tfsec`
 - Args: `{ "-s", "-f", "json", "$DIRNAME" }`
@@ -2169,6 +2262,23 @@ local sources = { null_ls.builtins.diagnostics.twigcs }
 - Method: `diagnostics`
 - Command: `twigcs`
 - Args: `{ "--reporter", "json", "$FILENAME" }`
+
+### [typos](https://github.com/crate-ci/typos)
+
+Source code spell checker written in rust
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.typos }
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `diagnostics`
+- Command: `typos`
+- Args: `{ "--format", "json", "-" }`
 
 ### [vacuum](https://quobix.com/vacuum)
 
@@ -2492,6 +2602,51 @@ local sources = { null_ls.builtins.formatting.black }
 - Method: `formatting`
 - Command: `black`
 - Args: `{ "--stdin-filename", "$FILENAME", "--quiet", "-" }`
+
+### [blackd](https://github.com/psf/black)
+
+blackd is a small HTTP server that exposes Black’s functionality over a simple protocol. The main benefit of using it is to avoid the cost of starting up a new Black process every time you want to blacken a file. The only way to configure the formatter is by using the provided config options, it will not pick up on config files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.blackd }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Method: `formatting`
+
+#### Config
+
+##### `hostname` (string)
+
+Address to bind the server to. Defaults to localhost.
+##### `port` (string)
+
+Port to listen on. Defaults to 45484.
+##### `line_length` (number)
+
+Set how many characters per line to allow. Defaults to 88.
+##### `skip_source_first_line` (boolean)
+
+If set to true, the first line of the source code will be ignored. Defaults to false.
+##### `skip_string_normalization` (boolean)
+
+If set to true, no string normalization will be performed. Defaults to false.
+##### `skip_magic_trailing_comma` (boolean)
+
+If set to true, trailing commas will not be used as a reason to split lines. Defaults to false.
+##### `preview` (boolean)
+
+If set to true, experimental and potentially disruptive style changes will be used. Defaults to false.
+##### `fast` (boolean)
+
+If set to true, Black will not perform an AST safety check after formatting. Defaults to false.
+##### `python_variant` (string)
+
+If set to pyi, Black will format all input files like typing stubs regardless of the file extension. Otherwise, its value must correspond to a Python version or a set of comma-separated Python versions, optionally prefixed with py. (e.g. py3.5,py3.6). Defaults to empty string.
 
 ### [blade_formatter](https://github.com/shufo/blade-formatter)
 
@@ -3094,6 +3249,23 @@ local sources = { null_ls.builtins.formatting.fnlfmt }
 - Command: `fnlfmt`
 - Args: `{ "-" }`
 
+### [forge_fmt](https://book.getfoundry.sh/reference/config/formatter)
+
+Formats Solidity source files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.forge_fmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "solidity" }`
+- Method: `formatting`
+- Command: `forge`
+- Args: `{ "fmt", "$FILENAME" }`
+
 ### [format_r](https://github.com/yihui/formatR)
 
 Format R code automatically.
@@ -3126,7 +3298,7 @@ local sources = { null_ls.builtins.formatting.fourmolu }
 - Filetypes: `{ "haskell" }`
 - Method: `formatting`
 - Command: `fourmolu`
-- Args: `{ "--stdin-input-file", "$FILEPATH" }`
+- Args: `{ "--stdin-input-file", "$FILENAME" }`
 
 ### [fprettify](https://github.com/pseewald/fprettify)
 
@@ -3178,6 +3350,27 @@ local sources = { null_ls.builtins.formatting.gersemi }
 - Method: `formatting`
 - Command: `gersemi`
 - Args: `{ "-" }`
+
+### [gn_format](http://gn.googlesource.com/gn)
+
+Format your GN code!
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.gn_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "gn" }`
+- Method: `formatting`
+- Command: `gn`
+- Args: `{ "format", "--stdin" }`
+
+#### Notes
+
+- Install google depot_tools to use gn
 
 ### [gofmt](https://pkg.go.dev/cmd/gofmt)
 
@@ -3283,6 +3476,23 @@ local sources = { null_ls.builtins.formatting.google_java_format }
 - Command: `google-java-format`
 - Args: `{ "-" }`
 
+### [haxe_formatter](https://github.com/HaxeCheckstyle/haxe-formatter)
+
+Haxe code formatter based on tokentree
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.haxe_formatter }
+```
+
+#### Defaults
+
+- Filetypes: `{ "haxe" }`
+- Method: `formatting`
+- Command: `haxelib`
+- Args: `{ "run", "formatter", "--stdin", "--source", "$FILENAME" }`
+
 ### [hclfmt](https://github.com/fatih/hclfmt)
 
 Formatter for HCL configuration files
@@ -3365,6 +3575,23 @@ local sources = { null_ls.builtins.formatting.jq }
 - Filetypes: `{ "json" }`
 - Method: `formatting`
 - Command: `jq`
+
+### [jsonnetfmt](https://github.com/google/jsonnet)
+
+Formats jsonnet files.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.jsonnetfmt }
+```
+
+#### Defaults
+
+- Filetypes: `{ "jsonnet" }`
+- Method: `formatting`
+- Command: `jsonnetfmt`
+- Args: `{ "-" }`
 
 ### [json_tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
@@ -3879,8 +4106,8 @@ local sources = { null_ls.builtins.formatting.prismaFmt }
 
 - Filetypes: `{ "prisma" }`
 - Method: `formatting`
-- Command: `prisma-fmt`
-- Args: `{ "format", "-i", "$FILENAME" }`
+- Command: `prisma`
+- Args: `{ "format", "$FILENAME" }`
 
 ### [protolint](https://github.com/yoheimuta/protolint)
 
@@ -3971,6 +4198,23 @@ local sources = { null_ls.builtins.formatting.pyflyby }
 - Command: `tidy-imports`
 - Args: `{ "-n" }`
 
+### [pyink](https://github.com/google/pyink)
+
+The Google Python code formatter
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.pyink }
+```
+
+#### Defaults
+
+- Filetypes: `{ "python" }`
+- Methods: `formatting, range_formatting`
+- Command: `pyink`
+- Args: dynamically resolved (see [source](https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/pyink.lua))
+
 ### [qmlformat](https://doc-snapshots.qt.io/qt6-dev/qtquick-tools-and-utilities.html#qmlformat)
 
 qmlformat is a tool that automatically formats QML files according to the QML Coding Conventions.
@@ -3987,6 +4231,27 @@ local sources = { null_ls.builtins.formatting.qmlformat }
 - Method: `formatting`
 - Command: `qmlformat`
 - Args: `{ "-i", "$FILENAME" }`
+
+### [racket_fixw](https://github.com/6cdh/racket-fixw)
+
+A Racket formatter that add/remove some whitespaces but respects newline.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.racket_fixw }
+```
+
+#### Defaults
+
+- Filetypes: `{ "racket" }`
+- Method: `formatting`
+- Command: `raco`
+- Args: `{ "fixw" }`
+
+#### Notes
+
+- Install with `raco pkg install fixw`
 
 ### [raco_fmt](https://docs.racket-lang.org/fmt/)
 
@@ -4339,7 +4604,7 @@ local sources = { null_ls.builtins.formatting.sqlfmt }
 - Filetypes: `{ "sql", "jinja" }`
 - Method: `formatting`
 - Command: `sqlfmt`
-- Args: `{ "$FILENAME" }`
+- Args: `{ "-" }`
 
 #### Notes
 
@@ -4548,6 +4813,23 @@ local sources = { null_ls.builtins.formatting.swiftlint }
 - Command: `swiftlint`
 - Args: `{ "lint", "--use-stdin", "--fix" }`
 
+### [swift_format](https://github.com/apple/swift-format)
+
+Swift formatter from apple. Requires building from source with `swift build`
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.swift_format }
+```
+
+#### Defaults
+
+- Filetypes: `{ "swift" }`
+- Method: `formatting`
+- Command: `swift-format`
+- Args: `{}`
+
 ### [taplo](https://taplo.tamasfe.dev/)
 
 A versatile, feature-rich TOML toolkit.
@@ -4632,6 +4914,47 @@ local sources = { null_ls.builtins.formatting.tidy }
 - Method: `formatting`
 - Command: `tidy`
 - Args: `{ "--tidy-mark", "no", "-quiet", "-indent", "-wrap", "-" }`
+
+### [topiary](https://github.com/tweag/topiary)
+
+A uniform formatter for simple languages
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.topiary }
+```
+
+#### Defaults
+
+- Filetypes: `{ "ncl", "nickel" }`
+- Method: `formatting`
+- Command: `topiary`
+- Args: `{ "-i", "-f", "$FILENAME" }`
+
+### [treefmt](https://github.com/numtide/treefmt)
+
+One CLI to format your repo
+
+#### Usage
+
+```lua
+local sources = {
+    null_ls.builtins.formatting.treefmt.with({
+        -- treefmt requires a config file
+        condition = function(utils)
+            return utils.root_has_file("treefmt.toml")
+        end,
+    }),
+}
+```
+
+#### Defaults
+
+- Filetypes: `{}`
+- Method: `formatting`
+- Command: `treefmt`
+- Args: `{ "--allow-missing-formatter", "--stdin", "$FILENAME" }`
 
 ### trim_newlines
 
@@ -4768,6 +5091,23 @@ local sources = { null_ls.builtins.formatting.xq }
 - Method: `formatting`
 - Command: `xq`
 - Args: `{ ".", "$FILENAME" }`
+
+### [yamlfix](https://github.com/lyz-code/yamlfix)
+
+A configurable YAML formatter that keeps comments.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.formatting.yamlfix }
+```
+
+#### Defaults
+
+- Filetypes: `{ "yaml" }`
+- Method: `formatting`
+- Command: `yamlfix`
+- Args: `{ "-" }`
 
 ### [yamlfmt](https://github.com/google/yamlfmt)
 

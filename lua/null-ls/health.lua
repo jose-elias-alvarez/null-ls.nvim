@@ -1,5 +1,10 @@
 local health = vim.health
 
+local error = health.error or health.report_error
+local info = health.info or health.report_info
+local ok = health.ok or health.report_ok
+local warn = health.warn or health.report_warn
+
 local M = {}
 
 local messages = {
@@ -18,35 +23,35 @@ local function report(source)
 
     if can_run then
         if can_run() then
-            health.report_ok(string.format(messages["can-run"], name, name))
+            ok(string.format(messages["can-run"], name, name))
         else
-            health.report_error(string.format(messages["cannot-run"], name, name))
+            error(string.format(messages["cannot-run"], name, name))
         end
         return
     end
 
     if type(command) ~= "string" then
-        health.report_info(string.format(messages["unable"], name, command))
+        info(string.format(messages["unable"], name, command))
         return
     end
 
     if require("null-ls.utils").is_executable(command) then
-        health.report_ok(string.format(messages["executable"], name, command))
+        ok(string.format(messages["executable"], name, command))
         return
     end
 
     if only_local or prefer_local then
-        health.report_warn(string.format(messages["executable-local"], name, command))
+        warn(string.format(messages["executable-local"], name, command))
         return
     end
 
-    health.report_error(string.format(messages["not-executable"], name, command))
+    error(string.format(messages["not-executable"], name, command))
 end
 
 M.check = function()
     local registered_sources = require("null-ls.sources").get({})
     if #registered_sources == 0 then
-        health.report_info("no sources registered")
+        info("no sources registered")
         return
     end
 

@@ -15,6 +15,7 @@ return h.make_builtin({
         command = "goimports",
         args = { "-srcdir", "$DIRNAME" },
         to_stdin = true,
+        prepend_extra_args = true,
     },
     factory = h.formatter_factory,
 })

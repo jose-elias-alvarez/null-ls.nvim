@@ -4,22 +4,24 @@ local methods = require("null-ls.methods")
 local FORMATTING = methods.internal.FORMATTING
 
 return h.make_builtin({
-    name = "sqlfmt",
+    name = "gn_format",
     meta = {
-        url = "https://sqlfmt.com/",
-        description = "Formats your dbt SQL files so you don't have to",
+        url = "http://gn.googlesource.com/gn",
+        description = "Format your GN code!",
         notes = {
-            "Install sqlfmt with `pip install shandy-sqlfmt[jinjafmt]`",
+            "Install google depot_tools to use gn",
         },
     },
-    method = FORMATTING,
+    method = { FORMATTING },
     filetypes = {
-        "sql",
-        "jinja",
+        "gn",
     },
     generator_opts = {
-        command = "sqlfmt",
-        args = { "-" },
+        command = "gn",
+        args = {
+            "format",
+            "--stdin",
+        },
         to_stdin = true,
     },
     factory = h.formatter_factory,

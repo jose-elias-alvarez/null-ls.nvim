@@ -477,6 +477,14 @@ describe("generator_factory", function()
         assert.truthy(generator.multiple_files)
     end)
 
+    it("should pass prepend_extra_args to generator", function()
+        generator_opts.prepend_extra_args = true
+
+        local generator = helpers.generator_factory(generator_opts)
+
+        assert.truthy(generator.prepend_extra_args)
+    end)
+
     it("should wrap check_exit_code if it's a table", function()
         generator_opts.check_exit_code = { 0 }
         local generator = helpers.generator_factory(generator_opts)
