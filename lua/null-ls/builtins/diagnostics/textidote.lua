@@ -25,6 +25,7 @@ return h.make_builtin({
             "$FILENAME",
         },
         format = "line",
+        timeout = 5000,
         ignore_stderr = true,
         to_stdin = true,
         on_output = h.diagnostics.from_patterns({
