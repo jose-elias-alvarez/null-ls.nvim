@@ -1,7 +1,8 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
+local DIAGNOSTICS_ON_OPEN = methods.internal.DIAGNOSTICS_ON_OPEN
+local DIAGNOSTICS_ON_SAVE = methods.internal.DIAGNOSTICS_ON_SAVE
 
 return h.make_builtin({
     name = "textidote",
@@ -9,7 +10,7 @@ return h.make_builtin({
         url = "https://github.com/sylvainhalle/textidote",
         description = "Spelling, grammar and style checking on LaTeX documents.",
     },
-    method = DIAGNOSTICS,
+    method = { DIAGNOSTICS_ON_OPEN, DIAGNOSTICS_ON_SAVE },
     filetypes = { "markdown", "tex" },
     generator_opts = {
         command = "textidote",
