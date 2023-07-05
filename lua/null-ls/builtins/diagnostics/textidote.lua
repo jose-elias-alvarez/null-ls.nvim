@@ -21,6 +21,7 @@ return h.make_builtin({
             "--no-color",
             "--check",
             "en",
+            "--quiet",
             "$FILENAME",
         },
         format = "line",
@@ -37,6 +38,7 @@ return h.make_builtin({
                 },
             },
         }),
+        multiple_files = true,
     },
     factory = h.generator_factory,
 })
