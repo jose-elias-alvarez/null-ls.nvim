@@ -248,7 +248,7 @@ return {
   },
   markdown = {
     code_actions = { "ltrs", "proselint" },
-    diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "textlint", "vale", "write_good" },
+    diagnostics = { "alex", "ltrs", "ltrs", "markdownlint", "markdownlint_cli2", "mdl", "proselint", "textidote", "textlint", "vale", "write_good" },
     formatting = { "cbfmt", "deno_fmt", "dprint", "markdown_toc", "markdownlint", "mdformat", "ocdc", "prettier", "prettier_d_slim", "prettier_eslint", "prettierd", "remark", "terrafmt", "textlint" },
     hover = { "dictionary" }
   },
@@ -427,7 +427,7 @@ return {
   },
   tex = {
     code_actions = { "proselint" },
-    diagnostics = { "chktex", "proselint", "vale" },
+    diagnostics = { "chktex", "proselint", "textidote", "vale" },
     formatting = { "latexindent" }
   },
   text = {

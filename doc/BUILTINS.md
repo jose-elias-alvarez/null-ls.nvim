@@ -2148,6 +2148,23 @@ local sources = { null_ls.builtins.diagnostics.terraform_validate }
 - Command: `terraform`
 - Args: `{ "validate", "-json" }`
 
+### [textidote](https://github.com/sylvainhalle/textidote)
+
+Spelling, grammar and style checking on LaTeX documents.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.textidote }
+```
+
+#### Defaults
+
+- Filetypes: `{ "markdown", "tex" }`
+- Methods: `diagnostics_on_open, diagnostics_on_save`
+- Command: `textidote`
+- Args: `{ "--read-all", "--output", "singleline", "--no-color", "--check", "en", "--quiet", "$FILENAME" }`
+
 ### [textlint](https://github.com/textlint/textlint)
 
 The pluggable linting tool for text and Markdown.

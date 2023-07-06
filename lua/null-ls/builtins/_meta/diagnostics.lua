@@ -286,6 +286,9 @@ return {
   terraform_validate = {
     filetypes = { "terraform", "tf", "terraform-vars" }
   },
+  textidote = {
+    filetypes = { "markdown", "tex" }
+  },
   textlint = {
     filetypes = { "txt", "markdown" }
   },
