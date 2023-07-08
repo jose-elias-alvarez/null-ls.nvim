@@ -1,6 +1,5 @@
 local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
-local u = require("null-ls.utils")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
@@ -35,9 +34,12 @@ return h.make_builtin({
         to_stdin = true,
         format = "json",
         on_output = handle_swiftlint_output,
-        cwd = h.cache.by_bufnr(function(params)
-            return u.root_pattern("Package.swift", ".git")(params.bufname)
-        end),
+        check_exit_code = function(code)
+            -- 0 is successfully exit
+            -- 2 is linting issues
+            -- other may be exceptions
+            return code == 0 or code == 2
+        end,
     },
     factory = h.generator_factory,
 })
