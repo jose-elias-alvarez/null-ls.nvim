@@ -13,9 +13,13 @@ return h.make_builtin({
             {
                 key = "hostname",
                 type = "string",
-                description = "Address to bind the server to. Defaults to localhost.",
+                description = "Address that the isortd server listens on. Defaults to localhost.",
             },
-            { key = "port", type = "string", description = "Port to listen on. Defaults to 47393." },
+            {
+                key = "port",
+                type = "string",
+                description = "Port that the isortd server listens on. Defaults to 47393.",
+            },
         },
     },
     method = FORMATTING,
