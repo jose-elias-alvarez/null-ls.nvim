@@ -5,6 +5,12 @@
 }
 -->
 
+# ARCHIVED
+
+null-ls is now archived and will no longer receive updates. Please see
+[this issue](https://github.com/jose-elias-alvarez/null-ls.nvim/issues/1621) for
+details.
+
 # null-ls.nvim
 
 Use Neovim as a language server to inject LSP diagnostics, code actions, and
@@ -306,7 +312,8 @@ If you run into plenary-related issues while running the tests, make sure you
 have an up-to-date version of the plugin by clearing that cache with:
 `make clean`.
 
-All tests expect to run on the latest release version of Neovim and are not guaranteed to work on versions built from `HEAD`.
+All tests expect to run on the latest release version of Neovim and are not
+guaranteed to work on versions built from `HEAD`.
 
 ## Alternatives
 
