@@ -238,6 +238,7 @@ end
 ---@class PathUtils
 ---@field exists fun(filename: string): boolean
 ---@field join function(paths: ...): string
+---@field is_windows boolean
 M.path = {
     exists = function(filename)
         local stat = vim.loop.fs_stat(filename)
@@ -246,6 +247,8 @@ M.path = {
     join = function(...)
         return table.concat(vim.tbl_flatten({ ... }), path_separator):gsub(path_separator .. "+", path_separator)
     end,
+
+    is_windows = is_windows,
 }
 
 --- creates a callback that returns the first root matching a specified pattern
