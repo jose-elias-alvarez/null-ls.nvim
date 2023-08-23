@@ -37,8 +37,18 @@ An up-to-date version exists as a companion plugin in [cspell.nvim](https://gith
     generator_opts = {
         command = "cspell",
         args = function(params)
+            local config = params:get_config()
+            local find_json = config.find_json or h.cspell.find_cspell_config
+            local cspell_json_file = find_json(params.cwd)
+
+            if cspell_json_file == nil or cspell_json_file == "" then
+                cspell_json_file = "cspell.json" -- default for the -c option
+            end
+
             local cspell_args = {
                 "lint",
+                "-c",
+                cspell_json_file,
                 "--language-id",
                 params.ft,
                 "stdin",
