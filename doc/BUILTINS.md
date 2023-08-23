@@ -2097,6 +2097,24 @@ local sources = { null_ls.builtins.diagnostics.stylint }
 - Command: `stylint`
 - Args: `{ "$FILENAME" }`
 
+### [swipl](https://www.swi-prolog.org/)
+
+SWI-Prolog is a versatile implementation of the Prolog language.
+
+#### Usage
+
+```lua
+local sources = { null_ls.builtins.diagnostics.swipl }
+```
+
+#### Defaults
+
+- Filetypes: `{ "prolog" }`
+- Method: `diagnostics`
+- Command: `swipl`
+- Args: `{ "-q", "-t", "halt(1)", "-s", "$FILENAME" }`
+
+
 ### [swiftlint](https://github.com/realm/SwiftLint)
 
 A tool to enforce Swift style and conventions.
