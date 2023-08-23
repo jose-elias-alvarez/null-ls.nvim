@@ -115,6 +115,30 @@ local handle_multiple_file_diagnostics = function(namespace, diagnostics)
 end
 
 local handle_diagnostics = function(id, diagnostics, bufnr, multiple_files)
+    for _, diagnostic in ipairs(diagnostics) do
+        local bnr = bufnr
+        if multiple_files then
+            bnr = diagnostic.bufnr
+        end
+        local start_line = vim.api.nvim_buf_get_lines(bnr, diagnostic.lnum, diagnostic.lnum + 1, false)[1]
+        diagnostic.col = vim.str_byteindex(start_line, diagnostic.col)
+        -- automatic search for valid end coordinates for sources that don't provide them
+        diagnostic.end_col, diagnostic.end_lnum = (setmetatable({
+            end_col = diagnostic.end_col,
+            end_lnum = diagnostic.end_lnum,
+        }, {
+            __call = function(self)
+                local end_line = vim.api.nvim_buf_get_lines(bnr, self.end_lnum, self.end_lnum + 1, false)[1]
+                local ok, end_col = pcall(vim.str_byteindex, end_line, self.end_col)
+                if not ok then
+                    self.end_lnum = self.end_lnum + 1
+                    self.end_col = self.end_col - vim.api.nvim_strwidth(end_line) - 1
+                    return self()
+                end
+                return end_col, self.end_lnum
+            end,
+        }))()
+    end
     local namespace = get_namespace(id)
     if multiple_files then
         handle_multiple_file_diagnostics(namespace, diagnostics)
