@@ -417,7 +417,7 @@ describe("utils", function()
         end)
 
         it("matches the pattern in the start_path parents", function()
-            assert.equals(test_path, u.root_pattern("minimal.vim")(start_path))
+            assert.equals(test_path, u.root_pattern("minimal_init.lua")(start_path))
         end)
     end)
 end)

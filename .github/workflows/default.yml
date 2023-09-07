@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: nvim-lua/plenary.nvim
-          path: plenary.nvim
+          path: null-ls.nvim/.tests/site/pack/deps/start/plenary.nvim
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true

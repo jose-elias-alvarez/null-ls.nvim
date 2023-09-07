@@ -17,7 +17,7 @@ return h.make_builtin({
         description = "Security scanner for Terraform code",
     },
     method = methods.internal.DIAGNOSTICS_ON_SAVE,
-    filetypes = { "terraform" },
+    filetypes = { "terraform", "tf", "terraform-vars" },
     generator_opts = {
         command = "tfsec",
         args = { "-s", "-f", "json", "$DIRNAME" },
@@ -71,6 +71,5 @@ return h.make_builtin({
             done(issues)
         end,
     },
-
     factory = h.generator_factory,
 })

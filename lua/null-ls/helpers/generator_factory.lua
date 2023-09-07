@@ -101,7 +101,7 @@ local line_output_wrapper = function(params, done, on_output)
 end
 
 return function(opts)
-    local command, args, env, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files, temp_dir =
+    local command, args, env, on_output, format, ignore_stderr, from_stderr, to_stdin, check_exit_code, timeout, to_temp_file, from_temp_file, use_cache, runtime_condition, cwd, dynamic_command, multiple_files, temp_dir, prepend_extra_args =
         opts.command,
         opts.args,
         opts.env,
@@ -119,7 +119,8 @@ return function(opts)
         opts.cwd,
         opts.dynamic_command,
         opts.multiple_files,
-        opts.temp_dir
+        opts.temp_dir,
+        opts.prepend_extra_args
 
     if type(check_exit_code) == "table" then
         local codes = check_exit_code
@@ -331,5 +332,6 @@ return function(opts)
         opts = opts,
         async = true,
         multiple_files = multiple_files,
+        prepend_extra_args = prepend_extra_args,
     }
 end

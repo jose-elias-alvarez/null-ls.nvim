@@ -1,4 +1,5 @@
 local h = require("null-ls.helpers")
+local log = require("null-ls.logger")
 local methods = require("null-ls.methods")
 
 local DIAGNOSTICS = methods.internal.DIAGNOSTICS
@@ -11,8 +12,15 @@ local comment_types = {
 }
 
 local function get_document_root(bufnr, filetype)
-    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, filetype)
+    local lang = vim.treesitter.language.get_lang(filetype)
+    if not lang then
+        log:debug("no lang available for filetype " .. filetype)
+        return
+    end
+
+    local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
     if not has_parser then
+        log:debug("no parser available for lang " .. lang)
         return
     end
 
@@ -88,11 +96,6 @@ return h.make_builtin({
     generator = {
         fn = function(params)
             local ft = params.ft
-
-            if ft == "tex" then
-                ft = "latex"
-            end
-
             local result = {}
             for _, node in ipairs(get_comments(params.bufnr, ft)) do
                 local content = vim.treesitter.get_node_text(node, params.bufnr):match("^%s*(.*)")

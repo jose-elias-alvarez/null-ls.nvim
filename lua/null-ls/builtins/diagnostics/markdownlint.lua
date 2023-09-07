@@ -25,10 +25,12 @@ return h.make_builtin({
             {
                 pattern = [[:(%d+):(%d+) ([%w-/]+) (.*)]],
                 groups = { "row", "col", "code", "message" },
+                overrides = { diagnostic = { severity = 2 } },
             },
             {
                 pattern = [[:(%d+) ([%w-/]+) (.*)]],
                 groups = { "row", "code", "message" },
+                overrides = { diagnostic = { severity = 2 } },
             },
         }),
     },

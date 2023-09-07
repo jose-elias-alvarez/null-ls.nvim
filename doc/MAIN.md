@@ -219,6 +219,9 @@ handle common conditional checks.
 - `utils.root_matches`: accepts a Lua string matcher pattern. Returns `true` if
   the root matches the specified pattern.
 
+- `utils.root_has_file_matches`: accepts a Lua string matcher pattern. Returns `true` if
+  a file matches the specified pattern.
+
 On registration, null-ls will store conditional sources in state and check
 `condition` at the first opportunity (typically upon entering a named buffer).
 If `condition` returns a truthy value at that point, null-ls will register the
@@ -411,7 +414,7 @@ return {
 ```
 
 Completion sources must return a
-[CompletionList](https://microsoft.github.io/language-server-protocol/specifications/specification-3-17/#completionList).
+[CompletionList](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionList).
 You can leverage the full attributes of `CompletionItem` from the LSP
 specification. Other plugins (e.g completion plugins) can then use these
 attributes to provide more context about the highlighted completion item.

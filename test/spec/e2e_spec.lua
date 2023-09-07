@@ -230,6 +230,7 @@ describe("e2e", function()
         end)
 
         it("should pass diagnostics through source-specific postprocess hook", function()
+            vim.diagnostic.reset()
             sources.reset()
             sources.register(builtins.diagnostics.write_good.with({
                 diagnostics_postprocess = function(diagnostic)

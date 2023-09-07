@@ -50,11 +50,9 @@ return h.make_builtin({
             -- "mix new" project, then changing in mix.exs "def project" to add:
             -- compilers: Mix.compilers(),
             -- Then creating a file config/config.exs containing "use Mix.Config"
-            local output = params.err -- assume there are no elixir warnings
-            if params.output then
-                -- output (stdout) is present! now we assume there are elixir
-                -- warnings, and that therefore the credo output is on stdout...
-                output = params.output
+            local output = params.output or params.err
+            if not output then
+                return done(issues)
             end
 
             local json_index, _ = output:find("{")

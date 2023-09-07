@@ -29,7 +29,11 @@ local capabilities = {
         -- TODO: investigate if we can use this
         resolveProvider = false,
     },
-    executeCommandProvider = true,
+    executeCommandProvider = {
+        commands = {
+            methods.internal.CODE_ACTION,
+        },
+    },
     documentFormattingProvider = true,
     documentRangeFormattingProvider = true,
     completionProvider = {
