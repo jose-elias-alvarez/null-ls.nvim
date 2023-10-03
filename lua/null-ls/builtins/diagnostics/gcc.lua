@@ -14,7 +14,7 @@ return h.make_builtin({
     generator = h.generator_factory({
         command = "gcc",
         args = {
-            "-std=c89",
+            "-std=c99",
             "-mavx2",
             "-mavx",
             "-Wextra",
